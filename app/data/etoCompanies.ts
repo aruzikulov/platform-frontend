@@ -466,7 +466,7 @@ if (process.env.NF_FOUNDERS_BANK_VISIBLE) {
       ],
       name: "Founders Bank",
       description:
-        "The first ever decentralized and community-owned bank is here. Founders focused bank empowering tech and crypto. Progressive banking solutions for investors and inventors.",
+        "Once licensed, Founders Bank will bridge the gap between the traditional world of finance and innovative crypto companies, delivering high tech banking solutions. Focused on and owned by founders.",
       topImage: {
         src: foundersbank,
         srcSet: {
