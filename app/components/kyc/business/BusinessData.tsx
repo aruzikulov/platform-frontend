@@ -130,8 +130,9 @@ const FileUploadList: React.SFC<IProps & { dataValid: boolean }> = props => {
       <h4>
         <FormattedMessage id="kyc.business.business-data.supporting-documents" />
       </h4>
-      <br />
-      <FormattedMessage id="kyc.business.business-data.upload-documents" />
+      <div className="mb-1">
+        <FormattedMessage id="kyc.business.business-data.upload-documents" />
+      </div>
       <br />
       <MultiFileUpload
         uploadType="business"

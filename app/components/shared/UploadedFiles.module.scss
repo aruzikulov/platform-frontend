@@ -48,5 +48,6 @@
     text-overflow: ellipsis;
     overflow: hidden;
     transition: 150ms ease-out color;
+    word-break: break-all;
   }
 }
