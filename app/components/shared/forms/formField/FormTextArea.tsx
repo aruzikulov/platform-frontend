@@ -1,4 +1,4 @@
-import { Field, FieldAttributes, FieldProps } from "formik";
+import { connect, Field, FieldAttributes, FieldProps, FormikProps } from "formik";
 import * as PropTypes from "prop-types";
 import * as React from "react";
 import { FormGroup, InputGroup, InputGroupAddon } from "reactstrap";
@@ -15,12 +15,8 @@ interface IFieldGroup {
   suffix?: string;
   charactersLimit?: number;
 }
-type FieldGroupProps = IFieldGroup & FieldAttributes & CommonHtmlProps;
-export class FormTextArea extends React.Component<FieldGroupProps> {
-  static contextTypes = {
-    formik: PropTypes.object,
-  };
-
+type FieldGroupProps = IFieldGroup & FieldAttributes & CommonHtmlProps & FormikProps<any>;
+class FormTextAreaComponent extends React.Component<FieldGroupProps> {
   render(): React.ReactChild {
     const {
       label,
@@ -31,8 +27,9 @@ export class FormTextArea extends React.Component<FieldGroupProps> {
       suffix,
       className,
       charactersLimit,
+      formik,
     } = this.props;
-    const { touched, errors } = this.context.formik;
+    const { touched, errors } = formik;
 
     const computedValue = (value: string | undefined, limit: number | undefined): string => {
       if (!value) {
@@ -87,3 +84,5 @@ export class FormTextArea extends React.Component<FieldGroupProps> {
     );
   }
 }
+
+export const FormTextArea = connect(FormTextAreaComponent);

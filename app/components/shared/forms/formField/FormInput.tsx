@@ -1,6 +1,5 @@
 import * as cn from "classnames";
-import { Field, FieldAttributes, FieldProps, getIn } from "formik";
-import * as PropTypes from "prop-types";
+import { connect, Field, FieldAttributes, FieldProps, FormikProps, getIn } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
@@ -30,18 +29,17 @@ export interface IFormInputExternalProps {
   size?: InputSize;
 }
 
-export type FormInputProps = IFormInputExternalProps & FieldAttributes & CommonHtmlProps;
+export type FormInputProps = IFormInputExternalProps &
+  FieldAttributes &
+  CommonHtmlProps &
+  FormikProps<any>;
 
 /**
  * Formik connected form input without FormGroup and FormLabel.
  */
-export class FormInput extends React.Component<FormInputProps> {
+class FormInputComponent extends React.Component<FormInputProps> {
   static defaultProps = {
     size: InputSize.NORMAL,
-  };
-
-  static contextTypes = {
-    formik: PropTypes.object,
   };
 
   render(): React.ReactChild {
@@ -58,9 +56,10 @@ export class FormInput extends React.Component<FormInputProps> {
       min,
       max,
       size,
+      formik,
       ...props
     } = this.props;
-    const { touched, errors } = this.context.formik;
+    const { touched, errors } = formik;
 
     //This is done due to the difference between reactstrap and @typings/reactstrap
     const inputExtraProps = {
@@ -135,3 +134,5 @@ export class FormInput extends React.Component<FormInputProps> {
     );
   }
 }
+
+export const FormInput = connect(FormInputComponent);

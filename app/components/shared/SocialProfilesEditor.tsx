@@ -1,5 +1,5 @@
 import * as cn from "classnames";
-import { FieldArray, FormikProps, getIn } from "formik";
+import { connect, FieldArray, FormikProps, getIn } from "formik";
 import * as PropTypes from "prop-types";
 import * as React from "react";
 import { Col, Row } from "reactstrap";
@@ -173,19 +173,15 @@ interface IState {
   filteredFields: boolean[];
 }
 
-export class SocialProfilesEditor extends React.Component<IProps, IState> {
+class SocialProfilesEditorComponent extends React.Component<IProps & FormikProps<any>, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = { selectedFields: [], filteredFields: [] };
   }
 
-  static contextTypes = {
-    formik: PropTypes.object,
-  };
-
   componentDidMount(): void {
-    const { values, setFieldValue } = this.context.formik as FormikProps<any>;
-    const { name, profiles } = this.props;
+    const { name, profiles, formik } = this.props;
+    const { values, setFieldValue } = formik;
     const socialMediaValues: TSocialChannelsType = getIn(values, name) || [];
     const selectedFields: boolean[] = [];
     profiles.forEach((profile, index) => {
@@ -234,3 +230,5 @@ export class SocialProfilesEditor extends React.Component<IProps, IState> {
     );
   }
 }
+
+export const SocialProfilesEditor = connect(SocialProfilesEditorComponent);

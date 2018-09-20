@@ -1,4 +1,4 @@
-import { FieldArray, FormikProps, withFormik } from "formik";
+import { connect, FieldArray, FormikProps, withFormik } from "formik";
 import * as PropTypes from "prop-types";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
@@ -59,72 +59,68 @@ const getBlankMember = () => ({
   image: "",
 });
 
-const Individual: React.SFC<IIndividual> = props => {
-  const { onAddClick, onRemoveClick, isLast, isFirst, index, groupFieldName } = props;
-
-  return (
-    <>
-      <FormHighlightGroup>
-        {!isFirst && (
-          <ButtonIcon svgIcon={closeIcon} onClick={onRemoveClick} className={styles.removeButton} />
-        )}
-        <FormField
-          name={`${groupFieldName}.members.${index}.name`}
-          label={<FormattedMessage id="eto.form.key-individuals.name" />}
-          placeholder="name"
-        />
-        <FormField
-          name={`${groupFieldName}.members.${index}.role`}
-          label={<FormattedMessage id="eto.form.key-individuals.role" />}
-          placeholder="role"
-        />
-        <FormTextArea
-          name={`${groupFieldName}.members.${index}.description`}
-          label={<FormattedMessage id="eto.form.key-individuals.short-bio" />}
-          placeholder=" "
-          charactersLimit={1200}
-        />
-        <FormSingleFileUpload
-          label={<FormattedMessage id="eto.form.key-individuals.image" />}
-          name={`${groupFieldName}.members.${index}.image`}
-          acceptedFiles="image/*"
-          fileFormatInformation="*150 x 150px png"
-        />
-        <FormField
-          className="mt-4"
-          name={`${groupFieldName}.members.${index}.website`}
-          placeholder="website"
-        />
-        <FormLabel className="mt-4 mb-2">
-          <FormattedMessage id="eto.form.key-individuals.add-social-channels" />
-        </FormLabel>
-        <SocialProfilesEditor
-          profiles={SOCIAL_PROFILES_PERSON}
-          name={`${groupFieldName}.members.${index}.socialChannels`}
-        />
-      </FormHighlightGroup>
-      {isLast && (
-        <Button
-          iconPosition="icon-before"
-          layout="secondary"
-          svgIcon={plusIcon}
-          onClick={onAddClick}
-        >
-          <FormattedMessage id="eto.form.key-individuals.add" />
-        </Button>
+const Individual: React.SFC<IIndividual> = ({
+  onAddClick,
+  onRemoveClick,
+  isLast,
+  isFirst,
+  index,
+  groupFieldName,
+}) => (
+  <>
+    <FormHighlightGroup>
+      {!isFirst && (
+        <ButtonIcon svgIcon={closeIcon} onClick={onRemoveClick} className={styles.removeButton} />
       )}
-    </>
-  );
-};
+      <FormField
+        name={`${groupFieldName}.members.${index}.name`}
+        label={<FormattedMessage id="eto.form.key-individuals.name" />}
+        placeholder="name"
+      />
+      <FormField
+        name={`${groupFieldName}.members.${index}.role`}
+        label={<FormattedMessage id="eto.form.key-individuals.role" />}
+        placeholder="role"
+      />
+      <FormTextArea
+        name={`${groupFieldName}.members.${index}.description`}
+        label={<FormattedMessage id="eto.form.key-individuals.short-bio" />}
+        placeholder=" "
+        charactersLimit={1200}
+      />
+      <FormSingleFileUpload
+        label={<FormattedMessage id="eto.form.key-individuals.image" />}
+        name={`${groupFieldName}.members.${index}.image`}
+        acceptedFiles="image/*"
+        fileFormatInformation="*150 x 150px png"
+      />
+      <FormField
+        className="mt-4"
+        name={`${groupFieldName}.members.${index}.website`}
+        placeholder="website"
+      />
+      <FormLabel className="mt-4 mb-2">
+        <FormattedMessage id="eto.form.key-individuals.add-social-channels" />
+      </FormLabel>
+      <SocialProfilesEditor
+        profiles={SOCIAL_PROFILES_PERSON}
+        name={`${groupFieldName}.members.${index}.socialChannels`}
+      />
+    </FormHighlightGroup>
+    {isLast && (
+      <Button iconPosition="icon-before" layout="secondary" svgIcon={plusIcon} onClick={onAddClick}>
+        <FormattedMessage id="eto.form.key-individuals.add" />
+      </Button>
+    )}
+  </>
+);
 
-class KeyIndividualsGroup extends React.Component<IKeyIndividualsGroup> {
-  static contextTypes = {
-    formik: PropTypes.object,
-  };
-
+class KeyIndividualsGroupComponent extends React.Component<
+  IKeyIndividualsGroup & FormikProps<any>
+> {
   componentWillMount(): void {
-    const { setFieldValue, values } = this.context.formik as FormikProps<any>;
-    const { name } = this.props;
+    const { name, formik } = this.props;
+    const { setFieldValue, values } = formik;
 
     if (!values[name]) {
       setFieldValue(`${name}.members.0`, getBlankMember());
@@ -132,8 +128,8 @@ class KeyIndividualsGroup extends React.Component<IKeyIndividualsGroup> {
   }
 
   render(): React.ReactNode {
-    const { title, name } = this.props;
-    const { values } = this.context.formik as FormikProps<any>;
+    const { title, name, formik } = this.props;
+    const { values } = formik;
     const individuals =
       values[name] && values[name].members ? values[name].members : [getBlankMember()];
 
@@ -161,6 +157,8 @@ class KeyIndividualsGroup extends React.Component<IKeyIndividualsGroup> {
     );
   }
 }
+
+const KeyIndividualsGroup = connect(KeyIndividualsGroupComponent);
 
 const EtoRegistrationKeyIndividualsComponent = (props: IProps) => {
   return (
