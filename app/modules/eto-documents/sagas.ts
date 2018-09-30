@@ -63,6 +63,7 @@ export function* loadEtoFileData({
   apiEtoFileService,
 }: TGlobalDependencies): any {
   try {
+    yield put(actions.etoFlow.loadIssuerEto());
     const stateInfo = yield apiEtoFileService.getEtoFileStateInfo();
     const uploadedDocuments = yield apiEtoFileService.getAllEtoDocuments();
     const etoTemplates = yield apiEtoFileService.getAllEtoTemplates();
@@ -73,7 +74,6 @@ export function* loadEtoFileData({
         stateInfo,
       }),
     );
-    yield put(actions.etoFlow.loadIssuerEto());
   } catch (e) {
     notificationCenter.error(
       "Could not access ETO files data. Make sure you have completed KYC and email verification process.",
