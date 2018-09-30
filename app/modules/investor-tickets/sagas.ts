@@ -1,4 +1,4 @@
-import { map } from "lodash/fp";
+import { filter, map } from "lodash/fp";
 import { all, fork, put, select, take } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
@@ -25,7 +25,7 @@ export function* loadEtosWithInvestorTickets(
     yield all(
       map(
         eto => put(actions.investorEtoTicket.loadEtoInvestorTicket(eto.etoId)),
-        action.payload.etos,
+        filter(eto => eto.state === "on_chain", action.payload.etos),
       ),
     );
 
