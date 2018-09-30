@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
 import { EtoState, TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces";
-import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { ETOStateOnChain, TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
 import { IWalletState } from "../../../modules/wallet/reducer";
 import { PersonProfileModal } from "../../modals/PersonProfileModal";
 import { Accordion, AccordionElement } from "../../shared/Accordion";
@@ -119,6 +119,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
           existingCompanyShares={etoData.existingCompanyShares}
           equityTokensPerShare={etoData.equityTokensPerShare}
           contract={etoData.contract}
+          timedState={etoData.contract ? etoData.contract.timedState : ETOStateOnChain.Setup}
           wallet={wallet}
           etoId={etoData.etoId}
           tokenImage={{
@@ -134,7 +135,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
           investmentAmount={`€ ${(
             ((etoData.preMoneyValuationEur || 1) / (etoData.existingCompanyShares || 1)) *
             (etoData.newSharesToIssue || 1)
-          ).toFixed(4)} - € 
+          ).toFixed(4)} - €
           ${(
             ((etoData.preMoneyValuationEur || 1) / (etoData.existingCompanyShares || 1)) *
             (etoData.minimumNewSharesToIssue || 1)

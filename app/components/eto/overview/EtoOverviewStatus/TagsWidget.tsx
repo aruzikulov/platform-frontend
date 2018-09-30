@@ -30,8 +30,9 @@ const TagsWidget: React.SFC<ITagsWidget> = ({
   smartContractOnchain,
   etoId,
 }) => {
-  const hasTermSheet = termSheet.name && termSheet.name.length;
-  const hasProspectusApproved = prospectusApproved.name && prospectusApproved.name.length;
+  const hasTermSheet = termSheet && termSheet.name && termSheet.name.length;
+  const hasProspectusApproved =
+    prospectusApproved && prospectusApproved.name && prospectusApproved.name.length;
 
   return (
     <>
