@@ -8,7 +8,7 @@ import { compose } from "redux";
 import { EtoState } from "../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { selectPublicEtos } from "../../../modules/public-etos/selectors";
-import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { ETOStateOnChain, TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
 import { IWalletState } from "../../../modules/wallet/reducer";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
@@ -30,7 +30,7 @@ const EtoListComponent: React.SFC<IProps> = ({ etos, wallet }) => (
       </SectionHeader>
     </Col>
     {etos &&
-      etos.filter(eto => eto.state === EtoState.ON_CHAIN).map(eto => (
+      etos.map(eto => (
         <Col xs={12} key={eto.etoId}>
           <div className="mb-3">
             <EtoOverviewStatus
@@ -46,6 +46,7 @@ const EtoListComponent: React.SFC<IProps> = ({ etos, wallet }) => (
                 (eto.minimumNewSharesToIssue || 1)
               ).toFixed(4)}`}
               contract={eto.contract}
+              timedState={eto.contract ? eto.contract.timedState : ETOStateOnChain.Setup}
               wallet={wallet}
               etoId={eto.etoId}
               smartContractOnchain={eto.state === EtoState.ON_CHAIN}
