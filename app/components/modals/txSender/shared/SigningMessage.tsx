@@ -1,11 +1,16 @@
 import * as React from "react";
+import { FormattedMessage } from "react-intl-phraseapp";
 
-import { LoadingIndicator } from "../../../shared/LoadingIndicator";
+import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
+import { Message } from "./Message";
 
-export const SigningMessage = () => (
-  <div data-test-id="modals.shared.signing-message.modal">
-    <h3>Signing Transaction</h3>
-    <p>Accept message on your signer</p>
-    <LoadingIndicator />
-  </div>
+const SigningMessage = () => (
+  <Message
+    data-test-id="modals.shared.signing-message.modal"
+    image={<SpinningEthereum />}
+    title={<FormattedMessage id="modal.shared.signing-message.title" />}
+    hint={<FormattedMessage id="modal.shared.signing-message.hint" />}
+  />
 );
+
+export { SigningMessage };
