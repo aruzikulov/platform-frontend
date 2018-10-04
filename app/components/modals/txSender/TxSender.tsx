@@ -13,6 +13,7 @@ import { AccessWalletContainer } from "../walletAccess/AccessWalletModal";
 import { InvestmentSelection } from "./investment-flow/Investment";
 import { InvestmentSuccess } from "./investment-flow/Success";
 import { InvestmentSummary } from "./investment-flow/Summary";
+import { ErrorMessage } from "./shared/ErrorMessage";
 import { SigningMessage } from "./shared/SigningMessage";
 import { TxPending } from "./shared/TxPending";
 import { WatchPendingTxs } from "./shared/WatchPeningTxs";
@@ -94,7 +95,7 @@ const SuccessComponent: React.SFC<{ type?: ETxSenderType; txHash?: string }> = (
   }
 };
 
-function renderBody({ state, blockId, txHash, type, error }: Props): React.ReactNode {
+function renderBody({ state, blockId, txHash, type }: Props): React.ReactNode {
   switch (state) {
     case "WATCHING_PENDING_TXS":
       return <WatchPendingTxs />;
@@ -121,7 +122,10 @@ function renderBody({ state, blockId, txHash, type, error }: Props): React.React
       return <SuccessComponent type={type} txHash={txHash!} />;
 
     case "ERROR_SIGN":
-      return <div>{error}</div>;
+      return <ErrorMessage />;
+
+    case "REVERTED":
+      return <div>Error: Tx reverted!</div>;
   }
 }
 
