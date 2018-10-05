@@ -1,5 +1,5 @@
 import * as cn from "classnames";
-import { Field, FieldAttributes, FieldProps, FormikConsumer } from "formik";
+import { Field, FieldAttributes, FieldProps, FormikConsumer, getIn } from "formik";
 import * as React from "react";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
 
@@ -72,7 +72,7 @@ export class FormFieldImportant extends React.Component<FieldGroupProps> {
                       {isNonValid(touched, errors, name) && (
                         <>
                           <img id={tooltipId} src={icon} />
-                          <CustomTooltip target={tooltipId}>{errorMessage}</CustomTooltip>
+                          <CustomTooltip target={tooltipId}>{getIn(errors, name) || errorMessage}</CustomTooltip>
                         </>
                       )}
                     </InputGroupAddon>
