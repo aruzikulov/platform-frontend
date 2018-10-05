@@ -2,7 +2,7 @@ import { expect } from "chai";
 import * as YupTS from "./yup-ts";
 import { NumberSchema } from "yup";
 
-describe.only("yup-ts", () => {
+describe("yup-ts", () => {
   const animalValidator = YupTS.object({
     name: YupTS.string().optional()
   });
