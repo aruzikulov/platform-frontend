@@ -3,6 +3,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import * as Web3Utils from "web3-utils";
+import { NumberSchema } from "yup";
 
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
@@ -26,8 +27,8 @@ interface IWithdrawStateProps {
 }
 
 const withdrawFormSchema = YupTS.object({
-  to: YupTS.string(),
-  value: YupTS.string(),
+  to: YupTS.string().enhance(v => v.test("isEtheriumAddress", "is not a valid etherium address", Web3Utils.isAddress)),
+  value: YupTS.number().enhance((v: NumberSchema) => v.positive()),
   gas: YupTS.string(),
 });
 const withdrawFormValidator = withdrawFormSchema.toYup();
