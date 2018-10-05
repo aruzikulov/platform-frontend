@@ -2,181 +2,91 @@ import { mapValues } from "lodash";
 import * as Yup from "yup";
 import { Dictionary } from "../types";
 
-export const object = <T>(objectShape: T) => new ObjectYTS(objectShape);
+export const object = <T> (objectShape: T) => new ObjectYTS(objectShape);
 export const string = () => new StringYTS();
-export const url = () => new UrlYTS();
-export const array = <T extends YTS<any>>(shape: T) => new ArrayYTS(shape);
+export const url = () => new StringYTS().enhance((v: Yup.StringSchema) => v.url());
+export const array = <T extends YTS<any>> (shape: T) => new ArrayYTS(shape);
 export const number = () => new NumberYTS();
 export const boolean = () => new BooleanYTS();
-export const onlyTrue = () => new TrueYTS();
+export const onlyTrue = () => new BooleanYTS().enhance(v => v.test(
+  "isTrue",
+  "This field must be set to true",
+  value => value === undefined || value === true,
+));
 
 export type TypeOf<T extends YTS<any>> = T["_T"];
 type TypeOfProps<P extends Dictionary<any>> = { [K in keyof P]: TypeOf<P[K]> };
 
 export type Schema<T> = ObjectYTS<T>;
 
-abstract class YTS<T> {
+class YTS<T> {
   _T!: T;
 
-  abstract toYup(): Yup.Schema<T>;
+  constructor(protected validator: Yup.Schema<any>, protected isRequired = true) {}
 
-  abstract optional(): YTS<T | undefined>;
+  toYup(): Yup.Schema<any> {
+    return this.isRequired ? this.validator.required() : this.validator
+  }
+
+  enhance(updateValidator: (validator: Yup.NumberSchema) => Yup.NumberSchema): YTS<T>
+  enhance(updateValidator: (validator: Yup.StringSchema) => Yup.StringSchema): YTS<T>
+  enhance(updateValidator: (validator: Yup.ArraySchema<T>) => Yup.ArraySchema<T>): YTS<T>
+  enhance(updateValidator: (validator: Yup.ObjectSchema<T>) => Yup.ObjectSchema<T>): YTS<T>
+  enhance(updateValidator: (validator: Schema<T>) => Yup.Schema<T>): YTS<T>
+  enhance(updateValidator: (validator: any) => any): YTS<T> {
+    return new YTS<T>(updateValidator(this.validator), this.isRequired)
+  }
+
+  optional(): YTS<T | undefined> {
+    return new YTS(this.validator, false)
+  }
 }
 
 class ObjectYTS<T> extends YTS<TypeOfProps<T>> {
-  __TYPE__!: Unique<"object">;
-
-  constructor(public readonly shape: T, private isRequired: boolean = true) {
-    super();
-  }
-
-  toYup(): Yup.ObjectSchema<any> {
-    const validator = Yup.object(mapValues(this.shape as any, s => s.toYup()));
-
-    if (this.isRequired) {
-      return validator.required();
-    }
-    return validator;
-  }
-
-  optional(): ObjectYTS<T | undefined> {
-    return new ObjectYTS(this.shape, false);
+  shape: T
+  constructor(shape: T) {
+    const validator = Yup.object(mapValues(shape as any, s => s.toYup()));
+    super(validator as any);
+    this.shape = shape
   }
 }
 
 class StringYTS extends YTS<string> {
-  __TYPE__!: Unique<"string">;
-
-  constructor(private isRequired: boolean = true) {
-    super();
-  }
-
-  toYup(): Yup.Schema<any> {
-    const validator = Yup.string();
-
-    if (this.isRequired) {
-      return validator.required();
-    }
-    return validator;
-  }
-
-  optional(): YTS<string | undefined> {
-    return new StringYTS(false);
-  }
-}
-
-class UrlYTS extends YTS<string> {
-  __TYPE__!: Unique<"string">;
-
-  constructor(private isRequired: boolean = true) {
-    super();
-  }
-
-  toYup(): Yup.Schema<any> {
-    const validator = Yup.string().url();
-
-    if (this.isRequired) {
-      return validator.required();
-    }
-    return validator;
-  }
-
-  optional(): YTS<string | undefined> {
-    return new UrlYTS(false);
+  constructor() {
+    super(Yup.string());
   }
 }
 
 class NumberYTS extends YTS<number> {
-  __TYPE__!: Unique<"number">;
-
-  constructor(private isRequired: boolean = true) {
-    super();
-  }
-
-  toYup(): Yup.Schema<any> {
-    const validator = Yup.number();
-
-    if (this.isRequired) {
-      return validator.required();
-    }
-    return validator;
-  }
-
-  optional(): YTS<number | undefined> {
-    return new NumberYTS(false);
+  constructor() {
+    super(Yup.number());
   }
 }
 
 class BooleanYTS extends YTS<boolean> {
-  __TYPE__!: Unique<"boolean">;
-
-  constructor(private isRequired: boolean = true) {
-    super();
-  }
-
-  toYup(): Yup.Schema<any> {
-    const validator = Yup.boolean();
-
-    if (this.isRequired) {
-      return validator.required();
-    }
-    return validator;
-  }
-
-  optional(): YTS<boolean | undefined> {
-    return new BooleanYTS(false);
-  }
-}
-
-class TrueYTS extends YTS<true> {
-  __TYPE__!: Unique<"boolean">;
-
-  constructor(private isRequired: boolean = true) {
-    super();
-  }
-
-  toYup(): Yup.Schema<any> {
-    const validator = Yup.boolean().test(
-      "isTrue",
-      "This field is required",
-      value => value === undefined || value === true,
-    );
-
-    if (this.isRequired) {
-      return validator.required();
-    }
-    return validator;
-  }
-
-  optional(): YTS<true | undefined> {
-    return new TrueYTS(false);
+  constructor() {
+    super(Yup.boolean());
   }
 }
 
 class ArrayYTS<T extends YTS<any>> extends YTS<Array<TypeOf<T>>> {
-  __TYPE__!: Unique<"array">;
-
-  constructor(private shape: T, private isRequired: boolean = true) {
-    super();
+  shape: T
+  constructor(shape: T) {
+    const validator = Yup.array().of(shape.toYup());
+    super(validator);
+    this.shape = shape
   }
 
+  // override toYup
   toYup(): Yup.Schema<any> {
-    const validator = Yup.array().of(this.shape.toYup());
-
     if (this.isRequired) {
       // we can't use here .required() since it will throw on empty array. See: https://github.com/jquense/yup/issues/189
-      return validator.test(
+      return this.validator.test(
         "is-required",
         "This field is required",
         val => val !== undefined && val !== null,
       );
     }
-    return validator;
-  }
-
-  optional(): YTS<Array<TypeOf<T>> | undefined> {
-    return new ArrayYTS(this.shape, false);
+    return this.validator;
   }
 }
-
-type Unique<K> = { __TYPE__: K };
