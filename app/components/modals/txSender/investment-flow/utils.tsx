@@ -13,6 +13,7 @@ import {
   selectLockedEuroTokenBalance,
 } from "../../../../modules/wallet/selectors";
 import { IAppState } from "../../../../store";
+import { compareBigNumbers } from "../../../../utils/BigNumberUtils";
 import { formatMoney } from "../../../../utils/Money.utils";
 import { WalletSelectionData } from "./InvestmentTypeSelector";
 
@@ -22,21 +23,10 @@ import * as neuroIcon from "../../../../assets/img/neuro_icon.svg";
 
 export function createWallets(state: IAppState): WalletSelectionData[] {
   const w = state.wallet;
-  return [
-    {
-      balanceEth: selectLockedEtherBalance(w),
-      balanceEur: selectLockedEtherBalanceEuroAmount(state),
-      type: EInvestmentType.ICBMEth,
-      name: "ICBM Wallet",
-      icon: ethIcon,
-    },
-    {
-      balanceNEuro: selectLockedEuroTokenBalance(w),
-      balanceEur: selectLockedEuroTokenBalance(w),
-      type: EInvestmentType.ICBMnEuro,
-      name: "ICBM Wallet",
-      icon: neuroIcon,
-    },
+  const icbmEther = selectLockedEtherBalance(w);
+  const icbmNeuro = selectLockedEuroTokenBalance(w);
+
+  const wallets: WalletSelectionData[] = [
     {
       balanceEth: selectLiquidEtherBalance(w),
       balanceEur: selectLiquidEtherBalanceEuroAmount(state),
@@ -50,6 +40,27 @@ export function createWallets(state: IAppState): WalletSelectionData[] {
       icon: euroIcon,
     },
   ];
+
+  if (compareBigNumbers(icbmNeuro, 0) > 0) {
+    wallets.unshift({
+      balanceNEuro: icbmNeuro,
+      balanceEur: selectLockedEuroTokenBalance(w),
+      type: EInvestmentType.ICBMnEuro,
+      name: "ICBM Wallet",
+      icon: neuroIcon,
+    });
+  }
+
+  if (compareBigNumbers(icbmEther, 0) > 0) {
+    wallets.unshift({
+      balanceEth: icbmEther,
+      balanceEur: selectLockedEtherBalanceEuroAmount(state),
+      type: EInvestmentType.ICBMEth,
+      name: "ICBM Wallet",
+      icon: ethIcon,
+    });
+  }
+  return wallets;
 }
 
 export function getInputErrorMessage(
@@ -85,9 +96,6 @@ export function getInputErrorMessage(
 
 export function getInvestmentTypeMessages(type: EInvestmentType): React.ReactNode {
   switch (type) {
-    case EInvestmentType.ICBMEth:
-    case EInvestmentType.ICBMnEuro:
-      return <FormattedHTMLMessage id="investment-flow.icbm-wallet-info-message" tagName="p" />;
     case EInvestmentType.BankTransfer:
       return <FormattedHTMLMessage id="investment-flow.bank-transfer-info-message" tagName="p" />;
   }

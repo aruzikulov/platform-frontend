@@ -81,7 +81,10 @@ function validateInvestment(state: IAppState): EInvestmentErrorState | undefined
 
   const gasPrice = selectInvestmentGasCostEth(investmentFlow);
 
-  if (compareBigNumbers(gasPrice, wallet.etherBalance) === 1) {
+  if (
+    investmentFlow.investmentType !== EInvestmentType.BankTransfer &&
+    compareBigNumbers(gasPrice, wallet.etherBalance) > 0
+  ) {
     return EInvestmentErrorState.NotEnoughEtherForGas;
   }
 
@@ -108,11 +111,11 @@ function validateInvestment(state: IAppState): EInvestmentErrorState | undefined
     }
   }
 
-  if (compareBigNumbers(euroValue, contribs.minTicketEurUlps) === -1) {
+  if (compareBigNumbers(euroValue, contribs.minTicketEurUlps) < 0) {
     return EInvestmentErrorState.BelowMinimumTicketSize;
   }
 
-  if (compareBigNumbers(euroValue, contribs.maxTicketEurUlps) === 1) {
+  if (compareBigNumbers(euroValue, contribs.maxTicketEurUlps) > 0) {
     return EInvestmentErrorState.AboveMaximumTicketSize;
   }
 

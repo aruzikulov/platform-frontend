@@ -22,7 +22,7 @@ import {
   multiplyBigNumbers,
 } from "../../../../utils/BigNumberUtils";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
-import { formatMoney } from "../../../../utils/Money.utils";
+import { formatMoney, formatThousands } from "../../../../utils/Money.utils";
 import { Button } from "../../../shared/buttons";
 import { DocumentTemplateButton } from "../../../shared/DocumentLink";
 import { Heading } from "../../../shared/modals/Heading";
@@ -99,7 +99,7 @@ const InvestmentSummaryComponent = injectIntlHelpers(
             />
             <InfoRow
               caption={<FormattedMessage id="investment-flow.summary.token-price" />}
-              value={`${formatMoney(tokenPrice, MONEY_DECIMALS, 2)} €`}
+              value={`${formatMoney(tokenPrice, MONEY_DECIMALS, 4)} €`}
             />
             <InfoRow
               caption={<FormattedMessage id="investment-flow.summary.eto-address" />}
@@ -107,7 +107,7 @@ const InvestmentSummaryComponent = injectIntlHelpers(
             />
             <InfoRow
               caption={<FormattedMessage id="investment-flow.summary.your-investment" />}
-              value={investment}
+              value={formatThousands(investment)}
             />
             <InfoRow
               caption={<FormattedMessage id="investment-flow.summary.transaction-cost" />}
