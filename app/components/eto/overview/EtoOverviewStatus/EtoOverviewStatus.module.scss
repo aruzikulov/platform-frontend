@@ -121,11 +121,6 @@
   line-height: 1.06;
   letter-spacing: -.2px;
   font-style: italic;
-
-  &::before,
-  &::after {
-    content: "\"";
-  }
 }
 
 .register-now {

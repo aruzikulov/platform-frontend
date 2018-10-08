@@ -1,5 +1,5 @@
 import {
-  assertLatestEmailSentWithSalt,
+  assertWaitForLatestEmailSentWithSalt,
   assertUserInDashboard,
   assertVerifyEmailWidgetIsInNoEmailState,
   assertVerifyEmailWidgetIsInUnverifiedEmailState,
@@ -36,8 +36,7 @@ describe("Verify Email Widget", () => {
     confirmAccessModal(password);
 
     // Email server takes time before getting the request
-    cy.wait(3000);
-    assertLatestEmailSentWithSalt(secondEmail);
+    assertWaitForLatestEmailSentWithSalt(secondEmail);
     verifyLatestUserEmail();
 
     assertVerifyEmailWidgetIsInVerfiedEmailState();

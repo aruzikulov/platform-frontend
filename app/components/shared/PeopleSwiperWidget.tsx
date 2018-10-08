@@ -7,7 +7,7 @@ import { actions } from "../../modules/actions";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
 import { InlineIcon } from "./InlineIcon";
-import { SlidePerson, TSlidePersonLayout } from "./SlidePerson";
+import { SlidePerson } from "./SlidePerson";
 import { IEtoSocialProfile } from "./SocialProfilesList";
 
 import * as prevIcon from "../../assets/img/inline_icons/arrow_bordered_left.svg";
@@ -18,7 +18,6 @@ export interface IPerson {
   name: string;
   image: string;
   description: string;
-  layout?: TSlidePersonLayout;
   role: string;
   socialChannels: IEtoSocialProfile[];
   website: string;
@@ -64,7 +63,10 @@ class PeopleSwiperWidgetComponent extends React.Component<IOwnProps & IDispatchP
   };
 
   render(): React.ReactNode {
-    const { people, navigation, layout, showPersonModal } = this.props;
+    const { people, navigation, showPersonModal } = this.props;
+    const isHorizontal = people.length < 3;
+    const isSingle = people.length === 1;
+    const slidesPerView = isHorizontal ? (isSingle ? 1 : 2) : 5;
     const swiperSettings = {
       breakpoints: {
         576: {
@@ -74,14 +76,15 @@ class PeopleSwiperWidgetComponent extends React.Component<IOwnProps & IDispatchP
           slidesPerView: 2,
         },
         992: {
-          slidesPerView: 3,
+          slidesPerView: slidesPerView - 2,
         },
         1200: {
-          slidesPerView: 4,
+          slidesPerView: slidesPerView - 1,
         },
       },
       observer: true,
-      slidesPerView: 5,
+      centeredSlides: isSingle,
+      slidesPerView,
     };
 
     return (
@@ -96,30 +99,32 @@ class PeopleSwiperWidgetComponent extends React.Component<IOwnProps & IDispatchP
                 }
               >
                 <SlidePerson
+                  description={description}
                   socialChannels={socialChannels}
                   role={role}
                   name={name}
                   srcSet={{ "1x": image }}
-                  layout={layout}
+                  layout={isHorizontal ? "horizontal" : "vertical"}
                 />
               </div>
             );
           })}
         </Swiper>
-        {navigation && (
-          <>
-            <InlineIcon
-              svgIcon={prevIcon}
-              className={cn(styles.prev, navigation.prevEl)}
-              onClick={this.goPrev}
-            />
-            <InlineIcon
-              svgIcon={nextIcon}
-              className={cn(styles.next, navigation.nextEl)}
-              onClick={this.goNext}
-            />
-          </>
-        )}
+        {!isSingle &&
+          navigation && (
+            <>
+              <InlineIcon
+                svgIcon={prevIcon}
+                className={cn(styles.prev, navigation.prevEl)}
+                onClick={this.goPrev}
+              />
+              <InlineIcon
+                svgIcon={nextIcon}
+                className={cn(styles.next, navigation.nextEl)}
+                onClick={this.goNext}
+              />
+            </>
+          )}
       </div>
     );
   }

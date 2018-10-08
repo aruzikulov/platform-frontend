@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import * as cn from "classnames";
 import * as React from "react";
 
@@ -5,6 +6,12 @@ import { MONEY_DECIMALS } from "../../config/constants";
 import { formatMoney, formatThousands } from "../../utils/Money.utils";
 
 import * as styles from "./Money.module.scss";
+
+export enum ECurrencySymbol {
+  SYMBOL = "symbol",
+  CODE = "code",
+  NONE = "none",
+}
 
 export type TCurrency = "neu" | "eur" | "eur_token" | "eth";
 
@@ -14,9 +21,9 @@ type TTheme = "t-green" | "t-orange";
 
 interface IOwnProps extends React.HTMLAttributes<HTMLSpanElement> {
   currency: TCurrency;
-  value: string;
+  value: string | BigNumber;
   doNotSeparateThousands?: boolean;
-  noCurrencySymbol?: boolean;
+  currencySymbol?: ECurrencySymbol;
   currencyClassName?: string;
   currencyStyle?: React.CSSProperties;
   transfer?: TMoneyTransfer;
@@ -38,7 +45,7 @@ export const selectDecimalPlaces = (currency: TCurrency): number => {
   }
 };
 
-export const selectCurrencySymbol = (currency: TCurrency): string => {
+export const selectCurrencyCode = (currency: TCurrency): string => {
   switch (currency) {
     case "eth":
       return "ETH";
@@ -51,6 +58,15 @@ export const selectCurrencySymbol = (currency: TCurrency): string => {
   }
 };
 
+export const selectCurrencySymbol = (currency: TCurrency): string => {
+  switch (currency) {
+    case "eur":
+      return "€";
+    default:
+      throw new Error("Only EUR can be displayed as a symbol");
+  }
+};
+
 export const Money: React.SFC<IProps> = ({
   value,
   currency,
@@ -58,12 +74,11 @@ export const Money: React.SFC<IProps> = ({
   currencyStyle,
   doNotSeparateThousands,
   transfer,
-  noCurrencySymbol,
+  currencySymbol = ECurrencySymbol.CODE,
   theme,
   ...props
 }) => {
   const decimalPlaces = selectDecimalPlaces(currency);
-  const currencySymbol = selectCurrencySymbol(currency);
 
   const formattedMoney = doNotSeparateThousands
     ? formatMoney(value, MONEY_DECIMALS, decimalPlaces)
@@ -71,10 +86,18 @@ export const Money: React.SFC<IProps> = ({
 
   return (
     <span {...props} className={cn(styles.money, transfer, props.className, theme)}>
-      {formattedMoney}{" "}
-      <span className={cn(currencyClassName)} style={currencyStyle}>
-        {noCurrencySymbol ? "" : currencySymbol}
-      </span>
+      {currencySymbol === ECurrencySymbol.SYMBOL && (
+        <span className={cn(currencyClassName)} style={currencyStyle}>
+          {selectCurrencySymbol(currency)}
+        </span>
+      )}
+      {formattedMoney}
+      {currencySymbol === ECurrencySymbol.CODE && (
+        <span className={cn(currencyClassName)} style={currencyStyle}>
+          {" "}
+          {selectCurrencyCode(currency)}
+        </span>
+      )}
     </span>
   );
 };

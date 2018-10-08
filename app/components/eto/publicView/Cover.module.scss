@@ -68,7 +68,7 @@ $_logo-size-sm: 80px;
 }
 
 .tags {
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(lg) {
     order: 1;
     margin-bottom: 0;
     display: flex;

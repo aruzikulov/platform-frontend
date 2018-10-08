@@ -45,6 +45,11 @@ export function* loadEtoPreview(
     );
     const company = companyResponse.body;
 
+    // Load contract data if eto is already on blockchain
+    if (eto.state === EtoState.ON_CHAIN) {
+      yield neuCall(loadEtoContact, eto);
+    }
+
     yield put(actions.publicEtos.setPublicEto({ eto, company }));
   } catch (e) {
     notificationCenter.error("Could not load ETO preview. Is the preview link correct?");
@@ -69,12 +74,12 @@ export function* loadEto(
     );
     const company = companyResponse.body;
 
-    yield put(actions.publicEtos.setPublicEto({ eto, company }));
-
     // Load contract data if eto is already on blockchain
     if (eto.state === EtoState.ON_CHAIN) {
       yield neuCall(loadEtoContact, eto);
     }
+
+    yield put(actions.publicEtos.setPublicEto({ eto, company }));
   } catch (e) {
     notificationCenter.error("Could not load ETO. Is the link correct?");
 

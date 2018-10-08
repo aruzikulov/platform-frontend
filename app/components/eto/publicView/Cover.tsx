@@ -47,7 +47,6 @@ export const Cover: React.SFC<IProps> = ({
           ))}
         </div>
       </div>
-      {/* TODO: Add social media icons */}
     </div>
   );
 };

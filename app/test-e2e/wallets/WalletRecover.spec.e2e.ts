@@ -1,6 +1,6 @@
 import {
   assertErrorModal,
-  assertLatestEmailSentWithSalt,
+  assertWaitForLatestEmailSentWithSalt,
   assertUserInDashboard,
   clearEmailServer,
   mockApiUrl,
@@ -48,17 +48,13 @@ describe("Wallet recover", () => {
 
     typeLightwalletRecoveryPhrase(words);
 
-    clearEmailServer();
-
     cy.get(tid("wallet-selector-register-email")).type(email);
     cy.get(tid("wallet-selector-register-password")).type("strongpassword");
     cy.get(tid("wallet-selector-register-confirm-password")).type("strongpassword{enter}");
-    cy.wait(2000);
 
     cy.get(tid("recovery-success-btn-go-dashboard")).click();
 
-    cy.wait(5000);
-    assertLatestEmailSentWithSalt(email);
+    assertWaitForLatestEmailSentWithSalt(email);
 
     cy.contains(tid("my-neu-widget-neumark-balance"), "151848.6894 NEU");
 
@@ -148,15 +144,13 @@ describe("Wallet recover", () => {
 
     const email = "0xE6Ad2@neufund.org";
     const password = "strongpassword";
-
-    cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "DELETE" });
+    clearEmailServer();
 
     cy.visit(`${recoverRoutes.seed}`);
     typeLightwalletRecoveryPhrase(words);
     typeEmailPassword(email, password);
 
-    cy.wait(5000);
-    assertLatestEmailSentWithSalt(email.toLowerCase());
+    assertWaitForLatestEmailSentWithSalt(email.toLowerCase());
 
     cy.get(tid("recovery-success-btn-go-dashboard")).click();
 
@@ -192,7 +186,7 @@ describe("Wallet recover", () => {
       "day",
     ];
     const email = "john-smith@example.com";
-    cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "DELETE" });
+    clearEmailServer();
 
     cy.visit(`${recoverRoutes.seed}`);
 
@@ -203,12 +197,10 @@ describe("Wallet recover", () => {
     cy.get(tid("wallet-selector-register-email")).type(email);
     cy.get(tid("wallet-selector-register-password")).type("strongpassword");
     cy.get(tid("wallet-selector-register-confirm-password")).type("strongpassword{enter}");
-    cy.wait(2000);
 
     cy.get(tid("recovery-success-btn-go-dashboard")).click();
 
-    cy.wait(5000);
-    assertLatestEmailSentWithSalt(email);
+    assertWaitForLatestEmailSentWithSalt(email);
 
     assertUserInDashboard();
   });

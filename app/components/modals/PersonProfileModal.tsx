@@ -31,6 +31,7 @@ const PersonProfileModalComponent: React.SFC<IStateProps & IDispatchProps> = ({
     <Modal isOpen={isOpen} toggle={onDismiss} centered>
       <ModalComponentBody onClose={onDismiss}>
         <SlidePerson
+          description={(personProfileModalObj && personProfileModalObj.description) || ""}
           socialChannels={(personProfileModalObj && personProfileModalObj.socialChannels) || []}
           role={(personProfileModalObj && personProfileModalObj.role) || ""}
           name={(personProfileModalObj && personProfileModalObj.name) || ""}

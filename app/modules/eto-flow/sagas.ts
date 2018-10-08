@@ -18,13 +18,13 @@ export function* loadIssuerEto({ apiEtoService, notificationCenter }: TGlobalDep
     const etoResponse: IHttpResponse<TEtoSpecsData> = yield apiEtoService.getMyEto();
     const eto = etoResponse.body;
 
-    yield put(actions.publicEtos.setPublicEto({ eto, company }));
-
-    yield put(actions.etoFlow.setIssuerEtoPreviewCode(eto.previewCode));
-
     if (eto.state === EtoState.ON_CHAIN) {
       yield neuCall(loadEtoContact, eto);
     }
+
+    yield put(actions.publicEtos.setPublicEto({ eto, company }));
+
+    yield put(actions.etoFlow.setIssuerEtoPreviewCode(eto.previewCode));
   } catch (e) {
     notificationCenter.error(
       "Could not access ETO data. Make sure you have completed KYC and email verification process.",

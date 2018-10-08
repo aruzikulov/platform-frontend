@@ -1,7 +1,8 @@
 import {
   assertErrorModal,
-  assertLatestEmailSentWithSalt,
+  assertWaitForLatestEmailSentWithSalt,
   assertUserInDashboard,
+  clearEmailServer,
   convertToUniqueEmail,
   loginWithLightWallet,
   logoutViaTopRightButton,
@@ -16,12 +17,13 @@ describe("Light wallet login / register", () => {
   it("should register user with light-wallet and send email", () => {
     const email = "moe@test.com";
     const password = "strongpassword";
+    clearEmailServer();
 
     cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "DELETE" });
 
     registerWithLightWallet(email, password);
 
-    assertLatestEmailSentWithSalt(email);
+    assertWaitForLatestEmailSentWithSalt(email);
   });
 
   it("should remember light wallet details after logout", () => {

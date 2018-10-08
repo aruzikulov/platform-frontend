@@ -194,6 +194,7 @@ export enum EtoStateToCamelcase {
 // see@ swagger api/eto-listing/ui/#!/Documents/api_document_documents_state_info
 
 export const EtoTermsType = YupTS.object({
+  discountScheme: YupTS.string().optional(),
   currencies: YupTS.array(YupTS.string()).optional(),
   publicDurationDays: YupTS.number(),
   minTicketEur: YupTS.number(),

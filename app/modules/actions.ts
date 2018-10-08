@@ -1,4 +1,4 @@
-import { TDictionaryArrayValues } from "../types";
+import { TDictionaryValues } from "../types";
 import { accessWalletActions } from "./accessWallet/actions";
 import { authActions } from "./auth/actions";
 import { bookBuildingFlowActions } from "./bookbuilding-flow/actions";
@@ -65,45 +65,12 @@ export const actions = {
 };
 
 /**
- * Add all actions objects here to extract the propper typing of all action types.
- */
-export const allActions = [
-  tokenPriceActions,
-  etoDocumentsActions,
-  verifyEmailActions,
-  settingsActions,
-  bookBuildingFlowActions,
-  genericModalActions,
-  accessWalletActions,
-  initActions,
-  routingActions,
-  kycActions,
-  walletSelectorActions,
-  web3Actions,
-  userAgentActions,
-  authActions,
-  walletActions,
-  notificationActions,
-  immutableStorageActions,
-  etoFlowActions,
-  etoActions,
-  formSingleFileUploadActions,
-  remoteFileActions,
-  depositModalActions,
-  txMonitorActions,
-  txSenderActions,
-  icbmWalletBalanceModalActions,
-  gasActions,
-  investmentFlowActions,
-  videoModalActions,
-  personProfileModalActions,
-  investorEtoTicketActions,
-];
-
-/**
  * Build action union type
  */
-type TActionCreatorsUnionType = TDictionaryArrayValues<typeof allActions>;
+type TActions = typeof actions;
+
+type TAllActions = TActions[keyof TActions];
+type TActionCreatorsUnionType = TDictionaryValues<TAllActions>;
 
 export type TAction = ReturnType<TActionCreatorsUnionType>;
 export type TActionType = TAction["type"];

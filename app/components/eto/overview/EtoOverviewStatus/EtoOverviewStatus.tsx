@@ -195,24 +195,24 @@ const EtoOverviewStatus: React.SFC<IProps & CommonHtmlProps> = props => {
           {props.timedState === ETOStateOnChain.Claim && (
             <ClaimWidget
               tokenName={props.tokenName}
-              numberOfInvestors={props.contract.totalInvestment.totalInvestors}
-              raisedAmount={props.contract.totalInvestment.totalEquivEurUlps.toFormat(4)}
+              totalInvestors={props.contract.totalInvestment.totalInvestors}
+              totalEquivEurUlps={props.contract.totalInvestment.totalEquivEurUlps}
               isPayout={false}
             />
           )}
           {props.timedState === ETOStateOnChain.Signing && (
             <ClaimWidget
               tokenName={props.tokenName}
-              numberOfInvestors={props.contract.totalInvestment.totalInvestors}
-              raisedAmount={props.contract.totalInvestment.totalEquivEurUlps.toFormat(4)}
+              totalInvestors={props.contract.totalInvestment.totalInvestors}
+              totalEquivEurUlps={props.contract.totalInvestment.totalEquivEurUlps}
               isPayout={false}
             />
           )}
           {props.timedState === ETOStateOnChain.Payout && (
             <ClaimWidget
               tokenName={props.tokenName}
-              numberOfInvestors={props.contract.totalInvestment.totalInvestors}
-              raisedAmount={props.contract.totalInvestment.totalEquivEurUlps.toFormat(4)}
+              totalInvestors={props.contract.totalInvestment.totalInvestors}
+              totalEquivEurUlps={props.contract.totalInvestment.totalEquivEurUlps}
               isPayout={true}
             />
           )}

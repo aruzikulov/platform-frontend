@@ -61,6 +61,9 @@ run_backend() {
     make prerequisites-dev
     make run-remote-dev-without-build
 
+    echo "sleeping for 120 seconds to allow for ETOs to settle"
+    sleep 120
+
     cd ..
     echo "Backend running"
 }

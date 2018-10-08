@@ -14,7 +14,7 @@ import { documentTitles } from "../Documents";
 import { AssetPortfolio } from "../shared/AssetPortfolio";
 import { Button } from "../shared/buttons";
 import { Document } from "../shared/Document";
-import { Money } from "../shared/Money";
+import { ECurrencySymbol, Money } from "../shared/Money";
 import { NewTable, NewTableRow } from "../shared/NewTable";
 import { ProjectStatus } from "../shared/ProjectStatus";
 import { SectionHeader } from "../shared/SectionHeader";
@@ -144,13 +144,13 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({ myAssets, pendingAs
                   <Money
                     value={investorTicket.equivEurUlps.toString()}
                     currency="eur"
-                    noCurrencySymbol
+                    currencySymbol={ECurrencySymbol.NONE}
                   />
                   <>{getNeuReward(investorTicket.equityTokenInt, investorTicket.equivEurUlps)}</>
                   <Money
                     value={investorTicket.rewardNmkUlps.toString()}
                     currency="neu"
-                    noCurrencySymbol
+                    currencySymbol={ECurrencySymbol.NONE}
                   />
                   <>
                     {isWhitelistedOrPublic ? (
@@ -206,13 +206,13 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({ myAssets, pendingAs
                   <Money
                     value={investorTicket.equivEurUlps.toString()}
                     currency="eur"
-                    noCurrencySymbol
+                    currencySymbol={ECurrencySymbol.NONE}
                   />
                   <>{getNeuReward(investorTicket.equityTokenInt, investorTicket.equivEurUlps)}</>
                   <Money
                     value={investorTicket.rewardNmkUlps.toString()}
                     currency="neu"
-                    noCurrencySymbol
+                    currencySymbol={ECurrencySymbol.NONE}
                   />
                   <>
                     {map(

@@ -29,15 +29,23 @@ export const clearEmailServer = () => {
   cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "DELETE" });
 };
 
-export const assertLatestEmailSentWithSalt = (userEmail: string) => {
+export const assertWaitForLatestEmailSentWithSalt = (
+  userEmail: string,
+  timeout: number = 20000,
+) => {
+  expect(timeout, `Email not received in ${timeout} ms`).to.be.gt(0);
+  cy.wait(1000);
   cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "GET" }).then(r => {
-    const response = get(r, "body[0].personalizations[0].to[0]") as { email: string | undefined };
-    const loginLink = get(r, "body[0].personalizations[0].substitutions.-loginLink-") as
-      | string
-      | undefined;
-
-    expect(response && response.email).to.be.eq(userEmail);
-    expect(loginLink).to.contain("salt");
+    if (r.status === 200) {
+      const response = get(r, "body[0].personalizations[0].to[0]");
+      if (response) {
+        const loginLink = get(r, "body[0].personalizations[0].substitutions.-loginLink-");
+        expect(response.email).to.be.eq(userEmail);
+        expect(loginLink).to.contain("salt");
+        return;
+      }
+    }
+    assertWaitForLatestEmailSentWithSalt(userEmail, timeout - 1000);
   });
 };
 
@@ -114,15 +122,11 @@ export const mockApiUrl = "https://localhost:9090/api/external-services-mock/";
 
 export const verifyLatestUserEmail = () => {
   cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "GET" }).then(r => {
-    const activationLink = get(r, "body[0].personalizations[0].substitutions.-activationLink-") as
-      | string
-      | undefined;
-    if (activationLink) {
-      // we need to replace the loginlink pointing to a remote destination with one pointing to our local instance
-      const cleanedActivationLink = activationLink.replace("platform.neufund.io", "localhost:9090");
-      cy.visit(cleanedActivationLink);
-      cy.get(tid("email-verified")); // wait for the email verified button to show
-    }
+    const activationLink = get(r, "body[0].personalizations[0].substitutions.-activationLink-");
+    // we need to replace the loginlink pointing to a remote destination with one pointing to our local instance
+    const cleanedActivationLink = activationLink.replace("platform.neufund.io", "localhost:9090");
+    cy.visit(cleanedActivationLink);
+    cy.get(tid("email-verified")); // wait for the email verified button to show
   });
 };
 

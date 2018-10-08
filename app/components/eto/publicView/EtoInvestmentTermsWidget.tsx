@@ -66,19 +66,18 @@ export const EtoInvestmentTermsWidget: React.SFC<IProps> = ({
                 <FormattedMessage id="eto.public-view.token-terms.investment-amount" />
               </span>
               <span className={styles.value}>
-                {"€ "} {computedMinCapEur.toFixed(4)} - {"€ "}
-                {computedMaxCapEur.toFixed(4)}
+                {"€ "} {computedMaxCapEur.toFixed(4)} - {"€ "}
+                {computedMinCapEur.toFixed(4)}
               </span>
             </div>
-            {/* TODO: It's not possible right now to change `discountScheme` therefore it was removed from interface */}
-            {/*{etoData.discountScheme && (*/}
-            {/*<div className={styles.entry}>*/}
-            {/*<span className={styles.label}>*/}
-            {/*<FormattedMessage id="eto.public-view.token-terms.price-discount" />*/}
-            {/*</span>*/}
-            {/*<span className={styles.value}>{etoData.discountScheme}</span>*/}
-            {/*</div>*/}
-            {/*)}*/}
+            {etoData.discountScheme && (
+              <div className={styles.entry}>
+                <span className={styles.label}>
+                  <FormattedMessage id="eto.public-view.token-terms.price-discount" />
+                </span>
+                <span className={styles.value}>{etoData.discountScheme}</span>
+              </div>
+            )}
             {!!etoFilesData["signed_investment_and_shareholder_agreement"] && (
               <a
                 href={`${etoFilesData["signed_investment_and_shareholder_agreement"]}`}
@@ -208,14 +207,14 @@ export const EtoInvestmentTermsWidget: React.SFC<IProps> = ({
               </span>
               <span className={styles.value}>
                 {etoData.generalVotingRule === "no_voting_rights" || "negative" ? (
-                  <FormattedMessage id="eto.public-view.token-terms.disabled" />
+                  <FormattedMessage id="eto.public-view.token-terms.no" />
                 ) : (
-                  <FormattedMessage id="eto.public-view.token-terms.enabled" />
+                  <FormattedMessage id="eto.public-view.token-terms.yes" />
                 )}
               </span>
             </div>
 
-            {!!etoData.liquidationPreferenceMultiplier && (
+            {etoData.liquidationPreferenceMultiplier !== undefined && (
               <div className={styles.entry}>
                 <span className={styles.label}>
                   <FormattedMessage id="eto.public-view.token-terms.liquidation-preferences" />
