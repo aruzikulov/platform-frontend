@@ -16,7 +16,6 @@ import {
   selectErrorState,
   selectEthValueUlps,
   selectEurValueUlps,
-  selectInvestmentGasCostEth,
   selectInvestmentType,
   selectReadyToInvest,
 } from "../../../../modules/investmentFlow/selectors";
@@ -41,6 +40,7 @@ import { FormFieldRaw } from "../../../shared/forms/formField/FormFieldRaw";
 import { Heading } from "../../../shared/modals/Heading";
 import { InvestmentTypeSelector, WalletSelectionData } from "./InvestmentTypeSelector";
 
+import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import * as styles from "./Investment.module.scss";
 import {
   createWallets,
@@ -140,15 +140,9 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
       </Row>
       <Row>
         <Col>
-          {errorState === EInvestmentErrorState.NotEnoughEtherForGas ? (
-            <p className={styles.error}>
-              <FormattedMessage id="investment-flow.error-message.not-enough-ether-for-gas" />
-            </p>
-          ) : (
-            <p>
-              <FormattedMessage id="investment-flow.amount-to-invest" />
-            </p>
-          )}
+          <p>
+            <FormattedMessage id="investment-flow.amount-to-invest" />
+          </p>
         </Col>
       </Row>
       <Row>
@@ -261,7 +255,7 @@ export const InvestmentSelection: React.SFC = compose<any>(
         euroValue: eur,
         ethValue: selectEthValueUlps(investmentFlow),
         errorState: selectErrorState(investmentFlow),
-        gasCostEth: selectInvestmentGasCostEth(state.investmentFlow),
+        gasCostEth: selectTxGasCostEth(state.txSender),
         investmentType: selectInvestmentType(investmentFlow),
         wallets: createWallets(state),
         neuReward: selectNeuRewardUlpsByEtoId(investmentFlow.etoId, state.publicEtos),

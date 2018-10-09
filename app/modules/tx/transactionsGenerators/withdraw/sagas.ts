@@ -16,8 +16,9 @@ export function* generateEthWithdrawTransaction(
   const txStateDetails = action.payload;
 
   if (!txStateDetails) return;
-  const etherTokenBalance = yield select((s: IAppState) => selectEtherTokenBalance(s.wallet));
-  const from = yield select((s: IAppState) => selectEthereumAddressWithChecksum(s.web3));
+  const s: IAppState = yield select()
+  const etherTokenBalance = selectEtherTokenBalance(s.wallet);
+  const from = selectEthereumAddressWithChecksum(s.web3);
 
   // transaction can be fully covered by etherTokens
 
@@ -25,15 +26,13 @@ export function* generateEthWithdrawTransaction(
     .withdrawAndSendTx(txStateDetails.to, new BigNumber(txStateDetails.value))
     .getData();
   const ethVal = new BigNumber(txStateDetails.value);
-  const difference = ethVal.sub(etherTokenBalance);
+  const difference = ethVal.sub(etherTokenBalance!);
 
   const txDetails = {
     to: contractsService.etherToken.address,
     from,
     data: txInput,
     value: difference.comparedTo(0) > 0 ? difference.toString() : "0",
-    gas: txStateDetails.gas,
-    gasPrice: txStateDetails.gasPrice,
   };
 
   yield put(actions.txSender.txSenderAcceptDraft(txDetails));

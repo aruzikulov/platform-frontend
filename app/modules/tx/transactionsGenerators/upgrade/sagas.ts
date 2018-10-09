@@ -1,9 +1,8 @@
 import { BigNumber } from "bignumber.js";
-import { addHexPrefix } from "ethereumjs-util";
 import { put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
-import { ITxData } from "../../../../lib/web3/Web3Manager";
+import { ITxInitData } from "../../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../../store";
 import { actions } from "../../../actions";
 import { selectGasPrice } from "../../../gas/selectors";
@@ -16,16 +15,10 @@ import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { selectICBMLockedEuroTokenBalance } from "./../../../wallet/selectors";
 
 export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
-  const userAddress = yield select((state: IAppState) =>
-    selectEthereumAddressWithChecksum(state.web3),
-  );
-  const gasPrice = yield select((state: IAppState) => selectGasPrice(state.gas));
-  const migrationTarget = yield select((state: IAppState) =>
-    selectIsEuroUpgradeTargetSet(state.wallet),
-  );
-  const euroBalance = yield select((state: IAppState) =>
-    selectICBMLockedEuroTokenBalance(state.wallet),
-  );
+  const state: IAppState = yield select()
+  const userAddress = selectEthereumAddressWithChecksum(state.web3)
+  const migrationTarget = selectIsEuroUpgradeTargetSet(state.wallet)
+  const euroBalance = selectICBMLockedEuroTokenBalance(state.wallet)
 
   if (!migrationTarget || new BigNumber(euroBalance).isZero()) {
     throw new Error();
@@ -33,30 +26,24 @@ export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDep
   }
   const txInput = contractsService.icbmEuroLock.migrateTx().getData();
 
-  const txDetails: Partial<ITxData> = {
+  const txDetails: ITxInitData = {
     to: contractsService.icbmEuroLock.address,
     from: userAddress,
     data: txInput,
-    value: addHexPrefix("0"),
-    gasPrice: gasPrice.standard,
+    value: "0",
   };
-  const estimatedGas = yield contractsService.icbmEuroLock.migrateTx().estimateGas(txDetails);
-  txDetails.gas = addHexPrefix(new BigNumber(estimatedGas).toString(16));
 
-  yield put(actions.txSender.txSenderAcceptDraft(txDetails as ITxData));
+  const estimatedGas = yield contractsService.icbmEuroLock.migrateTx().estimateGas(txDetails);
+  yield put(actions.txSender.setGasLimit(estimatedGas))
+
+  yield put(actions.txSender.txSenderAcceptDraft(txDetails));
 }
 
 export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
-  const userAddress = yield select((state: IAppState) =>
-    selectEthereumAddressWithChecksum(state.web3),
-  );
-  const gasPrice = yield select((state: IAppState) => selectGasPrice(state.gas));
-  const migrationTarget = yield select((state: IAppState) =>
-    selectIsEtherUpgradeTargetSet(state.wallet),
-  );
-  const etherBalance = yield select((state: IAppState) =>
-    selectICBMLockedEtherBalance(state.wallet),
-  );
+  const state: IAppState = yield select()
+  const userAddress = selectEthereumAddressWithChecksum(state.web3)
+  const migrationTarget = selectIsEtherUpgradeTargetSet(state.wallet)
+  const etherBalance = selectICBMLockedEtherBalance(state.wallet)
 
   if (!migrationTarget || new BigNumber(etherBalance).equals(0)) {
     throw new Error();
@@ -64,16 +51,15 @@ export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDe
   }
   const txInput = contractsService.icbmEtherLock.migrateTx().getData();
 
-  const txDetails: Partial<ITxData> = {
+  const txDetails: ITxInitData = {
     to: contractsService.icbmEtherLock.address,
     from: userAddress,
     data: txInput,
-    value: addHexPrefix("0"),
-    gasPrice: gasPrice.standard,
+    value: "0",
   };
 
-  const estimateGas = yield contractsService.icbmEtherLock.migrateTx().estimateGas(txDetails);
-  txDetails.gas = addHexPrefix(new BigNumber(estimateGas).toString(16));
+  const estimatedGas = yield contractsService.icbmEtherLock.migrateTx().estimateGas(txDetails);
+  yield put(actions.txSender.setGasLimit(estimatedGas))
 
-  yield put(actions.txSender.txSenderAcceptDraft(txDetails as ITxData));
+  yield put(actions.txSender.txSenderAcceptDraft(txDetails));
 }

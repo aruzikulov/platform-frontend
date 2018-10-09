@@ -18,15 +18,5 @@ const gas: IGasState = {
 
 storiesOf("Withdraw", module)
   .add("default", () => (
-    <WithdrawComponent onAccept={() => {}} gas={gas} address={dummyEthereumAddress} />
-  ))
-  .add("loading gas info", () => (
-    <WithdrawComponent onAccept={() => {}} gas={{ loading: true }} address={dummyEthereumAddress} />
-  ))
-  .add("loading gas error", () => (
-    <WithdrawComponent
-      onAccept={() => {}}
-      gas={{ loading: false, error: "Some error" }}
-      address={dummyEthereumAddress}
-    />
+    <WithdrawComponent onAccept={() => {}} />
   ));

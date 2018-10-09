@@ -1,9 +1,6 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-import { multiplyBigNumbers } from "../../utils/BigNumberUtils";
 
-const INVESTMENT_GAS_AMOUNT = "600000";
-const GAS_PRICE_MULTIPLIER = 1.2;
 
 export enum EInvestmentType {
   InvestmentWallet = "INVESTMENT_WALLET",
@@ -20,9 +17,8 @@ export enum EInvestmentCurrency {
 export enum EInvestmentErrorState {
   AboveMaximumTicketSize = "above_maximum_ticket_size",
   BelowMinimumTicketSize = "below_minimum_ticket_size",
-  ExceedsWalletBalance = "exceeds_wallet_balance",
   ExceedsTokenAmount = "exceeds_token_amount",
-  NotEnoughEtherForGas = "not_enough_ether_for_gas",
+  ExceedsWalletBalance = "exceeds_wallet_balance",
 }
 
 export enum EBankTransferFlowState {
@@ -36,8 +32,6 @@ export interface IInvestmentFlowState {
   ethValueUlps: string;
   investmentType: EInvestmentType;
   errorState?: EInvestmentErrorState;
-  gasAmount: string;
-  gasPrice: string;
   isValidatedInput: boolean;
   bankTransferFlowState?: EBankTransferFlowState;
   bankTransferGasStipend?: boolean;
@@ -48,8 +42,6 @@ export const investmentFlowInitialState: IInvestmentFlowState = {
   euroValueUlps: "",
   ethValueUlps: "",
   investmentType: EInvestmentType.InvestmentWallet,
-  gasAmount: INVESTMENT_GAS_AMOUNT,
-  gasPrice: "0",
   isValidatedInput: false,
 };
 
@@ -66,18 +58,12 @@ export const investmentFlowReducer: AppReducer<IInvestmentFlowState> = (
       return {
         ...investmentFlowInitialState,
         etoId: state.etoId,
-        gasPrice: state.gasPrice,
         investmentType: action.payload.type,
       };
     case "INVESTMENT_FLOW_SET_ETO_ID":
       return {
         ...state,
         etoId: action.payload.etoId,
-      };
-    case "INVESTMENT_FLOW_SET_GAS_PRICE":
-      return {
-        ...state,
-        gasPrice: multiplyBigNumbers([action.payload.gasPrice || 0, GAS_PRICE_MULTIPLIER]),
       };
     case "INVESTMENT_FLOW_SET_INVESTMENT_ERROR_STATE":
       return {

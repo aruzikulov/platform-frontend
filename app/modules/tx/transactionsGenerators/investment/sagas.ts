@@ -5,7 +5,7 @@ import { EInvestmentType } from "./../../../investmentFlow/reducer";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ContractsService } from "../../../../lib/web3/ContractsService";
-import { ITxData } from "../../../../lib/web3/Web3Manager";
+import { ITxInitData } from "../../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../../store";
 import { actions } from "../../../actions";
 import { selectReadyToInvest } from "../../../investmentFlow/selectors";
@@ -16,14 +16,12 @@ function createTxData(
   state: IAppState,
   txInput: string,
   contractAddress: string,
-): ITxData | undefined {
+): ITxInitData | undefined {
   return {
     to: contractAddress,
     from: selectEthereumAddressWithChecksum(state.web3),
     data: txInput,
     value: "0",
-    gas: state.investmentFlow.gasAmount,
-    gasPrice: state.investmentFlow.gasPrice,
   };
 }
 
@@ -31,7 +29,7 @@ function getEtherLockTransaction(
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): ITxData | undefined {
+): ITxInitData | undefined {
   const txInput = contractsService.etherLock
     .transferTx(etoId, new BigNumber(state.investmentFlow.ethValueUlps), [""])
     .getData();
@@ -42,7 +40,7 @@ function getEuroLockTransaction(
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): ITxData | undefined {
+): ITxInitData | undefined {
   const txInput = contractsService.euroLock
     .transferTx(etoId, new BigNumber(state.investmentFlow.euroValueUlps), [""])
     .getData();
@@ -53,23 +51,23 @@ function getEtherTokenTransaction(
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): ITxData | undefined {
+): ITxInitData | undefined {
   const etherTokenBalance = state.wallet.data!.etherTokenBalance;
-  const i = state.investmentFlow;
-  let txDetails: ITxData | undefined;
+  const etherValue = state.investmentFlow.ethValueUlps;
+  let txDetails: ITxInitData | undefined;
 
   // transaction can be fully covered by etherTokens
-  if (compareBigNumbers(etherTokenBalance, i.ethValueUlps) >= 0) {
+  if (compareBigNumbers(etherTokenBalance, etherValue) >= 0) {
     // need to call 3 args version of transfer method. See the abi in the contract.
     // so we call the rawWeb3Contract directly
     const txInput = contractsService.etherToken.rawWeb3Contract.transfer[
       "address,uint256,bytes"
-    ].getData(etoId, i.ethValueUlps, "");
+    ].getData(etoId, etherValue, "");
     txDetails = createTxData(state, txInput, contractsService.etherToken.address);
 
     // fill up etherToken with ether from wallet
   } else {
-    const ethVal = new BigNumber(i.ethValueUlps);
+    const ethVal = new BigNumber(etherValue);
     const difference = ethVal.sub(etherTokenBalance);
     const txCall = contractsService.etherToken.depositAndTransferTx(etoId, ethVal, [""]);
     txDetails = {
@@ -77,8 +75,6 @@ function getEtherTokenTransaction(
       from: selectEthereumAddressWithChecksum(state.web3),
       data: txCall.getData(),
       value: difference.toString(),
-      gas: i.gasAmount,
-      gasPrice: i.gasPrice,
     };
   }
 
@@ -94,7 +90,7 @@ export function* generateInvestmentTransaction({ contractsService }: TGlobalDepe
     throw new Error("Investment data is not valid to create an Transaction");
   }
 
-  let txDetails: ITxData | undefined;
+  let txDetails: ITxInitData | undefined;
 
   switch (i.investmentType) {
     case EInvestmentType.InvestmentWallet:

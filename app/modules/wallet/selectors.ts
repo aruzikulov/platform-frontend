@@ -7,7 +7,6 @@ import { IWalletState } from "./reducer";
 /**
  * Simple State Selectors
  */
-
 export const selectNeuBalanceEuroAmount = (state: IAppState): string =>
   multiplyBigNumbers([selectNeuPriceEur(state.tokenPrice), selectNeuBalance(state.wallet)]);
 

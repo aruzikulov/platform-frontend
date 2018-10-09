@@ -17,14 +17,17 @@ import { LightWallet } from "./LightWallet";
 import { IPersonalWallet } from "./PersonalWeb3";
 import { Web3Adapter } from "./Web3Adapter";
 
-export interface ITxData {
+export interface ITxInitData {
   to: string;
   value: string;
-  gas: string;
-  gasPrice: string;
   data?: string;
   from: string;
   input?: string;
+}
+
+export interface ITxData extends ITxInitData {
+  gas: string;
+  gasPrice: string;
 }
 
 export interface IRawTxData extends ITxData {

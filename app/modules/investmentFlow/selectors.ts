@@ -20,17 +20,12 @@ export const selectIsICBMInvestment = (state: IInvestmentFlowState) =>
   state.investmentType === EInvestmentType.ICBMEth ||
   state.investmentType === EInvestmentType.ICBMnEuro;
 
-export const selectInvestmentGasCostEth = (state: IInvestmentFlowState) =>
-  multiplyBigNumbers([state.gasPrice, state.gasAmount]);
-
 export const selectReadyToInvest = (state: IInvestmentFlowState) =>
   !!(
     state.euroValueUlps &&
     state.isValidatedInput &&
     !state.errorState &&
-    state.gasPrice &&
-    compareBigNumbers(state.euroValueUlps, 0) > 0 &&
-    compareBigNumbers(state.gasPrice, 0) > 0
+    compareBigNumbers(state.euroValueUlps, 0) > 0
   );
 
 export const selectCurrencyByInvestmentType = (state: IInvestmentFlowState) =>

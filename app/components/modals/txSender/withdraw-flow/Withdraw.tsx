@@ -5,25 +5,22 @@ import { Col, Row } from "reactstrap";
 import * as Web3Utils from "web3-utils";
 import { NumberSchema } from "yup";
 
+import { ITxInitData } from "../../../../lib/web3/Web3Manager";
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
 import { IGasState } from "../../../../modules/gas/reducer";
-import { selectEthereumAddressWithChecksum } from "../../../../modules/web3/selectors";
 import { appConnect } from "../../../../store";
 import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
 import { Button } from "../../../shared/buttons";
 import { FormFieldImportant } from "../../../shared/forms/formField/FormFieldImportant";
-import { FormLabel } from "../../../shared/forms/formField/FormLabel";
 import { LoadingIndicator } from "../../../shared/LoadingIndicator";
 import { WarningAlert } from "../../../shared/WarningAlert";
 import { ITxInitDispatchProps } from "../TxSender";
 
-import { ITxData } from "../../../../lib/web3/Web3Manager";
 import * as styles from "./Withdraw.module.scss";
 
-interface IWithdrawStateProps {
-  gas: IGasState;
-  address: string;
+interface IStateProps {
+
 }
 
 const withdrawFormSchema = YupTS.object({
@@ -33,10 +30,8 @@ const withdrawFormSchema = YupTS.object({
 });
 const withdrawFormValidator = withdrawFormSchema.toYup();
 
-export const WithdrawComponent: React.SFC<IWithdrawStateProps & ITxInitDispatchProps> = ({
+export const WithdrawComponent: React.SFC<ITxInitDispatchProps> = ({
   onAccept,
-  gas,
-  address,
 }) => (
   <div>
     <SpinningEthereum />
@@ -45,16 +40,13 @@ export const WithdrawComponent: React.SFC<IWithdrawStateProps & ITxInitDispatchP
       <FormattedMessage id="modal.sent-eth.title" />
     </h3>
 
-    <Formik<ITxData>
+    <Formik<ITxInitData>
       validationSchema={withdrawFormValidator}
       isInitialValid={false}
-      initialValues={{ gas: "100000", from: "", value: "", to: "", gasPrice: "" }}
+      initialValues={{ value: "", to: "", from: "" }}
       onSubmit={data => {
-        const gasPrice = gas.gasPrice!.standard;
         const value = Web3Utils.toWei(data.value, "ether");
-        const from = address;
-
-        onAccept({ ...data, gasPrice, value, from });
+        onAccept({ ...data, value });
       }}
     >
       {({ isValid }) => (
@@ -78,25 +70,10 @@ export const WithdrawComponent: React.SFC<IWithdrawStateProps & ITxInitDispatchP
               />
             </Col>
 
-            <Col xs={12} className="mb-4">
-              <FormFieldImportant
-                name="gas"
-                label={<FormattedMessage id="modal.sent-eth.gas-limit" />}
-                data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.gas-limit"
-              />
-            </Col>
-
-            <Col xs={12} className="mb-4">
-              <FormLabel>
-                <FormattedMessage id="modal.sent-eth.gas-price" />
-              </FormLabel>
-              <GasComponent {...gas} />
-            </Col>
-
             <Col xs={12} className="text-center">
               <Button
                 type="submit"
-                disabled={(gas.loading && !gas.error) || !isValid}
+                disabled={!isValid}
                 data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"
               >
                 <FormattedMessage id="modal.sent-eth.button" />
@@ -125,13 +102,11 @@ export const GasComponent: React.SFC<IGasState> = ({ gasPrice, error }) => {
   return <LoadingIndicator light />;
 };
 
-export const Withdraw = appConnect<IWithdrawStateProps, ITxInitDispatchProps>({
+export const Withdraw = appConnect<IStateProps, ITxInitDispatchProps>({
   stateToProps: state => ({
-    gas: state.gas,
-    address: selectEthereumAddressWithChecksum(state.web3),
   }),
   dispatchToProps: d => ({
-    onAccept: (tx: ITxData) => d(actions.txSender.txSenderAcceptDraft(tx)),
+    onAccept: (tx: ITxInitData) => d(actions.txSender.txSenderAcceptDraft(tx)),
   }),
 })(WithdrawComponent);
 

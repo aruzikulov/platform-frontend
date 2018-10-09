@@ -7,7 +7,6 @@ import { actions } from "../../../../modules/actions";
 import {
   selectEthValueUlps,
   selectEurValueUlps,
-  selectInvestmentGasCostEth,
 } from "../../../../modules/investmentFlow/selectors";
 import {
   selectEquityTokenCountByEtoId,
@@ -34,6 +33,7 @@ import { compose, setDisplayName } from "recompose";
 import * as neuIcon from "../../../../assets/img/neu_icon.svg";
 import * as tokenIcon from "../../../../assets/img/token_icon.svg";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import * as styles from "./Summary.module.scss";
 
 interface IStateProps {
@@ -160,7 +160,7 @@ const InvestmentSummary = compose<IProps, {}>(
         etoAddress: eto.etoId,
         investmentEth: selectEthValueUlps(i),
         investmentEur: selectEurValueUlps(i),
-        gasCostEth: selectInvestmentGasCostEth(i),
+        gasCostEth: selectTxGasCostEth(state.txSender),
         equityTokens: selectEquityTokenCountByEtoId(i.etoId, p) as string,
         estimatedReward: selectNeuRewardUlpsByEtoId(i.etoId, p) as string,
         etherPriceEur: selectEtherPriceEur(state.tokenPrice),
