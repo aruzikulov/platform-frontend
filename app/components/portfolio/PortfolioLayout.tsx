@@ -12,11 +12,11 @@ import { TETOWithInvestorTicket } from "../../modules/investor-tickets/types";
 import { ETOStateOnChain } from "../../modules/public-etos/types";
 import { documentTitles } from "../Documents";
 import { AssetPortfolio } from "../shared/AssetPortfolio";
-import { Button } from "../shared/buttons";
+import { Button, EButtonLayout } from "../shared/buttons";
 import { Document } from "../shared/Document";
+import { ETOState } from "../shared/ETOState";
 import { ECurrencySymbol, Money } from "../shared/Money";
 import { NewTable, NewTableRow } from "../shared/NewTable";
-import { ProjectStatus } from "../shared/ProjectStatus";
 import { SectionHeader } from "../shared/SectionHeader";
 import { PortfolioAssetAction } from "./PorfolioAssetAction";
 
@@ -87,7 +87,7 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({ myAssets, pendingAs
             <span>value</span>
             {""}
             {""}
-            <Button layout="simple" svgIcon={arrowIcon} iconPosition="icon-after">
+            <Button layout={EButtonLayout.SIMPLE} svgIcon={arrowIcon} iconPosition="icon-after">
               <FormattedMessage id="portfolio.section.dividends-from-neu.table.claim" />
             </Button>
           </NewTableRow>
@@ -100,7 +100,7 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({ myAssets, pendingAs
             <span>value</span>
             {""}
             {""}
-            <Button layout="simple" svgIcon={arrowIcon} iconPosition="icon-after">
+            <Button layout={EButtonLayout.SIMPLE} svgIcon={arrowIcon} iconPosition="icon-after">
               <FormattedMessage id="portfolio.section.dividends-from-neu.table.claim" />
             </Button>
           </NewTableRow>
@@ -129,7 +129,14 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({ myAssets, pendingAs
           ]}
         >
           {pendingAssets.map(
-            ({ equityTokenImage, equityTokenName, investorTicket, contract, etoId }) => {
+            ({
+              equityTokenImage,
+              equityTokenName,
+              investorTicket,
+              contract,
+              etoId,
+              previewCode,
+            }) => {
               const timedState = contract!.timedState;
               const isWhitelistedOrPublic =
                 timedState === ETOStateOnChain.Whitelist || timedState === ETOStateOnChain.Public;
@@ -161,7 +168,7 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({ myAssets, pendingAs
                         />
                       </>
                     ) : (
-                      <ProjectStatus status={timedState} />
+                      <ETOState previewCode={previewCode} />
                     )}
                   </>
                   <PortfolioAssetAction state={timedState} etoId={etoId} />

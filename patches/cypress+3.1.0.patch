@@ -1,4 +1,388 @@
-patch-package
+diff --git a/node_modules/cypress/node_modules/.bin/extract-zip b/node_modules/cypress/node_modules/.bin/extract-zip
+deleted file mode 120000
+index af9b561..0000000
+--- a/node_modules/cypress/node_modules/.bin/extract-zip
++++ /dev/null
+@@ -1 +0,0 @@
+-../extract-zip/cli.js
+\ No newline at end of file
+diff --git a/node_modules/cypress/node_modules/.bin/extract-zip b/node_modules/cypress/node_modules/.bin/extract-zip
+new file mode 100755
+index 0000000..76c337d
+--- /dev/null
++++ b/node_modules/cypress/node_modules/.bin/extract-zip
+@@ -0,0 +1,20 @@
++#!/usr/bin/env node
++
++var extract = require('./')
++
++var args = process.argv.slice(2)
++var source = args[0]
++var dest = args[1] || process.cwd()
++if (!source) {
++  console.error('Usage: extract-zip foo.zip <targetDirectory>')
++  process.exit(1)
++}
++
++extract(source, {dir: dest}, function (err, results) {
++  if (err) {
++    console.error('error!', err)
++    process.exit(1)
++  } else {
++    process.exit(0)
++  }
++})
+diff --git a/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/semver b/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/semver
+deleted file mode 120000
+index c64d253..0000000
+--- a/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/semver
++++ /dev/null
+@@ -1 +0,0 @@
+-../../../../../webpack-cli/node_modules/semver/bin/semver
+\ No newline at end of file
+diff --git a/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/semver b/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/semver
+new file mode 100755
+index 0000000..dddbcdf
+--- /dev/null
++++ b/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/semver
+@@ -0,0 +1,143 @@
++#!/usr/bin/env node
++// Standalone semver comparison program.
++// Exits successfully and prints matching version(s) if
++// any supplied version is valid and passes all tests.
++
++var argv = process.argv.slice(2)
++  , versions = []
++  , range = []
++  , gt = []
++  , lt = []
++  , eq = []
++  , inc = null
++  , version = require("../package.json").version
++  , loose = false
++  , coerce = false
++  , identifier = undefined
++  , semver = require("../semver")
++  , reverse = false
++
++main()
++
++function main () {
++  if (!argv.length) return help()
++  while (argv.length) {
++    var a = argv.shift()
++    var i = a.indexOf('=')
++    if (i !== -1) {
++      a = a.slice(0, i)
++      argv.unshift(a.slice(i + 1))
++    }
++    switch (a) {
++      case "-rv": case "-rev": case "--rev": case "--reverse":
++        reverse = true
++        break
++      case "-l": case "--loose":
++        loose = true
++        break
++      case "-v": case "--version":
++        versions.push(argv.shift())
++        break
++      case "-i": case "--inc": case "--increment":
++        switch (argv[0]) {
++          case "major": case "minor": case "patch": case "prerelease":
++          case "premajor": case "preminor": case "prepatch":
++            inc = argv.shift()
++            break
++          default:
++            inc = "patch"
++            break
++        }
++        break
++      case "--preid":
++        identifier = argv.shift()
++        break
++      case "-r": case "--range":
++        range.push(argv.shift())
++        break
++      case "-c": case "--coerce":
++        coerce = true
++        break
++      case "-h": case "--help": case "-?":
++        return help()
++      default:
++        versions.push(a)
++        break
++    }
++  }
++
++  versions = versions.map(function (v) {
++    return coerce ? (semver.coerce(v) || {version: v}).version : v
++  }).filter(function (v) {
++    return semver.valid(v)
++  })
++  if (!versions.length) return fail()
++  if (inc && (versions.length !== 1 || range.length))
++    return failInc()
++
++  for (var i = 0, l = range.length; i < l ; i ++) {
++    versions = versions.filter(function (v) {
++      return semver.satisfies(v, range[i], loose)
++    })
++    if (!versions.length) return fail()
++  }
++  return success(versions)
++}
++
++function failInc () {
++  console.error("--inc can only be used on a single version with no range")
++  fail()
++}
++
++function fail () { process.exit(1) }
++
++function success () {
++  var compare = reverse ? "rcompare" : "compare"
++  versions.sort(function (a, b) {
++    return semver[compare](a, b, loose)
++  }).map(function (v) {
++    return semver.clean(v, loose)
++  }).map(function (v) {
++    return inc ? semver.inc(v, inc, loose, identifier) : v
++  }).forEach(function (v,i,_) { console.log(v) })
++}
++
++function help () {
++  console.log(["SemVer " + version
++              ,""
++              ,"A JavaScript implementation of the http://semver.org/ specification"
++              ,"Copyright Isaac Z. Schlueter"
++              ,""
++              ,"Usage: semver [options] <version> [<version> [...]]"
++              ,"Prints valid versions sorted by SemVer precedence"
++              ,""
++              ,"Options:"
++              ,"-r --range <range>"
++              ,"        Print versions that match the specified range."
++              ,""
++              ,"-i --increment [<level>]"
++              ,"        Increment a version by the specified level.  Level can"
++              ,"        be one of: major, minor, patch, premajor, preminor,"
++              ,"        prepatch, or prerelease.  Default level is 'patch'."
++              ,"        Only one version may be specified."
++              ,""
++              ,"--preid <identifier>"
++              ,"        Identifier to be used to prefix premajor, preminor,"
++              ,"        prepatch or prerelease version increments."
++              ,""
++              ,"-l --loose"
++              ,"        Interpret versions and ranges loosely"
++              ,""
++              ,"-c --coerce"
++              ,"        Coerce a string into SemVer if possible"
++              ,"        (does not imply --loose)"
++              ,""
++              ,"Program exits successfully if any valid version satisfies"
++              ,"all supplied ranges, and prints all satisfying versions."
++              ,""
++              ,"If no satisfying versions are found, then exits failure."
++              ,""
++              ,"Versions are printed in ascending order, so supplying"
++              ,"multiple versions to the utility will just sort them."
++              ].join("\n"))
++}
+diff --git a/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/which b/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/which
+deleted file mode 120000
+index 8bc48ab..0000000
+--- a/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/which
++++ /dev/null
+@@ -1 +0,0 @@
+-../../../../../which/bin/which
+\ No newline at end of file
+diff --git a/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/which b/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/which
+new file mode 100755
+index 0000000..7cee372
+--- /dev/null
++++ b/node_modules/cypress/node_modules/cross-spawn/node_modules/.bin/which
+@@ -0,0 +1,52 @@
++#!/usr/bin/env node
++var which = require("../")
++if (process.argv.length < 3)
++  usage()
++
++function usage () {
++  console.error('usage: which [-as] program ...')
++  process.exit(1)
++}
++
++var all = false
++var silent = false
++var dashdash = false
++var args = process.argv.slice(2).filter(function (arg) {
++  if (dashdash || !/^-/.test(arg))
++    return true
++
++  if (arg === '--') {
++    dashdash = true
++    return false
++  }
++
++  var flags = arg.substr(1).split('')
++  for (var f = 0; f < flags.length; f++) {
++    var flag = flags[f]
++    switch (flag) {
++      case 's':
++        silent = true
++        break
++      case 'a':
++        all = true
++        break
++      default:
++        console.error('which: illegal option -- ' + flag)
++        usage()
++    }
++  }
++  return false
++})
++
++process.exit(args.reduce(function (pv, current) {
++  try {
++    var f = which.sync(current, { all: all })
++    if (all)
++      f = f.join('\n')
++    if (!silent)
++      console.log(f)
++    return pv;
++  } catch (e) {
++    return 1;
++  }
++}, 0))
+diff --git a/node_modules/cypress/node_modules/extract-zip/node_modules/.bin/mkdirp b/node_modules/cypress/node_modules/extract-zip/node_modules/.bin/mkdirp
+deleted file mode 120000
+index 91a5f62..0000000
+--- a/node_modules/cypress/node_modules/extract-zip/node_modules/.bin/mkdirp
++++ /dev/null
+@@ -1 +0,0 @@
+-../../../mkdirp/bin/cmd.js
+\ No newline at end of file
+diff --git a/node_modules/cypress/node_modules/extract-zip/node_modules/.bin/mkdirp b/node_modules/cypress/node_modules/extract-zip/node_modules/.bin/mkdirp
+new file mode 100755
+index 0000000..d95de15
+--- /dev/null
++++ b/node_modules/cypress/node_modules/extract-zip/node_modules/.bin/mkdirp
+@@ -0,0 +1,33 @@
++#!/usr/bin/env node
++
++var mkdirp = require('../');
++var minimist = require('minimist');
++var fs = require('fs');
++
++var argv = minimist(process.argv.slice(2), {
++    alias: { m: 'mode', h: 'help' },
++    string: [ 'mode' ]
++});
++if (argv.help) {
++    fs.createReadStream(__dirname + '/usage.txt').pipe(process.stdout);
++    return;
++}
++
++var paths = argv._.slice();
++var mode = argv.mode ? parseInt(argv.mode, 8) : undefined;
++
++(function next () {
++    if (paths.length === 0) return;
++    var p = paths.shift();
++    
++    if (mode === undefined) mkdirp(p, cb)
++    else mkdirp(p, mode, cb)
++    
++    function cb (err) {
++        if (err) {
++            console.error(err.message);
++            process.exit(1);
++        }
++        else next();
++    }
++})();
+diff --git a/node_modules/cypress/node_modules/request/node_modules/.bin/uuid b/node_modules/cypress/node_modules/request/node_modules/.bin/uuid
+deleted file mode 120000
+index 41c7036..0000000
+--- a/node_modules/cypress/node_modules/request/node_modules/.bin/uuid
++++ /dev/null
+@@ -1 +0,0 @@
+-../../../../../uuid/bin/uuid
+\ No newline at end of file
+diff --git a/node_modules/cypress/node_modules/request/node_modules/.bin/uuid b/node_modules/cypress/node_modules/request/node_modules/.bin/uuid
+new file mode 100755
+index 0000000..502626e
+--- /dev/null
++++ b/node_modules/cypress/node_modules/request/node_modules/.bin/uuid
+@@ -0,0 +1,65 @@
++#!/usr/bin/env node
++var assert = require('assert');
++
++function usage() {
++  console.log('Usage:');
++  console.log('  uuid');
++  console.log('  uuid v1');
++  console.log('  uuid v3 <name> <namespace uuid>');
++  console.log('  uuid v4');
++  console.log('  uuid v5 <name> <namespace uuid>');
++  console.log('  uuid --help');
++  console.log('\nNote: <namespace uuid> may be "URL" or "DNS" to use the corresponding UUIDs defined by RFC4122');
++}
++
++var args = process.argv.slice(2);
++
++if (args.indexOf('--help') >= 0) {
++  usage();
++  process.exit(0);
++}
++var version = args.shift() || 'v4';
++
++switch (version) {
++  case 'v1':
++    var uuidV1 = require('../v1');
++    console.log(uuidV1());
++    break;
++
++  case 'v3':
++    var uuidV3 = require('../v3');
++
++    var name = args.shift();
++    var namespace = args.shift();
++    assert(name != null, 'v3 name not specified');
++    assert(namespace != null, 'v3 namespace not specified');
++
++    if (namespace == 'URL') namespace = uuidV3.URL;
++    if (namespace == 'DNS') namespace = uuidV3.DNS;
++
++    console.log(uuidV3(name, namespace));
++    break;
++
++  case 'v4':
++    var uuidV4 = require('../v4');
++    console.log(uuidV4());
++    break;
++
++  case 'v5':
++    var uuidV5 = require('../v5');
++
++    var name = args.shift();
++    var namespace = args.shift();
++    assert(name != null, 'v5 name not specified');
++    assert(namespace != null, 'v5 namespace not specified');
++
++    if (namespace == 'URL') namespace = uuidV5.URL;
++    if (namespace == 'DNS') namespace = uuidV5.DNS;
++
++    console.log(uuidV5(name, namespace));
++    break;
++
++  default:
++    usage();
++    process.exit(1);
++}
+diff --git a/node_modules/cypress/types/index.d.ts b/node_modules/cypress/types/index.d.ts
+index 6c4d263..a06f594 100644
 --- a/node_modules/cypress/types/index.d.ts
 +++ b/node_modules/cypress/types/index.d.ts
 @@ -85,13 +85,13 @@ declare namespace Cypress {
@@ -26,3 +410,13 @@ patch-package
      /**
       * Cypress version string. i.e. "1.1.2"
       * @see https://on.cypress.io/version
+@@ -401,6 +401,9 @@ declare namespace Cypress {
+      */
+     click(x: number, y: number, options?: Partial<ClickOptions>): Chainable<Subject>
+ 
++    /* Custom Method */
++    awaitedClick(waitDuration?: number): void  
++
+     /**
+      * `cy.clock()` overrides native global functions related to time allowing them to be controlled
+      * synchronously via [cy.tick()](https://on.cypress.io/tick) or the yielded clock object.

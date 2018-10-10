@@ -7,7 +7,7 @@ import { compose } from "redux";
 import { selectBackupCodesVerified } from "../../../modules/auth/selectors";
 import { appConnect } from "../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
-import { ButtonLink } from "../../shared/buttons";
+import { ButtonLink, EButtonLayout } from "../../shared/buttons";
 import { Panel } from "../../shared/Panel";
 import { settingsRoutes } from "../routes";
 
@@ -51,7 +51,7 @@ export const BackupSeedWidgetComponent: React.SFC<
           <Col xs={12} className="d-flex justify-content-center">
             <ButtonLink
               to={settingsRoutes.seedBackup}
-              layout="secondary"
+              layout={EButtonLayout.SECONDARY}
               iconPosition="icon-after"
               svgIcon={arrowRight}
             >
@@ -71,7 +71,7 @@ export const BackupSeedWidgetComponent: React.SFC<
             <ButtonLink
               to={settingsRoutes.seedBackup}
               data-test-id="backup-seed-widget-link-button"
-              layout="secondary"
+              layout={EButtonLayout.SECONDARY}
               iconPosition="icon-after"
               svgIcon={arrowRight}
             >

@@ -4,8 +4,8 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
-import { EtoState, TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces";
-import { ETOStateOnChain, TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces";
+import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
 import { IWalletState } from "../../../modules/wallet/reducer";
 import { PersonProfileModal } from "../../modals/PersonProfileModal";
 import { Accordion, AccordionElement } from "../../shared/Accordion";
@@ -119,8 +119,8 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
           existingCompanyShares={etoData.existingCompanyShares}
           equityTokensPerShare={etoData.equityTokensPerShare}
           contract={etoData.contract}
-          timedState={etoData.contract ? etoData.contract.timedState : ETOStateOnChain.Setup}
           wallet={wallet}
+          previewCode={etoData.previewCode}
           etoId={etoData.etoId}
           tokenImage={{
             srcSet: {
@@ -141,11 +141,9 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
             (etoData.minimumNewSharesToIssue || 1)
           ).toFixed(4)}`}
           newSharesGenerated={etoData.newSharesToIssue}
-          smartContractOnchain={etoData.state === EtoState.ON_CHAIN}
           prospectusApproved={documentsByType["approved_prospectus"]}
           termSheet={documentsByType["termsheet_template"]}
           preMoneyValuation={etoData.preMoneyValuationEur}
-          etoStartDate={etoData.startDate}
           preEtoDuration={etoData.whitelistDurationDays}
           publicEtoDuration={etoData.publicDurationDays}
           inSigningDuration={etoData.signingDurationDays}
@@ -266,7 +264,6 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
 
             <EtoInvestmentTermsWidget
               etoData={etoData}
-              etoFilesData={documentsByType}
               computedMaxCapEur={computedMaxCapEur}
               computedMinCapEur={computedMinCapEur}
               computedMinNumberOfTokens={computedMinNumberOfTokens}

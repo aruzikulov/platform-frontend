@@ -15,6 +15,7 @@
     "build:prod": "(cp -n ./app/config/.env.example .env || true) && NODE_ENV=production webpack --config ./webpack/webpack.config.prod.js",
     "build:prod:prerender": "./scripts/prerender.sh",
     "build:translate": "(cp -n ./app/config/.env.example .env || true) && NODE_ENV=production && NF_ENABLE_TRANSLATE_OVERLAY=1 webpack --config ./webpack/webpack.config.prod.js",
+    "bundle-analyzer": "(cp -n ./app/config/.env.example .env || true) && NODE_ENV=production webpack --config ./webpack/webpack.config.bundle-analyzer.js",
     "ganache": "./scripts/ganache-cli.sh",
     "format": "prettier --list-different '**/*.{ts,tsx,js,json,md,gql}'",
     "format:fix": "prettier --write '**/*.{ts,tsx,js,json,md,gql}'",
@@ -44,7 +45,7 @@
     "intl:extract": "./scripts/extract-intl-messages.sh",
     "intl:extract:check": "./scripts/extract-intl-messages.sh --check",
     "storybook": "start-storybook -p 9001 -c .storybook -s ./app/assets",
-    "storybook:screenshots": "storybook-chrome-screenshot --inject-files ./.storybook/disable-animations.js -p 9001 -c .storybook --debug --browser-timeout 999999 -s ./app/assets"
+    "storybook:screenshots": "storybook-chrome-screenshot --inject-files ./.storybook/disable-animations.js -p 9001 -c .storybook --browser-timeout 999999 -s ./app/assets"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-rc.1",
@@ -133,7 +134,7 @@
     "node-sass": "^4.9.3",
     "nyc": "^12.0.2",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
-    "patch-package": "^5.1.1",
+    "patch-package": "^6.0.0-9",
     "postcss-loader": "^3.0.0",
     "prep": "1.6.0",
     "prettier": "^1.14.2",
@@ -164,6 +165,7 @@
     "web3-eth-accounts": "^1.0.0-beta.36",
     "web3-typescript-typings": "^0.9.3",
     "webpack": "^4.16.5",
+    "webpack-bundle-analyzer": "^3.0.2",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.5",
     "webpack-hot-middleware": "^2.22.3",

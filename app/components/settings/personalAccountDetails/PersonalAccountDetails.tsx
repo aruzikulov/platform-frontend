@@ -4,7 +4,7 @@ import { compose } from "redux";
 
 import { appConnect } from "../../../store";
 import { TTranslatedString } from "../../../types";
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { Panel } from "../../shared/Panel";
 import { ResponsiveImage } from "../../shared/ResponsiveImage";
 
@@ -104,7 +104,7 @@ class AccountDetailsComponent extends React.Component<IStateProps, IOwnState> {
             )}
           </div>
           <div>
-            <Button layout="secondary" onClick={this.toggleDataVisibility}>
+            <Button layout={EButtonLayout.SECONDARY} onClick={this.toggleDataVisibility}>
               {isDataHidden ? (
                 <FormattedMessage id="settings.account-details.button-show" />
               ) : (

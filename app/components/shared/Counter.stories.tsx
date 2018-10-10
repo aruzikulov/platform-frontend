@@ -5,6 +5,6 @@ import { Counter } from "./Counter";
 
 const day = 86400000;
 
-const futureDate = Date.now() + 7 * day;
+const futureDate = new Date(Date.now() + 7 * day);
 
 storiesOf("Counter", module).add("default", () => <Counter endDate={futureDate} />);

@@ -7,7 +7,7 @@ import { actions } from "../modules/actions";
 import { selectIsAuthorized, selectUserType } from "../modules/auth/selectors";
 import { appConnect } from "../store";
 import { appRoutes } from "./appRoutes";
-import { Button, ButtonLink } from "./shared/buttons";
+import { Button, ButtonLink, EButtonLayout } from "./shared/buttons";
 import { loginWalletRoutes, walletRegisterRoutes } from "./walletSelector/walletRoutes";
 
 import * as logo from "../../app/assets/img/logo_yellow.svg";
@@ -32,7 +32,7 @@ export const HeaderComponent: React.SFC<IStateProps & IDispatchProps> = props =>
     </Link>
     {props.isAuthorized ? (
       <Button
-        layout="secondary"
+        layout={EButtonLayout.SECONDARY}
         theme="white"
         onClick={() => props.logout(props.userType)}
         data-test-id="Header-logout"

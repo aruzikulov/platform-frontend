@@ -16,7 +16,7 @@ import {
 import { selectIsConnectedButtonLocked } from "../../../modules/verifyEmailWidget/reducer";
 import { appConnect } from "../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { FormField } from "../../shared/forms";
 import { Panel } from "../../shared/Panel";
 
@@ -85,7 +85,7 @@ const SetEmailForm = injectIntlHelpers<IEnhancedFormProps & FormikProps<IFormVal
         {props.isThereUnverifiedEmail && (
           <Button
             data-test-id="verify-email-widget-form-cancel"
-            layout="secondary"
+            layout={EButtonLayout.SECONDARY}
             onClick={props.revertCancelEmail}
           >
             <FormattedMessage id="form.button.cancel" />
@@ -93,7 +93,7 @@ const SetEmailForm = injectIntlHelpers<IEnhancedFormProps & FormikProps<IFormVal
         )}
         <Button
           type="submit"
-          layout="secondary"
+          layout={EButtonLayout.SECONDARY}
           disabled={!isValid(props) || props.isLocked}
           data-test-id="verify-email-widget-form-submit"
         >
@@ -188,7 +188,7 @@ const UnVerifiedUser: React.SFC<{
 
     <Col xs={12} className="d-flex justify-content-between px-0">
       <Button
-        layout="secondary"
+        layout={EButtonLayout.SECONDARY}
         className="p-0"
         onClick={cancelEmail}
         data-test-id="verify-email-widget.change-email.button"
@@ -196,7 +196,7 @@ const UnVerifiedUser: React.SFC<{
         <FormattedMessage id="settings.verify-email-widget.change-email" />
       </Button>
       <Button
-        layout="secondary"
+        layout={EButtonLayout.SECONDARY}
         className="p-0"
         iconPosition="icon-after"
         svgIcon={arrowRight}

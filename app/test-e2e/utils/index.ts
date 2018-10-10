@@ -84,7 +84,7 @@ export const typeEmailPassword = (email: string, password: string) => {
   cy.get(tid("wallet-selector-register-password")).type(password);
   cy.get(tid("wallet-selector-register-confirm-password")).type(password);
 
-  cy.get(tid("wallet-selector-register-button")).click();
+  cy.get(tid("wallet-selector-register-button")).awaitedClick();
 };
 
 export const registerWithLightWalletETO = (email: string, password: string) => {
@@ -102,18 +102,16 @@ export const typeLightwalletRecoveryPhrase = (words: string[]) => {
     }
 
     if (batch + 1 < words.length / 4) {
-      cy.get(tid("btn-next")).click();
+      cy.get(tid("btn-next")).awaitedClick();
     }
   }
 
-  cy.get(tid("btn-send")).click();
+  cy.get(tid("btn-send")).awaitedClick();
 };
 
 export const confirmAccessModal = (password: string) => {
   cy.get(tid("access-light-wallet-password-input")).type(password);
-  cy.get(tid("access-light-wallet-confirm"))
-    .wait(1500)
-    .click();
+  cy.get(tid("access-light-wallet-confirm")).awaitedClick(1500);
 };
 
 // todo: extract it to separate file
@@ -156,23 +154,23 @@ export const registerWithLightWallet = (
   cy.get(tid("wallet-selector-register-email")).type(email);
   cy.get(tid("wallet-selector-register-password")).type(password);
   cy.get(tid("wallet-selector-register-confirm-password")).type(password);
-  cy.get(tid("wallet-selector-register-button")).click();
+  cy.get(tid("wallet-selector-register-button")).awaitedClick();
   cy.get(tid("wallet-selector-register-button")).should("be.disabled");
   assertUserInDashboard();
 };
 
 export const logoutViaTopRightButton = () => {
-  cy.get(tid("Header-logout")).click();
+  cy.get(tid("Header-logout")).awaitedClick();
   cy.get(tid("landing-page")); // wait for landing page to show
 };
 
 export const loginWithLightWallet = (email: string, password: string) => {
-  cy.get(tid("Header-login")).click();
-  cy.get(tid("wallet-selector-light")).click();
+  cy.get(tid("Header-login")).awaitedClick();
+  cy.get(tid("wallet-selector-light")).awaitedClick();
 
   cy.contains(tid("light-wallet-login-with-email-email-field"), email);
   cy.get(tid("light-wallet-login-with-email-password-field")).type(password);
-  cy.get(tid("wallet-selector-nuewallet.login-button")).click();
+  cy.get(tid("wallet-selector-nuewallet.login-button")).awaitedClick();
   cy.get(tid("wallet-selector-nuewallet.login-button")).should("be.disabled");
 
   return assertUserInDashboard();

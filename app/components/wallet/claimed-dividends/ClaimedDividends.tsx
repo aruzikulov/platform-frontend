@@ -1,7 +1,7 @@
 import * as cn from "classnames";
 import * as React from "react";
 
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { Date } from "../../shared/Date";
 import { InlineIcon } from "../../shared/InlineIcon";
 import { Money } from "../../shared/Money";
@@ -62,7 +62,7 @@ export const ClaimedDividends: React.SFC<IClaimedDividendsProps & CommonHtmlProp
               <Money currency="eur_token" value={amount} transfer="income" />
             </TableCell>
             <TableCell narrow>
-              <Button layout="secondary">
+              <Button layout={EButtonLayout.SECONDARY}>
                 <span>
                   <FormattedMessage id="components.wallet.claimed-dividends.txn" />
                 </span>

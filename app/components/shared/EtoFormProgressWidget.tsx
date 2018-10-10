@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ButtonLink } from "./buttons";
+import { ButtonLink, EButtonLayout } from "./buttons";
 import { ChartCircle, IChartCircleProps } from "./charts/ChartCircle";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { Panel } from "./Panel";
@@ -58,7 +58,7 @@ export const EtoFormProgressWidget: React.SFC<IProps & IChartCircleProps> = ({
                   state: { readonly },
                 }}
                 theme="silver"
-                layout="secondary"
+                layout={EButtonLayout.SECONDARY}
                 iconPosition="icon-after"
                 svgIcon={arrowRightIcon}
                 disabled={disabled}

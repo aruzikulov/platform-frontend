@@ -12,8 +12,8 @@ import { selectClientCountry, selectClientName } from "../../../../modules/kyc/s
 import { appConnect } from "../../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
 import { formatMoney } from "../../../../utils/Money.utils";
-import { Button } from "../../../shared/buttons";
-import { CheckboxComponent } from "../../../shared/forms/formField/FormCheckbox";
+import { Button, EButtonLayout } from "../../../shared/buttons";
+import { CheckboxComponent } from "../../../shared/forms";
 import { Heading } from "../../../shared/modals/Heading";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
@@ -129,7 +129,7 @@ const BankTransferDetailsComponent = injectIntlHelpers(
         </Row>
 
         <Row className="justify-content-center mb-0 mt-0">
-          <Button layout="primary" type="button" onClick={onAccept}>
+          <Button layout={EButtonLayout.PRIMARY} type="button" onClick={onAccept}>
             <FormattedMessage id="investment-flow.confirm" />
           </Button>
         </Row>

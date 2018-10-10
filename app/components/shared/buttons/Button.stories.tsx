@@ -4,6 +4,7 @@ import * as React from "react";
 import { Button, ButtonArrowRight, ButtonSize, ButtonWidth } from "./Button";
 
 import * as icon from "../../../assets/img/inline_icons/icon_questionmark.svg";
+import { EButtonLayout } from "./index";
 
 storiesOf("buttons/default", module)
   .add("primary", () => (
@@ -15,20 +16,30 @@ storiesOf("buttons/default", module)
   ))
   .add("secondary", () => (
     <>
-      <Button layout="secondary">secondary</Button>
+      <Button layout={EButtonLayout.SECONDARY}>secondary</Button>
       <br />
-      <Button layout="secondary" disabled>
+      <Button layout={EButtonLayout.SECONDARY} disabled>
         secondary disabled
       </Button>
     </>
   ))
+  .add("inline", () => (
+    <>
+      <Button layout={EButtonLayout.INLINE}>Call to Action</Button>
+    </>
+  ))
+  .add("simple", () => (
+    <>
+      <Button layout={EButtonLayout.SIMPLE}>Call to Action</Button>
+    </>
+  ))
   .add("with icons", () => (
     <>
-      <Button layout="secondary" svgIcon={icon} iconPosition="icon-before">
+      <Button layout={EButtonLayout.SECONDARY} svgIcon={icon} iconPosition="icon-before">
         icon before text
       </Button>
       <br />
-      <Button layout="secondary" svgIcon={icon} iconPosition="icon-after">
+      <Button layout={EButtonLayout.SECONDARY} svgIcon={icon} iconPosition="icon-after">
         icon after text
       </Button>
     </>
@@ -45,19 +56,30 @@ storiesOf("buttons/default", module)
         primary icon before text
       </Button>
       <br />
-      <Button layout="secondary" theme="white">
+      <Button layout={EButtonLayout.SECONDARY} theme="white">
         secondary
       </Button>
       <br />
-      <Button layout="secondary" theme="white" disabled>
+      <Button layout={EButtonLayout.SECONDARY} theme="white" disabled>
         secondary disabled
       </Button>
       <br />
-      <Button layout="secondary" svgIcon={icon} theme="white" iconPosition="icon-before">
+      <Button
+        layout={EButtonLayout.SECONDARY}
+        svgIcon={icon}
+        theme="white"
+        iconPosition="icon-before"
+      >
         secondary icon before text
       </Button>
       <br />
-      <Button layout="secondary" svgIcon={icon} theme="white" iconPosition="icon-before" disabled>
+      <Button
+        layout={EButtonLayout.SECONDARY}
+        svgIcon={icon}
+        theme="white"
+        iconPosition="icon-before"
+        disabled
+      >
         secondary icon before text disabled
       </Button>
     </>

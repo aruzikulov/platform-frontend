@@ -12,7 +12,7 @@ import {
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormCheckbox, FormTextArea } from "../../../shared/forms";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
@@ -97,7 +97,7 @@ const EtoRegistrationRiskAssessmentComponent = (props: IProps) => {
       <Col>
         <Row className="justify-content-end">
           <Button
-            layout="primary"
+            layout={EButtonLayout.PRIMARY}
             className="mr-4"
             type="submit"
             isLoading={props.savingData}

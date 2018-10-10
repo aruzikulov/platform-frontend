@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 
 import { CommonHtmlProps, TAcceptedFileType } from "../../types";
 import { dontPropagateEvent } from "../../utils/dontPropagate";
-import { Button } from "./buttons";
+import { Button, EButtonLayout } from "./buttons";
 
 import * as uploadIcon from "../../assets/img/inline_icons/upload.svg";
 import * as styles from "./SingleFileUpload.module.scss";
@@ -69,12 +69,16 @@ export class SingleFileUpload extends React.Component<IProps & CommonHtmlProps> 
         <div className={styles.sideBox}>
           {!disabled &&
             (hasFile ? (
-              <Button layout="secondary" onClick={dontPropagateEvent(onDeleteFile)}>
+              <Button layout={EButtonLayout.SECONDARY} onClick={dontPropagateEvent(onDeleteFile)}>
                 Delete {label}
               </Button>
             ) : (
               <>
-                <Button layout="secondary" iconPosition="icon-before" svgIcon={uploadIcon}>
+                <Button
+                  layout={EButtonLayout.SECONDARY}
+                  iconPosition="icon-before"
+                  svgIcon={uploadIcon}
+                >
                   {label}
                 </Button>
                 <div className={styles.acceptedFiles}>{fileFormatInformation}</div>

@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { Col, Row } from "reactstrap";
 
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 
 import * as styles from "./BackupSeedDisplay.module.scss";
 
@@ -97,7 +97,7 @@ export const BackupSeedDisplay: React.SFC<IBackupSeedDisplayProps> = ({
         <Row>
           <Col>
             <Button
-              layout="secondary"
+              layout={EButtonLayout.SECONDARY}
               iconPosition="icon-before"
               svgIcon={arrowLeft}
               onClick={onBack}

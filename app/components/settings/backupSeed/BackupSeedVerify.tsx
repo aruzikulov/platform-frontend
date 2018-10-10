@@ -4,7 +4,7 @@ import * as React from "react";
 import Select from "react-virtualized-select";
 import { Col, Row } from "reactstrap";
 
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { WarningAlert } from "../../shared/WarningAlert";
 
 import * as arrowLeft from "../../../assets/img/inline_icons/arrow_left.svg";
@@ -173,7 +173,7 @@ export const BackupSeedVerifyComponent = class extends React.Component<
         <Row>
           <Col>
             <Button
-              layout="secondary"
+              layout={EButtonLayout.SECONDARY}
               iconPosition="icon-before"
               svgIcon={arrowLeft}
               onClick={this.props.onBack}

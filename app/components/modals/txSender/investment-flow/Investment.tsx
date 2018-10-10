@@ -36,7 +36,7 @@ import {
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
 import { formatMoney, formatThousands } from "../../../../utils/Money.utils";
 import { InfoAlert } from "../../../shared/Alerts";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormFieldRaw } from "../../../shared/forms/formField/FormFieldRaw";
 import { Heading } from "../../../shared/modals/Heading";
 import { InvestmentTypeSelector, WalletSelectionData } from "./InvestmentTypeSelector";
@@ -233,7 +233,12 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
         </Col>
       </Row>
       <Row className="justify-content-center mb-0">
-        <Button onClick={investNow} layout="primary" type="submit" disabled={!readyToInvest}>
+        <Button
+          onClick={investNow}
+          layout={EButtonLayout.PRIMARY}
+          type="submit"
+          disabled={!readyToInvest}
+        >
           <FormattedMessage id="investment-flow.invest-now" />
         </Button>
       </Row>

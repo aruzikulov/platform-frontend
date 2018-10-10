@@ -17,7 +17,7 @@ import {
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
-import { Button } from "../shared/buttons";
+import { Button, EButtonLayout } from "../shared/buttons";
 import { KycPanel } from "./KycPanel";
 import { KYCAddDocuments } from "./shared/AddDocuments";
 
@@ -93,7 +93,7 @@ class RequestStateInfo extends React.Component<IProps> {
     const settingsButton = (
       <div className="p-4 text-center">
         <Button
-          layout="secondary"
+          layout={EButtonLayout.SECONDARY}
           iconPosition="icon-before"
           svgIcon={arrowLeft}
           onClick={

@@ -1,4 +1,3 @@
-import BigNumber from "bignumber.js";
 import { camelCase } from "lodash";
 import { compose, keyBy, map, omit } from "lodash/fp";
 import { all, fork, put, select } from "redux-saga/effects";
@@ -168,7 +167,7 @@ export function* loadComputedContributionFromContract(
     const calculation = yield promisify(etoContract.rawWeb3Contract.calculateContribution, [
       from,
       isICBM,
-      new BigNumber(amountEuroUlps),
+      amountEuroUlps,
     ]);
     yield put(
       actions.publicEtos.setCalculatedContribution(

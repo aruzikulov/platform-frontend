@@ -13,7 +13,7 @@ import {
 } from "../../../modules/wallet/selectors";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
-import { ButtonLink } from "../../shared/buttons";
+import { ButtonLink, EButtonLayout } from "../../shared/buttons";
 import { LoadingIndicator } from "../../shared/LoadingIndicator";
 import { ECurrencySymbol, Money } from "../../shared/Money";
 import { MoneySuiteWidget } from "../../shared/MoneySuiteWidget";
@@ -106,7 +106,7 @@ export const MyWalletWidgetComponent: React.SFC<CommonHtmlProps & StateProps> = 
       rightComponent={
         <ButtonLink
           to={appRoutes.wallet}
-          layout="secondary"
+          layout={EButtonLayout.SECONDARY}
           iconPosition="icon-after"
           theme="dark"
           svgIcon={arrowRight}

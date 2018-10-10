@@ -84,42 +84,125 @@ export const etoTermsForm: TFormFixture = {
 };
 
 // key individuals
-// @TODO also upload individuals fotos and add social channels
 export const etoKeyIndividualsForm: TFormFixture = {
   "team.members.0.name": "Zoe",
   "team.members.0.role": "Boss",
   "team.members.0.description": "Yoga 4 life",
   "team.members.0.website": "http://www.zoe.com",
+  "team.members.0.image": {
+    value: "example.jpg",
+    type: "file",
+  },
+  "team.members.0.socialChannels": {
+    type: "media",
+    values: {
+      medium: "https://medium.com/zoe",
+      twitter: "https://twitter.com/zoe",
+      linkedin: "https://linkedin.com/zoe",
+    },
+  },
 
   "advisors.members.0.name": "Marcin",
   "advisors.members.0.role": "Boss",
   "advisors.members.0.description": "Yoga 4 life",
   "advisors.members.0.website": "http://www.zoe.com",
+  "advisors.members.0.image": {
+    value: "example.jpg",
+    type: "file",
+  },
+  "advisors.members.0.socialChannels": {
+    type: "media",
+    values: {
+      medium: "https://medium.com/marcin",
+      twitter: "https://twitter.com/marcin",
+      linkedin: "https://linkedin.com/marcin",
+    },
+  },
 
   "keyAlliances.members.0.name": "Dave",
   "keyAlliances.members.0.role": "Boss",
   "keyAlliances.members.0.description": "Yoga 4 life",
   "keyAlliances.members.0.website": "http://www.zoe.com",
+  "keyAlliances.members.0.image": {
+    value: "example.jpg",
+    type: "file",
+  },
+  "keyAlliances.members.0.socialChannels": {
+    type: "media",
+    values: {
+      medium: "https://medium.com/dave",
+      twitter: "https://twitter.com/dave",
+      linkedin: "https://linkedin.com/dave",
+    },
+  },
 
   "boardMembers.members.0.name": "Moe",
   "boardMembers.members.0.role": "Boss",
   "boardMembers.members.0.description": "Yoga 4 life",
   "boardMembers.members.0.website": "http://www.zoe.com",
+  "boardMembers.members.0.image": {
+    value: "example.jpg",
+    type: "file",
+  },
+  "boardMembers.members.0.socialChannels": {
+    type: "media",
+    values: {
+      medium: "https://medium.com/moe",
+      twitter: "https://twitter.com/moe",
+      linkedin: "https://linkedin.com/moe",
+    },
+  },
 
   "notableInvestors.members.0.name": "Gunther",
   "notableInvestors.members.0.role": "Boss",
   "notableInvestors.members.0.description": "Yoga 4 life",
   "notableInvestors.members.0.website": "http://www.zoe.com",
+  "notableInvestors.members.0.image": {
+    value: "example.jpg",
+    type: "file",
+  },
+  "notableInvestors.members.0.socialChannels": {
+    type: "media",
+    values: {
+      medium: "https://medium.com/Gunther",
+      twitter: "https://twitter.com/Gunther",
+      linkedin: "https://linkedin.com/Gunther",
+    },
+  },
 
   "keyCustomers.members.0.name": "Hognob",
   "keyCustomers.members.0.role": "Boss",
   "keyCustomers.members.0.description": "Yoga 4 life",
   "keyCustomers.members.0.website": "http://www.zoe.com",
+  "keyCustomers.members.0.image": {
+    value: "example.jpg",
+    type: "file",
+  },
+  "keyCustomers.members.0.socialChannels": {
+    type: "media",
+    values: {
+      medium: "https://medium.com/Hognob",
+      twitter: "https://twitter.com/Hognob",
+      linkedin: "https://linkedin.com/Hognob",
+    },
+  },
 
   "partners.members.0.name": "Blabla",
   "partners.members.0.role": "Boss",
   "partners.members.0.description": "Yoga 4 life",
   "partners.members.0.website": "http://www.zoe.com",
+  "partners.members.0.image": {
+    value: "example.jpg",
+    type: "file",
+  },
+  "partners.members.0.socialChannels": {
+    type: "media",
+    values: {
+      medium: "https://medium.com/Blabla",
+      twitter: "https://twitter.com/Blabla",
+      linkedin: "https://linkedin.com/Blabla",
+    },
+  },
 
   "eto-registration-key-individuals-submit": {
     value: "",
@@ -158,7 +241,24 @@ export const productVisionForm: TFormFixture = {
 export const mediaForm: TFormFixture = {
   "companyVideo.url": "https://www.youtube.com/watch?v=oHg5SJYRHA0",
   "companySlideshare.url": "https://neufund.org/",
-  "socialChannels.0.url": "https://twitter.com/neufundorg?lang=en",
+  socialChannels: {
+    type: "media",
+    values: {
+      twitter: "https://twitter.com/neufund",
+      facebook: "https://facebook.com/neufund",
+      linkedin: "https://linkedin.com/neufund",
+      slack: "https://slack.com/neufund",
+      medium: "https://medium.com/neufund",
+      reddit: "https://reddit.com/#neufund",
+      telegram: "https://telegram.com/neufund",
+      github: "https://github.com/neufund",
+      instagram: "https://instagram.com/neufund",
+      gplus: "https://goggle-plus.com/neufund",
+      youtube: "https://youtube.com/neufund",
+      xing: "https://xing.com/neufund",
+      bitcointalk: "https://bitcointalk.com/neufund",
+    },
+  },
   "companyNews.0.publication": "Publication name",
   "companyNews.0.url": "https://neufund.org/",
   "companyNews.0.title": "The neufund chronicle",

@@ -4,7 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import * as styles from "./Counter.module.scss";
 
 interface IProps {
-  endDate: number;
+  endDate: Date;
 }
 
 interface IPlateProps {
@@ -32,7 +32,7 @@ const Plate: React.SFC<IPlateProps> = ({ value, label }) => {
 
 export class Counter extends React.Component<IProps, IState> {
   state = {
-    date: this.props.endDate - Date.now(),
+    date: this.props.endDate.getTime() - Date.now(),
   };
 
   timer: any = null;

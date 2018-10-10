@@ -25,13 +25,11 @@ describe("Verify Email Widget", () => {
 
     goToSettings();
     assertVerifyEmailWidgetIsInUnverifiedEmailState();
-    cy.get(tid("verify-email-widget.change-email.button")).click();
+    cy.get(tid("verify-email-widget.change-email.button")).awaitedClick();
     assertVerifyEmailWidgetIsInNoEmailState();
 
     cy.get(tid("verify-email-widget-form-email-input")).type(secondEmail);
-    cy.get(tid("verify-email-widget-form-submit"))
-      .wait(1500)
-      .click();
+    cy.get(tid("verify-email-widget-form-submit")).awaitedClick();
 
     confirmAccessModal(password);
 

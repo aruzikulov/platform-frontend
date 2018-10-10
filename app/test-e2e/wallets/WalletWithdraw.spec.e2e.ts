@@ -11,6 +11,7 @@ import {
 } from "../utils";
 import { getTransactionByHashRpc, getBalanceRpc } from "../utils/ethRpcUtils";
 import { recoverRoutes } from "../../components/walletSelector/walletRecover/recoverRoutes";
+import { confirmAccessModal } from "../utils/index";
 
 const Q18 = new BigNumber(10).pow(18);
 const GIGA_WEI = 1000000000;
@@ -62,9 +63,9 @@ describe("Wallet Withdraw", () => {
     const expectedInputValue = "0";
 
     assertUserInDashboard();
-    cy.get(tid("authorized-layout-wallet-button")).click();
+    cy.get(tid("authorized-layout-wallet-button")).awaitedClick();
     cy.get(tid("account-address.your.ether-address.div")).then(accountAddress => {
-      cy.get(tid("wallet-balance.ether.shared-component.withdraw.button")).click();
+      cy.get(tid("wallet-balance.ether.shared-component.withdraw.button")).awaitedClick();
       cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.to-address")).type(
         expectedAddress,
       );
@@ -74,13 +75,13 @@ describe("Wallet Withdraw", () => {
           const expectedGasPrice = gasPrice.text().match(numberRegExPattern) || ["0"];
           cy.get(
             tid("modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"),
-          ).click();
+          ).awaitedClick();
 
-          cy.get(tid("modals.tx-sender.withdraw-flow.summery.withdrawSummery.accept")).click();
-          cy.get(tid("access-light-wallet-password-input")).type(DEFAULT_PASSWORD);
-          // for some reason we have to wait and click twice here, although as a user it's only once..
-          cy.wait(1000);
-          cy.get(tid("access-light-wallet-confirm")).click();
+          cy.get(
+            tid("modals.tx-sender.withdraw-flow.summery.withdrawSummery.accept"),
+          ).awaitedClick();
+
+          confirmAccessModal(DEFAULT_PASSWORD);
 
           cy.get(tid("modals.shared.signing-message.modal"));
           cy.get(tid("modals.tx-sender.withdraw-flow.success"));

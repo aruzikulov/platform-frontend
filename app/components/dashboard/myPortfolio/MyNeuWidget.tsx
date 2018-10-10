@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { Col, Row } from "reactstrap";
 
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { Money } from "../../shared/Money";
 
 import { FormattedMessage } from "react-intl-phraseapp";
@@ -36,7 +36,12 @@ export const MyNeuWidget: React.SFC<IProps> = props => {
         </Col>
         <Col md={12} className="text-right text-md-center" data-test-id="arrow-neu">
           <a href={externalRoutes.freshdesk}>
-            <Button layout="secondary" iconPosition="icon-after" theme="white" svgIcon={arrowRight}>
+            <Button
+              layout={EButtonLayout.SECONDARY}
+              iconPosition="icon-after"
+              theme="white"
+              svgIcon={arrowRight}
+            >
               <FormattedMessage id="dashboard.my-neu-widget.about" />
             </Button>
           </a>

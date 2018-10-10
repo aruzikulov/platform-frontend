@@ -7,7 +7,7 @@ import { actions } from "../../../modules/actions";
 import { selectIcbmMigrationWallet } from "../../../modules/icbmWalletBalanceModal/selectors";
 import { ILockedWallet } from "../../../modules/wallet/reducer";
 import { appConnect } from "../../../store";
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { FormFieldColorful } from "../../shared/forms/formField/FormFieldColorful";
 import { Panel } from "../../shared/Panel";
 
@@ -34,7 +34,7 @@ class FormContent extends React.Component {
             />
             <Button
               className={styles.button}
-              layout="secondary"
+              layout={EButtonLayout.SECONDARY}
               iconPosition="icon-after"
               svgIcon={arrowRight}
               type="submit"

@@ -5,7 +5,7 @@ $_hover-color: $color-brand;
 $_focus-color: $color-brand;
 $_active-color: lighten($_hover-color, 20%);
 
-:global(.button) {
+.button {
   all: initial;
   cursor: pointer;
   font-weight: $font-weight-bold;
@@ -36,6 +36,7 @@ $_active-color: lighten($_hover-color, 20%);
   &:disabled,
   &:global(.primary):disabled, // sass-lint:disable-line force-pseudo-nesting
   &:global(.secondary):disabled, // sass-lint:disable-line force-pseudo-nesting
+  &:global(.inline):disabled // sass-lint:disable-line force-pseudo-nesting
   &:global(.simple):disabled { // sass-lint:disable-line force-pseudo-nesting
     color: $neu-pale-grey;
     cursor: not-allowed;
@@ -112,6 +113,22 @@ $_active-color: lighten($_hover-color, 20%);
     .content {
       padding: 0;
       justify-content: flex-end;
+    }
+  }
+
+  &:global(.inline) {
+    @include font-default;
+
+    font-weight: inherit;
+    text-decoration: underline;
+
+    &:hover,
+    &:focus {
+      text-decoration: none;
+    }
+
+    .content {
+      padding: 0;
     }
   }
 

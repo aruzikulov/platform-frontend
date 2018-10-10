@@ -5,10 +5,9 @@ import { Col } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import { EtoState } from "../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { selectPublicEtos } from "../../../modules/public-etos/selectors";
-import { ETOStateOnChain, TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
+import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
 import { IWalletState } from "../../../modules/wallet/reducer";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
@@ -45,15 +44,13 @@ const EtoListComponent: React.SFC<IProps> = ({ etos, wallet }) => (
                 ((eto.preMoneyValuationEur || 1) / (eto.existingCompanyShares || 1)) *
                 (eto.minimumNewSharesToIssue || 1)
               ).toFixed(4)}`}
-              contract={eto.contract}
-              timedState={eto.contract ? eto.contract.timedState : ETOStateOnChain.Setup}
+              contract={eto.contract!}
               wallet={wallet}
               etoId={eto.etoId}
-              smartContractOnchain={eto.state === EtoState.ON_CHAIN}
+              previewCode={eto.previewCode}
               prospectusApproved={keyBy(eto.documents, "documentType")["approved_prospectus"]}
               termSheet={keyBy(eto.documents, "documentType")["termsheet_template"]}
               canEnableBookbuilding={eto.canEnableBookbuilding}
-              etoStartDate={eto.startDate}
               preEtoDuration={eto.whitelistDurationDays}
               publicEtoDuration={eto.publicDurationDays}
               inSigningDuration={eto.signingDurationDays}
@@ -71,7 +68,7 @@ const EtoListComponent: React.SFC<IProps> = ({ etos, wallet }) => (
                 maxPledge: eto.maxTicketEur || 0,
                 minPledge: eto.minTicketEur || 0,
                 isActivated: eto.isBookbuilding || false,
-                quote: (eto.company && eto.company.keyQuoteFounder) || "",
+                quote: eto.company.keyQuoteFounder,
               }}
             />
           </div>

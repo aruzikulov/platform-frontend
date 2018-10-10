@@ -10,9 +10,15 @@ import { CommonHtmlProps } from "../../../types";
 
 import * as styles from "./Button.module.scss";
 
-type TButtonLayout = "primary" | "secondary" | "simple";
 type TButtonTheme = "dark" | "white" | "brand" | "silver" | "graphite";
 type TIconPosition = "icon-before" | "icon-after";
+
+export enum EButtonLayout {
+  PRIMARY = "primary",
+  SECONDARY = "secondary",
+  INLINE = "inline",
+  SIMPLE = "simple",
+}
 
 export enum ButtonSize {
   NORMAL = "",
@@ -35,7 +41,7 @@ interface IButtonIcon extends IGeneralButton {
 }
 
 export interface IButtonProps extends IGeneralButton, CommonHtmlProps {
-  layout?: TButtonLayout;
+  layout?: EButtonLayout;
   theme?: TButtonTheme;
   disabled?: boolean;
   svgIcon?: string;
@@ -61,7 +67,7 @@ const Button: React.SFC<IButtonProps> = ({
   ...props
 }) => (
   <button
-    className={cn("button", layout, iconPosition, theme, size, width)}
+    className={cn(styles.button, layout, iconPosition, theme, size, width)}
     disabled={disabled || isLoading}
     type={type}
     {...props}
@@ -81,7 +87,7 @@ const Button: React.SFC<IButtonProps> = ({
 );
 
 Button.defaultProps = {
-  layout: "primary",
+  layout: EButtonLayout.PRIMARY,
   theme: "dark",
   type: "button",
   disabled: false,
@@ -100,7 +106,12 @@ const ButtonClose: React.SFC<IGeneralButton> = props => (
 );
 
 const ButtonArrowRight: React.SFC<IButtonProps> = props => (
-  <Button {...props} layout="secondary" iconPosition="icon-after" svgIcon={arrowRight} />
+  <Button
+    {...props}
+    layout={EButtonLayout.SECONDARY}
+    iconPosition="icon-after"
+    svgIcon={arrowRight}
+  />
 );
 
 export { ButtonIcon, ButtonClose, ButtonArrowRight, Button };

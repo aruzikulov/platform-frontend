@@ -12,7 +12,7 @@ import {
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField, FormTextArea } from "../../../shared/forms";
 import { FormSingleFileUpload } from "../../../shared/forms/formField/FormSingleFileUpload";
 import { EtoTagWidget, generateTagOptions } from "../../shared/EtoTagWidget";
@@ -104,7 +104,7 @@ const EtoRegistrationTeamAndInvestorsComponent = (
     <Col>
       <Row className="justify-content-end">
         <Button
-          layout="primary"
+          layout={EButtonLayout.PRIMARY}
           className="mr-4"
           type="submit"
           isLoading={props.savingData}

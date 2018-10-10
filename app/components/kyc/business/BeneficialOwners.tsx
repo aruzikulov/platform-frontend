@@ -8,7 +8,7 @@ import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Accordion } from "../../shared/Accordion";
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { HorizontalLine } from "../../shared/HorizontalLine";
 import { KYCBeneficialOwner } from "./BeneficialOwner";
 
@@ -48,7 +48,7 @@ const KYCBeneficialOwnersComponent: React.SFC<IProps> = props => (
     <div className="p-4 text-center">
       <Button
         data-test-id="kyc-beneficial-owner-add-new"
-        layout="secondary"
+        layout={EButtonLayout.SECONDARY}
         iconPosition="icon-before"
         svgIcon={plusIcon}
         onClick={props.createBeneficialOwner}

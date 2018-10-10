@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { TKycRequestType } from "../../../lib/api/KycApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { KycPanel } from "../KycPanel";
 import { kycRoutes } from "../routes";
 
@@ -71,7 +71,7 @@ export const KycPersonalInstantIdComponent: React.SFC<IProps & IStateProps & IDi
     </p>
     <div className="text-center">
       <Button
-        layout="secondary"
+        layout={EButtonLayout.SECONDARY}
         onClick={props.onManualVerification}
         svgIcon={arrowRightIcon}
         iconPosition="icon-after"

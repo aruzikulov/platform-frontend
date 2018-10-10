@@ -13,7 +13,7 @@ import { actions } from "../../../../modules/actions";
 import { selectIssuerEto } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
 import { formatMoney } from "../../../../utils/Money.utils";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField } from "../../../shared/forms";
 import { FormTransformingField } from "../../../shared/forms/formField/FormTransformingField";
 import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
@@ -220,7 +220,7 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
         <Col>
           <Row className="justify-content-center">
             <Button
-              layout="primary"
+              layout={EButtonLayout.PRIMARY}
               type="submit"
               isLoading={savingData}
               data-test-id="eto-registration-investment-terms-submit"

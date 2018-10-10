@@ -22,6 +22,8 @@ export interface ITag {
   onClick?: (e: any) => void;
   svgIcon?: string;
   placeSvgInEnd?: boolean;
+  component?: React.ComponentType<any>;
+  componentProps?: any;
 }
 
 export const Tag: React.SFC<ITag> = ({
@@ -34,24 +36,46 @@ export const Tag: React.SFC<ITag> = ({
   onClick,
   svgIcon,
   placeSvgInEnd,
+  component: Component,
+  componentProps = {},
 }) => {
   const classes = cn(styles.tag, layout, size, theme, className);
 
+  if (to) {
+    return (
+      <Link to={to} className={classes}>
+        {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
+        {text}
+        {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
+      </Link>
+    );
+  }
+
+  if (Component) {
+    return (
+      <Component className={classes} {...componentProps}>
+        {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
+        {text}
+        {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
+      </Component>
+    );
+  }
+
+  if (onClick) {
+    return (
+      <button onClick={onClick} className={cn(classes, styles.tagAsButton)}>
+        {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
+        {text}
+        {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
+      </button>
+    );
+  }
+
   return (
-    <>
-      {to ? (
-        <Link to={to} className={classes}>
-          {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
-          {text}
-          {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
-        </Link>
-      ) : (
-        <span onClick={onClick} className={classes}>
-          {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
-          {text}
-          {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
-        </span>
-      )}
-    </>
+    <span className={classes}>
+      {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
+      {text}
+      {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
+    </span>
   );
 };

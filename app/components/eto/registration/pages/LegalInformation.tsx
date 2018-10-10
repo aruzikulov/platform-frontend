@@ -13,7 +13,7 @@ import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
 import { TTranslatedString } from "../../../../types";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import {
   FormCategoryDistribution,
   FormField,
@@ -148,7 +148,7 @@ const EtoRegistrationLegalInformationComponent = ({ readonly, savingData }: IPro
           <Row className="justify-content-end">
             <Button
               type="submit"
-              layout="primary"
+              layout={EButtonLayout.PRIMARY}
               className="mr-4"
               isLoading={savingData}
               data-test-id="eto-registration-legal-information-submit"

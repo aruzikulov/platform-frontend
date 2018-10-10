@@ -12,7 +12,7 @@ import {
 import { actions } from "../../../../modules/actions";
 import { selectIssuerEto } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { BOOL_TRUE_KEY, FormSelectField } from "../../../shared/forms";
 import { FormLabel } from "../../../shared/forms/formField/FormLabel";
 import { FormToggle } from "../../../shared/forms/formField/FormToggle";
@@ -82,7 +82,7 @@ const EtoVotingRightsComponent: React.SFC<IProps> = ({ readonly, savingData }) =
       <Col>
         <Row className="justify-content-center">
           <Button
-            layout="primary"
+            layout={EButtonLayout.PRIMARY}
             type="submit"
             isLoading={savingData}
             data-test-id="eto-registration-voting-rights-submit"

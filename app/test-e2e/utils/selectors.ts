@@ -3,5 +3,5 @@ export function tid(id: string, rest?: string): string {
 }
 
 export function formField(name: string): string {
-  return `[name="${name}"]`;
+  return `[name="${name}"], ${tid(name)}`;
 }

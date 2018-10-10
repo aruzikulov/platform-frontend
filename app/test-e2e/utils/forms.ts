@@ -1,10 +1,14 @@
 import { forEach } from "lodash";
-import { formField, tid } from "../utils/selectors";
+import { formField, tid } from "./selectors";
 
 type TFormFieldFixture =
   | {
       value: string;
-      type: "string" | "submit" | "tags" | "file" | "date" | "select" | "check";
+      type: "submit" | "tags" | "file" | "date" | "select" | "check";
+    }
+  | {
+      type: "media";
+      values: Record<string, string>;
     }
   | string;
 
@@ -12,19 +16,25 @@ export type TFormFixture = {
   [fieldIdentifier: string]: TFormFieldFixture;
 };
 
+export const fillField = (key: string, value: string, parent: string = "body") => {
+  cy.get(parent).within(() => {
+    cy.get(formField(key))
+      .clear()
+      .type(value);
+  });
+};
+
 /**
  * Fill out a form
  * @param fixture - Which form fixture to load
  * @param submit - wether to submit the form or not, default true
  */
-export const fillForm = (fixture: TFormFixture, submit: boolean = true) => {
+export const fillForm = (fixture: TFormFixture, { submit = true }: { submit?: boolean } = {}) => {
   let submitButtonTid = "";
   forEach(fixture, (field, key) => {
     // the default is just typing a string into the input
     if (typeof field === "string") {
-      cy.get(formField(key))
-        .clear()
-        .type(field);
+      fillField(key, field);
     }
     // date
     else if (field.type === "date") {
@@ -54,6 +64,20 @@ export const fillForm = (fixture: TFormFixture, submit: boolean = true) => {
     else if (field.type === "file") {
       uploadFileToFieldWithTid(key, field.value);
       cy.wait(1000);
+    } else if (field.type === "media") {
+      const socialProfilesTid = tid(key);
+
+      cy.get(socialProfilesTid).then($socialProfiles => {
+        forEach(field.values, (value, key) => {
+          const $button = $socialProfiles.find(tid(`social-profiles.profile-button.${key}`));
+
+          if (!$button.hasClass("is-selected")) {
+            $button.click();
+          }
+
+          fillField(`social-profiles.profile-input.${key}`, value, socialProfilesTid);
+        });
+      });
     }
     // also remember main submitt button
     else if (field.type === "submit") {
@@ -61,7 +85,7 @@ export const fillForm = (fixture: TFormFixture, submit: boolean = true) => {
     }
   });
   if (submit) {
-    cy.get(tid(submitButtonTid)).click();
+    cy.get(tid(submitButtonTid)).awaitedClick();
   }
 };
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedPlural } from "react-intl";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
-import { Button, ButtonLink } from "./buttons";
+import { Button, ButtonLink, EButtonLayout } from "./buttons";
 import { Money } from "./Money";
 import { PercentageIndicatorBar } from "./PercentageIndicatorBar";
 import { ITag, Tag } from "./Tag";
@@ -143,14 +143,14 @@ export const InvestmentPreview: React.SFC<IProps> = ({
                   }}
                 />
               </span>
-              <Button layout="secondary" onClick={() => handleEmailSend}>
+              <Button layout={EButtonLayout.SECONDARY} onClick={() => handleEmailSend}>
                 <FormattedMessage id="shared-component.investment-preview.get-notification" />
               </Button>
             </>
           )}
         </div>
       </div>
-      <ButtonLink to={linkToDetails} layout="secondary">
+      <ButtonLink to={linkToDetails} layout={EButtonLayout.SECONDARY}>
         <FormattedMessage id="shared-component.investment-preview.details" />
       </ButtonLink>
     </article>

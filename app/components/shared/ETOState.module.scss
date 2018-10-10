@@ -1,8 +1,9 @@
 @mixin _set-indicator-color($eto-stage, $color) {
-  &:global(.#{unquote($eto-stage)}) {
+  &.#{unquote($eto-stage)} {
     &::before {
-      background-color: $color-orange;
+      background-color: $color;
     }
+
   }
 }
 
@@ -22,9 +23,18 @@
     margin-right: px-to-rem(8px);
     border-radius: 50%;
     flex-shrink: 0;
-    background-color: $color-green-dark;
+    background-color: $green-light;
   }
 
-  // themes based on ETOStateOnChain values converted to kebab-case
+  &:global(.large) {
+    font-size: 16px;
+  }
+
+  &:global(.black) {
+    color: $neu-black;
+  }
+
   @include _set-indicator-color(refund, $color-orange);
+  @include _set-indicator-color(listed, $blue-light);
+  @include _set-indicator-color(pending, $neu-bright-orange);
 }

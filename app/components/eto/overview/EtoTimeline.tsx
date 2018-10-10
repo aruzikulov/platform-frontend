@@ -247,14 +247,14 @@ export const EtoTimeline: React.SFC<IProps> = ({ startOfStates }) => {
         <g transform={`translate(0 ${POINTER_HEIGHT})`}>
           <g>
             <StartBlock
-              title={<FormattedMessage id="eto-timeline.campaining" />}
+              title={<FormattedMessage id="eto.status.onchain.setup" />}
               theme="blue"
               width={CAMPAIGNING_BLOCK_WIDTH}
             />
           </g>
           <g transform={`translate(${CAMPAIGNING_BLOCK_WIDTH})`}>
             <Block
-              title={<FormattedMessage id="eto-timeline.pre-eto" />}
+              title={<FormattedMessage id="eto.status.onchain.whitelist" />}
               width={preEtoWidth}
               theme="fluorescent-blue"
             />
@@ -265,7 +265,7 @@ export const EtoTimeline: React.SFC<IProps> = ({ startOfStates }) => {
           </g>
           <g transform={`translate(${CAMPAIGNING_BLOCK_WIDTH + preEtoWidth})`}>
             <Block
-              title={<FormattedMessage id="eto-timeline.public-eto" />}
+              title={<FormattedMessage id="eto.status.onchain.public" />}
               width={publicEtoWidth}
               theme="green"
             />
@@ -273,7 +273,7 @@ export const EtoTimeline: React.SFC<IProps> = ({ startOfStates }) => {
           </g>
           <g transform={`translate(${CAMPAIGNING_BLOCK_WIDTH + preEtoWidth + publicEtoWidth})`}>
             <Block
-              title={<FormattedMessage id="eto-timeline.in-signing" />}
+              title={<FormattedMessage id="eto.status.onchain.signing" />}
               width={inSigningWidth}
               theme="gray"
             />
@@ -289,7 +289,7 @@ export const EtoTimeline: React.SFC<IProps> = ({ startOfStates }) => {
               inSigningWidth})`}
           >
             <Block
-              title={<FormattedMessage id="eto-timeline.claim" />}
+              title={<FormattedMessage id="eto.status.onchain.claim" />}
               width={inClaimWidth}
               theme="gray-opacity"
             />

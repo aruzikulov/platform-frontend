@@ -16,7 +16,7 @@ import {
 } from "../../../modules/kyc/selectors";
 import { appConnect } from "../../../store";
 import { UnionDictionary } from "../../../types";
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { Panel } from "../../shared/Panel";
 
 import { onEnterAction } from "../../../utils/OnEnterAction";
@@ -115,7 +115,7 @@ const ActionButton = ({
   if (requestStatus === "Accepted" && userType === "investor") {
     return (
       <Button
-        layout="secondary"
+        layout={EButtonLayout.SECONDARY}
         iconPosition="icon-after"
         svgIcon={arrowRight}
         onClick={onGoToWallet}
@@ -129,7 +129,7 @@ const ActionButton = ({
   if (requestStatus === "Draft" || requestStatus === "Pending") {
     return (
       <Button
-        layout="secondary"
+        layout={EButtonLayout.SECONDARY}
         iconPosition="icon-after"
         svgIcon={arrowRight}
         onClick={onGoToKycHome}
@@ -151,8 +151,9 @@ const ActionButton = ({
       requestOutsourcedStatus === "started")
   ) {
     return (
+      // TODO: Style anchor as button
       <a href={externalKycUrl}>
-        <Button layout="secondary" iconPosition="icon-after" svgIcon={arrowRight}>
+        <Button layout={EButtonLayout.SECONDARY} iconPosition="icon-after" svgIcon={arrowRight}>
           <FormattedMessage id="settings.kyc-status-widget.continue-external-kyc" />
         </Button>
       </a>

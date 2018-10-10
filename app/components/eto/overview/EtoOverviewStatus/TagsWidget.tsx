@@ -1,8 +1,11 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
+import { compose } from "recompose";
 
-import { IEtoDocument } from "../../../../lib/api/eto/EtoFileApi.interfaces";
-import { TTranslatedString } from "../../../../types";
+import { EEtoDocumentType, IEtoDocument } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { actions } from "../../../../modules/actions";
+import { appConnect } from "../../../../store";
+import { EtherscanAddressLink } from "../../../shared/EtherscanLink";
 import { Tag } from "../../../shared/Tag";
 
 export interface ITagsWidget {
@@ -12,34 +15,30 @@ export interface ITagsWidget {
   etoId: string;
 }
 
-const LinkedTag: React.SFC<{ href: string; text: TTranslatedString; download?: boolean }> = ({
-  href,
-  text,
-  download,
-}) => {
-  return (
-    <a href={href} download={download} target="_blank">
-      <Tag size="small" theme="green" layout="ghost" text={text} />
-    </a>
-  );
+type TDispatchProps = {
+  downloadDocumentByType: (type: EEtoDocumentType) => void;
 };
 
-const TagsWidget: React.SFC<ITagsWidget> = ({
+type TLayoutProps = ITagsWidget & TDispatchProps;
+
+const hasDocument = (document: IEtoDocument): boolean =>
+  !!document && !!document.name && !!document.name.length;
+
+const TagsWidgetLayout: React.SFC<TLayoutProps> = ({
   termSheet,
   prospectusApproved,
   smartContractOnchain,
   etoId,
+  downloadDocumentByType,
 }) => {
-  const hasTermSheet = termSheet && termSheet.name && termSheet.name.length;
-  const hasProspectusApproved =
-    prospectusApproved && prospectusApproved.name && prospectusApproved.name.length;
-
   return (
     <>
-      {hasTermSheet ? (
-        <LinkedTag
-          href={termSheet.name}
-          download
+      {hasDocument(termSheet) ? (
+        <Tag
+          onClick={() => downloadDocumentByType(termSheet.documentType)}
+          size="small"
+          theme="green"
+          layout="ghost"
           text={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
         />
       ) : (
@@ -50,10 +49,12 @@ const TagsWidget: React.SFC<ITagsWidget> = ({
           text={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
         />
       )}
-      {hasProspectusApproved ? (
-        <LinkedTag
-          href={prospectusApproved.name}
-          download
+      {hasDocument(prospectusApproved) ? (
+        <Tag
+          onClick={() => downloadDocumentByType(prospectusApproved.documentType)}
+          size="small"
+          theme="green"
+          layout="ghost"
           text={<FormattedMessage id="shared-component.eto-overview.prospectus-approved" />}
         />
       ) : (
@@ -65,8 +66,12 @@ const TagsWidget: React.SFC<ITagsWidget> = ({
         />
       )}
       {smartContractOnchain ? (
-        <LinkedTag
-          href={`https://etherscan.io/address/${etoId}`}
+        <Tag
+          component={EtherscanAddressLink}
+          componentProps={{ address: etoId }}
+          size="small"
+          theme="green"
+          layout="ghost"
           text={<FormattedMessage id="shared-component.eto-overview.smart-contract-on-chain" />}
         />
       ) : (
@@ -80,5 +85,14 @@ const TagsWidget: React.SFC<ITagsWidget> = ({
     </>
   );
 };
+
+const TagsWidget = compose<TLayoutProps, ITagsWidget>(
+  appConnect<{}, TDispatchProps>({
+    dispatchToProps: dispatch => ({
+      downloadDocumentByType: documentType =>
+        dispatch(actions.etoDocuments.downloadDocumentByType(documentType)),
+    }),
+  }),
+)(TagsWidgetLayout);
 
 export { TagsWidget };

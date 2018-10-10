@@ -13,7 +13,7 @@ import { selectKycRequestStatus } from "../kyc/selectors";
 import { selectEto, selectEtoWithCompanyAndContract } from "../public-etos/selectors";
 import { IEtoFlowState } from "./reducer";
 
-const selectIssuerEtoPreviewCode = (state: IEtoFlowState) => state.etoPreviewCode;
+export const selectIssuerEtoPreviewCode = (state: IEtoFlowState) => state.etoPreviewCode;
 
 export const selectIssuerEto = (state: IAppState) => {
   const issuerEtoPreviewCode = selectIssuerEtoPreviewCode(state.etoFlow);

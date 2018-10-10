@@ -4,7 +4,6 @@ import { compose } from "redux";
 
 import { selectIsAuthorized } from "../../../../../modules/auth/selectors";
 import { appConnect } from "../../../../../store";
-import { TTranslatedString } from "../../../../../types";
 import { appRoutes } from "../../../../appRoutes";
 import { ButtonLink } from "../../../../shared/buttons";
 import { CampaigningActivatedWidget } from "./CampaigningActivatedWidget";
@@ -14,7 +13,7 @@ import * as styles from "../EtoOverviewStatus.module.scss";
 export interface ICampaigningWidget {
   investorsLimit: number;
   isActivated: boolean;
-  quote: TTranslatedString;
+  quote: string | undefined;
   minPledge: number;
   maxPledge?: number;
 }
@@ -30,7 +29,7 @@ interface IStateProps {
 export interface ILoggedInCampaigningProps {
   investorsLimit: number;
   isActivated: boolean;
-  quote: TTranslatedString;
+  quote: string | undefined;
   etoId: string;
   minPledge: number;
   maxPledge?: number;

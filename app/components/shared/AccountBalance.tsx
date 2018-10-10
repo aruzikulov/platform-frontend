@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { Button } from "./buttons";
+import { Button, EButtonLayout } from "./buttons";
 import { IMoneySuiteWidgetProps, MoneySuiteWidget } from "./MoneySuiteWidget";
 
 import * as arrowRightIcon from "../../assets/img/inline_icons/arrow_right.svg";
@@ -39,7 +39,7 @@ export const AccountBalance: React.SFC<IProps & IMoneySuiteWidgetProps> = ({
       <div className={styles.buttons}>
         {onUpgradeClick && (
           <Button
-            layout="simple"
+            layout={EButtonLayout.SIMPLE}
             iconPosition="icon-after"
             theme="graphite"
             svgIcon={arrowRightIcon}
@@ -52,7 +52,7 @@ export const AccountBalance: React.SFC<IProps & IMoneySuiteWidgetProps> = ({
         {(onWithdrawClick || onDepositClick) && (
           <>
             <Button
-              layout="simple"
+              layout={EButtonLayout.SIMPLE}
               iconPosition="icon-after"
               theme="graphite"
               svgIcon={arrowRightIcon}
@@ -63,7 +63,7 @@ export const AccountBalance: React.SFC<IProps & IMoneySuiteWidgetProps> = ({
               <FormattedMessage id="shared-component.account-balance.withdraw" />
             </Button>
             <Button
-              layout="simple"
+              layout={EButtonLayout.SIMPLE}
               iconPosition="icon-after"
               theme="graphite"
               disabled={process.env.NF_WITHDRAW_ENABLED !== "1" || !onDepositClick}

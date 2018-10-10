@@ -17,8 +17,8 @@ describe("KYC Small Business flow with manual verification", () => {
   it("went through KYC Small Business flow", () => {
     // go to corporate start page
     cy.visit(kycRoutes.start);
-    cy.get(tid("kyc-start-go-to-company")).click();
-    cy.get(tid("kyc-start-business-go-to-corporation")).click();
+    cy.get(tid("kyc-start-go-to-company")).awaitedClick();
+    cy.get(tid("kyc-start-business-go-to-corporation")).awaitedClick();
 
     // fill out and submit business form
     fillForm(kycCorporateCompanyForm);
@@ -26,17 +26,15 @@ describe("KYC Small Business flow with manual verification", () => {
 
     // uplaod legal rep data
     fillForm(kycLegalRepForm);
-    fillForm(kycLegalRepDocsForm, false);
+    fillForm(kycLegalRepDocsForm, { submit: false });
 
     // add a new beneficial owner entry
-    cy.get(tid("kyc-beneficial-owner-add-new"))
-      .wait(1500)
-      .click();
+    cy.get(tid("kyc-beneficial-owner-add-new")).awaitedClick();
     // remove him again
-    cy.get(tid("kyc-beneficial-owner-delete")).click();
+    cy.get(tid("kyc-beneficial-owner-delete")).awaitedClick();
 
     // submit and accept
-    cy.get(tid("kyc-company-legal-representative-upload-and-submit")).click();
+    cy.get(tid("kyc-company-legal-representative-upload-and-submit")).awaitedClick();
     acceptWallet();
 
     // panel should now be in pending state

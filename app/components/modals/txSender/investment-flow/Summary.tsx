@@ -22,7 +22,7 @@ import {
 } from "../../../../utils/BigNumberUtils";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
 import { formatMoney, formatThousands } from "../../../../utils/Money.utils";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { DocumentTemplateButton } from "../../../shared/DocumentLink";
 import { Heading } from "../../../shared/modals/Heading";
 import { InfoList } from "../shared/InfoList";
@@ -136,7 +136,7 @@ const InvestmentSummaryComponent = injectIntlHelpers(
         </Row>
 
         <Row className="justify-content-center mb-0 mt-0">
-          <Button layout="primary" type="button" onClick={onAccept}>
+          <Button layout={EButtonLayout.PRIMARY} type="button" onClick={onAccept}>
             <FormattedMessage id="investment-flow.confirm" />
           </Button>
         </Row>

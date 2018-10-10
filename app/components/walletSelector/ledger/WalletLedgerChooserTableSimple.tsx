@@ -3,7 +3,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { ILedgerAccount } from "../../../modules/wallet-selector/ledger-wizard/reducer";
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { Money } from "../../shared/Money";
 import * as styles from "./WalletLedgerChooserTableSimple.module.scss";
 
@@ -30,7 +30,11 @@ export class AccountRow extends React.Component<IAccountRow> {
           <Money value={this.props.ledgerAccount.balanceNEU} currency="neu" />
         </td>
         <td className={styles.select}>
-          <Button layout="secondary" data-test-id="button-select" onClick={this.handleClick}>
+          <Button
+            layout={EButtonLayout.SECONDARY}
+            data-test-id="button-select"
+            onClick={this.handleClick}
+          >
             <FormattedMessage id="wallet-selector.ledger.derivation-path-selector.list.row.select-button" />
           </Button>
         </td>

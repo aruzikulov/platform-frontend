@@ -10,7 +10,7 @@ import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
 import { etoMediaProgressOptions } from "../../../../modules/eto-flow/utils";
 import { appConnect } from "../../../../store";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormCheckbox, FormField } from "../../../shared/forms";
 import { MediaLinksEditor } from "../../../shared/MediaLinksEditor";
 import { SOCIAL_PROFILES_ICONS, SocialProfilesEditor } from "../../../shared/SocialProfilesEditor";
@@ -106,7 +106,7 @@ const EtoRegistrationMediaComponent = ({ savingData }: IProps) => (
     <Col>
       <Row className="justify-content-end">
         <Button
-          layout="primary"
+          layout={EButtonLayout.PRIMARY}
           className="mr-4"
           type="submit"
           isLoading={savingData}

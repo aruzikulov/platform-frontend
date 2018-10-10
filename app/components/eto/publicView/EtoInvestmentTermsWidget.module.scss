@@ -69,14 +69,13 @@
   }
 
   .group-document-link {
-    display: flex;
-    height: 20px;
+    color: $color-graphite;
     font-size: 12px;
-    text-decoration: underline;
 
     .icon {
       margin-right: 12px;
       width: 18px;
+      line-height: 0;
     }
   }
 

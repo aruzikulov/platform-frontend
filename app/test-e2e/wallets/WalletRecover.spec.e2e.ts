@@ -52,7 +52,7 @@ describe("Wallet recover", () => {
     cy.get(tid("wallet-selector-register-password")).type("strongpassword");
     cy.get(tid("wallet-selector-register-confirm-password")).type("strongpassword{enter}");
 
-    cy.get(tid("recovery-success-btn-go-dashboard")).click();
+    cy.get(tid("recovery-success-btn-go-dashboard")).awaitedClick();
 
     assertWaitForLatestEmailSentWithSalt(email);
 
@@ -65,7 +65,7 @@ describe("Wallet recover", () => {
     // cy.contains(tid("my-wallet-widget-eth-token-large-value"), "ETH999 938.8591");
     // cy.contains(tid("my-wallet-widget-eth-token-value"), "483 930 410.24 EUR");
 
-    cy.get(tid("authorized-layout-settings-button")).click();
+    cy.get(tid("authorized-layout-settings-button")).awaitedClick();
 
     cy.get(tid("account-address.your.ether-address.input")).should(
       "have.value",
@@ -152,7 +152,7 @@ describe("Wallet recover", () => {
 
     assertWaitForLatestEmailSentWithSalt(email.toLowerCase());
 
-    cy.get(tid("recovery-success-btn-go-dashboard")).click();
+    cy.get(tid("recovery-success-btn-go-dashboard")).awaitedClick();
 
     assertUserInDashboard();
   });
@@ -198,7 +198,7 @@ describe("Wallet recover", () => {
     cy.get(tid("wallet-selector-register-password")).type("strongpassword");
     cy.get(tid("wallet-selector-register-confirm-password")).type("strongpassword{enter}");
 
-    cy.get(tid("recovery-success-btn-go-dashboard")).click();
+    cy.get(tid("recovery-success-btn-go-dashboard")).awaitedClick();
 
     assertWaitForLatestEmailSentWithSalt(email);
 
