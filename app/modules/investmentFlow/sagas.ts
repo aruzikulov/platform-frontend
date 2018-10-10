@@ -9,7 +9,6 @@ import { addBigNumbers, compareBigNumbers } from "../../utils/BigNumberUtils";
 import { convertToBigInt } from "../../utils/Money.utils";
 import { extractNumber } from "../../utils/StringUtils";
 import { actions, TAction } from "../actions";
-import { IGasState } from "../gas/reducer";
 import { loadComputedContributionFromContract } from "../public-etos/sagas";
 import { selectCalculatedContributionByEtoId, selectEtoById } from "../public-etos/selectors";
 import { neuCall } from "../sagas";

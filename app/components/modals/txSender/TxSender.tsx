@@ -4,7 +4,11 @@ import { Modal } from "reactstrap";
 
 import { ITxData, ITxInitData } from "../../../lib/web3/Web3Manager";
 import { actions } from "../../../modules/actions";
-import { ETransactionErrorType, ETxSenderState, ETxSenderType } from "../../../modules/tx/sender/reducer";
+import {
+  ETransactionErrorType,
+  ETxSenderState,
+  ETxSenderType,
+} from "../../../modules/tx/sender/reducer";
 import { selectTxSenderModalOpened } from "../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../store";
 import { LoadingIndicator } from "../../shared/LoadingIndicator";
@@ -56,8 +60,10 @@ export interface ITxInitDispatchProps {
 }
 
 export interface ITxSummaryStateProps {
-  txData: ITxData;
+  txData: ITxInitData;
+  txCost: string;
 }
+
 export interface ITxSummaryDispatchProps {
   onAccept: () => any;
 }

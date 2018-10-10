@@ -11,3 +11,5 @@ export const selectTxType = (state: ITxSenderState): ETxSenderType | undefined =
 
 export const selectTxGasCostEth = (state: ITxSenderState) =>
   multiplyBigNumbers([state.gasPrice, state.gasLimit]);
+
+export const selectTxSummaryData = (state: ITxSenderState) => state.summaryData || state.txDetails;

@@ -1,8 +1,9 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Col, Row } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
 
 import { actions } from "../../../../modules/actions";
+import { selectTxGasCostEth, selectTxSummaryData } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
 import { Button } from "../../../shared/buttons";
 import { Heading } from "../../../shared/modals/Heading";
@@ -10,13 +11,13 @@ import { Money } from "../../../shared/Money";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 import { ITxSummaryDispatchProps, ITxSummaryStateProps, TSummaryComponentProps } from "../TxSender";
-import { GweiFormatter } from "./Withdraw";
 
 export const WithdrawSummaryComponent: React.SFC<TSummaryComponentProps> = ({
   txData,
+  txCost,
   onAccept,
 }) => (
-  <>
+  <Container>
     <Row className="mb-4">
       <Col>
         <Heading>
@@ -37,7 +38,7 @@ export const WithdrawSummaryComponent: React.SFC<TSummaryComponentProps> = ({
 
           <InfoRow
             caption={<FormattedMessage id="withdraw-flow.transaction-cost" />}
-            value={<GweiFormatter value={txData.gasPrice} />}
+            value={<Money currency="eth" value={txCost} />}
           />
         </InfoList>
       </Col>
@@ -54,12 +55,13 @@ export const WithdrawSummaryComponent: React.SFC<TSummaryComponentProps> = ({
         </Button>
       </Col>
     </Row>
-  </>
+  </Container>
 );
 
 export const WithdrawSummary = appConnect<ITxSummaryStateProps, ITxSummaryDispatchProps>({
   stateToProps: state => ({
-    txData: state.txSender.txDetails!,
+    txData: selectTxSummaryData(state.txSender)!,
+    txCost: selectTxGasCostEth(state.txSender),
   }),
   dispatchToProps: d => ({
     onAccept: () => d(actions.txSender.txSenderAccept()),

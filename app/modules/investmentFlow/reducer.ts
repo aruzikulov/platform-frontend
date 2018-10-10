@@ -1,7 +1,6 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 
-
 export enum EInvestmentType {
   InvestmentWallet = "INVESTMENT_WALLET",
   ICBMEth = "ICBM_ETH",

@@ -31,4 +31,6 @@ export const txSenderActions = {
   // reducer setters
   setGasPrice: (gasPrice: string) => createAction("TX_SENDER_SET_GAS_PRICE", { gasPrice }),
   setGasLimit: (gasLimit: string) => createAction("TX_SENDER_SET_GAS_LIMIT", { gasLimit }),
+  setSummaryData: (summaryData?: ITxInitData) =>
+    createAction("TX_SENDER_SET_SUMMARY_DATA", { summaryData }),
 };

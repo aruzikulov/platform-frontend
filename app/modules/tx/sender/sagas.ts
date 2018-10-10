@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
 import { END, eventChannel } from "redux-saga";
-import { call, fork, put, race, select, take, takeEvery } from "redux-saga/effects";
+import { call, fork, put, race, select, take } from "redux-saga/effects";
 import * as Web3 from "web3";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
@@ -21,7 +21,6 @@ import { delay } from "../../../utils/delay";
 import { connectWallet } from "../../accessWallet/sagas";
 import { actions, TAction } from "../../actions";
 import { IGasState } from "../../gas/reducer";
-import { EInvestmentType } from "../../investmentFlow/reducer";
 import { onInvestmentTxModalHide } from "../../investmentFlow/sagas";
 import { neuCall, neuTakeEvery } from "../../sagas";
 import { updateTxs } from "../monitor/sagas";
@@ -34,7 +33,7 @@ import { generateEthWithdrawTransaction } from "../transactionsGenerators/withdr
 import { OutOfGasError } from "./../../../lib/web3/Web3Adapter";
 import { ITxData } from "./../../../lib/web3/Web3Manager";
 import { ETokenType, ETransactionErrorType, ETxSenderType } from "./reducer";
-import { selectTxDetails, selectTxGasCostEth, selectTxType } from "./selectors";
+import { selectTxDetails, selectTxType } from "./selectors";
 
 const INVESTMENT_GAS_AMOUNT = "600000";
 const WITHDRAW_GAS_AMOUNT = "100000";
@@ -47,7 +46,7 @@ interface ITxSendParams {
   requiresUserInput?: boolean;
   setupGasFunction?: any;
   cleanupFunction?: any;
-  predefinedGasLimit?: string
+  predefinedGasLimit?: string;
 }
 
 export function* withdrawSaga({ logger }: TGlobalDependencies): any {
@@ -55,7 +54,7 @@ export function* withdrawSaga({ logger }: TGlobalDependencies): any {
     yield txSendSaga({
       type: ETxSenderType.WITHDRAW,
       transactionGenerationFunction: generateEthWithdrawTransaction,
-      predefinedGasLimit: WITHDRAW_GAS_AMOUNT
+      predefinedGasLimit: WITHDRAW_GAS_AMOUNT,
     });
 
     logger.info("Withdrawing successful");
@@ -92,7 +91,7 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
       type: ETxSenderType.INVEST,
       transactionGenerationFunction: generateInvestmentTransaction,
       cleanupFunction: onInvestmentTxModalHide,
-      predefinedGasLimit: INVESTMENT_GAS_AMOUNT
+      predefinedGasLimit: INVESTMENT_GAS_AMOUNT,
     });
     logger.info("Investment successful");
   } catch (e) {
@@ -100,11 +99,11 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
   }
 }
 
-function* defaultGasPriceFunction (predefinedGasLimit?: string): any {
-  const s: IAppState = yield select()
-  yield put(actions.txSender.setGasPrice(s.gas.gasPrice!.standard))
+function* defaultGasPriceFunction(predefinedGasLimit?: string): any {
+  const s: IAppState = yield select();
+  yield put(actions.txSender.setGasPrice(s.gas.gasPrice!.standard));
   if (predefinedGasLimit) {
-    yield put(actions.txSender.setGasLimit(predefinedGasLimit))
+    yield put(actions.txSender.setGasLimit(predefinedGasLimit));
   }
 }
 
@@ -114,7 +113,7 @@ export function* txSendSaga({
   setupGasFunction = defaultGasPriceFunction,
   requiresUserInput = true,
   cleanupFunction,
-  predefinedGasLimit
+  predefinedGasLimit,
 }: ITxSendParams): any {
   const { result, cancel } = yield race({
     result: neuCall(
@@ -123,7 +122,7 @@ export function* txSendSaga({
       setupGasFunction,
       transactionGenerationFunction,
       requiresUserInput,
-      predefinedGasLimit
+      predefinedGasLimit,
     ),
     cancel: take("TX_SENDER_HIDE_MODAL"),
   });
@@ -146,7 +145,7 @@ export function* txSendProcess(
   setupGasFunction: any,
   transactionGenerationFunction: any,
   requiresUserInput: boolean,
-  predefinedGasLimit?: string
+  predefinedGasLimit?: string,
 ): any {
   try {
     yield put(actions.gas.gasApiEnsureLoading());
@@ -176,7 +175,6 @@ export function* txSendProcess(
     const txHash = yield neuCall(sendTxSubSaga);
 
     yield neuCall(watchTxSubSaga, txHash);
-
   } catch (error) {
     logger.error(error);
     if (error instanceof OutOfGasError) {
@@ -206,10 +204,15 @@ function* validateGas(): any {
   const txDetails = selectTxDetails(s.txSender);
 
   if (!txDetails) {
-    throw new Error("TxDetails are undefined")
+    throw new Error("TxDetails are undefined");
   }
 
-  if (compareBigNumbers(multiplyBigNumbers([txDetails.gasPrice, txDetails.gas]), s.wallet.data!.etherBalance) > 0) {
+  if (
+    compareBigNumbers(
+      multiplyBigNumbers([txDetails.gasPrice, txDetails.gas]),
+      s.wallet.data!.etherBalance,
+    ) > 0
+  ) {
     throw new NotEnoughEtherForGasError("Not enough Ether to pay the Gas for this transaction");
   }
 }

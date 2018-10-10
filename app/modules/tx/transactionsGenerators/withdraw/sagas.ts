@@ -16,7 +16,7 @@ export function* generateEthWithdrawTransaction(
   const txStateDetails = action.payload;
 
   if (!txStateDetails) return;
-  const s: IAppState = yield select()
+  const s: IAppState = yield select();
   const etherTokenBalance = selectEtherTokenBalance(s.wallet);
   const from = selectEthereumAddressWithChecksum(s.web3);
 
@@ -35,5 +35,6 @@ export function* generateEthWithdrawTransaction(
     value: difference.comparedTo(0) > 0 ? difference.toString() : "0",
   };
 
+  yield put(actions.txSender.setSummaryData(txStateDetails));
   yield put(actions.txSender.txSenderAcceptDraft(txDetails));
 }

@@ -5,7 +5,6 @@ import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ITxInitData } from "../../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../../store";
 import { actions } from "../../../actions";
-import { selectGasPrice } from "../../../gas/selectors";
 import {
   selectICBMLockedEtherBalance,
   selectIsEtherUpgradeTargetSet,
@@ -15,10 +14,10 @@ import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { selectICBMLockedEuroTokenBalance } from "./../../../wallet/selectors";
 
 export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
-  const state: IAppState = yield select()
-  const userAddress = selectEthereumAddressWithChecksum(state.web3)
-  const migrationTarget = selectIsEuroUpgradeTargetSet(state.wallet)
-  const euroBalance = selectICBMLockedEuroTokenBalance(state.wallet)
+  const state: IAppState = yield select();
+  const userAddress = selectEthereumAddressWithChecksum(state.web3);
+  const migrationTarget = selectIsEuroUpgradeTargetSet(state.wallet);
+  const euroBalance = selectICBMLockedEuroTokenBalance(state.wallet);
 
   if (!migrationTarget || new BigNumber(euroBalance).isZero()) {
     throw new Error();
@@ -34,16 +33,16 @@ export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDep
   };
 
   const estimatedGas = yield contractsService.icbmEuroLock.migrateTx().estimateGas(txDetails);
-  yield put(actions.txSender.setGasLimit(estimatedGas))
+  yield put(actions.txSender.setGasLimit(estimatedGas));
 
   yield put(actions.txSender.txSenderAcceptDraft(txDetails));
 }
 
 export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
-  const state: IAppState = yield select()
-  const userAddress = selectEthereumAddressWithChecksum(state.web3)
-  const migrationTarget = selectIsEtherUpgradeTargetSet(state.wallet)
-  const etherBalance = selectICBMLockedEtherBalance(state.wallet)
+  const state: IAppState = yield select();
+  const userAddress = selectEthereumAddressWithChecksum(state.web3);
+  const migrationTarget = selectIsEtherUpgradeTargetSet(state.wallet);
+  const etherBalance = selectICBMLockedEtherBalance(state.wallet);
 
   if (!migrationTarget || new BigNumber(etherBalance).equals(0)) {
     throw new Error();
@@ -59,7 +58,7 @@ export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDe
   };
 
   const estimatedGas = yield contractsService.icbmEtherLock.migrateTx().estimateGas(txDetails);
-  yield put(actions.txSender.setGasLimit(estimatedGas))
+  yield put(actions.txSender.setGasLimit(estimatedGas));
 
   yield put(actions.txSender.txSenderAcceptDraft(txDetails));
 }

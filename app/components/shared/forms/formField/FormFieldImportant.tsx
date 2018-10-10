@@ -69,10 +69,12 @@ export class FormFieldImportant extends React.Component<FieldGroupProps> {
                       {...props as any}
                     />
                     <InputGroupAddon addonType="append" className={formStyles.addon}>
-                      {isNonValid(touched, errors, name) && (
+                      {(isNonValid(touched, errors, name) || errorMessage) && (
                         <>
                           <img id={tooltipId} src={icon} />
-                          <CustomTooltip target={tooltipId}>{getIn(errors, name) || errorMessage}</CustomTooltip>
+                          <CustomTooltip target={tooltipId}>
+                            {getIn(errors, name) || errorMessage}
+                          </CustomTooltip>
                         </>
                       )}
                     </InputGroupAddon>

@@ -15,6 +15,10 @@ const txData: ITxData = {
 
 storiesOf("Withdraw summary", module).add("default", () => (
   <Container>
-    <WithdrawSummaryComponent txData={txData} onAccept={() => {}} />
+    <WithdrawSummaryComponent
+      txData={txData}
+      txCost={"123123123123123123123123"}
+      onAccept={() => {}}
+    />
   </Container>
 ));

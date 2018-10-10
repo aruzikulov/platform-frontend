@@ -25,6 +25,7 @@ import {
   selectNeuRewardUlpsByEtoId,
 } from "../../../../modules/public-etos/selectors";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
+import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
 import {
   addBigNumbers,
@@ -39,9 +40,6 @@ import { Button } from "../../../shared/buttons";
 import { FormFieldRaw } from "../../../shared/forms/formField/FormFieldRaw";
 import { Heading } from "../../../shared/modals/Heading";
 import { InvestmentTypeSelector, WalletSelectionData } from "./InvestmentTypeSelector";
-
-import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
-import * as styles from "./Investment.module.scss";
 import {
   createWallets,
   formatEth,
@@ -49,6 +47,8 @@ import {
   getInputErrorMessage,
   getInvestmentTypeMessages,
 } from "./utils";
+
+import * as styles from "./Investment.module.scss";
 
 interface IStateProps {
   eto: TPublicEtoData;

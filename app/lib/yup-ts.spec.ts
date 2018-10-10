@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import * as YupTS from "./yup-ts";
 import { NumberSchema } from "yup";
+import * as YupTS from "./yup-ts";
 
 describe("yup-ts", () => {
   const animalValidator = YupTS.object({
-    name: YupTS.string().optional()
+    name: YupTS.string().optional(),
   });
 
   const personValidatorTemplate = YupTS.object({
@@ -13,7 +13,7 @@ describe("yup-ts", () => {
     age: YupTS.number(),
     married: YupTS.boolean().optional(),
     animals: YupTS.array(animalValidator).optional(),
-    url: YupTS.url().optional()
+    url: YupTS.url().optional(),
   });
 
   type TValidatorType = YupTS.TypeOf<typeof personValidatorTemplate>;
@@ -26,7 +26,7 @@ describe("yup-ts", () => {
       age: 21,
       married: false,
       animals: undefined,
-      url: undefined
+      url: undefined,
     };
     const validValue2 = { fullName: "Typical Millennial Dev", age: "21" }; // testing coercing
     const validValue3: TValidatorType = {
@@ -35,7 +35,7 @@ describe("yup-ts", () => {
       age: 21,
       married: false,
       animals: [{ name: "kitty" }],
-      url: "http://www.foo.de"
+      url: "http://www.foo.de",
     };
 
     expect(validator.isValidSync(validValue1)).to.be.true;
@@ -55,7 +55,7 @@ describe("yup-ts", () => {
       age: number;
       married: boolean | undefined;
       animals: Array<{ name: string | undefined }> | undefined;
-      url: string | undefined
+      url: string | undefined;
     }
       ? true
       : never;
@@ -88,10 +88,12 @@ describe("yup-ts", () => {
     expect(array.isValidSync(null)).to.be.false;
   });
 
-  it('can be enhanced by further validations', () => {
-    const validator = YupTS.number().enhance((v: NumberSchema) => v.min(4)).toYup()
+  it("can be enhanced by further validations", () => {
+    const validator = YupTS.number()
+      .enhance((v: NumberSchema) => v.min(4))
+      .toYup();
 
-    expect(validator.isValidSync(2)).to.be.false
-    expect(validator.isValidSync(5)).to.be.true
-  })
+    expect(validator.isValidSync(2)).to.be.false;
+    expect(validator.isValidSync(5)).to.be.true;
+  });
 });
