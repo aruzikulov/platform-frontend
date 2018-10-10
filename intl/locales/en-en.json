@@ -507,7 +507,7 @@
   "modal.txsender.error-message.reverted-tx": "The transaction was reverted",
   "modal.txsender.error-message.too-many-tx-in-queue": "Too many transaction in queue",
   "modal.txsender.error-message.tx-was-rejected": "Tx was rejected",
-  "modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance": "",
+  "modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance": "The value exceeds your wallet balance",
   "module.kyc.sagas.beneficial-owners": "Your beneficial owners have a combined ownership of more than 100%. Please make sure this is 100% or less.",
   "module.kyc.sagas.error": "Error",
   "module.kyc.sagas.problem-saving-data": "There was a problem saving your changes. Please try again.",
