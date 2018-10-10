@@ -45,12 +45,14 @@ const SingleMediaLinkField: React.SFC<
 
             return isFieldWithCharactersLimit ? (
               <FormField
+                key={`${props.name}.${fieldName}`}
                 name={`${props.name}.${fieldName}`}
                 placeholder={fieldName || placeholder}
                 charactersLimit={100}
               />
             ) : (
               <FormField
+                key={`${props.name}.${fieldName}`}
                 name={`${props.name}.${fieldName}`}
                 placeholder={fieldName || placeholder}
               />
