@@ -2,6 +2,7 @@ import { Form, Formik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Container, Row } from "reactstrap";
+import { compose } from "recompose";
 import * as Web3Utils from "web3-utils";
 import { NumberSchema } from "yup";
 
@@ -12,13 +13,12 @@ import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { selectLiquidEtherBalance } from "../../../../modules/wallet/selectors";
 import { appConnect } from "../../../../store";
 import { compareBigNumbers, subtractBigNumbers } from "../../../../utils/BigNumberUtils";
+import { convertToBigInt } from "../../../../utils/Money.utils";
 import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
 import { Button } from "../../../shared/buttons";
 import { FormFieldImportant } from "../../../shared/forms/formField/FormFieldImportant";
 import { ITxInitDispatchProps } from "../TxSender";
 
-import { compose } from "recompose";
-import { convertToBigInt } from "../../../../utils/Money.utils";
 import * as styles from "./Withdraw.module.scss";
 
 interface IStateProps {
@@ -35,7 +35,7 @@ const withdrawFormSchema = YupTS.object({
 });
 const withdrawFormValidator = withdrawFormSchema.toYup();
 
-export const WithdrawComponent: React.SFC<TProps> = ({ onAccept, maxEther }) => (
+const WithdrawComponent: React.SFC<TProps> = ({ onAccept, maxEther }) => (
   <div>
     <SpinningEthereum />
 
@@ -105,12 +105,6 @@ export const WithdrawComponent: React.SFC<TProps> = ({ onAccept, maxEther }) => 
   </div>
 );
 
-const GweiFormatter: React.SFC<{ value: string }> = ({ value }) => (
-  <div data-test-id="modals.tx-sender.withdraw-flow.gwei-formatter-component.gas-price">
-    {Web3Utils.fromWei(value, "gwei")} Gwei
-  </div>
-);
-
 const Withdraw = compose<TProps, {}>(
   appConnect<IStateProps, ITxInitDispatchProps>({
     stateToProps: state => ({
@@ -125,4 +119,4 @@ const Withdraw = compose<TProps, {}>(
   }),
 )(WithdrawComponent);
 
-export { Withdraw, GweiFormatter };
+export { Withdraw, WithdrawComponent };
