@@ -2,19 +2,18 @@ import BigNumber from "bignumber.js";
 import web3Accounts from "web3-eth-accounts";
 import { createAndLoginNewUser, DEFAULT_PASSWORD } from "../utils/userHelpers";
 
+import { recoverRoutes } from "../../components/walletSelector/walletRecover/recoverRoutes";
 import {
   assertUserInDashboard,
-  numberRegExPattern,
-  typeLightwalletRecoveryPhrase,
-  tid,
   goToDashboard,
+  numberRegExPattern,
+  tid,
+  typeLightwalletRecoveryPhrase,
 } from "../utils";
-import { getTransactionByHashRpc, getBalanceRpc } from "../utils/ethRpcUtils";
-import { recoverRoutes } from "../../components/walletSelector/walletRecover/recoverRoutes";
+import { getBalanceRpc, getTransactionByHashRpc } from "../utils/ethRpcUtils";
 import { confirmAccessModal } from "../utils/index";
 
 const Q18 = new BigNumber(10).pow(18);
-const GIGA_WEI = 1000000000;
 const NODE_ADDRESS = "https://localhost:9090/node";
 
 //@see https://github.com/Neufund/platform-backend/tree/master/deploy#dev-fixtures
@@ -70,47 +69,38 @@ describe("Wallet Withdraw", () => {
         expectedAddress,
       );
       cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.value")).type(testValue);
-      cy.get(tid("modals.tx-sender.withdraw-flow.gwei-formatter-component.gas-price")).then(
-        gasPrice => {
-          const expectedGasPrice = gasPrice.text().match(numberRegExPattern) || ["0"];
-          cy.get(
-            tid("modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"),
-          ).awaitedClick();
+      cy.get(
+        tid("modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"),
+      ).awaitedClick();
 
-          cy.get(
-            tid("modals.tx-sender.withdraw-flow.summery.withdrawSummery.accept"),
-          ).awaitedClick();
+      cy.get(tid("modals.tx-sender.withdraw-flow.summery.withdrawSummery.accept")).awaitedClick();
 
-          confirmAccessModal(DEFAULT_PASSWORD);
+      confirmAccessModal(DEFAULT_PASSWORD);
 
-          cy.get(tid("modals.shared.signing-message.modal"));
-          cy.get(tid("modals.tx-sender.withdraw-flow.success"));
+      cy.get(tid("modals.shared.signing-message.modal"));
+      cy.get(tid("modals.tx-sender.withdraw-flow.success"));
 
-          cy.get(tid("modals.tx-sender.withdraw-flow.tx-hash")).then(txHashObject => {
-            getTransactionByHashRpc(NODE_ADDRESS, txHashObject.text()).then(data => {
-              const { from, gas, gasPrice, input, hash, value } = data.body.result;
+      cy.get(tid("modals.tx-sender.withdraw-flow.tx-hash")).then(txHashObject => {
+        getTransactionByHashRpc(NODE_ADDRESS, txHashObject.text()).then(data => {
+          const { from, gas, input, hash, value } = data.body.result;
 
-              const ethValue = new BigNumber(value).toString();
-              const ethGasPrice = new BigNumber(gasPrice).div(GIGA_WEI).toString();
+          const ethValue = new BigNumber(value).toString();
 
-              expect(from).to.equal(accountAddress.text().toLowerCase());
-              expect(txHashObject.text()).to.equal(hash);
-              expect(ethGasPrice).to.equal(expectedGasPrice[0]);
-              expect(input).to.equal(expectedInput);
-              expect(gas).to.equal(expectedGasLimit);
-              expect(ethValue).to.equal(expectedInputValue);
+          expect(from).to.equal(accountAddress.text().toLowerCase());
+          expect(txHashObject.text()).to.equal(hash);
+          expect(input).to.equal(expectedInput);
+          expect(gas).to.equal(expectedGasLimit);
+          expect(ethValue).to.equal(expectedInputValue);
 
-              // TODO: Connect artifacts with tests to get deterministic addresses
-              // expect(etherTokenAddress).to.equal(to);
+          // TODO: Connect artifacts with tests to get deterministic addresses
+          // expect(etherTokenAddress).to.equal(to);
 
-              getBalanceRpc(NODE_ADDRESS, expectedAddress).then(balance => {
-                const receivedEtherValue = new BigNumber(balance.body.result).toString();
-                expect(receivedEtherValue).to.equal(Q18.mul(testValue).toString());
-              });
-            });
+          getBalanceRpc(NODE_ADDRESS, expectedAddress).then(balance => {
+            const receivedEtherValue = new BigNumber(balance.body.result).toString();
+            expect(receivedEtherValue).to.equal(Q18.mul(testValue).toString());
           });
-        },
-      );
+        });
+      });
     });
   });
 });
