@@ -11,6 +11,7 @@ import {
 } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerEto } from "../../../../modules/eto-flow/selectors";
+import { etoInvestmentTermsProgressOptions } from "../../../../modules/eto-flow/utils";
 import { appConnect } from "../../../../store";
 import { formatMoney } from "../../../../utils/Money.utils";
 import { Button, EButtonLayout } from "../../../shared/buttons";
@@ -54,6 +55,7 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
     <EtoFormBase
       title={<FormattedMessage id="eto.form.investment-terms.title" />}
       validator={EtoInvestmentTermsType.toYup()}
+      progressOptions={etoInvestmentTermsProgressOptions}
     >
       <FormField
         label={<FormattedMessage id="eto.form.section.equity-token-information.tokens-per-share" />}

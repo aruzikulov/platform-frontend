@@ -1,7 +1,7 @@
 import * as React from "react";
 import { branch, compose } from "recompose";
 
-import { TUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../modules/public-etos/selectors";
@@ -17,7 +17,7 @@ import { EtoPublicComponent } from "./shared/EtoPublicComponent";
 
 interface IStateProps {
   eto?: TEtoWithCompanyAndContract;
-  userType?: TUserType;
+  userType?: EUserType;
   wallet?: IWalletState;
 }
 
@@ -62,7 +62,7 @@ export const EtoPublicView = compose<IProps, IRouterParams>(
     },
   }),
   branch<IStateProps>(
-    props => props.userType === "investor",
+    props => props.userType === EUserType.INVESTOR,
     withContainer(LayoutAuthorized),
     withContainer(LayoutBase),
   ),

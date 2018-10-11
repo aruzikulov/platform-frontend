@@ -2,14 +2,11 @@ import * as React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { kycRoutes } from "./routes";
 
-import { SwitchConnected } from "../shared/connectedRouting";
-import { KYCStart } from "./start/Start";
-
-// private
-import { TUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { selectUserType } from "../../modules/auth/selectors";
 import { appConnect } from "../../store";
 import { invariant } from "../../utils/invariant";
+import { SwitchConnected } from "../shared/connectedRouting";
 import { KYCBeneficialOwners } from "./business/BeneficialOwners";
 import { KycBusinessData } from "./business/BusinessData";
 import { KycLegalRepresentative } from "./business/LegalRepresentative";
@@ -17,9 +14,10 @@ import { KycBusinessStart } from "./business/Start";
 import { KycPersonalInstantId } from "./personal/InstantId";
 import { KYCPersonalStart } from "./personal/Start";
 import { KYCPersonalUpload } from "./personal/Upload";
+import { KYCStart } from "./start/Start";
 
 interface IStateProps {
-  userType?: TUserType;
+  userType?: EUserType;
 }
 
 export const NormalKycRouter: React.SFC = () => (
@@ -57,9 +55,9 @@ export const EtoKycRouter: React.SFC = () => (
 
 export const KycRouterComponent: React.SFC<IStateProps> = ({ userType }) => {
   switch (userType) {
-    case "investor":
+    case EUserType.INVESTOR:
       return <NormalKycRouter />;
-    case "issuer":
+    case EUserType.ISSUER:
       return <EtoKycRouter />;
     default:
       return invariant(false, "Unknown user type");

@@ -36,7 +36,11 @@ type IProps = IStateProps & IDispatchProps;
 const EtoRegistrationTeamAndInvestorsComponent = (
   props: FormikProps<TPartialCompanyEtoData> & IProps,
 ) => (
-  <EtoFormBase title="Company Information" validator={EtoCompanyInformationType.toYup()}>
+  <EtoFormBase
+    data-test-id="eto.form.company-information"
+    title="Company Information"
+    validator={EtoCompanyInformationType.toYup()}
+  >
     <Section>
       <FormField
         label={<FormattedMessage id="eto.form.company-information.brand-name" />}
@@ -76,7 +80,6 @@ const EtoRegistrationTeamAndInvestorsComponent = (
         options={generateTagOptions(tagList)}
         name="categories"
         className="mb-4"
-        testId="eto-about-category"
       />
       <Row>
         <Col>

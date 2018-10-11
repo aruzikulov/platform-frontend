@@ -2,7 +2,7 @@ import { effects } from "redux-saga";
 import { call, Effect, fork, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { IUser, IUserInput, IVerifyEmailUser, TUserType } from "../../lib/api/users/interfaces";
+import { EUserType, IUser, IUserInput, IVerifyEmailUser } from "../../lib/api/users/interfaces";
 import { EmailAlreadyExists, UserNotExisting } from "../../lib/api/users/UsersApi";
 import {
   SignerRejectConfirmationError,
@@ -35,7 +35,7 @@ export function* loadJwt({ jwtStorage }: TGlobalDependencies): Iterator<Effect> 
 
 export async function loadOrCreateUserPromise(
   { apiUserService, web3Manager }: TGlobalDependencies,
-  userType: TUserType,
+  userType: EUserType,
 ): Promise<IUser> {
   // tslint:disable-next-line
   const walletMetadata = web3Manager.personalWallet!.getMetadata();
@@ -122,7 +122,7 @@ export async function updateUserPromise(
   return apiUserService.updateUser(user);
 }
 
-export function* loadOrCreateUser(userType: TUserType): Iterator<any> {
+export function* loadOrCreateUser(userType: EUserType): Iterator<any> {
   const user: IUser = yield neuCall(loadOrCreateUserPromise, userType);
   yield effects.put(actions.auth.loadUser(user));
 
@@ -175,7 +175,7 @@ function* logoutWatcher(
 export function* signInUser({ walletStorage, web3Manager }: TGlobalDependencies): Iterator<any> {
   try {
     // we will try to create with user type from URL but it could happen that account already exists and has different user type
-    const probableUserType: TUserType = yield select((s: IAppState) => selectUrlUserType(s.router));
+    const probableUserType: EUserType = yield select((s: IAppState) => selectUrlUserType(s.router));
     yield effects.put(actions.walletSelector.messageSigning());
 
     yield neuCall(obtainJWT);

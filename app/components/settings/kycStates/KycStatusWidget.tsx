@@ -27,7 +27,7 @@ import { WarningAlert } from "../../shared/WarningAlert";
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as successIcon from "../../../assets/img/notifications/Success_small.svg";
 import * as warningIcon from "../../../assets/img/notifications/warning.svg";
-import { TUserType } from "../../../lib/api/users/interfaces";
+import { EUserType } from "../../../lib/api/users/interfaces";
 import * as styles from "./KycStatusWidget.module.scss";
 
 interface IStateProps {
@@ -37,7 +37,7 @@ interface IStateProps {
   isLoading: boolean;
   error?: string;
   externalKycUrl?: string;
-  userType: TUserType;
+  userType: EUserType;
 }
 
 interface IOwnProps {
@@ -112,7 +112,7 @@ const ActionButton = ({
   userType,
   onGoToWallet,
 }: IKycStatusWidgetProps) => {
-  if (requestStatus === "Accepted" && userType === "investor") {
+  if (requestStatus === "Accepted" && userType === EUserType.INVESTOR) {
     return (
       <Button
         layout={EButtonLayout.SECONDARY}

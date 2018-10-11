@@ -11,11 +11,13 @@ import {
   TPublicEtoData,
 } from "../../lib/api/eto/EtoApi.interfaces";
 import { immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { promisify } from "../../lib/contracts/typechain-runtime";
 import { IAppState } from "../../store";
 import { convertToBigInt } from "../../utils/Money.utils";
 import { actions, TAction } from "../actions";
+import { selectUserType } from "../auth/selectors";
 import { neuCall, neuTakeEvery } from "../sagas";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { InvalidETOStateError } from "./errors";
@@ -46,6 +48,14 @@ export function* loadEtoPreview(
 
     // Load contract data if eto is already on blockchain
     if (eto.state === EtoState.ON_CHAIN) {
+      // load investor tickets
+      const userType: EUserType | undefined = yield select((state: IAppState) =>
+        selectUserType(state.auth),
+      );
+      if (userType === EUserType.INVESTOR) {
+        yield put(actions.investorEtoTicket.loadEtoInvestorTicket(eto));
+      }
+
       yield neuCall(loadEtoContact, eto);
     }
 
@@ -75,6 +85,14 @@ export function* loadEto(
 
     // Load contract data if eto is already on blockchain
     if (eto.state === EtoState.ON_CHAIN) {
+      // load investor tickets
+      const userType: EUserType | undefined = yield select((state: IAppState) =>
+        selectUserType(state.auth),
+      );
+      if (userType === EUserType.INVESTOR) {
+        yield put(actions.investorEtoTicket.loadEtoInvestorTicket(eto));
+      }
+
       yield neuCall(loadEtoContact, eto);
     }
 
@@ -139,6 +157,14 @@ function* loadEtos({ apiEtoService, logger }: TGlobalDependencies): any {
         .filter(eto => eto.state === EtoState.ON_CHAIN)
         .map(eto => neuCall(loadEtoContact, eto)),
     );
+
+    // load investor tickets
+    const userType: EUserType | undefined = yield select((state: IAppState) =>
+      selectUserType(state.auth),
+    );
+    if (userType === EUserType.INVESTOR) {
+      yield put(actions.investorEtoTicket.loadInvestorTickets(etosByPreviewCode));
+    }
 
     yield put(actions.publicEtos.setPublicEtos({ etos: etosByPreviewCode, companies }));
     yield put(actions.publicEtos.setEtosDisplayOrder(order));

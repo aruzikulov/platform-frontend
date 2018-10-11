@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { NavLink, NavLinkProps } from "react-router-dom";
 
-import { TUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { selectUserType } from "../../modules/auth/selectors";
 import { selectIsActionRequiredSettings } from "../../modules/notifications/selectors";
 import { appConnect } from "../../store";
@@ -31,7 +31,7 @@ interface IMenuEntry {
 }
 
 interface IStateProps {
-  userType?: TUserType;
+  userType?: EUserType;
   actionRequiredSettings: boolean;
   shouldEtoDataLoad: boolean;
 }
@@ -154,9 +154,9 @@ const IssuerMenu: React.SFC<{ actionRequiredSettings: boolean; shouldEtoDataLoad
 
 export const LayoutAuthorizedMenuComponent: React.SFC<IStateProps> = ({ userType, ...props }) => {
   switch (userType) {
-    case "investor":
+    case EUserType.INVESTOR:
       return <InvestorMenu data-test-id="investor-menu" {...props} />;
-    case "issuer":
+    case EUserType.ISSUER:
       return <IssuerMenu data-test-id="issuer-menu" {...props} />;
     default:
       return invariant(false, "Unknown user type");

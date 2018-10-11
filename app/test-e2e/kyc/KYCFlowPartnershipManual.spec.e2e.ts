@@ -1,12 +1,12 @@
-import { tid } from "../utils";
 import { kycRoutes } from "../../components/kyc/routes";
-import { createAndLoginNewUser } from "../utils/userHelpers";
+import { tid } from "../utils";
 import { fillForm } from "../utils/forms";
+import { createAndLoginNewUser } from "../utils/userHelpers";
 import {
   kycCompanyDocsForm,
   kycCompanyForm,
-  kycLegalRepForm,
   kycLegalRepDocsForm,
+  kycLegalRepForm,
 } from "./fixtures";
 import { acceptWallet } from "./util";
 

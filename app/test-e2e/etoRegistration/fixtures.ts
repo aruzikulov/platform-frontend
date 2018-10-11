@@ -1,7 +1,21 @@
 import { TFormFixture } from "../utils/forms";
 
 // about form
+export const aboutFormRequired: TFormFixture = {
+  companyDescription: "..also Beer!",
+  brandName: "Davecoin",
+  companyWebsite: "https://neufund.org",
+  companyOneliner: "Free icecream for all",
+  keyQuoteFounder: "Let's make it a great day.",
+  categories: {
+    value: "Science",
+    type: "tags",
+  },
+};
+
 export const aboutForm: TFormFixture = {
+  ...aboutFormRequired,
+  keyQuoteInvestor: "They're making it a great day!",
   "eto-registration-company-logo": {
     value: "example.jpg",
     type: "file",
@@ -10,18 +24,7 @@ export const aboutForm: TFormFixture = {
     value: "example.jpg",
     type: "file",
   },
-  brandName: "Davecoin",
-  companyWebsite: "https://neufund.org",
-  companyOneliner: "Free icecream for all",
-  companyDescription: "..also Beer!",
-  keyQuoteFounder: "Let's make it a great day.",
-  keyQuoteInvestor: "They're making it a great day!",
-  "eto-about-category": {
-    value: "Science",
-    type: "tags",
-  },
   "eto-registration-company-information-submit": {
-    value: "",
     type: "submit",
   },
 };
@@ -47,7 +50,6 @@ export const legalInfoForm: TFormFixture = {
   "shareholders.0.fullName": "Marcin Rudolf",
   "shareholders.0.shares": "90",
   "eto-registration-legal-information-submit": {
-    value: "",
     type: "submit",
   },
 };
@@ -63,7 +65,6 @@ export const investmentTermsForm: TFormFixture = {
   newSharesToIssueInWhitelist: "5000",
   whitelistDiscountFraction: "20",
   "eto-registration-investment-terms-submit": {
-    value: "",
     type: "submit",
   },
 };
@@ -78,7 +79,6 @@ export const etoTermsForm: TFormFixture = {
     type: "check",
   },
   "eto-registration-eto-terms-submit": {
-    value: "",
     type: "submit",
   },
 };
@@ -205,7 +205,6 @@ export const etoKeyIndividualsForm: TFormFixture = {
   },
 
   "eto-registration-key-individuals-submit": {
-    value: "",
     type: "submit",
   },
 };
@@ -232,7 +231,6 @@ export const productVisionForm: TFormFixture = {
   marketingApproach: "Our Marketing",
 
   "eto-registration-product-vision-submit": {
-    value: "",
     type: "submit",
   },
 };
@@ -266,7 +264,6 @@ export const mediaForm: TFormFixture = {
   "marketingLinks.0.title": "Another marketing resource",
 
   "eto-registration-media-submit": {
-    value: "",
     type: "submit",
   },
 };
@@ -280,7 +277,6 @@ export const riskForm: TFormFixture = {
   riskMaxDescription: "Maximum risks",
 
   "eto-registration-risk-submit": {
-    value: "",
     type: "submit",
   },
 };
@@ -294,7 +290,6 @@ export const equityTokenInfoForm: TFormFixture = {
   equityTokenName: "Sharpcoin",
   equityTokenSymbol: "X#C",
   "eto-registration-token-info-submit": {
-    value: "",
     type: "submit",
   },
 };
@@ -306,7 +301,6 @@ export const votingRights: TFormFixture = {
     type: "select",
   },
   "eto-registration-voting-rights-submit": {
-    value: "",
     type: "submit",
   },
 };

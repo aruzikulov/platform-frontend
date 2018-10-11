@@ -2,7 +2,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "reactstrap";
 
-import { TUserType } from "../lib/api/users/interfaces";
+import { EUserType } from "../lib/api/users/interfaces";
 import { actions } from "../modules/actions";
 import { selectIsAuthorized, selectUserType } from "../modules/auth/selectors";
 import { appConnect } from "../store";
@@ -16,12 +16,12 @@ import * as styles from "./Header.module.scss";
 
 interface IStateProps {
   isAuthorized: boolean;
-  userType: TUserType;
+  userType: EUserType;
   location: any;
 }
 
 interface IDispatchProps {
-  logout: (userType: TUserType) => void;
+  logout: (userType: EUserType) => void;
 }
 
 export const HeaderComponent: React.SFC<IStateProps & IDispatchProps> = props => (
@@ -82,7 +82,7 @@ export const Header = appConnect<IStateProps, IDispatchProps>({
     location: s.router.location && s.router.location.pathname,
   }),
   dispatchToProps: dispatch => ({
-    logout: (userType: TUserType) => {
+    logout: (userType: EUserType) => {
       dispatch(actions.auth.logout(userType));
     },
   }),

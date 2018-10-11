@@ -1,13 +1,13 @@
 import { effects } from "redux-saga";
 import { fork } from "redux-saga/effects";
-import { TUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { IAppState } from "../../store";
 import { neuCall, neuTakeEvery } from "../sagas";
 import { loadPreviousWallet } from "../web3/sagas";
 import { selectUrlUserType } from "./selectors";
 
 export function* loadWalletFromUrl(): Iterator<any> {
-  const userType: TUserType = yield effects.select((s: IAppState) => selectUrlUserType(s.router));
+  const userType: EUserType = yield effects.select((s: IAppState) => selectUrlUserType(s.router));
   yield neuCall(loadPreviousWallet, userType);
 }
 

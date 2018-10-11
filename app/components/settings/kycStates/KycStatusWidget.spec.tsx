@@ -3,6 +3,7 @@ import { shallow } from "enzyme";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
+import { EUserType } from "../../../lib/api/users/interfaces";
 import { LoadingIndicator } from "../../shared/LoadingIndicator";
 import { KycStatusWidgetComponent } from "./KycStatusWidget";
 
@@ -16,7 +17,7 @@ describe("<KycStatusWidgetComponent />", () => {
         requestStatus="Accepted"
         isUserEmailVerified={true}
         isLoading={false}
-        userType="investor"
+        userType={EUserType.INVESTOR}
       />,
     );
 
@@ -33,7 +34,7 @@ describe("<KycStatusWidgetComponent />", () => {
         requestStatus="Draft"
         isUserEmailVerified={true}
         isLoading={false}
-        userType="investor"
+        userType={EUserType.INVESTOR}
       />,
     );
 
@@ -49,7 +50,7 @@ describe("<KycStatusWidgetComponent />", () => {
         onGoToWallet={() => {}}
         isUserEmailVerified={true}
         isLoading={true}
-        userType="investor"
+        userType={EUserType.INVESTOR}
       />,
     );
     expect(component.find(LoadingIndicator)).to.have.length(1);

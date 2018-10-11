@@ -8,10 +8,15 @@ import { compose } from "redux";
 import { EtoTermsType, TPartialEtoSpecData } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerEto } from "../../../../modules/eto-flow/selectors";
-import { etoTermsProgressOptions } from "../../../../modules/eto-flow/utils";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
-import { FormCheckbox, FormField, FormRadioButton, FormTextArea } from "../../../shared/forms";
+import {
+  FormCheckbox,
+  FormError,
+  FormField,
+  FormRadioButton,
+  FormTextArea,
+} from "../../../shared/forms";
 import {
   FormFieldCheckbox,
   FormFieldCheckboxGroup,
@@ -51,7 +56,6 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
   <EtoFormBase
     title={<FormattedMessage id="eto.form.eto-terms.title" />}
     validator={EtoTermsType.toYup()}
-    progressOptions={etoTermsProgressOptions}
   >
     <FormLabel>
       <FormattedMessage id="eto.form.section.eto-terms.fundraising-currency" />
@@ -174,6 +178,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
           value={false}
         />
       </div>
+      <FormError name="enableTransferOnSuccess" />
     </div>
 
     <FormTextArea

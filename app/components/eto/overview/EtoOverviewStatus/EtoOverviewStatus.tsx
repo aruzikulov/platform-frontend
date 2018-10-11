@@ -3,14 +3,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Link } from "react-router-dom";
 
-import {
-  ClaimWidget,
-  CounterWidget,
-  InvestWidget,
-  RefundWidget,
-  TagsWidget,
-  TokenSymbolWidget,
-} from ".";
+import { CounterWidget, InvestWidget, TagsWidget, TokenSymbolWidget } from ".";
 import { IEtoDocument } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { ETOStateOnChain, IEtoContractData } from "../../../../modules/public-etos/types";
 import { IWalletState } from "../../../../modules/wallet/reducer";
@@ -20,6 +13,7 @@ import { appRoutes } from "../../../appRoutes";
 import { ETOState } from "../../../shared/ETOState";
 import { IResponsiveImage } from "../../../shared/ResponsiveImage";
 import { CampaigningWidget, ICampaigningWidget } from "./CampaigningWidget";
+import { ClaimWidget, RefundWidget } from "./ClaimRefundWidget";
 
 import * as styles from "./EtoOverviewStatus.module.scss";
 
@@ -198,31 +192,20 @@ const EtoOverviewStatus: React.SFC<IProps & CommonHtmlProps> = props => {
               etoId={props.etoId}
             />
           )}
-          {timedState === ETOStateOnChain.Claim && (
+          {[ETOStateOnChain.Claim, ETOStateOnChain.Signing, ETOStateOnChain.Payout].includes(
+            timedState,
+          ) && (
             <ClaimWidget
+              etoId={props.etoId}
               tokenName={props.tokenName}
               totalInvestors={props.contract!.totalInvestment.totalInvestors.toNumber()}
               totalEquivEurUlps={props.contract!.totalInvestment.totalEquivEurUlps}
-              isPayout={false}
+              timedState={timedState}
             />
           )}
-          {timedState === ETOStateOnChain.Signing && (
-            <ClaimWidget
-              tokenName={props.tokenName}
-              totalInvestors={props.contract!.totalInvestment.totalInvestors.toNumber()}
-              totalEquivEurUlps={props.contract!.totalInvestment.totalEquivEurUlps}
-              isPayout={false}
-            />
+          {timedState === ETOStateOnChain.Refund && (
+            <RefundWidget etoId={props.etoId} timedState={timedState} />
           )}
-          {timedState === ETOStateOnChain.Payout && (
-            <ClaimWidget
-              tokenName={props.tokenName}
-              totalInvestors={props.contract!.totalInvestment.totalInvestors.toNumber()}
-              totalEquivEurUlps={props.contract!.totalInvestment.totalEquivEurUlps}
-              isPayout={true}
-            />
-          )}
-          {timedState === ETOStateOnChain.Refund && <RefundWidget />}
         </div>
       </div>
     </div>

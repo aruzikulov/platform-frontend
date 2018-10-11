@@ -2,26 +2,27 @@ import BigNumber from "bignumber.js";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { Button } from "../../../shared/buttons";
-import { ECurrencySymbol, Money } from "../../../shared/Money";
-import { SuccessTick } from "../../../shared/SuccessTick";
+import { Button } from "../../../../shared/buttons";
+import { ECurrencySymbol, Money } from "../../../../shared/Money";
+import { SuccessTick } from "../../../../shared/SuccessTick";
 
-import * as styles from "./ClaimWidget.module.scss";
+import * as styles from "./Layout.module.scss";
+import { withCanClaimToken } from "./withCanClaimToken";
 
-export interface IClaimWidget {
+interface IExternalProps {
   tokenName: string;
   totalInvestors: number | undefined;
   totalEquivEurUlps: BigNumber;
-  isPayout: boolean;
+  canClaimToken: boolean;
 }
 
-const ClaimWidget: React.SFC<IClaimWidget> = ({
+const ClaimWidgetLayout: React.SFC<IExternalProps> = ({
   tokenName,
   totalInvestors,
   totalEquivEurUlps,
-  isPayout,
+  canClaimToken,
 }) => (
-  <div className={styles.claimWidget}>
+  <div className={styles.widget}>
     <SuccessTick />
     <div className={styles.message}>
       <FormattedMessage id="shared-component.eto-overview.success" />
@@ -41,7 +42,7 @@ const ClaimWidget: React.SFC<IClaimWidget> = ({
         />
       </p>
     </div>
-    {isPayout && (
+    {canClaimToken && (
       <Button>
         <FormattedMessage id="shared-component.eto-overview.claim-your-token" /> {tokenName}
       </Button>
@@ -49,4 +50,4 @@ const ClaimWidget: React.SFC<IClaimWidget> = ({
   </div>
 );
 
-export { ClaimWidget };
+export const ClaimWidget = withCanClaimToken(ClaimWidgetLayout);

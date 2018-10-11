@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
-import { TUserType } from "../../../lib/api/users/interfaces";
+import { EUserType } from "../../../lib/api/users/interfaces";
 import { actions } from "../../../modules/actions";
 import { selectUrlUserType } from "../../../modules/wallet-selector/selectors";
 import { appConnect } from "../../../store";
@@ -13,11 +13,11 @@ import { HeaderProgressStepper } from "../../shared/HeaderProgressStepper";
 import { recoverRoutes } from "./recoverRoutes";
 
 interface IStateProps {
-  userType: TUserType;
+  userType: EUserType;
 }
 
 interface IDispatchProps {
-  goToDashboard: (userType: TUserType) => void;
+  goToDashboard: (userType: EUserType) => void;
 }
 export const RecoverySuccessComponent: React.SFC<IStateProps & IDispatchProps> = ({
   goToDashboard,

@@ -3,7 +3,7 @@ import { effects } from "redux-saga";
 import { fork, put, select, take } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { TUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { IAppState } from "../../store";
 import { isJwtExpiringLateEnough } from "../../utils/JWTUtils";
 import { actions, TAction } from "../actions";
@@ -79,9 +79,9 @@ export function* initStartSaga(_: TGlobalDependencies, action: TAction): Iterato
 }
 
 export function* cleanupAndLogoutSaga(): Iterator<any> {
-  const userType: TUserType = yield effects.select((s: IAppState) => selectUserType(s.auth));
+  const userType: EUserType = yield effects.select((s: IAppState) => selectUserType(s.auth));
   yield put(actions.auth.logout(userType));
-  userType === "investor"
+  userType === EUserType.INVESTOR
     ? yield put(actions.routing.goToLogin())
     : yield put(actions.routing.goToEtoLogin());
 }

@@ -37,6 +37,7 @@ describe("Eto Forms", () => {
 
     cy.get(tid("eto-progress-widget-key-individuals", "button")).awaitedClick();
     // first click on all the add buttons to open the fields
+    cy.get(tid("key-individuals-group-button-team")).click();
     cy.get(tid("key-individuals-group-button-advisors")).awaitedClick();
     cy.get(tid("key-individuals-group-button-keyAlliances")).awaitedClick();
     cy.get(tid("key-individuals-group-button-boardMembers")).awaitedClick();

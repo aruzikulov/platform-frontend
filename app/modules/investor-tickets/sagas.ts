@@ -1,8 +1,9 @@
 import { filter, map } from "lodash/fp";
-import { all, fork, put, select, take } from "redux-saga/effects";
+import { all, fork, put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 
+import { EtoState } from "../../lib/api/eto/EtoApi.interfaces";
 import { IUser } from "../../lib/api/users/interfaces";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { IAppState } from "../../store";
@@ -11,38 +12,30 @@ import { selectUser } from "../auth/selectors";
 import { neuTakeEvery } from "../sagas";
 import { convertToInvestorTicket } from "./utils";
 
-export function* loadEtosWithInvestorTickets(
-  { notificationCenter }: TGlobalDependencies,
-  action: TAction,
-): any {
+export function* loadInvestorTickets({ logger }: TGlobalDependencies, action: TAction): any {
   if (action.type !== "INVESTOR_TICKET_ETOS_LOAD") return;
 
   try {
-    yield put(actions.publicEtos.loadEtos());
-
-    const action = yield take("PUBLIC_ETOS_SET_PUBLIC_ETOS");
-
     yield all(
       map(
-        eto => put(actions.investorEtoTicket.loadEtoInvestorTicket(eto.etoId)),
-        filter(eto => eto.state === "on_chain", action.payload.etos),
+        eto => put(actions.investorEtoTicket.loadEtoInvestorTicket(eto)),
+        filter(eto => eto.state === EtoState.ON_CHAIN, action.payload.etos),
       ),
     );
 
     yield;
   } catch (e) {
-    notificationCenter.error("Could not load portfolio");
-    yield put(actions.routing.goToDashboard());
+    logger.error("Could not load investor tickets", e);
   }
 }
 
-export function* loadEtoInvestorTicket(
+export function* loadInvestorTicket(
   { contractsService }: TGlobalDependencies,
   action: TAction,
 ): any {
   if (action.type !== "INVESTOR_TICKET_LOAD") return;
 
-  const etoId = action.payload.etoId;
+  const etoId = action.payload.eto.etoId;
   const user: IUser = yield select((state: IAppState) => selectUser(state.auth));
 
   const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(etoId);
@@ -58,6 +51,6 @@ export function* loadEtoInvestorTicket(
 }
 
 export function* investorTicketsSagas(): any {
-  yield fork(neuTakeEvery, "INVESTOR_TICKET_ETOS_LOAD", loadEtosWithInvestorTickets);
-  yield fork(neuTakeEvery, "INVESTOR_TICKET_LOAD", loadEtoInvestorTicket);
+  yield fork(neuTakeEvery, "INVESTOR_TICKET_ETOS_LOAD", loadInvestorTickets);
+  yield fork(neuTakeEvery, "INVESTOR_TICKET_LOAD", loadInvestorTicket);
 }

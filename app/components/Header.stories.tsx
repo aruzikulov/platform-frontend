@@ -1,6 +1,7 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
+import { EUserType } from "../lib/api/users/interfaces";
 import { HeaderComponent } from "./Header";
 
 storiesOf("Layout/Header", module)
@@ -10,16 +11,31 @@ storiesOf("Layout/Header", module)
         isAuthorized={false}
         logout={() => {}}
         location={"foo"}
-        userType="investor"
+        userType={EUserType.INVESTOR}
       />
       <br />
-      <HeaderComponent isAuthorized={true} logout={() => {}} location={"foo"} userType="investor" />
+      <HeaderComponent
+        isAuthorized={true}
+        logout={() => {}}
+        location={"foo"}
+        userType={EUserType.INVESTOR}
+      />
     </>
   ))
   .add("issuer", () => (
     <>
-      <HeaderComponent isAuthorized={false} logout={() => {}} location={"foo"} userType="issuer" />
+      <HeaderComponent
+        isAuthorized={false}
+        logout={() => {}}
+        location={"foo"}
+        userType={EUserType.ISSUER}
+      />
       <br />
-      <HeaderComponent isAuthorized={true} logout={() => {}} location={"foo"} userType="issuer" />
+      <HeaderComponent
+        isAuthorized={true}
+        logout={() => {}}
+        location={"foo"}
+        userType={EUserType.ISSUER}
+      />
     </>
   ));

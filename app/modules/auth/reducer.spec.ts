@@ -1,4 +1,6 @@
 import { expect } from "chai";
+
+import { EUserType } from "../../lib/api/users/interfaces";
 import { WalletSubType, WalletType } from "../web3/types";
 import { IAuthState } from "./reducer";
 import { selectIsAuthorized, selectUserEmail } from "./selectors";
@@ -10,7 +12,7 @@ describe("auth > selectors", () => {
         jwt: "eyjwt",
         user: {
           userId: "user-id",
-          type: "investor",
+          type: EUserType.INVESTOR,
           walletType: WalletType.LIGHT,
           walletSubtype: WalletSubType.UNKNOWN,
         },
@@ -42,7 +44,7 @@ describe("auth > selectors", () => {
           userId: "user-id",
           unverifiedEmail: "unverified@email.com",
           verifiedEmail: "some.verified@email.com",
-          type: "investor",
+          type: EUserType.INVESTOR,
           walletType: WalletType.LIGHT,
           walletSubtype: WalletSubType.UNKNOWN,
         },

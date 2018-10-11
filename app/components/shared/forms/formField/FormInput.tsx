@@ -1,10 +1,11 @@
 import * as cn from "classnames";
-import { Field, FieldAttributes, FieldProps, FormikConsumer, getIn } from "formik";
+import { Field, FieldAttributes, FieldProps, FormikConsumer } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
 
 import { CommonHtmlProps, InputType } from "../../../../types";
+import { FormError } from "./FormError";
 import { computedValue, countedCharacters } from "./FormFieldRaw";
 import { isNonValid, isValid } from "./utils";
 
@@ -109,9 +110,7 @@ export class FormInput extends React.Component<FormInputProps> {
                         </InputGroupAddon>
                       )}
                     </InputGroup>
-                    {isNonValid(touched, errors, name) && (
-                      <div className={styles.errorLabel}>{getIn(errors, name) || errorMsg}</div>
-                    )}
+                    <FormError name={name} defaultMessage={errorMsg} />
                     {charactersLimit && <div>{countedCharacters(val, charactersLimit)}</div>}
 
                     {min &&

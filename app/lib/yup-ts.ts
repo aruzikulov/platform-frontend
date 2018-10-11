@@ -73,9 +73,11 @@ class BooleanYTS extends YTS<boolean> {
 }
 
 class ArrayYTS<T extends YTS<any>> extends YTS<Array<TypeOf<T>>> {
+  shape: T;
   constructor(shape: T) {
     const validator = Yup.array().of(shape.toYup());
     super(validator);
+    this.shape = shape;
   }
 
   // override toYup

@@ -1,8 +1,11 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Container, Row } from "reactstrap";
+import { compose, setDisplayName } from "recompose";
 
 import { MONEY_DECIMALS } from "../../../../config/constants";
+import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { actions } from "../../../../modules/actions";
 import { selectEurValueUlps } from "../../../../modules/investmentFlow/selectors";
 import {
   selectEquityTokenCountByEtoId,
@@ -11,27 +14,37 @@ import {
 } from "../../../../modules/public-etos/selectors";
 import { appConnect } from "../../../../store";
 import { divideBigNumbers } from "../../../../utils/BigNumberUtils";
-import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
 import { formatMoney } from "../../../../utils/Money.utils";
-import { DocumentLink } from "../../../shared/DocumentLink";
+import { DocumentTemplateButton } from "../../../shared/DocumentLink";
 import { Heading } from "../../../shared/modals/Heading";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
+import { formatEur } from "./utils";
 
 import * as neuIcon from "../../../../assets/img/neu_icon.svg";
 import * as tokenIcon from "../../../../assets/img/token_icon.svg";
 import * as styles from "./Summary.module.scss";
-import { formatEur } from "./utils";
 
-interface IProps {
+type IDispatchProps = {
+  downloadAgreement: (etoId: string) => void;
+};
+
+interface IStateProps {
   companyName: string;
   investmentEur: string;
   equityTokens: string;
   estimatedReward: string;
-  summaryDocumentUrl: string;
+  etoAddress: string;
 }
 
-const BankTransferSummaryComponent = injectIntlHelpers((data: IProps & IIntlProps) => {
+type IProps = IStateProps & IDispatchProps;
+
+const BankTransferSummaryComponent = ({
+  investmentEur,
+  companyName,
+  downloadAgreement,
+  ...data
+}: IStateProps & IDispatchProps) => {
   const equityTokens = (
     <span>
       {/* TODO: Change to actual custom token icon */}
@@ -44,7 +57,7 @@ const BankTransferSummaryComponent = injectIntlHelpers((data: IProps & IIntlProp
     </span>
   );
 
-  const tokenPrice = divideBigNumbers(data.investmentEur, data.equityTokens);
+  const tokenPrice = divideBigNumbers(investmentEur, data.equityTokens);
 
   return (
     <Container className={styles.container}>
@@ -69,7 +82,7 @@ const BankTransferSummaryComponent = injectIntlHelpers((data: IProps & IIntlProp
           <InfoList>
             <InfoRow
               caption={<FormattedMessage id="investment-flow.summary.company" />}
-              value={data.companyName}
+              value={companyName}
             />
             <InfoRow
               caption={<FormattedMessage id="investment-flow.summary.token-price" />}
@@ -79,7 +92,7 @@ const BankTransferSummaryComponent = injectIntlHelpers((data: IProps & IIntlProp
               caption={
                 <FormattedMessage id="investment-flow.bank-transfer-summary.estimated-investment" />
               }
-              value={`${formatEur(data.investmentEur)} €`}
+              value={`${formatEur(investmentEur)} €`}
             />
             <InfoRow
               caption={
@@ -96,29 +109,41 @@ const BankTransferSummaryComponent = injectIntlHelpers((data: IProps & IIntlProp
       </Row>
 
       <Row className="justify-content-center">
-        <DocumentLink
-          url={data.summaryDocumentUrl}
-          name={<FormattedMessage id="investment-flow.bank-transfer-summary.investment-summary" />}
+        <DocumentTemplateButton
+          onClick={() => downloadAgreement(data.etoAddress)}
+          title={<FormattedMessage id="investment-flow.summary.download-agreement" />}
         />
       </Row>
     </Container>
   );
-});
+};
 
-const BankTransferSummary = appConnect<IProps>({
-  stateToProps: state => {
-    const i = state.investmentFlow;
-    const p = state.publicEtos;
-    // eto and computed values are guaranteed to be present at investment summary state
-    const eto = selectEtoWithCompanyAndContractById(state, i.etoId)!;
-    return {
-      summaryDocumentUrl: "fufu", // TODO: add proper agreement document link
-      companyName: eto.company.name,
-      investmentEur: selectEurValueUlps(i),
-      equityTokens: selectEquityTokenCountByEtoId(i.etoId, p) as string,
-      estimatedReward: selectNeuRewardUlpsByEtoId(i.etoId, p) as string,
-    };
-  },
-})(BankTransferSummaryComponent);
+const BankTransferSummary = compose<IProps, {}>(
+  setDisplayName("BankTransferSummary"),
+  appConnect<IStateProps>({
+    stateToProps: state => {
+      const i = state.investmentFlow;
+      const p = state.publicEtos;
+      // eto and computed values are guaranteed to be present at investment summary state
+      const eto = selectEtoWithCompanyAndContractById(state, i.etoId)!;
+      return {
+        etoAddress: eto.etoId,
+        companyName: eto.company.name,
+        investmentEur: selectEurValueUlps(i),
+        equityTokens: selectEquityTokenCountByEtoId(i.etoId, p) as string,
+        estimatedReward: selectNeuRewardUlpsByEtoId(i.etoId, p) as string,
+      };
+    },
+    dispatchToProps: d => ({
+      downloadAgreement: (etoId: string) =>
+        d(
+          actions.publicEtos.downloadPublicEtoDocumentByType(
+            etoId,
+            EEtoDocumentType.RESERVATION_AND_ACQUISITION_AGREEMENT,
+          ),
+        ),
+    }),
+  }),
+)(BankTransferSummaryComponent);
 
 export { BankTransferSummaryComponent, BankTransferSummary };

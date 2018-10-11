@@ -17,7 +17,7 @@ export type TStateProps = {
 
 export const Portfolio = compose<TPortfolioLayoutProps, {}>(
   onEnterAction({
-    actionCreator: dispatch => dispatch(actions.investorEtoTicket.loadEtosWithInvestorTickets()),
+    actionCreator: dispatch => dispatch(actions.publicEtos.loadEtos()),
   }),
   appConnect<TStateProps>({
     stateToProps: state => ({

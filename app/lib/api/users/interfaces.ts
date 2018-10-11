@@ -2,7 +2,10 @@ import * as Yup from "yup";
 import { WalletSubType, WalletType } from "../../../modules/web3/types";
 import * as YupTS from "../../yup-ts";
 
-export type TUserType = "investor" | "issuer";
+export enum EUserType {
+  INVESTOR = "investor",
+  ISSUER = "issuer",
+}
 
 export interface IUser {
   userId: string;
@@ -10,7 +13,7 @@ export interface IUser {
   language?: string;
   unverifiedEmail?: string;
   verifiedEmail?: string;
-  type: TUserType;
+  type: EUserType;
   walletType: WalletType;
   walletSubtype: WalletSubType;
 }
@@ -24,7 +27,7 @@ export interface IUserInput {
   salt?: string;
   language?: string;
   backupCodesVerified?: boolean;
-  type: TUserType;
+  type: EUserType;
   walletType: WalletType;
   walletSubtype: WalletSubType;
 }

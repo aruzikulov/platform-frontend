@@ -1,7 +1,7 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
-import { TUserType } from "../../../lib/api/users/interfaces";
 
+import { EUserType } from "../../../lib/api/users/interfaces";
 import { KycStatusWidgetComponent } from "./KycStatusWidget";
 
 const commonProps = {
@@ -9,7 +9,7 @@ const commonProps = {
   isLoading: false,
   error: undefined,
   step: 1,
-  userType: "investor" as TUserType,
+  userType: EUserType.INVESTOR,
   onGoToKycHome: () => {},
   onGoToWallet: () => {},
 };
@@ -25,7 +25,7 @@ storiesOf("KYC/StatusWidget", module)
   .add("outsourced-started", () => (
     <KycStatusWidgetComponent
       {...commonProps}
-      userType="investor"
+      userType={EUserType.INVESTOR}
       requestStatus="Outsourced"
       requestOutsourcedStatus="started"
     />
@@ -33,7 +33,7 @@ storiesOf("KYC/StatusWidget", module)
   .add("outsourced-aborted", () => (
     <KycStatusWidgetComponent
       {...commonProps}
-      userType="investor"
+      userType={EUserType.INVESTOR}
       requestStatus="Outsourced"
       requestOutsourcedStatus="aborted"
     />
@@ -41,7 +41,7 @@ storiesOf("KYC/StatusWidget", module)
   .add("outsourced-canceled", () => (
     <KycStatusWidgetComponent
       {...commonProps}
-      userType="investor"
+      userType={EUserType.INVESTOR}
       requestStatus="Outsourced"
       requestOutsourcedStatus="canceled"
     />
@@ -49,7 +49,7 @@ storiesOf("KYC/StatusWidget", module)
   .add("outsourced-other", () => (
     <KycStatusWidgetComponent
       {...commonProps}
-      userType="investor"
+      userType={EUserType.INVESTOR}
       requestStatus="Outsourced"
       requestOutsourcedStatus="other"
     />
@@ -57,7 +57,7 @@ storiesOf("KYC/StatusWidget", module)
   .add("outsourced-review_pending", () => (
     <KycStatusWidgetComponent
       {...commonProps}
-      userType="investor"
+      userType={EUserType.INVESTOR}
       requestStatus="Outsourced"
       requestOutsourcedStatus="review_pending"
     />

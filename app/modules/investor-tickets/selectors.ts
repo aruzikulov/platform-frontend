@@ -15,7 +15,14 @@ export const selectInvestorTicket = (state: IAppState, etoId: string) => {
 export const selectHasInvestorTicket = (state: IAppState, etoId: string) => {
   const investorState = selectInvestorTicketsState(state);
 
-  return etoId in investorState.investorEtoTickets;
+  const investmentTicket = investorState.investorEtoTickets[etoId];
+
+  if (investmentTicket) {
+    // equivEurUlps is set to zero when investor didn't invest
+    return !investmentTicket.equivEurUlps.isZero();
+  }
+
+  return false;
 };
 
 export const selectEtoWithInvestorTickets = (
@@ -28,8 +35,7 @@ export const selectEtoWithInvestorTickets = (
       .filter(eto => eto.state === EtoState.ON_CHAIN)
       .filter(eto => eto.contract!.timedState !== ETOStateOnChain.Setup)
       .filter(eto => selectHasInvestorTicket(state, eto.etoId))
-      .map(eto => ({ ...eto, investorTicket: selectInvestorTicket(state, eto.etoId)! }))
-      .filter(eto => !eto.investorTicket.equivEurUlps.isZero());
+      .map(eto => ({ ...eto, investorTicket: selectInvestorTicket(state, eto.etoId)! }));
   }
 
   return undefined;

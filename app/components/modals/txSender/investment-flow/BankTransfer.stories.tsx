@@ -18,7 +18,7 @@ const summaryData = {
   investmentEur: "10000000000000000000000",
   equityTokens: "1234",
   estimatedReward: "3456123412341231234123412344",
-  summaryDocumentUrl: "fufu",
+  etoAddress: "0xfufu",
 };
 
 storiesOf("Investment/Bank Transfer", module)
@@ -29,4 +29,6 @@ storiesOf("Investment/Bank Transfer", module)
       {...detailsData}
     />
   ))
-  .add("Summary", () => <BankTransferSummaryComponent {...summaryData} />);
+  .add("Summary", () => (
+    <BankTransferSummaryComponent downloadAgreement={() => {}} {...summaryData} />
+  ));

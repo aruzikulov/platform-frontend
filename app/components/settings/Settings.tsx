@@ -4,7 +4,7 @@ import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
 import { TKycRequestType, TRequestStatus } from "../../lib/api/KycApi.interfaces";
-import { TUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
 import { selectKycRequestStatus, selectKycRequestType } from "../../modules/kyc/selectors";
@@ -28,7 +28,7 @@ interface IStateProps {
   isLightWallet: boolean;
   isIcbmWalletConnected: boolean;
   isLockedWalletConnected: boolean;
-  userType?: TUserType;
+  userType?: EUserType;
   kycRequestType?: TKycRequestType;
   kycRequestStatus?: TRequestStatus;
 }
@@ -42,7 +42,7 @@ export const SettingsComponent: React.SFC<IStateProps> = ({
   kycRequestStatus,
 }) => {
   const isPersonalDataProcessed = kycRequestStatus !== "Draft";
-  const isUserInvestor = userType === "investor";
+  const isUserInvestor = userType === EUserType.INVESTOR;
   const isIndividual = kycRequestType === "individual";
 
   return (

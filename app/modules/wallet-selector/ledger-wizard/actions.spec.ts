@@ -268,7 +268,7 @@ describe("Wallet selector > Ledger wizard > actions", () => {
       expect(dispatchMock).to.be.calledWithExactly(actions.walletSelector.connected());
     });
 
-    it("should work when ledger wallet is connected and user TYPE should be issuer", async () => {
+    it("should work when ledger wallet is connected and user TYPE should be ISSUER", async () => {
       const expectedDerivationPath = "44'/60'/0'/2";
       const dummyMetadata: ILedgerWalletMetadata = {
         address: dummyEthereumAddress,

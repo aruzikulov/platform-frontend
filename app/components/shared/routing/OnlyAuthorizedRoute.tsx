@@ -4,7 +4,7 @@ import { Redirect, Route } from "react-router-dom";
 
 import { LocationDescriptor } from "history";
 import { RouterState } from "react-router-redux";
-import { TUserType } from "../../../lib/api/users/interfaces";
+import { EUserType } from "../../../lib/api/users/interfaces";
 import { selectIsAuthorized, selectUserType } from "../../../modules/auth/selectors";
 import { appConnect } from "../../../store";
 import { appRoutes } from "../../appRoutes";
@@ -12,7 +12,7 @@ import { loginWalletRoutes } from "../../walletSelector/walletRoutes";
 
 interface IStateProps {
   isAuthorized: boolean;
-  userType?: TUserType;
+  userType?: EUserType;
   routerState: RouterState;
 }
 
@@ -68,7 +68,7 @@ class OnlyAuthorizedRouteComponent extends React.Component<TProps, IState> {
     }
 
     switch (this.props.userType) {
-      case "investor":
+      case EUserType.INVESTOR:
         return (
           <Route
             {...rest}
@@ -82,7 +82,7 @@ class OnlyAuthorizedRouteComponent extends React.Component<TProps, IState> {
           />
         );
 
-      case "issuer":
+      case EUserType.ISSUER:
         return (
           <Route
             {...rest}

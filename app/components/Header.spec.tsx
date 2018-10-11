@@ -3,6 +3,7 @@ import { shallow } from "enzyme";
 import * as React from "react";
 import { spy } from "sinon";
 import { tid } from "../../test/testUtils";
+import { EUserType } from "../lib/api/users/interfaces";
 import { appRoutes } from "./appRoutes";
 import { HeaderComponent } from "./Header";
 
@@ -12,7 +13,7 @@ describe("<HeaderComponent />", () => {
     const component = shallow(
       <HeaderComponent
         isAuthorized={false}
-        userType="investor"
+        userType={EUserType.INVESTOR}
         logout={mockFunction}
         location={appRoutes.etoLanding}
       />,
@@ -28,7 +29,7 @@ describe("<HeaderComponent />", () => {
         isAuthorized={false}
         logout={mockFunction}
         location={appRoutes.root}
-        userType="investor"
+        userType={EUserType.INVESTOR}
       />,
     );
 
@@ -42,7 +43,7 @@ describe("<HeaderComponent />", () => {
         isAuthorized={false}
         logout={mockFunction}
         location={""}
-        userType="investor"
+        userType={EUserType.INVESTOR}
       />,
     );
 
@@ -56,7 +57,7 @@ describe("<HeaderComponent />", () => {
         isAuthorized={true}
         logout={mockFunction}
         location={""}
-        userType="investor"
+        userType={EUserType.INVESTOR}
       />,
     );
 
@@ -70,7 +71,7 @@ describe("<HeaderComponent />", () => {
         isAuthorized={true}
         logout={mockFunction}
         location={""}
-        userType="investor"
+        userType={EUserType.INVESTOR}
       />,
     );
     const LogoutButton = component.find(tid("Header-logout"));

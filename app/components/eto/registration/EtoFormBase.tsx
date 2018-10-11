@@ -15,6 +15,7 @@ import * as styles from "./EtoFormBase.module.scss";
 
 interface IProps {
   title: string | React.ReactNode;
+  "data-test-id"?: string;
 }
 
 interface IFormPercentageDoneProps {
@@ -52,8 +53,9 @@ export const EtoFormBase: React.SFC<IProps & IFormPercentageDoneProps> = ({
   title,
   validator,
   progressOptions,
+  "data-test-id": dataTestId,
 }) => (
-  <div>
+  <div data-test-id={dataTestId}>
     <Form className={styles.form}>
       <h4 className={styles.header}>{title}</h4>
 
