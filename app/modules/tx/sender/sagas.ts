@@ -49,7 +49,6 @@ export function* withdrawSaga({ logger }: TGlobalDependencies): any {
     yield txSendSaga({
       type: ETxSenderType.WITHDRAW,
       transactionGenerationFunction: generateEthWithdrawTransaction,
-      predefinedGasLimit: WITHDRAW_GAS_AMOUNT,
     });
 
     logger.info("Withdrawing successful");
@@ -86,7 +85,6 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
       type: ETxSenderType.INVEST,
       transactionGenerationFunction: generateInvestmentTransaction,
       cleanupFunction: onInvestmentTxModalHide,
-      predefinedGasLimit: INVESTMENT_GAS_AMOUNT,
     });
     logger.info("Investment successful");
   } catch (e) {

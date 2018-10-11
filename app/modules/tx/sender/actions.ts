@@ -7,7 +7,8 @@ export const txSenderActions = {
   txSenderShowModal: (type: ETxSenderType) => createAction("TX_SENDER_SHOW_MODAL", { type }),
   txSenderHideModal: () => createSimpleAction("TX_SENDER_HIDE_MODAL"),
   // User awaiting actions
-  txSenderAcceptDraft: (txData?: ITxData) => createAction("TX_SENDER_ACCEPT_DRAFT", txData!),
+  txSenderAcceptDraft: (txData?: Partial<ITxData>) =>
+    createAction("TX_SENDER_ACCEPT_DRAFT", txData!),
   txSenderAccept: () => createSimpleAction("TX_SENDER_ACCEPT"),
   // Signer actions
   txSenderSigned: (txHash: string, type: ETxSenderType) =>

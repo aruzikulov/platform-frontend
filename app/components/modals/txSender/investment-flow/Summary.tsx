@@ -16,6 +16,7 @@ import {
   selectNeuRewardUlpsByEtoId,
 } from "../../../../modules/public-etos/selectors";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
+import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
 import {
   addBigNumbers,

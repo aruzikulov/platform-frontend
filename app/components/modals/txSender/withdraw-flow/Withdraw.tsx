@@ -6,7 +6,7 @@ import { compose } from "recompose";
 import * as Web3Utils from "web3-utils";
 import { NumberSchema } from "yup";
 
-import { ITxInitData } from "../../../../lib/web3/Web3Manager";
+import { ITxData } from "../../../../lib/web3/Web3Manager";
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
 import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
@@ -23,6 +23,11 @@ import * as styles from "./Withdraw.module.scss";
 
 interface IStateProps {
   maxEther: string;
+}
+
+interface IFormikProps {
+  value: string;
+  to: string;
 }
 
 type TProps = IStateProps & ITxInitDispatchProps;
@@ -43,10 +48,10 @@ const WithdrawComponent: React.SFC<TProps> = ({ onAccept, maxEther }) => (
       <FormattedMessage id="modal.sent-eth.title" />
     </h3>
 
-    <Formik<ITxInitData>
+    <Formik<IFormikProps>
       validationSchema={withdrawFormValidator}
       isInitialValid={false}
-      initialValues={{ value: "", to: "", from: "" }}
+      initialValues={{ value: "", to: "" }}
       onSubmit={data => {
         const value = Web3Utils.toWei(data.value.toString(), "ether");
         onAccept({ ...data, value });
@@ -114,7 +119,7 @@ const Withdraw = compose<TProps, {}>(
       ]),
     }),
     dispatchToProps: d => ({
-      onAccept: (tx: ITxInitData) => d(actions.txSender.txSenderAcceptDraft(tx)),
+      onAccept: (tx: Partial<ITxData>) => d(actions.txSender.txSenderAcceptDraft(tx)),
     }),
   }),
 )(WithdrawComponent);

@@ -56,11 +56,12 @@ const TxSenderModalComponent: React.SFC<Props> = props => {
 };
 
 export interface ITxInitDispatchProps {
-  onAccept: (tx: ITxData) => any;
+  onAccept: (tx: Partial<ITxData>) => any;
 }
 
 export interface ITxSummaryStateProps {
   txData: ITxData;
+  txCost: string;
 }
 
 export interface ITxSummaryDispatchProps {
