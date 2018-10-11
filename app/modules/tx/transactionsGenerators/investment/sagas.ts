@@ -5,18 +5,20 @@ import { EInvestmentType } from "./../../../investmentFlow/reducer";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ContractsService } from "../../../../lib/web3/ContractsService";
-import { ITxInitData } from "../../../../lib/web3/Web3Manager";
+import { ITxData } from "../../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../../store";
 import { actions } from "../../../actions";
 import { selectReadyToInvest } from "../../../investmentFlow/selectors";
 import { selectEtoById } from "../../../public-etos/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 
+const INVESTMENT_GAS_AMOUNT = "600000";
+
 function createTxData(
   state: IAppState,
   txInput: string,
   contractAddress: string,
-): ITxInitData | undefined {
+): Partial<ITxData> | undefined {
   return {
     to: contractAddress,
     from: selectEthereumAddressWithChecksum(state.web3),
@@ -29,7 +31,7 @@ function getEtherLockTransaction(
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): ITxInitData | undefined {
+): ITxData | undefined {
   const txInput = contractsService.etherLock
     .transferTx(etoId, new BigNumber(state.investmentFlow.ethValueUlps), [""])
     .getData();
@@ -40,7 +42,7 @@ function getEuroLockTransaction(
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): ITxInitData | undefined {
+): ITxData | undefined {
   const txInput = contractsService.euroLock
     .transferTx(etoId, new BigNumber(state.investmentFlow.euroValueUlps), [""])
     .getData();
@@ -51,7 +53,7 @@ function getEtherTokenTransaction(
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): ITxInitData | undefined {
+): ITxData | undefined {
   const etherTokenBalance = state.wallet.data!.etherTokenBalance;
   const etherValue = state.investmentFlow.ethValueUlps;
   let txDetails: ITxInitData | undefined;
@@ -90,7 +92,7 @@ export function* generateInvestmentTransaction({ contractsService }: TGlobalDepe
     throw new Error("Investment data is not valid to create an Transaction");
   }
 
-  let txDetails: ITxInitData | undefined;
+  let txDetails: ITxData | undefined;
 
   switch (i.investmentType) {
     case EInvestmentType.InvestmentWallet:

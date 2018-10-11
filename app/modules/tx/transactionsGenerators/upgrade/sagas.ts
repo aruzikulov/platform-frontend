@@ -55,6 +55,7 @@ export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDe
     from: userAddress,
     data: txInput,
     value: "0",
+    gasPrice: state.txSender.gasPrice,
   };
 
   const estimatedGas = yield contractsService.icbmEtherLock.migrateTx().estimateGas(txDetails);

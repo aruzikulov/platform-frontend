@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { Modal } from "reactstrap";
 
-import { ITxData, ITxInitData } from "../../../lib/web3/Web3Manager";
+import { ITxData } from "../../../lib/web3/Web3Manager";
 import { actions } from "../../../modules/actions";
 import {
   ETransactionErrorType,
@@ -56,12 +56,11 @@ const TxSenderModalComponent: React.SFC<Props> = props => {
 };
 
 export interface ITxInitDispatchProps {
-  onAccept: (tx: ITxInitData) => any;
+  onAccept: (tx: ITxData) => any;
 }
 
 export interface ITxSummaryStateProps {
-  txData: ITxInitData;
-  txCost: string;
+  txData: ITxData;
 }
 
 export interface ITxSummaryDispatchProps {

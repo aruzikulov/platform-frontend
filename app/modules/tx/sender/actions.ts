@@ -1,5 +1,5 @@
 import { createAction, createSimpleAction } from "../../actionsUtils";
-import { ITxInitData } from "./../../../lib/web3/Web3Manager";
+import { ITxData } from "./../../../lib/web3/Web3Manager";
 import { ETokenType, ETransactionErrorType, ETxSenderType } from "./reducer";
 
 export const txSenderActions = {
@@ -7,7 +7,7 @@ export const txSenderActions = {
   txSenderShowModal: (type: ETxSenderType) => createAction("TX_SENDER_SHOW_MODAL", { type }),
   txSenderHideModal: () => createSimpleAction("TX_SENDER_HIDE_MODAL"),
   // User awaiting actions
-  txSenderAcceptDraft: (txData?: ITxInitData) => createAction("TX_SENDER_ACCEPT_DRAFT", txData!),
+  txSenderAcceptDraft: (txData?: ITxData) => createAction("TX_SENDER_ACCEPT_DRAFT", txData!),
   txSenderAccept: () => createSimpleAction("TX_SENDER_ACCEPT"),
   // Signer actions
   txSenderSigned: (txHash: string, type: ETxSenderType) =>
@@ -29,8 +29,6 @@ export const txSenderActions = {
   // Add here new custom sagas that represent flow
 
   // reducer setters
-  setGasPrice: (gasPrice: string) => createAction("TX_SENDER_SET_GAS_PRICE", { gasPrice }),
-  setGasLimit: (gasLimit: string) => createAction("TX_SENDER_SET_GAS_LIMIT", { gasLimit }),
-  setSummaryData: (summaryData?: ITxInitData) =>
+  setSummaryData: (summaryData?: ITxData) =>
     createAction("TX_SENDER_SET_SUMMARY_DATA", { summaryData }),
 };

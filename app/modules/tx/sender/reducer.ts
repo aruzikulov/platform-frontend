@@ -1,8 +1,8 @@
 import { AppReducer } from "../../../store";
 import { multiplyBigNumbers } from "../../../utils/BigNumberUtils";
-import { ITxData, ITxInitData } from "./../../../lib/web3/Web3Manager";
+import { ITxData } from "./../../../lib/web3/Web3Manager";
 
-const GAS_PRICE_MULTIPLIER = 1 + parseFloat(process.env.NF_GAS_OVERHEAD || "0");
+export const GAS_PRICE_MULTIPLIER = 1 + parseFloat(process.env.NF_GAS_OVERHEAD || "0");
 
 export enum ETxSenderType {
   WITHDRAW = "WITHDRAW",
@@ -45,20 +45,16 @@ export enum ETxSenderState {
 
 export interface ITxSenderState {
   state: ETxSenderState;
-  gasLimit: string;
-  gasPrice: string;
   type?: ETxSenderType;
   txDetails?: ITxData;
   blockId?: number;
   txHash?: string;
   error?: ETransactionErrorType;
-  summaryData?: ITxInitData;
+  summaryData?: ITxData;
 }
 
 const initialState: ITxSenderState = {
   state: ETxSenderState.UNINITIALIZED,
-  gasLimit: "0",
-  gasPrice: "0",
 };
 
 export const txSenderReducer: AppReducer<ITxSenderState> = (
@@ -85,8 +81,6 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
         ...initialState,
         state: ETxSenderState.INIT,
         type: action.payload.type,
-        gasPrice: state.gasPrice,
-        gasLimit: state.gasLimit,
       };
     case "TX_SENDER_ACCEPT":
       return {
@@ -106,8 +100,6 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
         txDetails: {
           ...state.txDetails,
           ...action.payload,
-          gas: state.gasLimit,
-          gasPrice: state.gasPrice,
         },
       };
     case "TX_SENDER_SIGNED":
@@ -137,13 +129,6 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
         error: action.payload.error,
       };
 
-    case "TX_SENDER_SET_GAS_PRICE":
-      return {
-        ...state,
-        gasPrice: multiplyBigNumbers([action.payload.gasPrice || 0, GAS_PRICE_MULTIPLIER]),
-      };
-
-    case "TX_SENDER_SET_GAS_LIMIT":
     case "TX_SENDER_SET_SUMMARY_DATA":
       return {
         ...state,

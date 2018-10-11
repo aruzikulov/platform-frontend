@@ -35,18 +35,13 @@ import { ITxData } from "./../../../lib/web3/Web3Manager";
 import { ETokenType, ETransactionErrorType, ETxSenderType } from "./reducer";
 import { selectTxDetails, selectTxType } from "./selectors";
 
-const INVESTMENT_GAS_AMOUNT = "600000";
-const WITHDRAW_GAS_AMOUNT = "100000";
-
 class NotEnoughEtherForGasError extends Error {}
 
 interface ITxSendParams {
   type: ETxSenderType;
   transactionGenerationFunction: any;
   requiresUserInput?: boolean;
-  setupGasFunction?: any;
   cleanupFunction?: any;
-  predefinedGasLimit?: string;
 }
 
 export function* withdrawSaga({ logger }: TGlobalDependencies): any {
@@ -99,31 +94,14 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
   }
 }
 
-function* defaultGasPriceFunction(predefinedGasLimit?: string): any {
-  const s: IAppState = yield select();
-  yield put(actions.txSender.setGasPrice(s.gas.gasPrice!.standard));
-  if (predefinedGasLimit) {
-    yield put(actions.txSender.setGasLimit(predefinedGasLimit));
-  }
-}
-
 export function* txSendSaga({
   type,
   transactionGenerationFunction,
-  setupGasFunction = defaultGasPriceFunction,
   requiresUserInput = true,
   cleanupFunction,
-  predefinedGasLimit,
 }: ITxSendParams): any {
   const { result, cancel } = yield race({
-    result: neuCall(
-      txSendProcess,
-      type,
-      setupGasFunction,
-      transactionGenerationFunction,
-      requiresUserInput,
-      predefinedGasLimit,
-    ),
+    result: neuCall(txSendProcess, type, transactionGenerationFunction, requiresUserInput),
     cancel: take("TX_SENDER_HIDE_MODAL"),
   });
 
