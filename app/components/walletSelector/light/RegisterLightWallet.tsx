@@ -1,6 +1,6 @@
 import { Form, FormikProps, withFormik } from "formik";
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
+import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Link } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
@@ -29,7 +29,6 @@ export interface IStateProps {
 
 interface IDispatchProps {
   submitForm: (values: IFormValues) => void;
-  currentValues?: IFormValues;
 }
 
 const validationSchema = Yup.object().shape({
@@ -88,7 +87,11 @@ const RegisterEnhancedLightWalletForm = withFormik<
   IFormValues
 >({
   validationSchema: validationSchema,
-  mapPropsToValues: props => props.currentValues as IFormValues,
+  mapPropsToValues: () => ({
+    email: "",
+    password: "",
+    repeatPassword: "",
+  }),
   handleSubmit: (values, props) => props.props.submitForm(values),
 })(RegisterLightWalletForm);
 
@@ -100,7 +103,7 @@ export const RegisterWalletComponent: React.SFC<
       <Row>
         <Col xs={12} md={{ size: 8, offset: 2 }}>
           <InfoBlock>
-            <FormattedMessage id="wallet-selector.light.icbm-info.message" />{" "}
+            <FormattedHTMLMessage tagName="span" id="wallet-selector.light.icbm-info.message" />{" "}
             <Link
               to="https://neufund.freshdesk.com/support/solutions/articles/36000060442-icbm-investors-registration"
               target="_blank"
@@ -112,7 +115,10 @@ export const RegisterWalletComponent: React.SFC<
       </Row>
       <Row className="justify-content-sm-center mt-3">
         <Col className="align-self-end col-sm-auto col-xs-12">
-          <h1 className="mb-4">
+          <h1
+            className="mb-4"
+            data-test-id="modals.wallet-selector.register-restore-light-wallet.title"
+          >
             {props.restore ? (
               <FormattedMessage id="wallet-selector.neuwallet.restore-prompt" />
             ) : (

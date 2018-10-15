@@ -36,7 +36,7 @@ import {
   selectLightWalletFromQueryString,
   selectPreviousConnectedWallet,
 } from "../../web3/selectors";
-import { WalletSubType, WalletType } from "../../web3/types";
+import { EWalletSubType, EWalletType } from "../../web3/types";
 import { selectUrlUserType } from "../selectors";
 import { mapLightWalletErrorToErrorMessage } from "./errors";
 import { DEFAULT_HD_PATH, getVaultKey } from "./flows";
@@ -52,7 +52,7 @@ export async function retrieveMetadataFromVaultAPI(
     const vault = await vaultApi.retrieve(vaultKey);
 
     return {
-      walletType: WalletType.LIGHT,
+      walletType: EWalletType.LIGHT,
       salt,
       vault,
       email,
@@ -80,7 +80,7 @@ export function* getWalletMetadata(
   const savedMetadata = yield effects.select((s: IAppState) =>
     selectPreviousConnectedWallet(s.web3),
   );
-  if (savedMetadata && savedMetadata.walletType === WalletType.LIGHT) {
+  if (savedMetadata && savedMetadata.walletType === EWalletType.LIGHT) {
     return savedMetadata;
   }
 
@@ -198,7 +198,7 @@ export function* lightWalletRecoverWatch(
       backupCodesVerified: true,
       type: userType,
       walletType: walletMetadata.walletType,
-      walletSubtype: WalletSubType.UNKNOWN,
+      walletSubtype: EWalletSubType.UNKNOWN,
     };
     const isEmailAvailable = yield neuCall(checkEmailPromise, email);
     try {

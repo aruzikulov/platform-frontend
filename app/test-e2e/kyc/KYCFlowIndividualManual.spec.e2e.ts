@@ -1,8 +1,8 @@
-import { tid } from "../utils";
 import { kycRoutes } from "../../components/kyc/routes";
+import { tid } from "../utils";
+import { fillForm, uploadFileToFieldWithTid } from "../utils/forms";
 import { createAndLoginNewUser } from "../utils/userHelpers";
 import { kycInvidualForm } from "./fixtures";
-import { uploadFileToFieldWithTid, fillForm } from "../utils/forms";
 import { acceptWallet } from "./util";
 
 describe("KYC Personal flow with manual verification", () => {

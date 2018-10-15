@@ -1,3 +1,8 @@
+export enum ETransactionStatus {
+  SUCCESS = "0x01",
+  REVERTED = "0X00",
+}
+
 export const requestFromWeb3Node = (
   nodeAddress: string,
   methodName: string,
@@ -22,6 +27,18 @@ export const getTransactionReceiptRpc = (nodeAddress: string, txHash: string) =>
 
 export const getBalanceRpc = (nodeAddress: string, address: string) =>
   requestFromWeb3Node(nodeAddress, "eth_getBalance", [address, "latest"]);
+
+export const getNonceRpc = (nodeAddress: string, address: string) =>
+  requestFromWeb3Node(nodeAddress, "eth_getTransactionCount", [address, "latest"]);
+
+export const getChainIdRpc = (nodeAddress: string) =>
+  requestFromWeb3Node(nodeAddress, "net_version", []);
+
+export const sendRawTransactionRpc = (nodeAddress: string, data: string) =>
+  requestFromWeb3Node(nodeAddress, "eth_sendRawTransaction", [data]);
+
+export const getTransactionReceipt = (nodeAddress: string, hash: string) =>
+  requestFromWeb3Node(nodeAddress, "eth_getTransactionReceipt", [hash]);
 
 export const sendTransactionRpc = (
   nodeAddress: string,

@@ -98,7 +98,7 @@ export const SettingsComponent: React.SFC<IStateProps> = ({
 };
 
 export const Settings = compose<React.SFC>(
-  onEnterAction({ actionCreator: d => d(actions.wallet.startLoadingWalletData()) }),
+  onEnterAction({ actionCreator: d => d(actions.wallet.loadWalletData()) }),
   appConnect<IStateProps>({
     stateToProps: s => ({
       isLightWallet: selectIsLightWallet(s.web3),

@@ -31,7 +31,7 @@ import { SignerType } from "../../lib/web3/PersonalWeb3";
 import { Web3Adapter } from "../../lib/web3/Web3Adapter";
 import { Web3ManagerMock } from "../../lib/web3/Web3Manager.mock";
 import { actions } from "../../modules/actions";
-import { WalletSubType, WalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { BROWSER_WALLET_RECONNECT_INTERVAL } from "./browser/WalletBrowser";
 import { LEDGER_RECONNECT_INTERVAL } from "./ledger/WalletLedgerInitComponent";
 import { walletRegisterRoutes } from "./walletRoutes";
@@ -44,14 +44,14 @@ describe("Wallet selector integration", () => {
     const expectedChallenge = "CHALLENGE";
 
     const ledgerWalletMock = createMock(LedgerWallet, {
-      walletType: WalletType.LEDGER,
-      walletSubType: WalletSubType.UNKNOWN,
+      walletType: EWalletType.LEDGER,
+      walletSubType: EWalletSubType.UNKNOWN,
       ethereumAddress: expectedAddress,
       getSignerType: () => SignerType.ETH_SIGN,
       testConnection: async () => false,
       getMetadata: (): ILedgerWalletMetadata => ({
-        walletType: WalletType.LEDGER,
-        walletSubType: WalletSubType.UNKNOWN,
+        walletType: EWalletType.LEDGER,
+        walletSubType: EWalletSubType.UNKNOWN,
         derivationPath: expectedDerivationPath,
         address: expectedAddress,
       }),
@@ -169,8 +169,8 @@ describe("Wallet selector integration", () => {
     expect(dispatchSpy).calledWithExactly(
       actions.web3.newPersonalWalletPlugged(
         {
-          walletType: WalletType.LEDGER,
-          walletSubType: WalletSubType.UNKNOWN,
+          walletType: EWalletType.LEDGER,
+          walletSubType: EWalletSubType.UNKNOWN,
           derivationPath: expectedDerivationPath,
           address: expectedAddress,
         },
@@ -191,14 +191,14 @@ describe("Wallet selector integration", () => {
     const expectedAddress = dummyEthereumAddress;
     const expectedChallenge = "CHALLENGE";
     const browserWalletMock = createMock(BrowserWallet, {
-      walletType: WalletType.BROWSER,
-      walletSubType: WalletSubType.METAMASK,
+      walletType: EWalletType.BROWSER,
+      walletSubType: EWalletSubType.METAMASK,
       ethereumAddress: expectedAddress,
       getSignerType: () => SignerType.ETH_SIGN_TYPED_DATA,
       getMetadata: (): IBrowserWalletMetadata => ({
-        walletType: WalletType.BROWSER,
+        walletType: EWalletType.BROWSER,
         address: expectedAddress,
-        walletSubType: WalletSubType.METAMASK,
+        walletSubType: EWalletSubType.METAMASK,
       }),
     });
     const browserWalletConnectorMock = createMock(BrowserWalletConnector, {
@@ -291,9 +291,9 @@ describe("Wallet selector integration", () => {
     expect(dispatchSpy).calledWithExactly(
       actions.web3.newPersonalWalletPlugged(
         {
-          walletType: WalletType.BROWSER,
+          walletType: EWalletType.BROWSER,
           address: expectedAddress,
-          walletSubType: WalletSubType.METAMASK,
+          walletSubType: EWalletSubType.METAMASK,
         },
         true,
       ),

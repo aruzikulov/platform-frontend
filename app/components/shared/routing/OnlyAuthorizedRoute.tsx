@@ -6,6 +6,8 @@ import { LocationDescriptor } from "history";
 import { RouterState } from "react-router-redux";
 import { EUserType } from "../../../lib/api/users/interfaces";
 import { selectIsAuthorized, selectUserType } from "../../../modules/auth/selectors";
+import { selectWalletTypeFromQueryString } from "../../../modules/routing/selectors";
+import { EWalletType } from "../../../modules/web3/types";
 import { appConnect } from "../../../store";
 import { appRoutes } from "../../appRoutes";
 import { loginWalletRoutes } from "../../walletSelector/walletRoutes";
@@ -13,6 +15,7 @@ import { loginWalletRoutes } from "../../walletSelector/walletRoutes";
 interface IStateProps {
   isAuthorized: boolean;
   userType?: EUserType;
+  walletType: EWalletType;
   routerState: RouterState;
 }
 
@@ -43,9 +46,20 @@ class OnlyAuthorizedRouteComponent extends React.Component<TProps, IState> {
     });
   }
 
-  private getRedirectionPath(): LocationDescriptor {
+  private selectRouteBasedOnWalletType = (walletType: EWalletType): string => {
+    switch (walletType) {
+      case EWalletType.LEDGER:
+        return loginWalletRoutes.ledger;
+      case EWalletType.BROWSER:
+        return loginWalletRoutes.browser;
+      default:
+        return loginWalletRoutes.light;
+    }
+  };
+
+  private getRedirectionPath(walletType: EWalletType): LocationDescriptor {
     return {
-      pathname: loginWalletRoutes.light,
+      pathname: this.selectRouteBasedOnWalletType(walletType),
       search: queryString.stringify({
         redirect:
           this.props.routerState.location!.pathname + this.props.routerState.location!.search,
@@ -57,6 +71,7 @@ class OnlyAuthorizedRouteComponent extends React.Component<TProps, IState> {
     const {
       investorComponent: InvestorComponent,
       issuerComponent: IssuerComponent,
+      walletType: walletType,
       ...rest
     } = this.props;
     const { redirect } = this.state;
@@ -64,7 +79,9 @@ class OnlyAuthorizedRouteComponent extends React.Component<TProps, IState> {
     const IssuerComponentAsAny = IssuerComponent as any;
 
     if (redirect) {
-      return <Route {...rest} render={() => <Redirect to={this.getRedirectionPath()} />} />;
+      return (
+        <Route {...rest} render={() => <Redirect to={this.getRedirectionPath(walletType)} />} />
+      );
     }
 
     switch (this.props.userType) {
@@ -105,6 +122,7 @@ export const OnlyAuthorizedRoute = appConnect<IStateProps, {}, IOwnProps>({
   stateToProps: s => ({
     isAuthorized: selectIsAuthorized(s.auth),
     userType: selectUserType(s.auth),
+    walletType: selectWalletTypeFromQueryString(s.router),
     routerState: s.router,
   }),
 })(OnlyAuthorizedRouteComponent);

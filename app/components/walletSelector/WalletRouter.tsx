@@ -13,7 +13,7 @@ interface IProps {
 
 export const WalletRouter: React.SFC<IProps> = ({ rootPath }) => (
   <SwitchConnected>
-    <Route path={`${rootPath}/light`} component={WalletLight} />
+    <Route path={`${rootPath}/light`} component={WalletLight} exact />
     <Route path={`${rootPath}/browser`} component={WalletBrowser} exact />
     <Route path={`${rootPath}/ledger`} component={WalletLedger} exact />
     <Redirect to={getRedirectionUrl(rootPath)} />

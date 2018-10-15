@@ -110,7 +110,7 @@ export function* txSendSaga({
 
   // we need to wait for modal to close anyway
   yield take("TX_SENDER_HIDE_MODAL");
-  yield put(actions.wallet.startLoadingWalletData());
+  yield put(actions.wallet.loadWalletData());
 
   return result;
 }

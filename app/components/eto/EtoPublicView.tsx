@@ -58,7 +58,7 @@ export const EtoPublicView = compose<IProps, IRouterParams>(
   onEnterAction({
     actionCreator: (dispatch, props) => {
       dispatch(actions.publicEtos.loadEto(props.etoId));
-      dispatch(actions.wallet.startLoadingWalletData());
+      dispatch(actions.wallet.loadWalletData());
     },
   }),
   branch<IStateProps>(

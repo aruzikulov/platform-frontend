@@ -1,7 +1,7 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 
-export type TInitType = "appInit" | "smartcontractsInit";
+export type TInitType = "appInit" | "smartcontractsInit" | "walletInit";
 
 interface IAsyncActionState {
   inProgress: boolean;

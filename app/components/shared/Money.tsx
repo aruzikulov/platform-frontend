@@ -15,13 +15,19 @@ export enum ECurrencySymbol {
 
 export type TCurrency = "neu" | "eur" | "eur_token" | "eth";
 
+export enum EMoneyFormat {
+  WEI = "wei",
+  FLOAT = "float",
+}
+
 export type TMoneyTransfer = "income" | "outcome";
 
 type TTheme = "t-green" | "t-orange";
 
 interface IOwnProps extends React.HTMLAttributes<HTMLSpanElement> {
   currency: TCurrency;
-  value: string | BigNumber;
+  value: React.ReactElement<any> | string | BigNumber;
+  format?: EMoneyFormat;
   doNotSeparateThousands?: boolean;
   currencySymbol?: ECurrencySymbol;
   currencyClassName?: string;
@@ -67,8 +73,21 @@ export const selectCurrencySymbol = (currency: TCurrency): string => {
   }
 };
 
+function getFormattedMoney(
+  value: string | BigNumber,
+  currency: TCurrency,
+  doNotSeparateThousands: boolean | undefined,
+): string {
+  const decimalPlaces = selectDecimalPlaces(currency);
+
+  return doNotSeparateThousands
+    ? formatMoney(value, MONEY_DECIMALS, decimalPlaces)
+    : formatThousands(formatMoney(value, MONEY_DECIMALS, decimalPlaces));
+}
+
 export const Money: React.SFC<IProps> = ({
   value,
+  format = EMoneyFormat.WEI,
   currency,
   currencyClassName,
   currencyStyle,
@@ -78,11 +97,10 @@ export const Money: React.SFC<IProps> = ({
   theme,
   ...props
 }) => {
-  const decimalPlaces = selectDecimalPlaces(currency);
-
-  const formattedMoney = doNotSeparateThousands
-    ? formatMoney(value, MONEY_DECIMALS, decimalPlaces)
-    : formatThousands(formatMoney(value, MONEY_DECIMALS, decimalPlaces));
+  const money =
+    format === EMoneyFormat.WEI
+      ? getFormattedMoney(value as BigNumber, currency, doNotSeparateThousands)
+      : value;
 
   return (
     <span {...props} className={cn(styles.money, transfer, props.className, theme)}>
@@ -91,7 +109,7 @@ export const Money: React.SFC<IProps> = ({
           {selectCurrencySymbol(currency)}
         </span>
       )}
-      {formattedMoney}
+      {money}
       {currencySymbol === ECurrencySymbol.CODE && (
         <span className={cn(currencyClassName)} style={currencyStyle}>
           {" "}

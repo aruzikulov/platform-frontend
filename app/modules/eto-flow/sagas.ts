@@ -4,7 +4,12 @@ import { fork, put } from "redux-saga/effects";
 import { DO_BOOK_BUILDING, SUBMIT_ETO_PERMISSION } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
-import { EtoState, TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces";
+import {
+  EtoState,
+  TCompanyEtoData,
+  TEtoSpecsData,
+  TPartialEtoSpecData,
+} from "../../lib/api/eto/EtoApi.interfaces";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/sagas";
 import { loadEtoContact } from "../public-etos/sagas";
@@ -54,6 +59,16 @@ export function* changeBookBuildingStatus(
   }
 }
 
+function stripEtoDataOptionalFields(data: TPartialEtoSpecData): TPartialEtoSpecData {
+  // formik will pass empty strings into numeric fields that are optional, see
+  // https://github.com/jaredpalmer/formik/pull/827
+  // todo: we should probably enumerate yup schema and clean up all optional numbers
+  if (!data.maxTicketEur) {
+    data.maxTicketEur = undefined;
+  }
+  return data;
+}
+
 export function* saveEtoData(
   { apiEtoService, notificationCenter, logger }: TGlobalDependencies,
   action: TAction,
@@ -68,10 +83,12 @@ export function* saveEtoData(
       ...action.payload.data.companyData,
     });
     if (currentEtoData.state === EtoState.PREVIEW)
-      yield apiEtoService.putMyEto({
-        ...currentEtoData,
-        ...action.payload.data.etoData,
-      });
+      yield apiEtoService.putMyEto(
+        stripEtoDataOptionalFields({
+          ...currentEtoData,
+          ...action.payload.data.etoData,
+        }),
+      );
     yield put(actions.etoFlow.loadDataStart());
     yield put(actions.routing.goToDashboard());
   } catch (e) {

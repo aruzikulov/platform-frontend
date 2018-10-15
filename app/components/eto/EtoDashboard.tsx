@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
+import { FormattedHTMLMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
@@ -88,7 +88,7 @@ const EtoProgressDashboardSection: React.SFC = () => (
   <>
     <DashboardSection step={2} title="ETO APPLICATION" />
     <Col xs={12}>
-      <FormattedMessage id="eto-dashboard-application-description" />
+      <FormattedHTMLMessage tagName="span" id="eto-dashboard-application-description" />
     </Col>
     <ETOFormsProgressSection />
   </>
@@ -172,7 +172,7 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
             </Col>
           )}
           <Col xs={12}>
-            <FormattedMessage id="eto-dashboard-application-description" />
+            <FormattedHTMLMessage tagName="span" id="eto-dashboard-application-description" />
           </Col>
           <ETOFormsProgressSection />
         </>
@@ -196,7 +196,7 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
             </Col>
           )}
           <Col xs={12}>
-            <FormattedMessage id="eto-dashboard-application-description" />
+            <FormattedHTMLMessage tagName="span" id="eto-dashboard-application-description" />
           </Col>
           <ETOFormsProgressSection />
         </>
@@ -223,7 +223,7 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
             <ChoosePreEtoDateWidget />
           </Col>
           <Col xs={12}>
-            <FormattedMessage id="eto-dashboard-application-description" />
+            <FormattedHTMLMessage tagName="span" id="eto-dashboard-application-description" />
           </Col>
           <ETOFormsProgressSection />
         </>
@@ -272,6 +272,7 @@ class EtoDashboardComponent extends React.Component<IProps> {
       (backupCodesVerified || !isLightWallet) &&
       requestStatus === "Accepted"
     );
+
     const shouldViewSubmissionSection = !!(
       etoFormProgress && etoFormProgress >= SUBMIT_PROPOSAL_THRESHOLD
     );

@@ -6,8 +6,7 @@ import { Input, InputGroup, InputGroupAddon } from "reactstrap";
 
 import { CommonHtmlProps, InputType } from "../../../../types";
 import { FormError } from "./FormError";
-import { computedValue, countedCharacters } from "./FormFieldRaw";
-import { isNonValid, isValid } from "./utils";
+import { computedValue, countedCharacters, isNonValid, isValid } from "./utils";
 
 import * as styles from "./FormStyles.module.scss";
 

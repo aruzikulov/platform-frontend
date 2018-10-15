@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 
 import { symbols } from "../../../di/symbols";
-import { WalletSubType, WalletType } from "../../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../../modules/web3/types";
 import { ILogger } from "../../dependencies/Logger";
 import { IHttpClient } from "../client/IHttpClient";
 import {
@@ -25,11 +25,11 @@ export class EmailAlreadyExists extends UserApiError {}
 const ensureWalletTypesInUser = (userApiResponse: IUser): IUser => ({
   ...userApiResponse,
   walletType: userApiResponse.walletType
-    ? (userApiResponse.walletType.toUpperCase() as WalletType)
-    : WalletType.UNKNOWN,
+    ? (userApiResponse.walletType.toUpperCase() as EWalletType)
+    : EWalletType.UNKNOWN,
   walletSubtype: userApiResponse.walletType
-    ? (userApiResponse.walletSubtype.toUpperCase() as WalletSubType)
-    : WalletSubType.UNKNOWN,
+    ? (userApiResponse.walletSubtype.toUpperCase() as EWalletSubType)
+    : EWalletSubType.UNKNOWN,
 });
 
 @injectable()

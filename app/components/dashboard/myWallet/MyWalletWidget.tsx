@@ -124,7 +124,7 @@ export const MyWalletWidgetComponent: React.SFC<CommonHtmlProps & StateProps> = 
 };
 
 export const MyWalletWidget = compose<React.SFC<CommonHtmlProps>>(
-  onEnterAction({ actionCreator: d => d(actions.wallet.startLoadingWalletData()) }),
+  onEnterAction({ actionCreator: d => d(actions.wallet.loadWalletData()) }),
   appConnect<StateProps>({
     stateToProps: s => {
       const isLoading = s.wallet.loading;

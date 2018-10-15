@@ -116,7 +116,7 @@ export const WalletStartComponent: React.SFC<TProps> = ({
 
 export const WalletStart = compose<React.SFC>(
   onEnterAction({
-    actionCreator: dispatch => dispatch(actions.wallet.startLoadingWalletData()),
+    actionCreator: dispatch => dispatch(actions.wallet.loadWalletData()),
   }),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => ({

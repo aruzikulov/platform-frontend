@@ -166,7 +166,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
         <FormRadioButton
           disabled={readonly}
           name="enableTransferOnSuccess"
-          label={<FormattedMessage id="form.select.asap" />}
+          label={<FormattedMessage id="form.select.enabled" />}
           value={true}
         />
       </div>
@@ -174,7 +174,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
         <FormRadioButton
           disabled={readonly}
           name="enableTransferOnSuccess"
-          label={<FormattedMessage id="eto.form.eto-terms.future-date" />}
+          label={<FormattedMessage id="form.select.disabled" />}
           value={false}
         />
       </div>
@@ -184,7 +184,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
     <FormTextArea
       disabled={readonly}
       className="mb-2 mt-2"
-      label={<FormattedMessage id="eto.form.other" />}
+      label={<FormattedMessage id="eto.form.additional-terms" />}
       name="additionalTerms"
     />
 

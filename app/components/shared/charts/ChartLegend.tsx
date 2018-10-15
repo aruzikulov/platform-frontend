@@ -19,7 +19,7 @@ function formatPercent(value: number, numbers: number[]): string {
   return `${Math.round((value / numbers.reduce((a, b) => a + b)) * 100)}%`;
 }
 
-export const ChartLegned: React.SFC<IProps> = ({ data }) => {
+export const ChartLegend: React.SFC<IProps> = ({ data }) => {
   return (
     <div>
       {data.datasets.map(dataset => {

@@ -1,6 +1,6 @@
 import { addBigNumbers } from "../../utils/BigNumberUtils";
 import { ILockedWallet } from "../wallet/reducer";
-import { IIcbmWalletBalanceModal } from "./reducer";
+import { IIcbmWalletBalanceModal, IWalletMigrationData } from "./reducer";
 
 export const selectIcbmWalletEthAddress = (state: IIcbmWalletBalanceModal): string | undefined =>
   state.ethAddress;
@@ -23,3 +23,7 @@ export const selectEtherBalanceIcbmModal = (state: IIcbmWalletBalanceModal): str
 
 export const selectIcbmWalletConnectedIcbmModal = (state: IIcbmWalletBalanceModal): boolean =>
   !!(state.lockedWallet && state.lockedWallet.unlockDate !== "0");
+
+export const selectWalletMigrationData = (
+  state: IIcbmWalletBalanceModal,
+): IWalletMigrationData | undefined => state.walletMigrationData;

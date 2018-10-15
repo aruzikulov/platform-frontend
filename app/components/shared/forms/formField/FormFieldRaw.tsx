@@ -5,6 +5,7 @@ import { FormGroup, Input, InputGroup, InputGroupAddon, InputProps } from "react
 import { CommonHtmlProps } from "../../../../types";
 import { IFormInputExternalProps } from "./FormInput";
 import { FormLabel } from "./FormLabel";
+import { computedValue, countedCharacters } from "./utils";
 
 import * as styles from "./FormStyles.module.scss";
 
@@ -19,18 +20,6 @@ type FieldGroupRawProps = IFormInputExternalProps &
   IFieldGroupRawExternalProps &
   InputProps &
   CommonHtmlProps;
-
-export const computedValue = (val: InputProps["value"], limit: number | undefined) => {
-  if (typeof val === "number" || Array.isArray(val) || !val || !limit) {
-    return val;
-  }
-  return limit && val.length > limit ? val.slice(0, limit - 1) : val;
-};
-
-export const countedCharacters = (val: InputProps["value"], limit: number | undefined) => {
-  val = val || "";
-  return `${(val as string).length}/${limit}`;
-};
 
 export class FormFieldRaw extends React.Component<FieldGroupRawProps> {
   private rawStr = "";

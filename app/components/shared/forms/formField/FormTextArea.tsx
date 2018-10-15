@@ -5,6 +5,7 @@ import { FormGroup, InputGroup, InputGroupAddon } from "reactstrap";
 import { CommonHtmlProps, TTranslatedString } from "../../../../types";
 import { FormError } from "./FormError";
 import { FormLabel } from "./FormLabel";
+import { computedValue, countedCharacters } from "./utils";
 
 interface IFieldGroup {
   disabled?: boolean;
@@ -27,22 +28,6 @@ export class FormTextArea extends React.Component<FieldGroupProps> {
       className,
       charactersLimit,
     } = this.props;
-
-    const computedValue = (value: string | undefined, limit: number | undefined): string => {
-      if (!value) {
-        return "";
-      }
-
-      if (!limit) {
-        return value;
-      }
-
-      return charactersLimit && value.length > limit ? value.slice(0, charactersLimit - 1) : value;
-    };
-
-    const countedCharacters = (value: string | undefined, limit: number | undefined): string => {
-      return `${computedValue(value, limit).length}/${limit}`;
-    };
 
     return (
       <FormGroup>

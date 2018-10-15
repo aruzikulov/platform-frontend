@@ -36,7 +36,7 @@ export const WalletBrowserComponent: React.SFC<IWalletBrowserProps & IIntlProps>
   intl: { formatIntlMessage },
 }) => (
   <div>
-    <h1 className="text-center mb-3">
+    <h1 className="text-center mb-3" data-test-id="modals.wallet-selector.wallet-browser.title">
       {isLoginRoute ? (
         <FormattedMessage id="wallet-selector.browser.login-prompt" />
       ) : (

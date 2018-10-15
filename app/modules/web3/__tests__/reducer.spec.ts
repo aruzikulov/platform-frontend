@@ -9,14 +9,14 @@ import {
   web3InitialState,
   web3Reducer,
 } from "../reducer";
-import { WalletSubType, WalletType } from "../types";
+import { EWalletSubType, EWalletType } from "../types";
 
 describe("Web3 > reducer", () => {
   it("should act on NEW_PERSONAL_WALLET_PLUGGED action", () => {
     const initialState = web3InitialState;
     const actionPayload = {
-      type: WalletType.BROWSER,
-      subType: WalletSubType.METAMASK,
+      type: EWalletType.BROWSER,
+      subType: EWalletSubType.METAMASK,
       ethereumAddress: dummyEthereumAddress,
       isUnlocked: true,
     };
@@ -25,9 +25,9 @@ describe("Web3 > reducer", () => {
       initialState,
       web3Actions.newPersonalWalletPlugged(
         {
-          walletType: WalletType.BROWSER,
+          walletType: EWalletType.BROWSER,
           address: dummyEthereumAddress,
-          walletSubType: WalletSubType.METAMASK,
+          walletSubType: EWalletSubType.METAMASK,
         },
         actionPayload.isUnlocked,
       ),
@@ -36,8 +36,8 @@ describe("Web3 > reducer", () => {
     expect(actualNewState).to.be.deep.eq({
       connected: true,
       wallet: {
-        walletType: WalletType.BROWSER,
-        walletSubType: WalletSubType.METAMASK,
+        walletType: EWalletType.BROWSER,
+        walletSubType: EWalletSubType.METAMASK,
         address: dummyEthereumAddress,
       },
       isUnlocked: true,
@@ -48,9 +48,9 @@ describe("Web3 > reducer", () => {
     const initialState: IWeb3State = {
       connected: true,
       wallet: {
-        walletType: WalletType.BROWSER,
+        walletType: EWalletType.BROWSER,
         address: dummyEthereumAddress,
-        walletSubType: WalletSubType.METAMASK,
+        walletSubType: EWalletSubType.METAMASK,
       },
       isUnlocked: true,
     };
@@ -60,8 +60,8 @@ describe("Web3 > reducer", () => {
     expect(actualNewState).to.be.deep.eq({
       connected: false,
       previousConnectedWallet: {
-        walletType: WalletType.BROWSER,
-        walletSubType: WalletSubType.METAMASK,
+        walletType: EWalletType.BROWSER,
+        walletSubType: EWalletSubType.METAMASK,
         address: dummyEthereumAddress,
       },
     });
@@ -83,9 +83,9 @@ describe("Web3 > reducer", () => {
       const initialState: IConnectedWeb3State = {
         connected: true,
         wallet: {
-          walletType: WalletType.BROWSER,
+          walletType: EWalletType.BROWSER,
           address: dummyEthereumAddress,
-          walletSubType: WalletSubType.METAMASK,
+          walletSubType: EWalletSubType.METAMASK,
         },
         isUnlocked: true,
       };
@@ -95,8 +95,8 @@ describe("Web3 > reducer", () => {
       expect(actualNewState).to.be.deep.eq({
         connected: true,
         wallet: {
-          walletType: WalletType.BROWSER,
-          walletSubType: WalletSubType.METAMASK,
+          walletType: EWalletType.BROWSER,
+          walletSubType: EWalletSubType.METAMASK,
           address: dummyEthereumAddress,
         },
         isUnlocked: false,

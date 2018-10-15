@@ -7,6 +7,8 @@ export function tid(id: string, rest?: string): string {
 
 export const numberRegExPattern = /\d+/g;
 
+export const charRegExPattern = /[^a-z0-9]/gi;
+
 export const assertEtoDashboard = () => {
   cy.url().should("contain", "/dashboard");
   cy.get(tid("eto-dashboard-application")).should("exist");

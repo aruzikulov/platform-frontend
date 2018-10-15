@@ -3,7 +3,7 @@ import * as React from "react";
 import { Pie } from "react-chartjs-2";
 
 import { CommonHtmlProps } from "../../../types";
-import { ChartLegned } from "./ChartLegned";
+import { ChartLegend } from "./ChartLegend";
 
 import * as styles from "./ChartPie.module.scss";
 
@@ -28,7 +28,7 @@ export const ChartPie: React.SFC<IProps & CommonHtmlProps> = ({ data, className 
         <Pie data={data} height={100} width={100} legend={{ display: false }} />
       </div>
       <div className={styles.legendWrapper}>
-        <ChartLegned data={data} />
+        <ChartLegend data={data} />
       </div>
     </div>
   );

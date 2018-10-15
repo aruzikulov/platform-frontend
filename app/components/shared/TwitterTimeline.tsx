@@ -16,7 +16,6 @@ export class TwitterTimelineEmbed extends React.Component<IProps> {
         width="100%"
         height="100%"
         frameBorder={0}
-        allowTransparency
         allowFullScreen
         title="Twitter Timeline"
       />

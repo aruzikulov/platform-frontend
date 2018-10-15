@@ -15,7 +15,7 @@ import {
   selectPreviousLightWalletSalt,
   selectWalletType,
 } from "../web3/selectors";
-import { WalletType } from "../web3/types";
+import { EWalletType } from "../web3/types";
 
 export function* addNewEmail(
   {
@@ -42,17 +42,17 @@ export function* addNewEmail(
 
   try {
     switch (walletType) {
-      case WalletType.BROWSER:
+      case EWalletType.BROWSER:
         addEmailMessage = formatIntlMessage(
           "modules.settings.sagas.add-new-email.confirm-browser-wallet",
         );
         break;
-      case WalletType.LEDGER:
+      case EWalletType.LEDGER:
         addEmailMessage = formatIntlMessage(
           "modules.settings.sagas.add-new-email.confirm-ledger-wallet",
         );
         break;
-      case WalletType.LIGHT:
+      case EWalletType.LIGHT:
         addEmailMessage = formatIntlMessage(
           "modules.settings.sagas.add-new-email.confirm-light-wallet",
         );

@@ -3,7 +3,6 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
 import { TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces";
-import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
 import { ChartDoughnut } from "../../shared/charts/ChartDoughnut";
 import { Panel } from "../../shared/Panel";
 import { FUNDING_ROUNDS } from "../registration/pages/LegalInformation";
@@ -13,10 +12,38 @@ import * as styles from "./LegalInformationWidget.module.scss";
 
 interface IProps {
   companyData: TCompanyEtoData;
-  etoData: TEtoWithCompanyAndContract;
 }
 
-export const LegalInformationWidget: React.SFC<IProps> = ({ companyData, etoData }) => {
+const generateShareholders = (
+  shareholders: TCompanyEtoData["shareholders"],
+  companyShares: number,
+) => {
+  if (shareholders === undefined) {
+    return [];
+  } else {
+    const assignedShares = shareholders.reduce((acc, shareholder) => {
+      return shareholder ? (acc += shareholder.shares) : acc;
+    }, 0);
+
+    if (assignedShares < companyShares) {
+      return [
+        ...shareholders,
+        {
+          fullName: "Others",
+          shares: companyShares - assignedShares,
+        },
+      ];
+    }
+    return shareholders;
+  }
+};
+
+export const LegalInformationWidget: React.SFC<IProps> = ({ companyData }) => {
+  const shareholdersData = generateShareholders(
+    companyData.shareholders,
+    companyData.companyShares,
+  );
+
   return (
     <Panel className={styles.legalInformation}>
       <Row>
@@ -70,14 +97,6 @@ export const LegalInformationWidget: React.SFC<IProps> = ({ companyData, etoData
                 <span className={styles.value}>{companyData.numberOfEmployees}</span>
               </div>
             )}
-            {companyData.lastFundingSizeEur && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.legal-information.last-founding-amount" />
-                </span>
-                <span className={styles.value}>{`€ ${companyData.lastFundingSizeEur}`}</span>
-              </div>
-            )}
             {companyData.companyStage && (
               <div className={styles.entry}>
                 <span className={styles.label}>
@@ -86,58 +105,38 @@ export const LegalInformationWidget: React.SFC<IProps> = ({ companyData, etoData
                 <span className={styles.value}>{FUNDING_ROUNDS[companyData.companyStage]}</span>
               </div>
             )}
-            {etoData.preMoneyValuationEur && (
+            {companyData.lastFundingSizeEur && (
               <div className={styles.entry}>
                 <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.legal-information.pre-money-valuation" />
+                  <FormattedMessage id="eto.public-view.legal-information.last-founding-amount" />
                 </span>
-                <span className={styles.value}>{`€ ${etoData.preMoneyValuationEur}`}</span>
+                <span className={styles.value}>{`€ ${companyData.lastFundingSizeEur}`}</span>
               </div>
             )}
-            {etoData.existingCompanyShares && (
+            {companyData.companyShares && (
               <div className={styles.entry}>
                 <span className={styles.label}>
                   <FormattedMessage id="eto.public-view.legal-information.existing-shares" />
                 </span>
-                <span className={styles.value}>{etoData.existingCompanyShares}</span>
-              </div>
-            )}
-            {etoData.minimumNewSharesToIssue && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.legal-information.minimum-new-shares-to-issue" />
-                </span>
-                <span className={styles.value}>{etoData.minimumNewSharesToIssue}</span>
-              </div>
-            )}
-            {etoData.shareNominalValueEur && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.legal-information.share-nominal" />
-                </span>
-                <span className={styles.value}>{etoData.shareNominalValueEur}</span>
+                <span className={styles.value}>{companyData.companyShares}</span>
               </div>
             )}
           </div>
         </Col>
 
         <Col>
-          {companyData.shareholders && (
-            <ChartDoughnut
-              className="mb-3"
-              data={{
-                datasets: [
-                  {
-                    data: companyData.shareholders.map(d => d && d.shares),
-                    backgroundColor: companyData.shareholders.map(
-                      (_, i: number) => CHART_COLORS[i],
-                    ),
-                  },
-                ],
-                labels: (companyData.shareholders || []).map(d => d && d.fullName),
-              }}
-            />
-          )}
+          <ChartDoughnut
+            className="mb-3"
+            data={{
+              datasets: [
+                {
+                  data: shareholdersData.map(d => d && d.shares),
+                  backgroundColor: shareholdersData.map((_, i: number) => CHART_COLORS[i]),
+                },
+              ],
+              labels: shareholdersData.map(d => d && d.fullName),
+            }}
+          />
         </Col>
       </Row>
     </Panel>

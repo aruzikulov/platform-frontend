@@ -12,6 +12,7 @@ import { withParams } from "../../../../utils/withParams";
 import { appRoutes } from "../../../appRoutes";
 import { ETOState } from "../../../shared/ETOState";
 import { IResponsiveImage } from "../../../shared/ResponsiveImage";
+import { InvestmentAmount } from "../../shared/InvestmentAmount";
 import { CampaigningWidget, ICampaigningWidget } from "./CampaigningWidget";
 import { ClaimWidget, RefundWidget } from "./ClaimRefundWidget";
 
@@ -23,12 +24,12 @@ interface IProps {
   etoId: string;
   previewCode: string;
   prospectusApproved: IEtoDocument;
+  minimumNewSharesToIssue: number | undefined;
   canEnableBookbuilding: boolean;
   preEtoDuration: number | undefined;
   publicEtoDuration: number | undefined;
   inSigningDuration: number | undefined;
   preMoneyValuation: string | number | undefined;
-  investmentAmount: string | number | undefined;
   newSharesGenerated: string | number | undefined;
   campaigningWidget: ICampaigningWidget;
   preMoneyValuationEur: number | undefined;
@@ -120,7 +121,14 @@ const EtoOverviewStatus: React.SFC<IProps & CommonHtmlProps> = props => {
             <span className={styles.label}>
               <FormattedMessage id="shared-component.eto-overview-status.investment-amount" />
             </span>
-            <span className={styles.value}>{props.investmentAmount}</span>
+            <span className={styles.value}>
+              <InvestmentAmount
+                newSharesToIssue={props.newSharesToIssue}
+                existingCompanyShares={props.existingCompanyShares}
+                preMoneyValuationEur={props.preMoneyValuationEur}
+                minimumNewSharesToIssue={props.minimumNewSharesToIssue}
+              />
+            </span>
           </div>
           <div className={styles.group}>
             <span className={styles.label}>

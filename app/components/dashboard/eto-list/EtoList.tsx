@@ -36,14 +36,7 @@ const EtoListComponent: React.SFC<IProps> = ({ etos, wallet }) => (
               preMoneyValuationEur={eto.preMoneyValuationEur}
               existingCompanyShares={eto.existingCompanyShares}
               equityTokensPerShare={eto.equityTokensPerShare}
-              investmentAmount={`€ ${(
-                ((eto.preMoneyValuationEur || 1) / (eto.existingCompanyShares || 1)) *
-                (eto.newSharesToIssue || 1)
-              ).toFixed(4)} - €
-              ${(
-                ((eto.preMoneyValuationEur || 1) / (eto.existingCompanyShares || 1)) *
-                (eto.minimumNewSharesToIssue || 1)
-              ).toFixed(4)}`}
+              minimumNewSharesToIssue={eto.minimumNewSharesToIssue}
               contract={eto.contract!}
               wallet={wallet}
               etoId={eto.etoId}
@@ -81,7 +74,7 @@ export const EtoList = compose<React.ComponentClass>(
   setDisplayName("EtoList"),
   onEnterAction({
     actionCreator: d => {
-      d(actions.wallet.startLoadingWalletData());
+      d(actions.wallet.loadWalletData());
       d(actions.publicEtos.loadEtos());
     },
   }),

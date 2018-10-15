@@ -11,6 +11,7 @@ import { loadJwt, loadUser } from "../auth/sagas";
 import { selectUserType } from "../auth/selectors";
 import { initializeContracts } from "../contracts/sagas";
 import { neuCall, neuTakeEvery } from "../sagas";
+import { neuTakeOnly } from "../sagasUtils";
 import { detectUserAgent } from "../userAgent/sagas";
 import { loadPreviousWallet } from "../web3/sagas";
 
@@ -73,6 +74,8 @@ export function* initStartSaga(_: TGlobalDependencies, action: TAction): Iterato
       return yield neuCall(initApp);
     case "smartcontractsInit":
       return yield neuCall(initSmartcontracts);
+    case "walletInit":
+      return yield put(actions.wallet.startWatchingWalletData());
     default:
       throw new Error("Unrecognized init type!");
   }
@@ -108,6 +111,9 @@ export function* initSmartcontractsDelayed(): any {
 
     if (action.payload && action.payload.pathname !== "/") {
       yield put(actions.init.start("smartcontractsInit"));
+      // Wait for "smartcontractsInit" to be done
+      yield neuTakeOnly("INIT_DONE", { initType: "smartcontractsInit" });
+      yield put(actions.init.start("walletInit"));
       return;
     }
   }

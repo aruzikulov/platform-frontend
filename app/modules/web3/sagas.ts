@@ -6,7 +6,7 @@ import { EUserType } from "../../lib/api/users/interfaces";
 import { LightWallet, LightWalletWrongPassword } from "../../lib/web3/LightWallet";
 import { actions, TAction } from "../actions";
 import { neuCall, neuTakeEvery } from "../sagas";
-import { WalletType } from "./types";
+import { EWalletType } from "./types";
 
 let lockWalletTask: Task | undefined;
 export function* autoLockLightWallet({ web3Manager, logger }: TGlobalDependencies): Iterator<any> {
@@ -29,7 +29,7 @@ export function* autoLockLightWalletWatcher(
   }
   if (
     action.type === "NEW_PERSONAL_WALLET_PLUGGED" &&
-    action.payload.walletMetadata.walletType !== WalletType.LIGHT
+    action.payload.walletMetadata.walletType !== EWalletType.LIGHT
   ) {
     return;
   }

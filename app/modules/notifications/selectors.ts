@@ -5,7 +5,7 @@ import { IAppState } from "../../store";
 import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../auth/selectors";
 import { selectKycRequestStatus, selectWidgetLoading } from "../kyc/selectors";
 import { selectWalletType } from "../web3/selectors";
-import { WalletType } from "../web3/types";
+import { EWalletType } from "../web3/types";
 import { INotification, settingsNotification } from "./reducer";
 
 export const selectNotifications = (state: IAppState): INotification[] =>
@@ -17,7 +17,8 @@ export const selectIsActionRequiredSettings = (state: IAppState): boolean => {
   }
   return (
     !selectIsUserEmailVerified(state.auth) ||
-    (!selectBackupCodesVerified(state.auth) && selectWalletType(state.web3) === WalletType.LIGHT) ||
+    (!selectBackupCodesVerified(state.auth) &&
+      selectWalletType(state.web3) === EWalletType.LIGHT) ||
     indexOf(["Outsourced", "Pending", "Accepted"], selectKycRequestStatus(state.kyc)) === -1
   );
 };

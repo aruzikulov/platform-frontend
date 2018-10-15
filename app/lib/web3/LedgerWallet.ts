@@ -8,7 +8,7 @@ import * as RpcSubprovider from "web3-provider-engine/subproviders/rpc";
 import { delay } from "bluebird";
 import { inject, injectable } from "inversify";
 import { symbols } from "../../di/symbols";
-import { WalletSubType, WalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { ILedgerWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import { IPersonalWallet, SignerType } from "./PersonalWeb3";
@@ -41,8 +41,8 @@ export class LedgerTimeoutError extends LedgerError {}
 export class LedgerUnknownError extends LedgerError {}
 
 export class LedgerWallet implements IPersonalWallet {
-  public readonly walletType = WalletType.LEDGER;
-  public readonly walletSubType = WalletSubType.UNKNOWN; // in future we may detect if it's pure ledger or Neukey
+  public readonly walletType = EWalletType.LEDGER;
+  public readonly walletSubType = EWalletSubType.UNKNOWN; // in future we may detect if it's pure ledger or Neukey
   waitingForCommand = false; // if ledger is waiting for user interaction it is blocked and you should not send any instructions to it.
 
   public constructor(
@@ -86,8 +86,8 @@ export class LedgerWallet implements IPersonalWallet {
   public getMetadata(): ILedgerWalletMetadata {
     return {
       address: this.ethereumAddress,
-      walletType: WalletType.LEDGER,
-      walletSubType: WalletSubType.UNKNOWN,
+      walletType: EWalletType.LEDGER,
+      walletSubType: EWalletSubType.UNKNOWN,
       derivationPath: this.derivationPath,
     };
   }

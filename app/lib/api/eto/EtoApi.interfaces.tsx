@@ -1,3 +1,8 @@
+import * as React from "react";
+import { FormattedMessage } from "react-intl-phraseapp";
+import { NumberSchema } from "yup";
+
+import { PlatformTerms, Q18 } from "../../../config/constants";
 import { DeepPartial } from "../../../types";
 import * as YupTS from "../../yup-ts";
 import { TEtoDocumentTemplates } from "./EtoFileApi.interfaces";
@@ -196,8 +201,25 @@ export enum EtoStateToCamelcase {
 export const EtoTermsType = YupTS.object({
   currencies: YupTS.array(YupTS.string()),
   publicDurationDays: YupTS.number(),
-  minTicketEur: YupTS.number(),
-  maxTicketEur: YupTS.number().optional(),
+  minTicketEur: YupTS.number().enhance((v: NumberSchema) => {
+    const minTicketEur = PlatformTerms.MIN_TICKET_EUR_ULPS.div(Q18).toNumber();
+
+    return v.min(minTicketEur, (
+      <FormattedMessage
+        id="eto.form.section.eto-terms.minimum-ticket-size.error.less-than-accepted"
+        values={{ value: minTicketEur }}
+      />
+    ) as any);
+  }),
+  maxTicketEur: YupTS.number()
+    .optional()
+    .enhance(validator =>
+      validator.when("minTicketEur", (value: number) =>
+        validator.moreThan(value, (
+          <FormattedMessage id="eto.form.section.eto-terms.maximum-ticket-size.error.less-than-minimum" />
+        ) as any),
+      ),
+    ),
   enableTransferOnSuccess: YupTS.boolean(),
   notUnderCrowdfundingRegulations: YupTS.onlyTrue(),
   whitelistDurationDays: YupTS.number(),
@@ -233,6 +255,8 @@ export const EtoInvestmentTermsType = YupTS.object({
   minimumNewSharesToIssue: YupTS.number(),
   newSharesToIssueInWhitelist: YupTS.number().optional(),
   whitelistDiscountFraction: YupTS.number().optional(),
+  newSharesToIssueInFixedSlots: YupTS.number().optional(),
+  fixedSlotsMaximumDiscountFraction: YupTS.number().optional(),
   discountScheme: YupTS.string().optional(),
 });
 

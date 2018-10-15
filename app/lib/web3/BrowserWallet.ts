@@ -3,7 +3,7 @@ import * as hex2ascii from "hex2ascii";
 import { injectable } from "inversify";
 import * as Web3 from "web3";
 
-import { WalletSubType, WalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { IBrowserWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import { IPersonalWallet, SignerType } from "./PersonalWeb3";
@@ -25,16 +25,16 @@ export class BrowserWalletConfirmationRejectedError extends BrowserWalletError {
 export class BrowserWalletUnknownError extends BrowserWalletError {}
 
 export class BrowserWallet implements IPersonalWallet {
-  public readonly walletType = WalletType.BROWSER;
+  public readonly walletType = EWalletType.BROWSER;
 
   constructor(
     public readonly web3Adapter: Web3Adapter,
-    public readonly walletSubType: WalletSubType,
+    public readonly walletSubType: EWalletSubType,
     public readonly ethereumAddress: EthereumAddress,
   ) {}
 
   public getSignerType(): SignerType {
-    if (this.walletSubType === WalletSubType.METAMASK) {
+    if (this.walletSubType === EWalletSubType.METAMASK) {
       return SignerType.ETH_SIGN_TYPED_DATA;
     } else {
       return SignerType.ETH_SIGN;
@@ -52,7 +52,7 @@ export class BrowserWallet implements IPersonalWallet {
 
   public async signMessage(data: string): Promise<string> {
     try {
-      if (this.walletSubType === WalletSubType.METAMASK) {
+      if (this.walletSubType === EWalletSubType.METAMASK) {
         const typedDataDecoded = JSON.parse(hex2ascii(data));
         // We can await as signTypedData function already awaits inside for result of RPC call.
         return await this.web3Adapter.signTypedData(this.ethereumAddress, typedDataDecoded);
@@ -76,7 +76,7 @@ export class BrowserWallet implements IPersonalWallet {
   public getMetadata(): IBrowserWalletMetadata {
     return {
       address: this.ethereumAddress,
-      walletType: WalletType.BROWSER,
+      walletType: EWalletType.BROWSER,
       walletSubType: this.walletSubType,
     };
   }
@@ -109,18 +109,18 @@ export class BrowserWalletConnector {
     return new BrowserWallet(web3Adapter, walletType, ethereumAddress);
   }
 
-  private async getBrowserWalletType(web3: Web3): Promise<WalletSubType> {
+  private async getBrowserWalletType(web3: Web3): Promise<EWalletSubType> {
     const nodeIdString = await promisify(web3.version.getNode)();
     const matchNodeIdString = nodeIdString.toLowerCase();
 
     if (matchNodeIdString.includes("metamask")) {
-      return WalletSubType.METAMASK;
+      return EWalletSubType.METAMASK;
     }
     if (matchNodeIdString.includes("parity")) {
-      return WalletSubType.PARITY;
+      return EWalletSubType.PARITY;
     }
     // @todo support for mist
-    return WalletSubType.UNKNOWN;
+    return EWalletSubType.UNKNOWN;
   }
 }
 

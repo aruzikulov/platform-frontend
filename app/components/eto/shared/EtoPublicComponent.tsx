@@ -35,6 +35,7 @@ import * as styles from "./EtoPublicComponent.module.scss";
 const DEFAULT_PLACEHOLDER = "N/A";
 
 export const CHART_COLORS = ["#50e3c2", "#2fb194", "#4a90e2", "#0b0e11", "#394652", "#c4c5c6"];
+export const DEFAULT_CHART_COLOR = "#c4c5c6";
 
 interface IProps {
   companyData: TCompanyEtoData;
@@ -47,17 +48,6 @@ interface IProps {
 
 // TODO: Refactor to smaller components
 export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wallet }) => {
-  const preMoneyValuationEur = etoData.preMoneyValuationEur || 1;
-  const existingCompanyShares = etoData.existingCompanyShares || 1;
-  const newSharesToIssue = etoData.newSharesToIssue || 1;
-  const equityTokensPerShare = etoData.equityTokensPerShare || 1;
-  const minimumNewSharesToIssue = etoData.minimumNewSharesToIssue || 1;
-
-  const computedNewSharePrice = preMoneyValuationEur / existingCompanyShares;
-  const computedMinNumberOfTokens = newSharesToIssue * equityTokensPerShare;
-  const computedMinCapEur = computedNewSharePrice * newSharesToIssue;
-  const computedMaxCapEur = computedNewSharePrice * minimumNewSharesToIssue;
-
   const { socialChannels, companyVideo, disableTwitterFeed, companySlideshare } = companyData;
 
   const isTwitterFeedEnabled =
@@ -132,14 +122,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
           tokenSymbol={etoData.equityTokenSymbol || ""}
           className="mb-4"
           canEnableBookbuilding={etoData.canEnableBookbuilding}
-          investmentAmount={`€ ${(
-            ((etoData.preMoneyValuationEur || 1) / (etoData.existingCompanyShares || 1)) *
-            (etoData.newSharesToIssue || 1)
-          ).toFixed(4)} - €
-          ${(
-            ((etoData.preMoneyValuationEur || 1) / (etoData.existingCompanyShares || 1)) *
-            (etoData.minimumNewSharesToIssue || 1)
-          ).toFixed(4)}`}
+          minimumNewSharesToIssue={etoData.minimumNewSharesToIssue}
           newSharesGenerated={etoData.newSharesToIssue}
           prospectusApproved={documentsByType["approved_prospectus"]}
           termSheet={documentsByType["termsheet_template"]}
@@ -206,7 +189,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
               <FormattedMessage id="eto.public-view.legal-information.title" />
             </SectionHeader>
 
-            <LegalInformationWidget etoData={etoData} companyData={companyData} />
+            <LegalInformationWidget companyData={companyData} />
           </Col>
           {(isYouTubeVideoAvailable || isSlideShareAvailable) && (
             <Col xs={12} md={4} className="mb-4 flex-column d-flex">
@@ -262,13 +245,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
               <FormattedMessage id="eto.public-view.token-terms.title" />
             </SectionHeader>
 
-            <EtoInvestmentTermsWidget
-              etoData={etoData}
-              computedMaxCapEur={computedMaxCapEur}
-              computedMinCapEur={computedMinCapEur}
-              computedMinNumberOfTokens={computedMinNumberOfTokens}
-              computedNewSharePrice={computedNewSharePrice}
-            />
+            <EtoInvestmentTermsWidget etoData={etoData} />
           </Col>
         </Row>
 

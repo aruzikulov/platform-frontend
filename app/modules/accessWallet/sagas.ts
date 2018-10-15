@@ -19,7 +19,7 @@ import { actions, TAction } from "../actions";
 import { neuCall } from "../sagas";
 import { unlockWallet } from "../web3/sagas";
 import { selectIsLightWallet, selectIsUnlocked } from "../web3/selectors";
-import { WalletType } from "../web3/types";
+import { EWalletType } from "../web3/types";
 import { mapSignMessageErrorToErrorMessage, MismatchedWalletAddressError } from "./errors";
 import { selectIsSigning } from "./reducer";
 
@@ -41,13 +41,13 @@ export async function ensureWalletConnection({
 
   let wallet: IPersonalWallet;
   switch (metadata.walletType) {
-    case WalletType.LEDGER:
+    case EWalletType.LEDGER:
       wallet = await connectLedger(ledgerWalletConnector, web3Manager, metadata);
       break;
-    case WalletType.BROWSER:
+    case EWalletType.BROWSER:
       wallet = await connectBrowser(browserWalletConnector, web3Manager, metadata);
       break;
-    case WalletType.LIGHT:
+    case EWalletType.LIGHT:
       wallet = await connectLightWallet(lightWalletConnector, metadata);
       break;
     default:

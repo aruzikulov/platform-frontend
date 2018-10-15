@@ -8,7 +8,7 @@ import {
   selectLightWalletEmailFromQueryString,
   selectLightWalletFromQueryString,
 } from "../selectors";
-import { WalletSubType, WalletType } from "../types";
+import { EWalletSubType, EWalletType } from "../types";
 import { getDummyLightWalletMetadata } from "./fixtures";
 
 describe("web3 > selectors", () => {
@@ -18,7 +18,7 @@ describe("web3 > selectors", () => {
   const email = "test@example.com";
 
   const previousConnectedWallet = {
-    walletType: WalletType.LIGHT,
+    walletType: EWalletType.LIGHT,
     address: dummyEthereumAddress,
     vault,
     email,
@@ -42,8 +42,8 @@ describe("web3 > selectors", () => {
       const state: IWeb3State = {
         connected: false,
         previousConnectedWallet: {
-          walletType: WalletType.LIGHT,
-          walletSubType: WalletSubType.UNKNOWN,
+          walletType: EWalletType.LIGHT,
+          walletSubType: EWalletSubType.UNKNOWN,
           address: dummyEthereumAddress,
           vault,
           email,

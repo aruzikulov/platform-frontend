@@ -63,7 +63,7 @@ describe("Wallet Withdraw", () => {
 
     assertUserInDashboard();
     cy.get(tid("authorized-layout-wallet-button")).awaitedClick();
-    cy.get(tid("account-address.your.ether-address.div")).then(accountAddress => {
+    cy.get(tid("account-address.your.ether-address.from-div")).then(accountAddress => {
       cy.get(tid("wallet-balance.ether.shared-component.withdraw.button")).awaitedClick();
       cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.to-address")).type(
         expectedAddress,

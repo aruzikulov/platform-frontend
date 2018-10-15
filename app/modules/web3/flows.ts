@@ -6,7 +6,7 @@ import { injectableFn } from "../../middlewares/redux-injectify";
 import { AppDispatch } from "../../store";
 import { actions } from "../actions";
 import { selectWalletType } from "./selectors";
-import { WalletType } from "./types";
+import { EWalletType } from "./types";
 
 export const web3Flows = {
   personalWalletDisconnected: injectableFn(
@@ -24,9 +24,9 @@ export const web3Flows = {
 
       const disconnectedWalletErrorMessage = () => {
         switch (selectWalletType(state.web3)) {
-          case WalletType.BROWSER:
+          case EWalletType.BROWSER:
             return intlWrapper.intl.formatIntlMessage("modules.web3.flows.web3-error.browser");
-          case WalletType.LEDGER:
+          case EWalletType.LEDGER:
             return intlWrapper.intl.formatIntlMessage("modules.web3.flows.web3-error.ledger");
           default:
             return;

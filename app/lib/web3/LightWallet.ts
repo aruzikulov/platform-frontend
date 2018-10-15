@@ -16,7 +16,7 @@ import { IPersonalWallet, SignerType } from "./PersonalWeb3";
 import { IEthereumNetworkConfig, IRawTxData } from "./Web3Manager";
 
 import { symbols } from "../../di/symbols";
-import { WalletSubType, WalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { EthereumAddress } from "../../types";
 import { ILightWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import { Web3Adapter } from "./Web3Adapter";
@@ -184,8 +184,8 @@ export class LightWallet implements IPersonalWallet {
     public password?: string,
   ) {}
 
-  public readonly walletType = WalletType.LIGHT;
-  public readonly walletSubType = WalletSubType.UNKNOWN;
+  public readonly walletType = EWalletType.LIGHT;
+  public readonly walletSubType = EWalletSubType.UNKNOWN;
 
   public getSignerType(): SignerType {
     return SignerType.ETH_SIGN;

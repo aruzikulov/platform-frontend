@@ -11,7 +11,7 @@ import {
 } from "../../../lib/web3/BrowserWallet";
 import { Web3Manager } from "../../../lib/web3/Web3Manager";
 import { actions } from "../../actions";
-import { WalletSubType, WalletType } from "../../web3/types";
+import { EWalletSubType, EWalletType } from "../../web3/types";
 import { walletFlows } from "../flows";
 
 describe("Wallet selector > Browser wizard > actions", () => {
@@ -20,8 +20,8 @@ describe("Wallet selector > Browser wizard > actions", () => {
       const expectedNetworkId = dummyNetworkId;
       const dummyMetadata: IBrowserWalletMetadata = {
         address: dummyEthereumAddress,
-        walletType: WalletType.BROWSER,
-        walletSubType: WalletSubType.METAMASK,
+        walletType: EWalletType.BROWSER,
+        walletSubType: EWalletSubType.METAMASK,
       };
 
       const dispatchMock = spy();

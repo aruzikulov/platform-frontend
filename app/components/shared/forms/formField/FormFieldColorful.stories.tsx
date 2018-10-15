@@ -15,7 +15,12 @@ storiesOf("Form/FormFieldColorful", module)
     </Formik>
   ))
   .add("with Avatar", () => (
-    <Formik initialValues={{}} onSubmit={() => {}}>
+    <Formik
+      initialValues={{
+        value: "Lorem ipsum",
+      }}
+      onSubmit={() => {}}
+    >
       {() => (
         <Form>
           <FormFieldColorful placeholder="Form field colorful" name="value" showAvatar={true} />

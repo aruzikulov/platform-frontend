@@ -22,7 +22,7 @@ import {
   selectEmailFromQueryString,
   selectEthereumAddressWithChecksum,
 } from "../web3/selectors";
-import { WalletSubType, WalletType } from "../web3/types";
+import { EWalletSubType, EWalletType } from "../web3/types";
 import { selectVerifiedUserEmail } from "./selectors";
 
 export function* loadJwt({ jwtStorage }: TGlobalDependencies): Iterator<Effect> {
@@ -57,14 +57,14 @@ export async function loadOrCreateUserPromise(
     }
   }
   // for light wallet we need to send slightly different request
-  if (walletMetadata && walletMetadata.walletType === WalletType.LIGHT) {
+  if (walletMetadata && walletMetadata.walletType === EWalletType.LIGHT) {
     return apiUserService.createAccount({
       newEmail: walletMetadata.email,
       salt: walletMetadata.salt,
       backupCodesVerified: false,
       type: userType,
       walletType: walletMetadata.walletType,
-      walletSubtype: WalletSubType.UNKNOWN,
+      walletSubtype: EWalletSubType.UNKNOWN,
     });
   } else {
     return apiUserService.createAccount({
@@ -72,9 +72,9 @@ export async function loadOrCreateUserPromise(
       type: userType,
       walletType: walletMetadata.walletType,
       walletSubtype:
-        walletMetadata.walletType === WalletType.BROWSER
+        walletMetadata.walletType === EWalletType.BROWSER
           ? walletMetadata.walletSubType
-          : WalletSubType.UNKNOWN,
+          : EWalletSubType.UNKNOWN,
     });
   }
 }

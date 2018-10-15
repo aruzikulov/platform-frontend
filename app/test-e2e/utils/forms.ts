@@ -4,7 +4,12 @@ import { formField, formFieldErrorMessage, tid } from "./selectors";
 type TFormFieldFixture =
   | {
       value: string;
-      type: "tags" | "file" | "date" | "select" | "check";
+      type: "submit" | "tags" | "file" | "date" | "select" | "check" | "range";
+    }
+  | {
+      value: string;
+      mustBeChecked: boolean;
+      type: "checkBox";
     }
   | {
       type: "media";
@@ -52,11 +57,28 @@ export const fillForm = (fixture: TFormFixture, { submit = true }: { submit?: bo
     else if (field.type === "select") {
       cy.get(formField(key)).select(field.value);
     }
+
+    //TODO changes here are not reflected in other parts of UI.
+    // Need to investigate this further
+    else if (field.type === "range") {
+      cy.get(formField(key))
+        .invoke("val", field.value)
+        .trigger("change");
+    }
     // click on a field
     else if (field.type === "check") {
       cy.get(formField(key))
         .first()
         .check({ force: true });
+    }
+    //check or uncheck a checkbox
+    else if (field.type === "checkBox") {
+      const element = cy.get(formField(key));
+      if (field.mustBeChecked === true) {
+        element.check(field.value, { force: true });
+      } else {
+        element.uncheck(field.value, { force: true });
+      }
     }
     // tags
     else if (field.type === "tags") {

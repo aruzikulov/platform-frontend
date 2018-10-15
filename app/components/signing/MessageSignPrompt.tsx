@@ -3,14 +3,14 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
 import { selectConnectedWeb3State } from "../../modules/web3/selectors";
-import { WalletType } from "../../modules/web3/types";
+import { EWalletType } from "../../modules/web3/types";
 import { appConnect } from "../../store";
 
 import * as ledgerConfirm from "../../assets/img/wallet_selector/ledger_confirm.svg";
 import * as walletConfirmIcon from "../../assets/img/wallet_selector/wallet_confirm_icon.svg";
 
 interface IStateProps {
-  walletType: WalletType;
+  walletType: EWalletType;
 }
 
 export const BrowserWalletMessageSignPrompt: React.SFC = () => (
@@ -42,7 +42,7 @@ export const LedgerWalletMessageSignPrompt: React.SFC = () => (
 );
 
 export const MessageSignPromptComponent: React.SFC<IStateProps> = ({ walletType }) => {
-  return walletType === WalletType.LEDGER ? (
+  return walletType === EWalletType.LEDGER ? (
     <LedgerWalletMessageSignPrompt />
   ) : (
     <BrowserWalletMessageSignPrompt />
