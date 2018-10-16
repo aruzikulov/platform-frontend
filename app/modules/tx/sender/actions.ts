@@ -7,8 +7,8 @@ export const txSenderActions = {
   txSenderShowModal: (type: ETxSenderType) => createAction("TX_SENDER_SHOW_MODAL", { type }),
   txSenderHideModal: () => createSimpleAction("TX_SENDER_HIDE_MODAL"),
   // User awaiting actions
-  txSenderAcceptDraft: (txData?: Partial<ITxData>) =>
-    createAction("TX_SENDER_ACCEPT_DRAFT", txData!),
+  txSenderAcceptDraft: (txDraftData?: Partial<ITxData>) =>
+    createAction("TX_SENDER_ACCEPT_DRAFT", txDraftData!),
   txSenderAccept: () => createSimpleAction("TX_SENDER_ACCEPT"),
   // Signer actions
   txSenderSigned: (txHash: string, type: ETxSenderType) =>
@@ -30,6 +30,7 @@ export const txSenderActions = {
   // Add here new custom sagas that represent flow
 
   // reducer setters
-  setSummaryData: (summaryData?: ITxData) =>
-    createAction("TX_SENDER_SET_SUMMARY_DATA", { summaryData }),
+  setSummaryData: (summaryData: Partial<ITxData>) =>
+    createAction("TX_SENDER_SET_SUMMARY_DATA", summaryData),
+  setTransactionData: (txData: ITxData) => createAction("TX_SENDER_LOAD_TRANSACTION", txData),
 };

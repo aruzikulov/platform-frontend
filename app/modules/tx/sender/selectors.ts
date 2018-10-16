@@ -1,11 +1,12 @@
-import { multiplyBigNumbers } from "../../../utils/BigNumberUtils";
+import { IAppState } from "../../../store";
 import { getTxGasCostEth } from "../utils";
-import { ITxData } from "./../../../lib/web3/Web3Manager";
-import { ETxSenderType, ITxSenderState } from "./reducer";
+import { ITxSenderState } from "./reducer";
 
 export const selectTxSenderModalOpened = (state: ITxSenderState) => state.state !== "UNINITIALIZED";
 
 export const selectTxDetails = (state: ITxSenderState) => state.txDetails;
+
+export const selectTxDraftDetails = (state: IAppState) => state.txSender.txDraftDetails;
 
 export const selectTxType = (state: ITxSenderState) => state.type;
 

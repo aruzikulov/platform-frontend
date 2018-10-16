@@ -2,7 +2,6 @@ import { fork, put, select } from "redux-saga/effects";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
 import { GasModelShape } from "../../lib/api/GasApi";
-import { IAppState } from "../../store";
 import { actions } from "../actions";
 import { neuTakeEvery } from "../sagas";
 import { selectGasPrice, selectIsAlreadyLoaded } from "./selectors";

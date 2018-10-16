@@ -23,6 +23,7 @@ import { actions, TAction } from "../../actions";
 import { IGasState } from "../../gas/reducer";
 import { onInvestmentTxModalHide } from "../../investmentFlow/sagas";
 import { neuCall, neuTakeEvery } from "../../sagas";
+import { selectEtherBalance } from "../../wallet/selectors";
 import { updateTxs } from "../monitor/sagas";
 import { generateInvestmentTransaction } from "../transactionsGenerators/investment/sagas";
 import {
@@ -98,6 +99,11 @@ export function* txSendSaga({
   requiresUserInput = true,
   cleanupFunction,
 }: ITxSendParams): any {
+  const gas: IGasState = yield select((s: IAppState) => s.gas);
+  if (!gas.gasPrice) {
+    yield take("GAS_API_LOADED");
+  }
+
   const { result, cancel } = yield race({
     result: neuCall(txSendProcess, type, transactionGenerationFunction, requiresUserInput),
     cancel: take("TX_SENDER_HIDE_MODAL"),
@@ -118,32 +124,21 @@ export function* txSendSaga({
 export function* txSendProcess(
   { logger }: TGlobalDependencies,
   transactionType: ETxSenderType,
-  setupGasFunction: any,
   transactionGenerationFunction: any,
   requiresUserInput: boolean,
-  predefinedGasLimit?: string,
 ): any {
   try {
     yield put(actions.gas.gasApiEnsureLoading());
     yield put(actions.txSender.txSenderShowModal(transactionType));
 
     yield neuCall(ensureNoPendingTx, transactionType);
-
-    const gas: IGasState = yield select((s: IAppState) => s.gas);
-    if (!gas.gasPrice) {
-      yield take("GAS_API_LOADED");
-    }
-    yield call(setupGasFunction, predefinedGasLimit);
-
     let txDetails;
     if (requiresUserInput) {
       yield put(actions.txSender.txSenderWatchPendingTxsDone(transactionType));
       txDetails = yield take("TX_SENDER_ACCEPT_DRAFT");
     }
-
     const generatedTxDetails: ITxData = yield neuCall(transactionGenerationFunction, txDetails);
-    yield put(actions.txSender.txSenderAcceptDraft(generatedTxDetails));
-    yield neuCall(validateGas);
+    yield put(actions.txSender.setTransactionData(generatedTxDetails));
 
     yield take("TX_SENDER_ACCEPT");
 
@@ -177,18 +172,15 @@ export function* txSendProcess(
 }
 
 function* validateGas(): any {
-  const s: IAppState = yield select();
-  const txDetails = selectTxDetails(s.txSender);
+  const txDetails: ITxData | undefined = yield select(selectTxDetails);
+  const etherBalance: string | undefined = yield select(selectEtherBalance);
 
-  if (!txDetails) {
-    throw new Error("TxDetails are undefined");
+  if (!txDetails || !etherBalance) {
+    throw new Error("TxDetails or Ether Balance are undefined");
   }
 
   if (
-    compareBigNumbers(
-      multiplyBigNumbers([txDetails.gasPrice, txDetails.gas]),
-      s.wallet.data!.etherBalance,
-    ) > 0
+    compareBigNumbers(multiplyBigNumbers([txDetails.gasPrice, txDetails.gas]), etherBalance) > 0
   ) {
     throw new NotEnoughEtherForGasError("Not enough Ether to pay the Gas for this transaction");
   }

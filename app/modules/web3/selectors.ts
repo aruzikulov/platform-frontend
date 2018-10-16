@@ -1,9 +1,9 @@
-import { IAppState } from "./../../store";
 import * as queryString from "query-string";
 import { RouterState } from "react-router-redux";
 import { createSelector } from "reselect";
 import { TWalletMetadata } from "../../lib/persistence/WalletMetadataObjectStorage";
 import { EthereumAddress } from "../../types";
+import { IAppState } from "./../../store";
 import { IConnectedWeb3State, IWeb3State } from "./reducer";
 import { EWalletSubType, EWalletType } from "./types";
 import { makeEthereumAddressChecksummed } from "./utils";

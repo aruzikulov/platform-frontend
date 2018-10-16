@@ -1,6 +1,5 @@
-import { IAppState } from "./../../store";
 import { GasModelShape } from "../../lib/api/GasApi";
-import { IGasState } from "./reducer";
+import { IAppState } from "./../../store";
 
 export const selectIsAlreadyLoaded = (state: IAppState): boolean =>
   !state.gas.loading && !!state.gas.gasPrice;

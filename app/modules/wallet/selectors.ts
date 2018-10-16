@@ -13,8 +13,11 @@ export const selectNeuBalanceEuroAmount = (state: IAppState): string =>
 export const selectNeuBalance = (state: IWalletState): string =>
   (state.data && state.data.neuBalance) || "0";
 
-export const selectEtherTokenBalance = (state: IWalletState): string | undefined =>
-  state.data && state.data.etherTokenBalance;
+export const selectEtherTokenBalance = (state: IAppState): string | undefined =>
+  state.wallet.data && state.wallet.data.etherTokenBalance;
+
+export const selectEtherBalance = (state: IAppState): string | undefined =>
+  state.wallet.data && state.wallet.data.etherBalance;
 
 /**
  * Liquid Assets

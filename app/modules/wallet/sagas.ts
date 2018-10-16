@@ -5,7 +5,6 @@ import { fork, put, select, take } from "redux-saga/effects";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { ICBMLockedAccount } from "../../lib/contracts/ICBMLockedAccount";
 import { LockedAccount } from "../../lib/contracts/LockedAccount";
-import { IAppState } from "../../store";
 import { EthereumAddress } from "../../types";
 import { actions } from "../actions";
 import { numericValuesToString } from "../contracts/utils";

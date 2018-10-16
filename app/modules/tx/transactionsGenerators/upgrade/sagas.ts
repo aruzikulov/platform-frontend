@@ -1,16 +1,16 @@
 import { BigNumber } from "bignumber.js";
-import { put, select } from "redux-saga/effects";
+import { addHexPrefix } from "ethereumjs-util";
+import { select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
-import { ITxInitData } from "../../../../lib/web3/Web3Manager";
-import { IAppState } from "../../../../store";
-import { actions } from "../../../actions";
+import { ITxData } from "../../../../lib/web3/Web3Manager";
 import {
   selectICBMLockedEtherBalance,
   selectIsEtherUpgradeTargetSet,
   selectIsEuroUpgradeTargetSet,
 } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
+import { selectGasPrice } from "./../../../gas/selectors";
 import { selectICBMLockedEuroTokenBalance } from "./../../../wallet/selectors";
 
 export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
@@ -60,7 +60,7 @@ export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDe
     from: userAddress,
     data: txInput,
     value: "0",
-    gasPrice: state.txSender.gasPrice,
+    gasPrice,
   };
   const estimateGas = yield contractsService.icbmEtherLock
     .migrateTx()

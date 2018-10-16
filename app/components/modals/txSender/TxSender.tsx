@@ -60,7 +60,7 @@ export interface ITxInitDispatchProps {
 }
 
 export interface ITxSummaryStateProps {
-  txData: ITxData;
+  txData: Partial<ITxData>;
   txCost: string;
 }
 
