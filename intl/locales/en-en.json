@@ -598,7 +598,7 @@
   "settings.modal.icbm-wallet-balance.body.migrate.field.data": "Data",
   "settings.modal.icbm-wallet-balance.body.migrate.field.gas-limit": "Gas limit",
   "settings.modal.icbm-wallet-balance.body.migrate.field.to-smart-contract": "To smart contract",
-  "settings.modal.icbm-wallet-balance.body.migrate.step.1.description": "There are two transactions that need to take place, the first step is to inform your wallet of an address change, copy the below data to make the transacation or click the icon below to open the pre-loaded transaction in MyEtherWallet. Don’t close this screen as we will monitor the pending transaction and prompt you to the second step once it has gone through.",
+  "settings.modal.icbm-wallet-balance.body.migrate.step.1.description": "There are two transactions that need to take place, the first step is to inform your wallet of an address change, copy the below data to make the transaction or click the icon below to open the pre-loaded transaction in MyEtherWallet. Don’t close this screen as we will monitor the pending transaction and prompt you to the second step once it has gone through.",
   "settings.modal.icbm-wallet-balance.body.migrate.step.1.title": "Step 1",
   "settings.modal.icbm-wallet-balance.body.migrate.step.2.title": "Step 2",
   "settings.modal.icbm-wallet-balance.body.migrate.step.2description": "You have completed the first step and have informed your wallet of an address change, now complete the second transaction using the below details to migrate your funds. Copy the below data to make the transacation or click the icon below to open the pre-loaded transaction in MyEtherWallet. Don’t close this screen as we will monitor the pending transaction and confirm the transaction once it has gone through.",
