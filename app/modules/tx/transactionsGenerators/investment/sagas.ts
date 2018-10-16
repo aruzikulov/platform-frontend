@@ -106,7 +106,5 @@ export function* generateInvestmentTransaction({ contractsService }: TGlobalDepe
       break;
   }
 
-  if (txDetails) {
-    yield put(actions.txSender.txSenderAcceptDraft(txDetails));
-  }
+  return txDetails;
 }

@@ -141,7 +141,8 @@ export function* txSendProcess(
       txDetails = yield take("TX_SENDER_ACCEPT_DRAFT");
     }
 
-    const generatedTxDetails = yield neuCall(transactionGenerationFunction, txDetails);
+    const generatedTxDetails: ITxData = yield neuCall(transactionGenerationFunction, txDetails);
+    yield put(actions.txSender.txSenderAcceptDraft(generatedTxDetails));
     yield neuCall(validateGas);
 
     yield take("TX_SENDER_ACCEPT");
