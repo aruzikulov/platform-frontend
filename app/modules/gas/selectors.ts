@@ -1,7 +1,8 @@
+import { IAppState } from "./../../store";
 import { GasModelShape } from "../../lib/api/GasApi";
 import { IGasState } from "./reducer";
 
-export const selectIsAlreadyLoaded = (state: IGasState): boolean =>
-  !state.loading && !!state.gasPrice;
+export const selectIsAlreadyLoaded = (state: IAppState): boolean =>
+  !state.gas.loading && !!state.gas.gasPrice;
 
-export const selectGasPrice = (state: IGasState): GasModelShape | undefined => state.gasPrice;
+export const selectGasPrice = (state: IAppState): GasModelShape | undefined => state.gas.gasPrice;

@@ -188,7 +188,7 @@ export function* loadComputedContributionFromContract(
     amountEuroUlps =
       amountEuroUlps || convertToBigInt((eto.minTicketEur && eto.minTicketEur.toString()) || "0");
 
-    const from = selectEthereumAddressWithChecksum(state.web3);
+    const from = selectEthereumAddressWithChecksum(state);
     // sorry no typechain, typechain has a bug with boolean casting
     const calculation = yield promisify(etoContract.rawWeb3Contract.calculateContribution, [
       from,

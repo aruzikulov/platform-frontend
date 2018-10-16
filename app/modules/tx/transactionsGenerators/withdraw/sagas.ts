@@ -18,9 +18,8 @@ export function* generateEthWithdrawTransaction(
   const txStateDetails = action.payload;
 
   if (!txStateDetails) return;
-  const s: IAppState = yield select();
-  const etherTokenBalance = selectEtherTokenBalance(s.wallet);
-  const from = selectEthereumAddressWithChecksum(s.web3);
+  const etherTokenBalance = yield select((s: IAppState) => selectEtherTokenBalance(s.wallet));
+  const from = yield select(selectEthereumAddressWithChecksum);
 
   // transaction can be fully covered by etherTokens
 

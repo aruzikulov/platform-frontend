@@ -40,7 +40,7 @@ export const selectIsBankTransferModalOpened = (state: IInvestmentFlowState) =>
   selectReadyToInvest(state);
 
 export const selectBankTransferReferenceCode = (state: IAppState) => {
-  const addressHex = selectEthereumAddressWithChecksum(state.web3).slice(2);
+  const addressHex = selectEthereumAddressWithChecksum(state).slice(2);
 
   const bytes: number[] = [];
   for (let c = 0; c < addressHex.length; c += 2) {

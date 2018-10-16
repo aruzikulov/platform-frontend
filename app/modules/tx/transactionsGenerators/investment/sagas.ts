@@ -21,7 +21,7 @@ function createTxData(
 ): Partial<ITxData> | undefined {
   return {
     to: contractAddress,
-    from: selectEthereumAddressWithChecksum(state.web3),
+    from: selectEthereumAddressWithChecksum(state),
     data: txInput,
     value: "0",
   };
@@ -74,7 +74,7 @@ function getEtherTokenTransaction(
     const txCall = contractsService.etherToken.depositAndTransferTx(etoId, ethVal, [""]);
     txDetails = {
       to: contractsService.etherToken.address,
-      from: selectEthereumAddressWithChecksum(state.web3),
+      from: selectEthereumAddressWithChecksum(state),
       data: txCall.getData(),
       value: difference.toString(),
     };

@@ -24,7 +24,7 @@ export const YourEthereumAddressWidgetComponent: React.SFC<IStateProps> = ({ add
 );
 
 export const YourEthereumAddressWidget = appConnect<IStateProps>({
-  stateToProps: s => ({
-    address: selectEthereumAddressWithChecksum(s.web3),
+  stateToProps: state => ({
+    address: selectEthereumAddressWithChecksum(state),
   }),
 })(YourEthereumAddressWidgetComponent);
