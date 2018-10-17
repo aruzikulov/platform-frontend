@@ -7,7 +7,7 @@ import { actions } from "../../../../modules/actions";
 import {
   selectBankTransferAmount,
   selectBankTransferReferenceCode,
-} from "../../../../modules/investmentFlow/selectors";
+} from "../../../../modules/investment-flow/selectors";
 import { selectClientCountry, selectClientName } from "../../../../modules/kyc/selectors";
 import { appConnect } from "../../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";

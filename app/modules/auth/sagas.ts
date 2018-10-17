@@ -11,7 +11,7 @@ import {
 } from "../../lib/web3/Web3Manager";
 import { IAppState } from "../../store";
 import { hasValidPermissions } from "../../utils/JWTUtils";
-import { accessWalletAndRunEffect } from "../accessWallet/sagas";
+import { accessWalletAndRunEffect } from "../access-wallet/sagas";
 import { actions } from "../actions";
 import { loadKycRequestData } from "../kyc/sagas";
 import { selectRedirectURLFromQueryString } from "../routing/selectors";

@@ -1,14 +1,14 @@
 import { BigNumber } from "bignumber.js";
 import { put, select } from "redux-saga/effects";
+import { EInvestmentType } from "../../../investment-flow/reducer";
 import { compareBigNumbers } from "./../../../../utils/BigNumberUtils";
-import { EInvestmentType } from "./../../../investmentFlow/reducer";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ContractsService } from "../../../../lib/web3/ContractsService";
 import { ITxData } from "../../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../../store";
 import { actions } from "../../../actions";
-import { selectReadyToInvest } from "../../../investmentFlow/selectors";
+import { selectReadyToInvest } from "../../../investment-flow/selectors";
 import { selectEtoById } from "../../../public-etos/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 

@@ -20,9 +20,9 @@ import {
 import {
   FormFieldCheckbox,
   FormFieldCheckboxGroup,
-} from "../../../shared/forms/formField/FormFieldCheckboxGroup";
-import { FormLabel } from "../../../shared/forms/formField/FormLabel";
-import { FormRange } from "../../../shared/forms/formField/FormRange";
+} from "../../../shared/forms/form-field/FormFieldCheckboxGroup";
+import { FormLabel } from "../../../shared/forms/form-field/FormLabel";
+import { FormRange } from "../../../shared/forms/form-field/FormRange";
 import { EtoFormBase } from "../EtoFormBase";
 
 interface IExternalProps {

@@ -4,11 +4,11 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import * as Web3Utils from "web3-utils";
 
 import { actions } from "../../../modules/actions";
-import { selectIcbmMigrationWallet } from "../../../modules/icbmWalletBalanceModal/selectors";
+import { selectIcbmMigrationWallet } from "../../../modules/icbm-wallet-balance-modal/selectors";
 import { ILockedWallet } from "../../../modules/wallet/reducer";
 import { appConnect } from "../../../store";
 import { Button, EButtonLayout } from "../../shared/buttons";
-import { FormFieldColorful } from "../../shared/forms/formField/FormFieldColorful";
+import { FormFieldColorful } from "../../shared/forms/form-field/FormFieldColorful";
 import { Panel } from "../../shared/Panel";
 
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";

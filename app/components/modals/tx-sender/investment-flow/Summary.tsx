@@ -10,7 +10,7 @@ import {
   selectEthValueUlps,
   selectEurValueUlps,
   selectInvestmentGasCostEth,
-} from "../../../../modules/investmentFlow/selectors";
+} from "../../../../modules/investment-flow/selectors";
 import {
   selectEquityTokenCountByEtoId,
   selectEtoWithCompanyAndContractById,

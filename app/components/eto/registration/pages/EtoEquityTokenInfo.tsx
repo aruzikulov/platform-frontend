@@ -14,8 +14,8 @@ import { selectIssuerEto } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField } from "../../../shared/forms";
-import { FormLabel } from "../../../shared/forms/formField/FormLabel";
-import { FormSingleFileUpload } from "../../../shared/forms/formField/FormSingleFileUpload";
+import { FormLabel } from "../../../shared/forms/form-field/FormLabel";
+import { FormSingleFileUpload } from "../../../shared/forms/form-field/FormSingleFileUpload";
 import { EtoFormBase } from "../EtoFormBase";
 
 interface IExternalProps {

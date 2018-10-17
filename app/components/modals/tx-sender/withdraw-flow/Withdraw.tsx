@@ -11,8 +11,8 @@ import { selectEthereumAddressWithChecksum } from "../../../../modules/web3/sele
 import { appConnect } from "../../../../store";
 import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
 import { Button } from "../../../shared/buttons";
-import { FormFieldImportant } from "../../../shared/forms/formField/FormFieldImportant";
-import { FormLabel } from "../../../shared/forms/formField/FormLabel";
+import { FormFieldImportant } from "../../../shared/forms/form-field/FormFieldImportant";
+import { FormLabel } from "../../../shared/forms/form-field/FormLabel";
 import { LoadingIndicator } from "../../../shared/LoadingIndicator";
 import { WarningAlert } from "../../../shared/WarningAlert";
 import { ITxInitDispatchProps } from "../TxSender";

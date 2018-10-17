@@ -6,7 +6,7 @@ import { compose, setDisplayName } from "recompose";
 import { MONEY_DECIMALS } from "../../../../config/constants";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../../modules/actions";
-import { selectEurValueUlps } from "../../../../modules/investmentFlow/selectors";
+import { selectEurValueUlps } from "../../../../modules/investment-flow/selectors";
 import {
   selectEquityTokenCountByEtoId,
   selectEtoWithCompanyAndContractById,

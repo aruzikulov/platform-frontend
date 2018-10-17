@@ -18,9 +18,9 @@ import {
 import { IAppState } from "../../../store";
 import { multiplyBigNumbers } from "../../../utils/BigNumberUtils";
 import { delay } from "../../../utils/delay";
-import { connectWallet } from "../../accessWallet/sagas";
+import { connectWallet } from "../../access-wallet/sagas";
 import { actions, TAction } from "../../actions";
-import { onInvestmentTxModalHide } from "../../investmentFlow/sagas";
+import { onInvestmentTxModalHide } from "../../investment-flow/sagas";
 import { neuCall, neuTakeEvery } from "../../sagas";
 import { updateTxs } from "../monitor/sagas";
 import { generateInvestmentTransaction } from "../transactionsGenerators/investment/sagas";
