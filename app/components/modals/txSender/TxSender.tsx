@@ -4,6 +4,7 @@ import { Modal } from "reactstrap";
 
 import { ITxData } from "../../../lib/web3/Web3Manager";
 import { actions } from "../../../modules/actions";
+import { IDraftType } from "../../../modules/tx/sender/actions";
 import {
   ETransactionErrorType,
   ETxSenderState,
@@ -57,6 +58,7 @@ const TxSenderModalComponent: React.SFC<Props> = props => {
 
 export interface ITxInitDispatchProps {
   onAccept: (tx: Partial<ITxData>) => any;
+  onValidate: (txDraft: IDraftType) => any;
 }
 
 export interface ITxSummaryStateProps {

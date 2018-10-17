@@ -33,7 +33,7 @@ import {
 import { generateEthWithdrawTransaction } from "../transactionsGenerators/withdraw/sagas";
 import { OutOfGasError } from "./../../../lib/web3/Web3Adapter";
 import { ITxData } from "./../../../lib/web3/Web3Manager";
-import { ETokenType, ETransactionErrorType, ETxSenderType } from "./reducer";
+import { ETokenType, ETransactionErrorType, ETxSenderType, EValidationErrorType } from "./reducer";
 import { selectTxDetails, selectTxType } from "./selectors";
 
 class NotEnoughEtherForGasError extends Error {}
@@ -51,7 +51,6 @@ export function* withdrawSaga({ logger }: TGlobalDependencies): any {
       type: ETxSenderType.WITHDRAW,
       transactionGenerationFunction: generateEthWithdrawTransaction,
     });
-
     logger.info("Withdrawing successful");
   } catch (e) {
     logger.warn("Withdrawing cancelled", e);
@@ -70,8 +69,7 @@ export function* upgradeSaga({ logger }: TGlobalDependencies, action: TAction): 
           ? generateEuroUpgradeTransaction
           : generateEtherUpgradeTransaction,
     };
-
-    txSendSaga(params);
+    yield txSendSaga(params);
 
     logger.info("Withdrawing successful");
   } catch (e) {
@@ -90,6 +88,23 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
     logger.info("Investment successful");
   } catch (e) {
     logger.warn("Investment cancelled", e);
+  }
+}
+
+export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction): any {
+  try {
+    debugger;
+    if (action.type !== "TX_SENDER_VALIDATE_DRAFT") return;
+    const generatedTxDetails: ITxData = yield neuCall(
+      generateEthWithdrawTransaction,
+      action.payload,
+    );
+    yield validateGas(generatedTxDetails);
+    // TODO: Add more warnings here
+    yield put(actions.txSender.setValidationError(EValidationErrorType.NOT_ENOUGH_ETHER_FOR_GAS));
+  } catch (error) {
+    logger.error(error);
+    yield put(actions.txSender.setValidationError(EValidationErrorType.NOT_ENOUGH_ETHER_FOR_GAS));
   }
 }
 
@@ -171,12 +186,11 @@ export function* txSendProcess(
   }
 }
 
-function* validateGas(): any {
-  const txDetails: ITxData | undefined = yield select(selectTxDetails);
+function* validateGas(txDetails: ITxData): any {
   const etherBalance: string | undefined = yield select(selectEtherBalance);
 
-  if (!txDetails || !etherBalance) {
-    throw new Error("TxDetails or Ether Balance are undefined");
+  if (!etherBalance) {
+    throw new Error("Ether Balance is undefined");
   }
 
   if (
@@ -370,6 +384,7 @@ const createWatchTxChannel = ({ web3Manager }: TGlobalDependencies, txHash: stri
   });
 
 export const txSendingSagasWatcher = function*(): Iterator<any> {
+  yield fork(neuTakeEvery, "TX_SENDER_VALIDATE_DRAFT", txValidateSaga);
   yield fork(neuTakeEvery, "TX_SENDER_START_WITHDRAW_ETH", withdrawSaga);
   yield fork(neuTakeEvery, "TX_SENDER_START_UPGRADE", upgradeSaga);
   yield fork(neuTakeEvery, "TX_SENDER_START_INVESTMENT", investSaga);

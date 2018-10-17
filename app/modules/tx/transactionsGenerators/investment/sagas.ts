@@ -4,6 +4,7 @@ import { select } from "redux-saga/effects";
 import { DeferredTransactionWrapper } from "./../../../../lib/contracts/typechain-runtime";
 import { compareBigNumbers } from "./../../../../utils/BigNumberUtils";
 import { EInvestmentType } from "./../../../investmentFlow/reducer";
+import { selectEtherTokenBalance } from "./../../../wallet/selectors";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ITxParams } from "../../../../lib/contracts/typechain-runtime";
@@ -19,12 +20,13 @@ async function createTxData(
   state: IAppState,
   txData: DeferredTransactionWrapper<ITxParams>,
   contractAddress: string,
+  value = "0",
 ): Promise<ITxData> {
   const txInitialDetails = {
     to: contractAddress,
     from: selectEthereumAddressWithChecksum(state),
     data: txData.getData(),
-    value: "0",
+    value: value,
     gasPrice: selectGasPrice(state)!.standard,
   };
   const estimatedGas = await txData.estimateGas(txInitialDetails);
@@ -65,38 +67,28 @@ async function getEtherTokenTransaction(
   contractsService: ContractsService,
   etoId: string,
 ): Promise<ITxData> {
-  const etherTokenBalance = state.wallet.data!.etherTokenBalance;
+  const etherTokenBalance = selectEtherTokenBalance(state);
   const etherValue = state.investmentFlow.ethValueUlps;
-  const gasPrice = selectGasPrice(state);
 
-  // transaction can be fully covered by etherTokens
+  if (!etherTokenBalance) {
+    throw new Error("No ether Token Balance");
+  }
   if (compareBigNumbers(etherTokenBalance, etherValue) >= 0) {
-    // need to call 3 args version of transfer method. See the abi in the contract.
-    // so we call the rawWeb3Contract directly
+    // transaction can be fully covered by etherTokens
+
+    // rawWeb3Contract is called directly due to the need for calling the 3 args version of transfer method.
+    // See the abi in the contract.
     const txInput = contractsService.etherToken.rawWeb3Contract.transfer[
       "address,uint256,bytes"
     ].getData(etoId, etherValue, "");
     return createTxData(state, txInput, contractsService.etherToken.address);
-
-    // fill up etherToken with ether from wallet
   } else {
+    // fill up etherToken with ether from wallet
     const ethVal = new BigNumber(etherValue);
-    const difference = ethVal.sub(etherTokenBalance);
+    const value = ethVal.sub(etherTokenBalance);
     const txCall = contractsService.etherToken.depositAndTransferTx(etoId, ethVal, [""]);
 
-    const txInitialDetails = {
-      to: contractsService.etherToken.address,
-      from: selectEthereumAddressWithChecksum(state),
-      data: txCall.getData(),
-      value: difference.toString(),
-      gasPrice: gasPrice!.standard,
-    };
-
-    const estimatedGas = await txCall.estimateGas(txInitialDetails);
-    return {
-      ...txInitialDetails,
-      gas: addHexPrefix(new BigNumber(estimatedGas).toString(16)),
-    };
+    return createTxData(state, txCall, contractsService.etherToken.address, value.toString());
   }
 }
 

@@ -19,6 +19,8 @@ import { Button } from "../../../shared/buttons";
 import { FormFieldImportant } from "../../../shared/forms/formField/FormFieldImportant";
 import { ITxInitDispatchProps } from "../TxSender";
 
+import { IDraftType } from "../../../../modules/tx/sender/actions";
+import { ETxSenderType } from "../../../../modules/tx/sender/reducer";
 import * as styles from "./Withdraw.module.scss";
 
 interface IStateProps {
@@ -34,13 +36,15 @@ type TProps = IStateProps & ITxInitDispatchProps;
 
 const withdrawFormSchema = YupTS.object({
   to: YupTS.string().enhance(v =>
-    v.test("isEthereumAddress", "is not a valid Ethereum address", Web3Utils.isAddress),
+    v.test("isEthereumAddress", "is not a valid Ethereum address", (value: string) => {
+      return Web3Utils.isAddress(value);
+    }),
   ),
   value: YupTS.number().enhance((v: NumberSchema) => v.positive()),
 });
 const withdrawFormValidator = withdrawFormSchema.toYup();
 
-const WithdrawComponent: React.SFC<TProps> = ({ onAccept, maxEther }) => (
+const WithdrawComponent: React.SFC<TProps> = ({ onAccept, maxEther, onValidate }) => (
   <div>
     <SpinningEthereum />
 
@@ -88,7 +92,13 @@ const WithdrawComponent: React.SFC<TProps> = ({ onAccept, maxEther }) => (
                         undefined
                       )
                     }
+                    validate={() => {
+                      if (values.to !== "" && values.value !== "")
+                        onValidate({ ...values, type: ETxSenderType.WITHDRAW });
+                      // TODO: What is the best way to look into validations
+                    }}
                   />
+                  <div>test</div>
                 </Col>
               </Row>
               <Row>
@@ -120,6 +130,7 @@ const Withdraw = compose<TProps, {}>(
     }),
     dispatchToProps: d => ({
       onAccept: (tx: Partial<ITxData>) => d(actions.txSender.txSenderAcceptDraft(tx)),
+      onValidate: (txDraft: IDraftType) => d(actions.txSender.txSenderValidateDraft(txDraft)),
     }),
   }),
 )(WithdrawComponent);
