@@ -13,21 +13,13 @@ import {
 import { IEtoDocument, immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { EUserType } from "../../lib/api/users/interfaces";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
-import { promisify } from "../../lib/contracts/typechain-runtime";
 import { IAppState } from "../../store";
-import { convertToBigInt } from "../../utils/Money.utils";
 import { actions, TAction } from "../actions";
 import { selectUserType } from "../auth/selectors";
 import { neuCall, neuTakeEvery } from "../sagas";
-import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { InvalidETOStateError } from "./errors";
-import { IPublicEtoState } from "./reducer";
-import { selectCalculatedContributionByEtoId, selectEtoById } from "./selectors";
-import {
-  convertToCalculatedContribution,
-  convertToEtoTotalInvestment,
-  convertToStateStartDate,
-} from "./utils";
+import { selectEtoById } from "./selectors";
+import { convertToEtoTotalInvestment, convertToStateStartDate } from "./utils";
 
 export function* loadEtoPreview(
   { apiEtoService, notificationCenter }: TGlobalDependencies,
@@ -173,48 +165,6 @@ function* loadEtos({ apiEtoService, logger }: TGlobalDependencies): any {
   }
 }
 
-export function* loadComputedContributionFromContract(
-  { contractsService }: TGlobalDependencies,
-  eto: TPublicEtoData,
-  amountEuroUlps?: string,
-  isICBM = false,
-): any {
-  if (eto.state !== "on_chain") return;
-
-  const state: IAppState = yield select();
-  const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
-
-  if (etoContract) {
-    amountEuroUlps =
-      amountEuroUlps || convertToBigInt((eto.minTicketEur && eto.minTicketEur.toString()) || "0");
-
-    const from = selectEthereumAddressWithChecksum(state.web3);
-    // sorry no typechain, typechain has a bug with boolean casting
-    const calculation = yield promisify(etoContract.rawWeb3Contract.calculateContribution, [
-      from,
-      isICBM,
-      amountEuroUlps,
-    ]);
-    yield put(
-      actions.publicEtos.setCalculatedContribution(
-        eto.previewCode,
-        convertToCalculatedContribution(calculation),
-      ),
-    );
-  }
-}
-
-function* loadCalculatedContribution(_: TGlobalDependencies, action: TAction): any {
-  if (action.type !== "PUBLIC_ETOS_LOAD_CALCULATED_CONTRIBUTION") return;
-  const state: IPublicEtoState = yield select((s: IAppState) => s.publicEtos);
-  const eto = selectEtoById(state, action.payload.etoId);
-  if (!eto) return;
-  const contribution = selectCalculatedContributionByEtoId(eto.etoId, state);
-  if (!contribution || action.payload.investmentEurUlps) {
-    yield neuCall(loadComputedContributionFromContract, eto, action.payload.investmentEurUlps);
-  }
-}
-
 function* download(document: IEtoDocument): any {
   if (document) {
     yield put(
@@ -248,7 +198,6 @@ export function* etoSagas(): any {
   yield fork(neuTakeEvery, "PUBLIC_ETOS_LOAD_ETO_PREVIEW", loadEtoPreview);
   yield fork(neuTakeEvery, "PUBLIC_ETOS_LOAD_ETO", loadEto);
   yield fork(neuTakeEvery, "PUBLIC_ETOS_LOAD_ETOS", loadEtos);
-  yield fork(neuTakeEvery, "PUBLIC_ETOS_LOAD_CALCULATED_CONTRIBUTION", loadCalculatedContribution);
   yield fork(neuTakeEvery, "PUBLIC_ETOS_DOWNLOAD_DOCUMENT", downloadDocument);
   yield fork(neuTakeEvery, "PUBLIC_ETOS_DOWNLOAD_TEMPLATE_BY_TYPE", downloadTemplateByType);
 }

@@ -14,6 +14,15 @@ export interface IInvestorTicket {
   usedLockedAccount: boolean;
 }
 
+export interface ICalculatedContribution {
+  isWhitelisted: boolean;
+  minTicketEurUlps: BigNumber;
+  maxTicketEurUlps: BigNumber;
+  equityTokenInt: BigNumber;
+  neuRewardUlps: BigNumber;
+  maxCapExceeded: boolean;
+}
+
 export type TETOWithInvestorTicket = TEtoWithCompanyAndContract & {
   investorTicket: IInvestorTicket;
 };

@@ -1,26 +1,5 @@
 import BigNumber from "bignumber.js";
-import {
-  ETOStateOnChain,
-  ICalculatedContribution,
-  IEtoTotalInvestment,
-  TEtoStartOfStates,
-} from "./types";
-
-export const convertToCalculatedContribution = ([
-  isWhitelisted,
-  minTicketEurUlps,
-  maxTicketEurUlps,
-  equityTokenInt,
-  neuRewardUlps,
-  maxCapExceeded,
-]: [boolean, BigNumber, BigNumber, BigNumber, BigNumber, boolean]): ICalculatedContribution => ({
-  isWhitelisted,
-  minTicketEurUlps,
-  maxTicketEurUlps,
-  equityTokenInt,
-  neuRewardUlps,
-  maxCapExceeded,
-});
+import { ETOStateOnChain, IEtoTotalInvestment, TEtoStartOfStates } from "./types";
 
 export const convertToEtoTotalInvestment = ([totalEquivEurUlps, totalTokensInt, totalInvestors]: [
   BigNumber,

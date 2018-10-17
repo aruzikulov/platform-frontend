@@ -35,7 +35,10 @@ export const selectEtoWithInvestorTickets = (
       .filter(eto => eto.state === EtoState.ON_CHAIN)
       .filter(eto => eto.contract!.timedState !== ETOStateOnChain.Setup)
       .filter(eto => selectHasInvestorTicket(state, eto.etoId))
-      .map(eto => ({ ...eto, investorTicket: selectInvestorTicket(state, eto.etoId)! }));
+      .map(eto => ({
+        ...eto,
+        investorTicket: selectInvestorTicket(state, eto.etoId)!,
+      }));
   }
 
   return undefined;
@@ -59,4 +62,25 @@ export const selectMyPendingAssets = (state: IAppState): TETOWithInvestorTicket[
   }
 
   return undefined;
+};
+
+export const selectCalculatedContribution = (etoId: string, state: IAppState) => {
+  const investorState = selectInvestorTicketsState(state);
+
+  return investorState.calculatedContributions[etoId];
+};
+
+export const selectEquityTokenCountByEtoId = (etoId: string, state: IAppState) => {
+  const contrib = selectCalculatedContribution(etoId, state);
+  return contrib && contrib.equityTokenInt.toString();
+};
+
+export const selectNeuRewardUlpsByEtoId = (etoId: string, state: IAppState) => {
+  const contrib = selectCalculatedContribution(etoId, state);
+  return contrib && contrib.neuRewardUlps.toString();
+};
+
+export const selectIsWhitelisted = (etoId: string, state: IAppState) => {
+  const contrib = selectCalculatedContribution(etoId, state);
+  return !!contrib && contrib.isWhitelisted;
 };
