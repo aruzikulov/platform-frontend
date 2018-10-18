@@ -1,13 +1,12 @@
 import { BigNumber } from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
 import { select } from "redux-saga/effects";
-import { DeferredTransactionWrapper } from "./../../../../lib/contracts/typechain-runtime";
+import { DeferredTransactionWrapper, ITxParams } from "../../../../lib/contracts/typechain-runtime";
 import { compareBigNumbers } from "./../../../../utils/BigNumberUtils";
 import { EInvestmentType } from "./../../../investmentFlow/reducer";
 import { selectEtherTokenBalance } from "./../../../wallet/selectors";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
-import { ITxParams } from "../../../../lib/contracts/typechain-runtime";
 import { ContractsService } from "../../../../lib/web3/ContractsService";
 import { ITxData } from "../../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../../store";

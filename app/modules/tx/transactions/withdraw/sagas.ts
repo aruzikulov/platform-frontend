@@ -22,8 +22,8 @@ export function* generateEthWithdrawTransaction(
   const gasPrice: GasModelShape | undefined = yield select(selectGasPrice);
 
   // transaction can be fully covered by etherTokens
-  const ethVal = new BigNumber(value!);
-  const txInput = contractsService.etherToken.withdrawAndSendTx(to!, ethVal).getData();
+  const ethVal = new BigNumber(value);
+  const txInput = contractsService.etherToken.withdrawAndSendTx(to, ethVal).getData();
   const difference = ethVal.sub(etherTokenBalance!);
 
   // txDetails main purpose is type safety
