@@ -12,11 +12,10 @@ import {
 } from "../../../../modules/investmentFlow/selectors";
 import {
   selectEquityTokenCountByEtoId,
-  selectEtoWithCompanyAndContractById,
   selectNeuRewardUlpsByEtoId,
-} from "../../../../modules/public-etos/selectors";
+} from "../../../../modules/investor-tickets/selectors";
+import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
-import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
 import {
   addBigNumbers,
@@ -33,6 +32,9 @@ import { ITxSummaryDispatchProps } from "../TxSender";
 
 import * as neuIcon from "../../../../assets/img/neu_icon.svg";
 import * as tokenIcon from "../../../../assets/img/token_icon.svg";
+
+
+import { selectTxGasCostEth } from '../../../../modules/tx/sender/selectors';
 import * as styles from "./Summary.module.scss";
 
 interface IStateProps {
@@ -140,7 +142,12 @@ const InvestmentSummaryComponent = ({
       </Row>
 
       <Row className="justify-content-center mb-0 mt-0">
-        <Button layout={EButtonLayout.PRIMARY} type="button" onClick={onAccept}>
+        <Button
+          layout={EButtonLayout.PRIMARY}
+          type="button"
+          onClick={onAccept}
+          data-test-id="invest-modal-summary-confirm-button"
+        >
           <FormattedMessage id="investment-flow.confirm" />
         </Button>
       </Row>
@@ -153,7 +160,6 @@ const InvestmentSummary = compose<IProps, {}>(
   appConnect<IStateProps, ITxSummaryDispatchProps>({
     stateToProps: state => {
       const i = state.investmentFlow;
-      const p = state.publicEtos;
 
       // eto and computed values are guaranteed to be present at investment summary state
       const eto = selectEtoWithCompanyAndContractById(state, i.etoId)!;
@@ -164,8 +170,8 @@ const InvestmentSummary = compose<IProps, {}>(
         investmentEth: selectEthValueUlps(i),
         investmentEur: selectEurValueUlps(i),
         gasCostEth: selectTxGasCostEth(state.txSender),
-        equityTokens: selectEquityTokenCountByEtoId(i.etoId, p) as string,
-        estimatedReward: selectNeuRewardUlpsByEtoId(i.etoId, p) as string,
+        equityTokens: selectEquityTokenCountByEtoId(i.etoId, state) as string,
+        estimatedReward: selectNeuRewardUlpsByEtoId(i.etoId, state) as string,
         etherPriceEur: selectEtherPriceEur(state.tokenPrice),
       };
     },
@@ -173,7 +179,7 @@ const InvestmentSummary = compose<IProps, {}>(
       onAccept: () => d(actions.txSender.txSenderAccept()),
       downloadAgreement: (etoId: string) =>
         d(
-          actions.publicEtos.downloadPublicEtoDocumentByType(
+          actions.publicEtos.downloadPublicEtoTemplateByType(
             etoId,
             EEtoDocumentType.RESERVATION_AND_ACQUISITION_AGREEMENT,
           ),

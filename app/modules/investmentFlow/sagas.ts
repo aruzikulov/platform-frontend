@@ -9,8 +9,9 @@ import { addBigNumbers, compareBigNumbers } from "../../utils/BigNumberUtils";
 import { convertToBigInt } from "../../utils/Money.utils";
 import { extractNumber } from "../../utils/StringUtils";
 import { actions, TAction } from "../actions";
-import { loadComputedContributionFromContract } from "../public-etos/sagas";
-import { selectCalculatedContributionByEtoId, selectEtoById } from "../public-etos/selectors";
+import { loadComputedContributionFromContract } from "../investor-tickets/sagas";
+import { selectCalculatedContribution } from "../investor-tickets/selectors";
+import { selectEtoById } from "../public-etos/selectors";
 import { neuCall } from "../sagas";
 import { selectEtherPriceEur } from "../shared/tokenPrice/selectors";
 import { selectTxGasCostEth } from "../tx/sender/selectors";
@@ -74,7 +75,7 @@ function validateInvestment(state: IAppState): EInvestmentErrorState | undefined
   const euroValue = investmentFlow.euroValueUlps;
   const etherValue = investmentFlow.ethValueUlps;
   const wallet = state.wallet.data;
-  const contribs = selectCalculatedContributionByEtoId(investmentFlow.etoId, state.publicEtos);
+  const contribs = selectCalculatedContribution(investmentFlow.etoId, state);
 
   if (!contribs || !euroValue || !wallet) return;
 

@@ -100,7 +100,7 @@ export const LegalInformationWidget: React.SFC<IProps> = ({ companyData }) => {
             {companyData.companyStage && (
               <div className={styles.entry}>
                 <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.legal-information.last-founding-round" />
+                  <FormattedMessage id="eto.public-view.legal-information.last-funding-round" />
                 </span>
                 <span className={styles.value}>{FUNDING_ROUNDS[companyData.companyStage]}</span>
               </div>
@@ -108,7 +108,7 @@ export const LegalInformationWidget: React.SFC<IProps> = ({ companyData }) => {
             {companyData.lastFundingSizeEur && (
               <div className={styles.entry}>
                 <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.legal-information.last-founding-amount" />
+                  <FormattedMessage id="eto.public-view.legal-information.last-funding-amount" />
                 </span>
                 <span className={styles.value}>{`€ ${companyData.lastFundingSizeEur}`}</span>
               </div>

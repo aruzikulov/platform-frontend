@@ -37,11 +37,6 @@ export const walletReducer: AppReducer<IWalletState> = (
   action,
 ): IWalletState => {
   switch (action.type) {
-    case "WALLET_START_WATCHING":
-      return {
-        loading: true,
-        error: undefined,
-      };
     case "WALLET_SAVE_WALLET_DATA":
       return {
         loading: false,

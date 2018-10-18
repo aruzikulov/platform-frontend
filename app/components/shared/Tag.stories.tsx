@@ -5,15 +5,45 @@ import { Tag } from "./Tag";
 
 storiesOf("Basic UI/Tag", module)
   .add("default", () => <Tag text={"lorem"} />)
-  .add("themed", () => (
+  .add("themed link", () => (
     <>
-      <Tag text={"dark theme"} theme="dark" />
-      <Tag text={"green theme"} theme="green" />
-      <Tag text={"silver theme"} theme="silver" />
+      <Tag text={"dark theme"} to="#0" theme="dark" />
+      <Tag text={"green theme"} to="#0" theme="green" />
+      <Tag text={"silver theme"} to="#0" theme="silver" />
       <Tag to="#0" text="tag" />
       <Tag layout="ghost" to="#0" text="ghost tag" />
       <Tag layout="ghost" size="small" to="#0" text="small ghost tag" />
       <Tag theme="green" layout="ghost" size="small" to="#0" text="Small green ghost tag" />
       <Tag theme="dark" size="small" to="#0" text="Small dark tag" />
+    </>
+  ))
+  .add("themed a/span", () => (
+    <>
+      <Tag text={"dark theme"} onClick={() => {}} theme="dark" />
+      <Tag text={"green theme"} onClick={() => {}} theme="green" />
+      <Tag text={"silver theme"} onClick={() => {}} theme="silver" />
+      <Tag onClick={() => {}} text="tag" />
+      <Tag layout="ghost" onClick={() => {}} text="ghost tag" />
+      <Tag layout="ghost" size="small" onClick={() => {}} text="small ghost tag" />
+      <Tag
+        theme="green"
+        layout="ghost"
+        size="small"
+        onClick={() => {}}
+        text="Small green ghost tag"
+      />
+      <Tag theme="dark" size="small" onClick={() => {}} text="Small dark tag" />
+    </>
+  ))
+  .add("themed div", () => (
+    <>
+      <Tag text={"dark theme"} theme="dark" />
+      <Tag text={"green theme"} theme="green" />
+      <Tag text={"silver theme"} theme="silver" />
+      <Tag to="#0" text="tag" />
+      <Tag layout="ghost" text="ghost tag" />
+      <Tag layout="ghost" size="small" text="small ghost tag" />
+      <Tag theme="green" layout="ghost" size="small" text="Small green ghost tag" />
+      <Tag theme="dark" size="small" text="Small dark tag" />
     </>
   ));

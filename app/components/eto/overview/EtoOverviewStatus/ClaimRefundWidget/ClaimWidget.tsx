@@ -44,7 +44,10 @@ const ClaimWidgetLayout: React.SFC<IExternalProps> = ({
     </div>
     {canClaimToken && (
       <Button>
-        <FormattedMessage id="shared-component.eto-overview.claim-your-token" /> {tokenName}
+        <FormattedMessage
+          id="shared-component.eto-overview.claim-your-token"
+          values={{ tokenName }}
+        />
       </Button>
     )}
   </div>

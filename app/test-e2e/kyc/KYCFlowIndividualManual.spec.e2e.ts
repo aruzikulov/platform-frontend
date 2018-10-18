@@ -1,9 +1,8 @@
 import { kycRoutes } from "../../components/kyc/routes";
-import { tid } from "../utils";
+import { confirmAccessModal, tid } from "../utils";
 import { fillForm, uploadFileToFieldWithTid } from "../utils/forms";
 import { createAndLoginNewUser } from "../utils/userHelpers";
 import { kycInvidualForm } from "./fixtures";
-import { acceptWallet } from "./util";
 
 describe("KYC Personal flow with manual verification", () => {
   beforeEach(() => createAndLoginNewUser({ type: "investor" }));
@@ -26,7 +25,7 @@ describe("KYC Personal flow with manual verification", () => {
 
     // submt request and accept with the wallet
     cy.get(tid("kyc-personal-upload-submit")).awaitedClick();
-    acceptWallet();
+    confirmAccessModal();
 
     // panel should now be in pending state
     cy.get(tid("kyc-panel-pending"));

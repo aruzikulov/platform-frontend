@@ -2,6 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { Col } from "reactstrap";
 
+import { IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
 import * as styles from "./Document.module.scss";
 
 interface IDocumentProps {
@@ -15,6 +16,11 @@ interface IDocumentTileProps {
   onlyDownload?: boolean;
   blank?: boolean;
   active?: boolean;
+}
+
+interface IClickableDocumentTileProps {
+  generateTemplate: (document: IEtoDocument) => void;
+  document: IEtoDocument;
 }
 
 export const Document: React.SFC<IDocumentProps> = ({ extension, blank }) => {
@@ -68,5 +74,20 @@ export const DocumentTile: React.SFC<IDocumentProps & IDocumentTileProps> = ({
           <p className={cn(styles.subTitle)}>Drag and drop or Click to upload high quality PDF</p>
         )}
     </Col>
+  );
+};
+
+export const ClickableDocumentTile: React.SFC<
+  IDocumentProps & IDocumentTileProps & IClickableDocumentTileProps
+> = ({ generateTemplate, title, document, extension }) => {
+  return (
+    <button
+      className={styles.clickableArea}
+      onClick={() => {
+        generateTemplate(document);
+      }}
+    >
+      <DocumentTile title={title} extension={extension} blank={false} onlyDownload={true} />
+    </button>
   );
 };

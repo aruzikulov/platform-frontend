@@ -22,12 +22,12 @@ export const VerificationStatus: React.SFC<IProps & CommonHtmlProps> = ({ steps,
     <div {...props} className={cn(styles.verificationStatus, props.className)}>
       {steps.map(({ label, isChecked, onClick }, index) => (
         <div className={styles.step} style={{ flexBasis: `${100 / steps.length}%` }} key={index}>
-          <div
+          <button
             className={cn(styles.indicator, isChecked && "is-checked")}
             onClick={onClick ? () => onClick() : () => {}}
           >
             {isChecked ? <InlineIcon svgIcon={icon} /> : index + 1}
-          </div>
+          </button>
           <div className={styles.label}>{label}</div>
         </div>
       ))}

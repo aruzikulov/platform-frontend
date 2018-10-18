@@ -1,6 +1,7 @@
 import * as promiseAll from "promise-all";
 import { delay } from "redux-saga";
 import { fork, put, select, take } from "redux-saga/effects";
+import { selectIsSmartContractInitDone } from "./../init/selectors";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { ICBMLockedAccount } from "../../lib/contracts/ICBMLockedAccount";
@@ -9,7 +10,7 @@ import { EthereumAddress } from "../../types";
 import { actions } from "../actions";
 import { numericValuesToString } from "../contracts/utils";
 import { neuCall, neuTakeEvery } from "../sagas";
-import { neuTakeUntil } from "../sagasUtils";
+import { neuTakeOnly, neuTakeUntil } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { ILockedWallet, IWalletStateData } from "./reducer";
 
@@ -76,6 +77,12 @@ export async function loadWalletDataAsync(
 }
 
 function* walletBalanceWatcher(): any {
+  const isSmartContractsInitialized = yield select(selectIsSmartContractInitDone);
+
+  if (!isSmartContractsInitialized) {
+    yield neuTakeOnly("INIT_DONE", { initType: "smartcontractsInit" });
+  }
+
   while (true) {
     yield neuCall(loadWalletDataSaga);
     yield delay(WALLET_DATA_FETCHING_INTERVAL);
@@ -84,5 +91,5 @@ function* walletBalanceWatcher(): any {
 
 export function* walletSagas(): any {
   yield fork(neuTakeEvery, "WALLET_LOAD_WALLET_DATA", loadWalletDataSaga);
-  yield neuTakeUntil("WALLET_START_WATCHING", "AUTH_LOGOUT", walletBalanceWatcher);
+  yield neuTakeUntil("AUTH_LOAD_USER", "AUTH_LOGOUT", walletBalanceWatcher);
 }

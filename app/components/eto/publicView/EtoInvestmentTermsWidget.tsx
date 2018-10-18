@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
-import { EEtoDocumentType } from "../../../lib/api/eto/EtoFileApi.interfaces";
+import { IEtoDocument } from "../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
 import { appConnect } from "../../../store";
@@ -18,7 +18,7 @@ type TExternalProps = {
 };
 
 type TDispatchProps = {
-  downloadDocument: (type: EEtoDocumentType) => void;
+  downloadDocument: (document: IEtoDocument) => void;
 };
 
 const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps> = ({
@@ -89,7 +89,7 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
               <Button
                 layout={EButtonLayout.INLINE}
                 onClick={() =>
-                  downloadDocument(EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT)
+                  downloadDocument(etoData.templates.investmentAndShareholderAgreement)
                 }
                 className={styles.groupDocumentLink}
               >
@@ -162,7 +162,7 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
                 layout={EButtonLayout.INLINE}
                 className={styles.groupDocumentLink}
                 onClick={() =>
-                  downloadDocument(EEtoDocumentType.RESERVATION_AND_ACQUISITION_AGREEMENT)
+                  downloadDocument(etoData.templates.reservationAndAcquisitionAgreement)
                 }
               >
                 <span className={styles.icon}>
@@ -228,18 +228,17 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
               </span>
             </div>
 
-            {etoData.liquidationPreferenceMultiplier && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.liquidation-preference" />
-                </span>
-                <span className={styles.value}>{etoData.liquidationPreferenceMultiplier}x</span>
-              </div>
-            )}
+            <div className={styles.entry}>
+              <span className={styles.label}>
+                <FormattedMessage id="eto.public-view.token-terms.liquidation-preference" />
+              </span>
+              <span className={styles.value}>{etoData.liquidationPreferenceMultiplier}x</span>
+            </div>
+
             {!!etoData.templates.companyTokenHolderAgreement && (
               <Button
                 layout={EButtonLayout.INLINE}
-                onClick={() => downloadDocument(EEtoDocumentType.COMPANY_TOKEN_HOLDER_AGREEMENT)}
+                onClick={() => downloadDocument(etoData.templates.companyTokenHolderAgreement)}
                 className={styles.groupDocumentLink}
               >
                 <span className={styles.icon}>
@@ -257,9 +256,9 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
 
 export const EtoInvestmentTermsWidget = compose<TExternalProps & TDispatchProps, TExternalProps>(
   appConnect<{}, TDispatchProps, TExternalProps>({
-    dispatchToProps: (dispatch, props) => ({
-      downloadDocument: (type: EEtoDocumentType) =>
-        dispatch(actions.publicEtos.downloadPublicEtoDocumentByType(props.etoData.etoId, type)),
+    dispatchToProps: dispatch => ({
+      downloadDocument: (document: IEtoDocument) =>
+        dispatch(actions.publicEtos.downloadPublicEtoDocument(document)),
     }),
   }),
 )(EtoInvestmentTermsWidgetLayout);

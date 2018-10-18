@@ -3,6 +3,7 @@ import { LocationChangeAction, routerReducer, RouterState } from "react-router-r
 import { combineReducers } from "redux";
 
 import { TAction } from "./modules/actions";
+import { initInitialState } from "./modules/init/reducer";
 import { appReducers } from "./modules/reducer";
 import { DeepReadonly, FunctionWithDeps } from "./types";
 
@@ -40,10 +41,16 @@ export type IAppState = TReducersMapToReturnTypes<typeof appReducers> & {
 
 export const rootReducer = combineReducers<IAppState>(allReducers);
 
+// All states that should remain even after logout
+const staticValues = (state: IAppState): any => ({
+  router: state.router,
+  init: { ...initInitialState, smartcontractsInit: state.init.smartcontractsInit },
+});
+
 export const reducers = (state: IAppState, action: TAction) => {
   switch (action.type) {
     case "AUTH_LOGOUT":
-      return rootReducer({ router: state.router } as any, action);
+      return rootReducer(staticValues(state), action);
   }
   return rootReducer(state, action);
 };

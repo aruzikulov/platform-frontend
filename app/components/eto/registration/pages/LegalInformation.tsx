@@ -116,13 +116,13 @@ const EtoRegistrationLegalInformationComponent = ({ readonly, savingData }: IPro
           disabled={readonly}
         />
         <FormSelectField
-          label={<FormattedMessage id="eto.form.legal-information.last-founding-round" />}
+          label={<FormattedMessage id="eto.form.legal-information.last-funding-round" />}
           values={FUNDING_ROUNDS}
           name="companyStage"
           disabled={readonly}
         />
         <FormField
-          label={<FormattedMessage id="eto.form.legal-information.last-founding-amount" />}
+          label={<FormattedMessage id="eto.form.legal-information.last-funding-amount" />}
           type="number"
           name="lastFundingSizeEur"
           disabled={readonly}

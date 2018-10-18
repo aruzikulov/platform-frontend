@@ -40,6 +40,7 @@
   height: px-to-rem(20px);
   width: px-to-rem(20px);
   background-color: $neu-white-two;
+  padding: 0;
 
   &:global(.is-checked) {
     background-color: $neu-piss-yellow;

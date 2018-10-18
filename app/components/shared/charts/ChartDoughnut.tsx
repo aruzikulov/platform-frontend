@@ -16,7 +16,7 @@ interface IProps {
 }
 
 const hasData = (data: any) => {
-  return !(!data.length || (data.length && data.datasets[0].data.length === 0));
+  return data.datasets[0].data.length > 0;
 };
 
 export const ChartDoughnut: React.SFC<IProps> = ({ data, layout, className, defaultLabel }) => {

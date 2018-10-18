@@ -35,7 +35,7 @@
   justify-content: space-around;
   margin: 0 auto;
   padding: 20px 0;
-  max-width: 200px;
+  max-width: 150px;
 
   span {
     width: 100%;
@@ -77,11 +77,11 @@
 
     .label {
       @include font-label;
-
-      display: table-cell;
-      padding-top: px-to-rem(10px);
-      padding-bottom: px-to-rem(10px);
-      padding-right: px-to-rem(30px);
+      font-size: px-to-rem(8.8px);
+      display: block;
+      padding-top: px-to-rem(8px);
+      padding-bottom: px-to-rem(13.6px);
+      padding-right: px-to-rem(13.6px);
 
       &-no-uppercase {
         text-transform: none;
@@ -99,14 +99,21 @@
 
 // widgets
 
-.change-pledge {
-  color: $color-green-dark;
+@mixin pledge-actions-button ($color) {
+  color: $color;
   text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+}
+
+.change-pledge {
+  @include pledge-actions-button($color-green-dark);
 }
 
 .delete-pledge {
-  color: $color-orange;
-  text-decoration: underline;
+  @include pledge-actions-button($color-orange);
 }
 
 .ends-in {

@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "recompose";
 
-import { EEtoDocumentType, IEtoDocument } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { IEtoDocument } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import { appConnect } from "../../../../store";
 import { EtherscanAddressLink } from "../../../shared/EtherscanLink";
@@ -16,7 +16,7 @@ export interface ITagsWidget {
 }
 
 type TDispatchProps = {
-  downloadDocumentByType: (type: EEtoDocumentType) => void;
+  downloadDocument: (document: IEtoDocument) => void;
 };
 
 type TLayoutProps = ITagsWidget & TDispatchProps;
@@ -29,13 +29,13 @@ const TagsWidgetLayout: React.SFC<TLayoutProps> = ({
   prospectusApproved,
   smartContractOnchain,
   etoId,
-  downloadDocumentByType,
+  downloadDocument,
 }) => {
   return (
     <>
       {hasDocument(termSheet) ? (
         <Tag
-          onClick={() => downloadDocumentByType(termSheet.documentType)}
+          onClick={() => downloadDocument(termSheet)}
           size="small"
           theme="green"
           layout="ghost"
@@ -51,7 +51,7 @@ const TagsWidgetLayout: React.SFC<TLayoutProps> = ({
       )}
       {hasDocument(prospectusApproved) ? (
         <Tag
-          onClick={() => downloadDocumentByType(prospectusApproved.documentType)}
+          onClick={() => downloadDocument(prospectusApproved)}
           size="small"
           theme="green"
           layout="ghost"
@@ -89,8 +89,8 @@ const TagsWidgetLayout: React.SFC<TLayoutProps> = ({
 const TagsWidget = compose<TLayoutProps, ITagsWidget>(
   appConnect<{}, TDispatchProps>({
     dispatchToProps: dispatch => ({
-      downloadDocumentByType: documentType =>
-        dispatch(actions.etoDocuments.downloadDocumentByType(documentType)),
+      downloadDocument: (document: IEtoDocument) =>
+        dispatch(actions.publicEtos.downloadPublicEtoDocument(document)),
     }),
   }),
 )(TagsWidgetLayout);

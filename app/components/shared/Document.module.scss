@@ -70,4 +70,22 @@
 .active {
   border: 1px solid $green-light;
   cursor: pointer;
+
+  &:active,
+  &:hover {
+    box-shadow: 0 0 px-to-rem(5px) px-to-rem(1px) $green-light;
+  }
+}
+
+.clickable-area {
+  padding: 0;
+  background-color: transparent;
+  border-radius: px-to-rem(5px);
+  border: 0;
+
+  &:active,
+  &:hover,
+  &:focus {
+    box-shadow: 0 0 px-to-rem(5px) px-to-rem(1px) $gray10;
+  }
 }

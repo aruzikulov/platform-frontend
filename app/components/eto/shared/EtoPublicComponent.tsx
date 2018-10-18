@@ -6,7 +6,6 @@ import { Col, Row } from "reactstrap";
 
 import { TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces";
 import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
-import { IWalletState } from "../../../modules/wallet/reducer";
 import { PersonProfileModal } from "../../modals/PersonProfileModal";
 import { Accordion, AccordionElement } from "../../shared/Accordion";
 import { ChartDoughnut } from "../../shared/charts/ChartDoughnut";
@@ -40,14 +39,13 @@ export const DEFAULT_CHART_COLOR = "#c4c5c6";
 interface IProps {
   companyData: TCompanyEtoData;
   etoData: TEtoWithCompanyAndContract;
-  wallet?: IWalletState | undefined;
 }
 
 // TODO: There are lots of castings right now in this file, cause formerly the types of IProps was "any"
 // The castings should be resolved when the EtoApi.interface.ts reflects the correct data types from swagger!
 
 // TODO: Refactor to smaller components
-export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wallet }) => {
+export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) => {
   const { socialChannels, companyVideo, disableTwitterFeed, companySlideshare } = companyData;
 
   const isTwitterFeedEnabled =
@@ -109,7 +107,6 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
           existingCompanyShares={etoData.existingCompanyShares}
           equityTokensPerShare={etoData.equityTokensPerShare}
           contract={etoData.contract}
-          wallet={wallet}
           previewCode={etoData.previewCode}
           etoId={etoData.etoId}
           tokenImage={{
@@ -180,7 +177,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
                   <p className="mb-4">{companyData.companyDescription}</p>
                 )}
                 {companyData.keyQuoteInvestor && (
-                  <p className={cn(styles.quote, "mb-4")}>"{companyData.keyQuoteInvestor}"</p>
+                  <p className={cn(styles.quote, "mb-4")}>{companyData.keyQuoteInvestor}</p>
                 )}
               </Panel>
             )}

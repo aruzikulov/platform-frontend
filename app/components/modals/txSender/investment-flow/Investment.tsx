@@ -21,9 +21,9 @@ import {
 } from "../../../../modules/investmentFlow/selectors";
 import {
   selectEquityTokenCountByEtoId,
-  selectEtoWithCompanyAndContractById,
   selectNeuRewardUlpsByEtoId,
-} from "../../../../modules/public-etos/selectors";
+} from "../../../../modules/investor-tickets/selectors";
+import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
 import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
@@ -148,6 +148,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
       <Row>
         <Col>
           <FormFieldRaw
+            data-test-id="invest-modal-eur-field"
             prefix="€"
             errorMsg={getInputErrorMessage(errorState, eto)}
             placeholder={`${intl.formatIntlMessage(
@@ -163,6 +164,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
         </Col>
         <Col>
           <FormFieldRaw
+            data-test-id="invest-modal-eth-field"
             prefix="ETH"
             placeholder={`${intl.formatIntlMessage(
               "investment-flow.min-ticket-size",
@@ -238,6 +240,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
           layout={EButtonLayout.PRIMARY}
           type="submit"
           disabled={!readyToInvest}
+          data-test-id="invest-modal-invest-now-button"
         >
           <FormattedMessage id="investment-flow.invest-now" />
         </Button>
@@ -263,8 +266,8 @@ export const InvestmentSelection: React.SFC = compose<any>(
         gasCostEth: selectTxGasCostEth(state.txSender),
         investmentType: selectInvestmentType(investmentFlow),
         wallets: createWallets(state),
-        neuReward: selectNeuRewardUlpsByEtoId(investmentFlow.etoId, state.publicEtos),
-        equityTokenCount: selectEquityTokenCountByEtoId(investmentFlow.etoId, state.publicEtos),
+        neuReward: selectNeuRewardUlpsByEtoId(investmentFlow.etoId, state),
+        equityTokenCount: selectEquityTokenCountByEtoId(investmentFlow.etoId, state),
         showTokens: !!(eur && investmentFlow.isValidatedInput),
         readyToInvest: selectReadyToInvest(state.investmentFlow),
       };

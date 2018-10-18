@@ -7,6 +7,7 @@ import { selectIsInvestor, selectIsVerifiedInvestor } from "../../../../../modul
 import { selectBookbuildingStats } from "../../../../../modules/bookbuilding-flow/selectors";
 import { appConnect } from "../../../../../store";
 import { onEnterAction } from "../../../../../utils/OnEnterAction";
+import { ECurrencySymbol, EMoneyFormat, Money } from "../../../../shared/Money";
 import { CampaigningActivatedInvestorWidget } from "./CampaigningActivatedInvestorWidget";
 import { CampaigningActivatedUnapprovedInvestorWidget } from "./CampaigningActivatedUnapprovedInvestorWidget";
 
@@ -43,16 +44,20 @@ const CampaigningActivatedWidgetComponent: React.SFC<IProps> = ({
       <span className={styles.label}>
         <FormattedMessage id="shared-component.eto-overview.amount-backed" />
       </span>
-      <span className={styles.value}>
-        {"€ "}
-        {pledgedAmount !== null ? pledgedAmount : "-"}
+      <span className={styles.value} data-test-id="eto-bookbuilding-amount-backed">
+        <Money
+          value={pledgedAmount}
+          currency="eur"
+          format={EMoneyFormat.FLOAT}
+          currencySymbol={ECurrencySymbol.SYMBOL}
+        />
       </span>
     </div>
     <div className={styles.group}>
       <span className={styles.label}>
         <FormattedMessage id="shared-component.eto-overview.investors-backed" />
       </span>
-      <span className={styles.value}>
+      <span className={styles.value} data-test-id="eto-bookbuilding-investors-backed">
         {investorsCount !== null ? investorsCount : "-"} out of {investorsLimit} whitelisted
       </span>
     </div>

@@ -92,8 +92,9 @@ class PeopleSwiperWidgetComponent extends React.Component<IOwnProps & IDispatchP
         <Swiper {...swiperSettings} ref={this.swiperRef}>
           {people.map(({ image, name, description, role, socialChannels, website }, i) => {
             return (
-              <div
+              <button
                 key={i}
+                className={styles.clickable}
                 onClick={() =>
                   showPersonModal(name, role, description, image, socialChannels, website)
                 }
@@ -106,7 +107,7 @@ class PeopleSwiperWidgetComponent extends React.Component<IOwnProps & IDispatchP
                   srcSet={{ "1x": image }}
                   layout={isHorizontal ? "horizontal" : "vertical"}
                 />
-              </div>
+              </button>
             );
           })}
         </Swiper>

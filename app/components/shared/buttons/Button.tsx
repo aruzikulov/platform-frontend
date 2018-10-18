@@ -96,9 +96,9 @@ Button.defaultProps = {
 };
 
 const ButtonIcon: React.SFC<IButtonIcon> = ({ onClick, className, ...props }) => (
-  <div className={cn(styles.buttonIcon, className)} onClick={onClick}>
+  <button className={cn(styles.buttonIcon, className)} onClick={onClick}>
     <InlineIcon {...props} width="20px" height="20px" />
-  </div>
+  </button>
 );
 
 const ButtonClose: React.SFC<IGeneralButton> = props => (

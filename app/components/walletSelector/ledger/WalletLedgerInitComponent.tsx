@@ -101,19 +101,23 @@ export class WalletLedgerInitComponent extends React.Component<
             )}
           />
         </Row>
-        <Row
-          className={cn("justify-content-center", styles.ledgerBrowser)}
-          onClick={this.handleShowSupport}
-        >
-          <h5 className={this.state.showLedgerBrowserSupport ? "mt-3 mb-4" : "mt-3"}>
-            {this.props.intl.formatIntlMessage("wallet-selector.ledger.start.browser-support")}
+        <Row className={cn("justify-content-center", styles.ledgerBrowser)}>
+          <button
+            onClick={this.handleShowSupport}
+            className={cn(
+              styles.drawerButton,
+              this.state.showLedgerBrowserSupport ? "mt-3 mb-4" : "mt-3",
+            )}
+          >
+            <FormattedMessage id="wallet-selector.ledger.start.browser-support" />
             <i
+              aria-hidden="true"
               className={cn(
                 "fa fa-lg ml-3",
                 this.state.showLedgerBrowserSupport ? "fa-angle-up" : "fa-angle-down",
               )}
             />
-          </h5>
+          </button>
         </Row>
         {this.state.showLedgerBrowserSupport && (
           <Row>

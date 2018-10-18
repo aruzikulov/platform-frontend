@@ -91,6 +91,7 @@ export class InvestmentTypeSelector extends React.Component<IProps> {
                     type="radio"
                     name="investmentType"
                     value={wallet.type}
+                    data-test-id={`investment-type.selector.${wallet.type}`}
                   />
                   <div className={styles.box}>
                     <div className={styles.icon}>

@@ -4,6 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { actions } from "../../../../modules/actions";
 import { appConnect } from "../../../../store";
 import { Button } from "../../../shared/buttons";
+import { EMoneyFormat, Money } from "../../../shared/Money";
 import { PercentageIndicatorBar } from "../../../shared/PercentageIndicatorBar";
 
 import * as styles from "./InvestWidget.module.scss";
@@ -26,12 +27,13 @@ const InvestWidgetComponent: React.SFC<TInvestWidgetProps> = ({
   tokensGoal,
   raisedTokens,
   startInvestmentFlow,
+  etoId,
 }) => {
   return (
     <div className={styles.investWidget}>
       <div className={styles.header}>
         <div>
-          <div>{raisedTokens} nEUR</div>
+          <Money value={raisedTokens} currency="eur_token" format={EMoneyFormat.FLOAT} />
         </div>
         <div>
           {`${investorsBacked} `}
@@ -45,7 +47,7 @@ const InvestWidgetComponent: React.SFC<TInvestWidgetProps> = ({
         fraction={raisedTokens / tokensGoal}
       />
       <div className={styles.investNowButton}>
-        <Button onClick={startInvestmentFlow}>
+        <Button onClick={startInvestmentFlow} data-test-id={`eto-invest-now-button-${etoId}`}>
           <FormattedMessage id="shared-component.eto-overview.invest-now" />
         </Button>
       </div>

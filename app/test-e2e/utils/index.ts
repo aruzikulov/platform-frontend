@@ -1,5 +1,6 @@
 import { get } from "lodash";
 import { appRoutes } from "../../components/appRoutes";
+import { DEFAULT_PASSWORD } from "../utils/userHelpers";
 
 export function tid(id: string, rest?: string): string {
   return `[data-test-id="${id}"]` + (rest ? ` ${rest}` : "");
@@ -111,7 +112,7 @@ export const typeLightwalletRecoveryPhrase = (words: string[]) => {
   cy.get(tid("btn-send")).awaitedClick();
 };
 
-export const confirmAccessModal = (password: string) => {
+export const confirmAccessModal = (password: string = DEFAULT_PASSWORD) => {
   cy.get(tid("access-light-wallet-password-input")).type(password);
   cy.get(tid("access-light-wallet-confirm")).awaitedClick(1500);
 };
@@ -176,4 +177,9 @@ export const loginWithLightWallet = (email: string, password: string) => {
   cy.get(tid("wallet-selector-nuewallet.login-button")).should("be.disabled");
 
   return assertUserInDashboard();
+};
+
+export const acceptWallet = () => {
+  cy.get(tid("access-light-wallet-password-input")).type(DEFAULT_PASSWORD);
+  cy.get(tid("access-light-wallet-confirm")).awaitedClick(1500);
 };
