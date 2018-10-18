@@ -38,7 +38,7 @@ describe("Bookbuilding", () => {
 
         confirmAccessModal();
 
-        cy.get(tid("eto-bookbuilding-amount-backed")).should("contain", "€ 10000");
+        cy.get(tid("eto-bookbuilding-amount-backed")).should("contain", "€10 000");
         cy.get(tid("eto-bookbuilding-investors-backed")).should("contain", "1");
 
         createAndLoginNewUser({
@@ -54,7 +54,7 @@ describe("Bookbuilding", () => {
 
           confirmAccessModal();
 
-          cy.get(tid("eto-bookbuilding-amount-backed")).should("contain", "€ 25000");
+          cy.get(tid("eto-bookbuilding-amount-backed")).should("contain", "€25 000");
           cy.get(tid("eto-bookbuilding-investors-backed")).should("contain", "2");
         });
       });

@@ -7,6 +7,7 @@ import { selectIsInvestor, selectIsVerifiedInvestor } from "../../../../../modul
 import { selectBookbuildingStats } from "../../../../../modules/bookbuilding-flow/selectors";
 import { appConnect } from "../../../../../store";
 import { onEnterAction } from "../../../../../utils/OnEnterAction";
+import { ECurrencySymbol, EMoneyFormat, Money } from "../../../../shared/Money";
 import { CampaigningActivatedInvestorWidget } from "./CampaigningActivatedInvestorWidget";
 import { CampaigningActivatedUnapprovedInvestorWidget } from "./CampaigningActivatedUnapprovedInvestorWidget";
 
@@ -44,8 +45,12 @@ const CampaigningActivatedWidgetComponent: React.SFC<IProps> = ({
         <FormattedMessage id="shared-component.eto-overview.amount-backed" />
       </span>
       <span className={styles.value} data-test-id="eto-bookbuilding-amount-backed">
-        {"€ "}
-        {pledgedAmount !== null ? pledgedAmount : "-"}
+        <Money
+          value={pledgedAmount}
+          currency="eur"
+          format={EMoneyFormat.FLOAT}
+          currencySymbol={ECurrencySymbol.SYMBOL}
+        />
       </span>
     </div>
     <div className={styles.group}>

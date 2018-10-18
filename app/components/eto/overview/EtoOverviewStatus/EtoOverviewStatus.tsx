@@ -10,6 +10,7 @@ import { CommonHtmlProps } from "../../../../types";
 import { withParams } from "../../../../utils/withParams";
 import { appRoutes } from "../../../appRoutes";
 import { ETOState } from "../../../shared/ETOState";
+import { ECurrencySymbol, EMoneyFormat, Money } from "../../../shared/Money";
 import { IResponsiveImage } from "../../../shared/ResponsiveImage";
 import { InvestmentAmount } from "../../shared/InvestmentAmount";
 import { CampaigningWidget, ICampaigningWidget } from "./CampaigningWidget";
@@ -111,8 +112,12 @@ const EtoOverviewStatusLayout: React.SFC<
               <FormattedMessage id="shared-component.eto-overview-status.pre-money-valuation" />
             </span>
             <span className={styles.value}>
-              {"€ "}
-              {props.preMoneyValuation}
+              <Money
+                value={props.preMoneyValuation}
+                currency="eur"
+                format={EMoneyFormat.FLOAT}
+                currencySymbol={ECurrencySymbol.SYMBOL}
+              />
             </span>
           </div>
           <div className={styles.group}>
