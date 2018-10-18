@@ -69,29 +69,29 @@ export const WalletLedgerChooserComponent: React.SFC<
             />
           ))}
         {!advanced && (
-          <div className={styles.advanced}>
-            <span onClick={handleAdvanced} data-test-id="btn-advanced-simple">
-              <FormattedMessage id="wallet-selector.ledger.advanced-options" />
-              <i className="fa fa-chevron-down ml-2" aria-hidden="true" />
-            </span>
-          </div>
+          <button
+            className={styles.advanced}
+            onClick={handleAdvanced}
+            data-test-id="btn-advanced-simple"
+          >
+            <FormattedMessage id="wallet-selector.ledger.advanced-options" />
+            <i className="fa fa-chevron-down ml-2" aria-hidden="true" />
+          </button>
         )}
       </>
     )}
     <div className="mt-5 d-flex flex-row justify-content-between align-items-center">
-      <div>
-        {advanced &&
-          !loading && (
-            <span
-              className={styles.back}
-              onClick={handleAdvanced}
-              data-test-id="btn-advanced-advanced"
-            >
-              <i className={cn("fa fa-chevron-left mr-2", styles.left)} aria-hidden="true" />
-              <FormattedMessage id="form.button.back" />
-            </span>
-          )}
-      </div>
+      {advanced &&
+        !loading && (
+          <button
+            className={styles.back}
+            onClick={handleAdvanced}
+            data-test-id="btn-advanced-advanced"
+          >
+            <i className={cn("fa fa-chevron-left mr-2", styles.left)} aria-hidden="true" />
+            <FormattedMessage id="form.button.back" />
+          </button>
+        )}
     </div>
   </>
 );

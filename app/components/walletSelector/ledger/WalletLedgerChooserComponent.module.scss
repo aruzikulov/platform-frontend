@@ -1,17 +1,25 @@
+@mixin button-text {
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  color: $neu-black;
+}
+
+@mixin button {
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+}
+
 .advanced {
+  @include button-text;
+  @include button;
   margin-top: map-get($spacers, 3);
   text-align: center;
-
-  span {
-    color: $neu-black;
-    font-weight: bold;
-    cursor: pointer;
-    text-transform: uppercase;
-  }
 }
 
 .back {
+  @include button-text;
+  @include button;
   font-size: px-to-rem(15px);
-  color: $neu-black;
-  cursor: pointer;
 }

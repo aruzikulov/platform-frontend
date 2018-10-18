@@ -99,14 +99,21 @@
 
 // widgets
 
-.change-pledge {
-  color: $color-green-dark;
+@mixin pledge-actions-button ($color) {
+  color: $color;
   text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+}
+
+.change-pledge {
+  @include pledge-actions-button($color-green-dark);
 }
 
 .delete-pledge {
-  color: $color-orange;
-  text-decoration: underline;
+  @include pledge-actions-button($color-orange);
 }
 
 .ends-in {

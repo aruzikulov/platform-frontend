@@ -121,14 +121,15 @@ const SocialMediaTags: React.SFC<{
     <div className={cn(styles.socialProfilesEditor, className)}>
       <div className={styles.tabs}>
         {profiles.map(({ name, svgIcon }, index) => (
-          <div
+          <button
             data-test-id={`social-profiles.profile-button.${name}`}
             onClick={() => onClick(index)}
             className={cn(Boolean(selectedFields[index]) && "is-selected", styles.tab)}
             key={name}
+            type="button"
           >
             <InlineIcon svgIcon={svgIcon} />
-          </div>
+          </button>
         ))}
       </div>
     </div>

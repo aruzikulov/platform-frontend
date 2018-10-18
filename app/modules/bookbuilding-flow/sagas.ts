@@ -82,7 +82,7 @@ export function* loadBookBuildingStats(
   } catch (e) {
     notificationCenter.error(
       intlWrapper.intl.formatIntlMessage(
-        "eto.overview.error-notification.failed-to-bookbuilding-stats-pledge",
+        "eto.overview.error-notification.failed-to-bookbuilding-stats",
       ),
     );
 

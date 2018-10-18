@@ -12,47 +12,51 @@ const INVESTOR_WALLET_KEY = "NF_WALLET_METADATA";
 const ISSUER_WALLET_KEY = "NF_WALLET_ISSUER_METADATA";
 const JWT_KEY = "NF_JWT";
 
-export const createAndLoginNewUser = async (
+export const createAndLoginNewUser = (
   params: {
     type?: "investor" | "issuer";
     kyc?: "business" | "individual";
     seed?: string;
+    clearPendingTransactions?: boolean;
   } = {},
 ) => {
-  localStorage.clear();
-  const userType = params.type ? params.type : "investor";
+  return cy.clearLocalStorage().then(async ls => {
+    const userType = params.type ? params.type : "investor";
 
-  const {
-    lightWalletInstance,
-    salt,
-    address,
-    privateKey,
-    walletKey,
-  } = await createLightWalletWithKeyPair(params.seed);
-
-  // set wallet data on local storage
-  localStorage.setItem(
-    userType === "investor" ? INVESTOR_WALLET_KEY : ISSUER_WALLET_KEY,
-    JSON.stringify({
+    const {
+      lightWalletInstance,
+      salt,
       address,
-      email: "dave@neufund.org",
-      salt: salt,
-      walletType: "LIGHT",
-      vault: lightWalletInstance.serialize(),
-    }),
-  );
+      privateKey,
+      walletKey,
+    } = await createLightWalletWithKeyPair(params.seed);
 
-  // fetch a token and store it in local storage
-  const jwt = await getJWT(address, lightWalletInstance, walletKey);
-  localStorage.setItem(JWT_KEY, `"${jwt}"`);
+    // set wallet data on local storage
+    ls.setItem(
+      userType === "investor" ? INVESTOR_WALLET_KEY : ISSUER_WALLET_KEY,
+      JSON.stringify({
+        address,
+        email: "dave@neufund.org",
+        salt: salt,
+        walletType: "LIGHT",
+        vault: lightWalletInstance.serialize(),
+      }),
+    );
 
-  // create a user object on the backend
-  await createUser(privateKey, userType, params.kyc);
+    // fetch a token and store it in local storage
+    const jwt = await getJWT(address, lightWalletInstance, walletKey);
+    ls.setItem(JWT_KEY, `"${jwt}"`);
 
-  // mark backup codes verified
-  await markBackupCodesVerified(jwt);
+    // create a user object on the backend
+    await createUser(privateKey, userType, params.kyc);
 
-  cy.log(`Created wallet and ${userType} user with address ${address}`);
+    // mark backup codes verified
+    await markBackupCodesVerified(jwt);
+
+    if (params.clearPendingTransactions) {
+      await clearPendingTransactions(jwt, address);
+    }
+  });
 };
 
 /**
@@ -96,7 +100,7 @@ export const createLightWalletWithKeyPair = async (seed?: string) => {
  */
 const CREATE_USER_PATH = "/api/external-services-mock/e2e-tests/user/";
 
-export const createUser = async (
+export const createUser = (
   privateKey: string,
   userType: "investor" | "issuer",
   kyc?: "business" | "individual",
@@ -105,10 +109,9 @@ export const createUser = async (
   if (kyc) {
     path += `&kyc=${kyc}`;
   }
-  const user_response = await fetch(path, {
+  return fetch(path, {
     method: "POST",
   });
-  return user_response;
 };
 
 /**
@@ -184,5 +187,17 @@ export const markBackupCodesVerified = async (jwt: string) => {
     headers,
     method: "PUT",
     body: JSON.stringify(userJson),
+  });
+};
+
+const PENDING_TRANSACTIONS_PATH = "/api/user/pending_transactions/me/";
+export const clearPendingTransactions = async (jwt: string, address: string) => {
+  const headers = {
+    "Content-Type": "application/json",
+    authorization: `Bearer ${jwt}`,
+  };
+  await fetch(PENDING_TRANSACTIONS_PATH + address, {
+    headers,
+    method: "DELETE",
   });
 };

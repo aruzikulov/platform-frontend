@@ -2,15 +2,6 @@ import BigNumber from "bignumber.js";
 
 import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces";
 
-export interface ICalculatedContribution {
-  isWhitelisted: boolean;
-  minTicketEurUlps: BigNumber;
-  maxTicketEurUlps: BigNumber;
-  equityTokenInt: BigNumber;
-  neuRewardUlps: BigNumber;
-  maxCapExceeded: boolean;
-}
-
 export interface IEtoTotalInvestment {
   totalEquivEurUlps: BigNumber;
   totalTokensInt: BigNumber;

@@ -1,15 +1,13 @@
-import { tid } from "../utils";
 import { kycRoutes } from "../../components/kyc/routes";
-import { createAndLoginNewUser } from "../utils/userHelpers";
+import { confirmAccessModal, tid } from "../utils";
 import { fillForm } from "../utils/forms";
-
+import { createAndLoginNewUser } from "../utils/userHelpers";
 import {
-  kycCorporateCompanyForm,
   kycCompanyDocsForm,
-  kycLegalRepForm,
+  kycCorporateCompanyForm,
   kycLegalRepDocsForm,
+  kycLegalRepForm,
 } from "./fixtures";
-import { acceptWallet } from "./util";
 
 describe("KYC Small Business flow with manual verification", () => {
   beforeEach(() => createAndLoginNewUser({ type: "investor" }));
@@ -35,7 +33,7 @@ describe("KYC Small Business flow with manual verification", () => {
 
     // submit and accept
     cy.get(tid("kyc-company-legal-representative-upload-and-submit")).awaitedClick();
-    acceptWallet();
+    confirmAccessModal();
 
     // panel should now be in pending state
     cy.get(tid("kyc-panel-pending"));

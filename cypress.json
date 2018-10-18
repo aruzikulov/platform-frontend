@@ -1,6 +1,6 @@
 {
   "baseUrl": "https://localhost:9090",
-  "defaultCommandTimeout": 25000,
+  "defaultCommandTimeout": 60000,
   "pageLoadTimeout": 90000,
   "integrationFolder": "./app/",
   "testFiles": "**/*.spec.e2e.ts",

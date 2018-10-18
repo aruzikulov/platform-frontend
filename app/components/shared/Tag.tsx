@@ -40,13 +40,18 @@ export const Tag: React.SFC<ITag> = ({
   componentProps = {},
 }) => {
   const classes = cn(styles.tag, layout, size, theme, className);
+  const tagContent = (
+    <>
+      {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
+      {text}
+      {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
+    </>
+  );
 
   if (to) {
     return (
       <Link to={to} className={classes}>
-        {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
-        {text}
-        {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
+        {tagContent}
       </Link>
     );
   }
@@ -54,9 +59,7 @@ export const Tag: React.SFC<ITag> = ({
   if (Component) {
     return (
       <Component className={classes} {...componentProps}>
-        {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
-        {text}
-        {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
+        {tagContent}
       </Component>
     );
   }
@@ -64,18 +67,10 @@ export const Tag: React.SFC<ITag> = ({
   if (onClick) {
     return (
       <button onClick={onClick} className={cn(classes, styles.tagAsButton)}>
-        {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
-        {text}
-        {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
+        {tagContent}
       </button>
     );
   }
 
-  return (
-    <span className={classes}>
-      {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
-      {text}
-      {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
-    </span>
-  );
+  return <span className={classes}>{tagContent}</span>;
 };

@@ -61,13 +61,13 @@ const CampaigningActivatedInvestorWidgetLayout: React.SFC<
             {pledgedAmount}
           </div>
           <div className={styles.value}>
-            <span onClick={changePledge} className={styles.changePledge}>
+            <button onClick={changePledge} className={styles.changePledge}>
               <FormattedMessage id="shared-component.eto-overview.change" />
-            </span>{" "}
+            </button>{" "}
             <FormattedMessage id="shared-component.eto-overview.or" />{" "}
-            <span onClick={deletePledge} className={styles.deletePledge}>
+            <button onClick={deletePledge} className={styles.deletePledge}>
               <FormattedMessage id="shared-component.eto-overview.delete" />
-            </span>{" "}
+            </button>{" "}
             <FormattedMessage id="shared-component.eto-overview.your-pledge" />{" "}
           </div>
         </div>
@@ -82,7 +82,12 @@ const CampaigningActivatedInvestorWidgetLayout: React.SFC<
               <FormInput size={InputSize.SMALL} type="number" name="amount" prefix="€" />
             </div>
             <div className={styles.value}>
-              <Button type="submit" size={ButtonSize.SMALL} width={ButtonWidth.BLOCK}>
+              <Button
+                data-test-id="eto-bookbuilding-back-now"
+                type="submit"
+                size={ButtonSize.SMALL}
+                width={ButtonWidth.BLOCK}
+              >
                 <FormattedMessage id="shared-component.eto-overview.back-now" />
               </Button>
             </div>

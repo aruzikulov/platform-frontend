@@ -43,7 +43,7 @@ const CampaigningActivatedWidgetComponent: React.SFC<IProps> = ({
       <span className={styles.label}>
         <FormattedMessage id="shared-component.eto-overview.amount-backed" />
       </span>
-      <span className={styles.value}>
+      <span className={styles.value} data-test-id="eto-bookbuilding-amount-backed">
         {"€ "}
         {pledgedAmount !== null ? pledgedAmount : "-"}
       </span>
@@ -52,7 +52,7 @@ const CampaigningActivatedWidgetComponent: React.SFC<IProps> = ({
       <span className={styles.label}>
         <FormattedMessage id="shared-component.eto-overview.investors-backed" />
       </span>
-      <span className={styles.value}>
+      <span className={styles.value} data-test-id="eto-bookbuilding-investors-backed">
         {investorsCount !== null ? investorsCount : "-"} out of {investorsLimit} whitelisted
       </span>
     </div>

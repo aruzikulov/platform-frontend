@@ -44,6 +44,9 @@
   margin-bottom: px-to-rem(15px);
   margin-right: px-to-rem(20px);
   transition: $ease-out-expo 300ms color;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
 
   &:global(.is-selected) {
     color: $color-blue-dark;

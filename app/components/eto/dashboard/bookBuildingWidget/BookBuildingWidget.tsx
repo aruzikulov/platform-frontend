@@ -38,7 +38,7 @@ const StartBookBuildingComponent: React.SFC<IStartBookBuilding & IIntlProps> = (
         <FormattedMessage id="settings.book-building-widget.proposal-accepted" />
       </p>
       <Col className="d-flex justify-content-center">
-        <ButtonArrowRight onClick={startBookBuilding}>
+        <ButtonArrowRight onClick={startBookBuilding} data-test-id="eto-flow-start-bookbuilding">
           <FormattedMessage id="settings.book-building-widget.start-book-building" />
         </ButtonArrowRight>
       </Col>

@@ -26,6 +26,7 @@ const InvestWidgetComponent: React.SFC<TInvestWidgetProps> = ({
   tokensGoal,
   raisedTokens,
   startInvestmentFlow,
+  etoId,
 }) => {
   return (
     <div className={styles.investWidget}>
@@ -45,7 +46,7 @@ const InvestWidgetComponent: React.SFC<TInvestWidgetProps> = ({
         fraction={raisedTokens / tokensGoal}
       />
       <div className={styles.investNowButton}>
-        <Button onClick={startInvestmentFlow}>
+        <Button onClick={startInvestmentFlow} data-test-id={`eto-invest-now-button-${etoId}`}>
           <FormattedMessage id="shared-component.eto-overview.invest-now" />
         </Button>
       </div>
