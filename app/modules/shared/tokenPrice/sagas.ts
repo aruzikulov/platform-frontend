@@ -13,7 +13,7 @@ import { neuCall } from "../../sagas";
 import { ITokenPriceStateData } from "./reducer";
 
 const TOKEN_PRICE_MONITOR_DELAY = 120000;
-const TOKEN_PRICE_MONITOR_SHORT_DELAY = 60000;
+const TOKEN_PRICE_MONITOR_SHORT_DELAY = 1000;
 
 export async function loadTokenPriceDataAsync({
   contractsService,
