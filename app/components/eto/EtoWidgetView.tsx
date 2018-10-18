@@ -8,7 +8,6 @@ import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../modules/public-etos/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/public-etos/types";
-import { IWalletState } from "../../modules/wallet/reducer";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { LoadingIndicator } from "../shared/LoadingIndicator";
@@ -17,7 +16,6 @@ import { EtoOverviewStatus } from "./overview/EtoOverviewStatus";
 interface IStateProps {
   eto?: TEtoWithCompanyAndContract;
   userType?: EUserType;
-  wallet?: IWalletState;
 }
 
 interface IRouterParams {
@@ -32,9 +30,9 @@ type IProps = IStateProps & IDispatchProps & IRouterParams;
 
 class EtoWidgetComponent extends React.Component<IProps> {
   render(): React.ReactNode {
-    const { eto, wallet } = this.props;
+    const { eto } = this.props;
     if (!eto) {
-      return <LoadingIndicator/>;
+      return <LoadingIndicator />;
     }
 
     return (
@@ -46,7 +44,6 @@ class EtoWidgetComponent extends React.Component<IProps> {
             equityTokensPerShare={eto.equityTokensPerShare}
             minimumNewSharesToIssue={eto.minimumNewSharesToIssue}
             contract={eto.contract!}
-            wallet={wallet}
             etoId={eto.etoId}
             previewCode={eto.previewCode}
             prospectusApproved={keyBy(eto.documents, "documentType")["approved_prospectus"]}
@@ -83,7 +80,6 @@ export const EtoWidgetView = compose<IProps, IRouterParams>(
     stateToProps: (state, props) => ({
       userType: selectUserType(state.auth),
       eto: selectEtoWithCompanyAndContractById(state, props.etoId),
-      wallet: state.wallet,
     }),
   }),
   onEnterAction({
@@ -91,5 +87,5 @@ export const EtoWidgetView = compose<IProps, IRouterParams>(
       dispatch(actions.publicEtos.loadEto(props.etoId));
       dispatch(actions.wallet.loadWalletData());
     },
-  })
+  }),
 )(EtoWidgetComponent);
