@@ -21,6 +21,8 @@ export const createAndLoginNewUser = (
   } = {},
 ) => {
   return cy.clearLocalStorage().then(async ls => {
+    cy.log("Logging in...");
+
     const userType = params.type ? params.type : "investor";
 
     const {
@@ -56,6 +58,13 @@ export const createAndLoginNewUser = (
     if (params.clearPendingTransactions) {
       await clearPendingTransactions(jwt, address);
     }
+
+    cy.log(
+      `Logged in as ${userType}`,
+      `KYC: ${params.kyc}, clearPendingTransactions: ${params.clearPendingTransactions}, seed: ${
+        params.seed
+      }`,
+    );
   });
 };
 

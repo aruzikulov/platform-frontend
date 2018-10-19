@@ -107,7 +107,11 @@ const EtoStatusManager = (
             />
           );
         } else {
-          return <div className={styles.quote}>{props.quote}</div>;
+          return (
+            <div data-test-id="eto-overview-status-founders-quote" className={styles.quote}>
+              {props.quote}
+            </div>
+          );
         }
       } else {
         return <LoggedOutCampaigning />;

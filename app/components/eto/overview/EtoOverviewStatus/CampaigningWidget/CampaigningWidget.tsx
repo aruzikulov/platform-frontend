@@ -43,7 +43,11 @@ const LoggedOutCampaigning: React.SFC = () => {
       <div>
         <FormattedMessage id="shared-component.eto-overview.register-cta" />
       </div>
-      <ButtonLink className="mt-3" to={appRoutes.register}>
+      <ButtonLink
+        className="mt-3"
+        to={appRoutes.register}
+        data-test-id="logged-out-campaigning-register"
+      >
         <FormattedMessage id="shared-component.eto-overview.register" />
       </ButtonLink>
     </div>
