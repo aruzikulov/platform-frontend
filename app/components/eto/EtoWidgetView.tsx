@@ -43,7 +43,7 @@ class EtoWidgetComponent extends React.Component<IProps> {
             existingCompanyShares={eto.existingCompanyShares}
             equityTokensPerShare={eto.equityTokensPerShare}
             minimumNewSharesToIssue={eto.minimumNewSharesToIssue}
-            contract={eto.contract!}
+            contract={eto.contract}
             etoId={eto.etoId}
             previewCode={eto.previewCode}
             prospectusApproved={keyBy(eto.documents, "documentType")["approved_prospectus"]}
@@ -85,7 +85,6 @@ export const EtoWidgetView = compose<IProps, IRouterParams>(
   onEnterAction({
     actionCreator: (dispatch, props) => {
       dispatch(actions.publicEtos.loadEto(props.etoId));
-      dispatch(actions.wallet.loadWalletData());
     },
   }),
 )(EtoWidgetComponent);
