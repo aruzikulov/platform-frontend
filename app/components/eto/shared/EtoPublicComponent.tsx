@@ -127,12 +127,12 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) 
           preEtoDuration={etoData.whitelistDurationDays}
           publicEtoDuration={etoData.publicDurationDays}
           inSigningDuration={etoData.signingDurationDays}
+          quote={companyData.keyQuoteFounder}
           campaigningWidget={{
             investorsLimit: etoData.maxPledges,
             maxPledge: etoData.maxTicketEur,
             minPledge: etoData.minTicketEur,
             isActivated: etoData.isBookbuilding,
-            quote: companyData.keyQuoteFounder,
           }}
         />
 

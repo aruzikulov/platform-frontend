@@ -53,12 +53,12 @@ const EtoListComponent: React.SFC<IProps> = ({ etos }) => (
               }}
               tokenName={eto.equityTokenName || ""}
               tokenSymbol={eto.equityTokenSymbol || ""}
+              quote={eto.company.keyQuoteFounder}
               campaigningWidget={{
                 investorsLimit: eto.maxPledges || 0,
                 maxPledge: eto.maxTicketEur || 0,
                 minPledge: eto.minTicketEur || 0,
                 isActivated: eto.isBookbuilding || false,
-                quote: eto.company.keyQuoteFounder,
               }}
             />
           </div>
