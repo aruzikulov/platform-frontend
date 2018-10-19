@@ -1,6 +1,7 @@
 .slide-person {
   display: flex;
   justify-content: center;
+  align-items: center;
 
   &:global(.vertical) {
     flex-direction: column;
