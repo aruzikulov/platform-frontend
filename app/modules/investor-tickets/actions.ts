@@ -1,7 +1,7 @@
 import { TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces";
 import { Dictionary } from "../../types";
 import { createAction } from "../actionsUtils";
-import { IInvestorTicket } from "./types";
+import { ICalculatedContribution, IInvestorTicket } from "./types";
 
 export const investorEtoTicketActions = {
   // public actions
@@ -13,4 +13,6 @@ export const investorEtoTicketActions = {
   // state mutations
   setEtoInvestorTicket: (etoId: string, ticket: IInvestorTicket) =>
     createAction("INVESTOR_TICKET_SET", { etoId, ticket }),
+  setCalculatedContribution: (etoId: string, contribution: ICalculatedContribution) =>
+    createAction("INVESTOR_TICKET_SET_CALCULATED_CONTRIBUTION", { etoId, contribution }),
 };

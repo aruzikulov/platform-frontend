@@ -3,14 +3,8 @@ $header-height: 60px;
 $loading-indicator-color: #333;
 
 // old color palette it should be removed when we finish restyling
-$black-lighter: #262b2f;
-$blue-darker: #315568;
 $blue: #2072d4;
 $blue-gray: #86a0b5;
-$denim: #406483;
-$gray-almost-dark: #7d919b;
-$pale-grey-50: #e3eaf5;
-$off-white: #f5f5f5;
 $bright-orange: #ff6d00;
 // end of old color palette
 
@@ -42,11 +36,12 @@ $neu-seaweed-bg: rgba($neu-seaweed, .1);
 $neu-piss-yellow: #d5e20f;
 $neu-black: #2b2b2b;
 $neu-slate-grey: #656b72;
-$neu-pale-blue: #f6f9fe;
+$neu-pale-blue: #f6f8fb;
 $neu-silver: #c4c5c6;
 $neu-pale-grey: #e3eaf5;
 $neu-charcoal-grey: #394651;
 $color-black: #0b0e11;
+$neu-greyish-brown: #4c4c4c;
 $neu-cloudy-blue: #aabcca;
 $neu-light-blue-grey: #d8e0eb;
 $neu-red: #ed0000;
@@ -68,7 +63,7 @@ $shadow-tooltip: 0 px-to-rem(1px) px-to-rem(4px) 0 rgba(0, 0, 0, .38);
 // Bootstrap variable overrides
 //colors
 $body-color: $neu-slate-grey;
-$body-bg: $neu-pale-blue;
+$body-bg: transparent;
 $tooltip-bg: $neu-charcoal-grey;
 $tooltip-arrow-color: $neu-charcoal-grey;
 

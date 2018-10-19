@@ -14,50 +14,50 @@ describe("Bookbuilding", () => {
       type: "issuer",
       kyc: "business",
       seed: ISSUER_SETUP,
+    }).then(() => {
+      cy.visit(appRoutes.dashboard);
+
+      cy.get(tid("eto-flow-start-bookbuilding")).click();
+
+      confirmAccessModal();
+
+      createAndLoginNewUser({
+        type: "investor",
+        kyc: "business",
+      }).then(() => {
+        cy.visit(withParams(appRoutes.etoPublicView, { etoId: BOOKBUILDING_ETO_ID }));
+
+        fillForm({
+          amount: "10000",
+          consentToRevealEmail: {
+            type: "check",
+            value: "",
+          },
+          "eto-bookbuilding-back-now": { type: "submit" },
+        });
+
+        confirmAccessModal();
+
+        cy.get(tid("eto-bookbuilding-amount-backed")).should("contain", "€10 000");
+        cy.get(tid("eto-bookbuilding-investors-backed")).should("contain", "1");
+
+        createAndLoginNewUser({
+          type: "investor",
+          kyc: "business",
+        }).then(() => {
+          cy.visit(withParams(appRoutes.etoPublicView, { etoId: BOOKBUILDING_ETO_ID }));
+
+          fillForm({
+            amount: "15000",
+            "eto-bookbuilding-back-now": { type: "submit" },
+          });
+
+          confirmAccessModal();
+
+          cy.get(tid("eto-bookbuilding-amount-backed")).should("contain", "€25 000");
+          cy.get(tid("eto-bookbuilding-investors-backed")).should("contain", "2");
+        });
+      });
     });
-
-    cy.visit(appRoutes.dashboard);
-
-    cy.get(tid("eto-flow-start-bookbuilding")).click();
-
-    confirmAccessModal();
-
-    createAndLoginNewUser({
-      type: "investor",
-      kyc: "business",
-    });
-
-    cy.visit(withParams(appRoutes.etoPublicView, { etoId: BOOKBUILDING_ETO_ID }));
-
-    fillForm({
-      amount: "10000",
-      consentToRevealEmail: {
-        type: "check",
-        value: "",
-      },
-      "eto-bookbuilding-back-now": { type: "submit" },
-    });
-
-    confirmAccessModal();
-
-    cy.get(tid("eto-bookbuilding-amount-backed")).should("contain", "€ 10000");
-    cy.get(tid("eto-bookbuilding-investors-backed")).should("contain", "1");
-
-    createAndLoginNewUser({
-      type: "investor",
-      kyc: "business",
-    });
-
-    cy.visit(withParams(appRoutes.etoPublicView, { etoId: BOOKBUILDING_ETO_ID }));
-
-    fillForm({
-      amount: "15000",
-      "eto-bookbuilding-back-now": { type: "submit" },
-    });
-
-    confirmAccessModal();
-
-    cy.get(tid("eto-bookbuilding-amount-backed")).should("contain", "€ 25000");
-    cy.get(tid("eto-bookbuilding-investors-backed")).should("contain", "2");
   });
 });

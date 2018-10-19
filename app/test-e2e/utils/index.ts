@@ -178,3 +178,8 @@ export const loginWithLightWallet = (email: string, password: string) => {
 
   return assertUserInDashboard();
 };
+
+export const acceptWallet = () => {
+  cy.get(tid("access-light-wallet-password-input")).type(DEFAULT_PASSWORD);
+  cy.get(tid("access-light-wallet-confirm")).awaitedClick(1500);
+};

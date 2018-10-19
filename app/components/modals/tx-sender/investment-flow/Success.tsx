@@ -7,8 +7,7 @@ import { appRoutes } from "../../../appRoutes";
 import { ConfettiEthereum } from "../../../landing/parts/ConfettiEthereum";
 import { ButtonArrowRight } from "../../../shared/buttons";
 import { EtherscanTxLink } from "../../../shared/EtherscanLink";
-
-import * as styles from "./Success.module.scss";
+import { Message } from "../shared/Message";
 
 interface IDispatchProps {
   goToPortfolio: () => void;
@@ -16,21 +15,21 @@ interface IDispatchProps {
 }
 
 const InvestmentSuccessComponent: React.SFC<IDispatchProps> = ({ goToPortfolio, txHash }) => (
-  <div className="text-center" data-test-id="investment-flow.success.title">
-    <ConfettiEthereum className="mb-3" />
-    <h3 className={styles.title}>
-      <FormattedMessage id="investment-flow.success.title" />
-    </h3>
-    <p>
+  <Message
+    data-test-id="investment-flow.success.title"
+    image={<ConfettiEthereum className="mb-3" />}
+    title={<FormattedMessage id="investment-flow.success.title" />}
+    text={
       <FormattedMessage
         id="investment-flow.success.congratulation-text"
         values={{ etherscan: <EtherscanTxLink txHash={txHash} /> }}
       />
-    </p>
+    }
+  >
     <ButtonArrowRight onClick={goToPortfolio}>
       <FormattedMessage id="investment-flow.success.view-portfolio" />
     </ButtonArrowRight>
-  </div>
+  </Message>
 );
 
 const InvestmentSuccess = appConnect({

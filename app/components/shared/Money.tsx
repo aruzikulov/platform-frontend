@@ -7,26 +7,26 @@ import { formatMoney, formatThousands } from "../../utils/Money.utils";
 
 import * as styles from "./Money.module.scss";
 
-export enum ECurrencySymbol {
+enum ECurrencySymbol {
   SYMBOL = "symbol",
   CODE = "code",
   NONE = "none",
 }
 
-export type TCurrency = "neu" | "eur" | "eur_token" | "eth";
+type TCurrency = "neu" | "eur" | "eur_token" | "eth";
 
-export enum EMoneyFormat {
+enum EMoneyFormat {
   WEI = "wei",
   FLOAT = "float",
 }
 
-export type TMoneyTransfer = "income" | "outcome";
+type TMoneyTransfer = "income" | "outcome";
 
 type TTheme = "t-green" | "t-orange";
 
 interface IOwnProps extends React.HTMLAttributes<HTMLSpanElement> {
   currency: TCurrency;
-  value: React.ReactElement<any> | string | BigNumber;
+  value?: React.ReactElement<any> | string | BigNumber | number | null;
   format?: EMoneyFormat;
   doNotSeparateThousands?: boolean;
   currencySymbol?: ECurrencySymbol;
@@ -38,7 +38,7 @@ interface IOwnProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 type IProps = IOwnProps;
 
-export const selectDecimalPlaces = (currency: TCurrency): number => {
+const selectDecimalPlaces = (currency: TCurrency): number => {
   switch (currency) {
     case "eth":
       return 4;
@@ -51,7 +51,7 @@ export const selectDecimalPlaces = (currency: TCurrency): number => {
   }
 };
 
-export const selectCurrencyCode = (currency: TCurrency): string => {
+const selectCurrencyCode = (currency: TCurrency): string => {
   switch (currency) {
     case "eth":
       return "ETH";
@@ -64,7 +64,7 @@ export const selectCurrencyCode = (currency: TCurrency): string => {
   }
 };
 
-export const selectCurrencySymbol = (currency: TCurrency): string => {
+const selectCurrencySymbol = (currency: TCurrency): string => {
   switch (currency) {
     case "eur":
       return "€";
@@ -73,19 +73,13 @@ export const selectCurrencySymbol = (currency: TCurrency): string => {
   }
 };
 
-function getFormattedMoney(
-  value: string | BigNumber,
-  currency: TCurrency,
-  doNotSeparateThousands: boolean | undefined,
-): string {
+function getFormattedMoney(value: string | BigNumber, currency: TCurrency): string {
   const decimalPlaces = selectDecimalPlaces(currency);
 
-  return doNotSeparateThousands
-    ? formatMoney(value, MONEY_DECIMALS, decimalPlaces)
-    : formatThousands(formatMoney(value, MONEY_DECIMALS, decimalPlaces));
+  return formatMoney(value, MONEY_DECIMALS, decimalPlaces);
 }
 
-export const Money: React.SFC<IProps> = ({
+const Money: React.SFC<IProps> = ({
   value,
   format = EMoneyFormat.WEI,
   currency,
@@ -97,10 +91,19 @@ export const Money: React.SFC<IProps> = ({
   theme,
   ...props
 }) => {
+  if (!value) {
+    return <>-</>;
+  }
+
   const money =
-    format === EMoneyFormat.WEI
-      ? getFormattedMoney(value as BigNumber, currency, doNotSeparateThousands)
+    format === EMoneyFormat.WEI && !React.isValidElement(value)
+      ? getFormattedMoney(value as BigNumber, currency)
       : value;
+
+  const formattedMoney =
+    !doNotSeparateThousands && !React.isValidElement(money)
+      ? formatThousands(money.toString())
+      : money;
 
   return (
     <span {...props} className={cn(styles.money, transfer, props.className, theme)}>
@@ -109,7 +112,7 @@ export const Money: React.SFC<IProps> = ({
           {selectCurrencySymbol(currency)}
         </span>
       )}
-      {money}
+      {formattedMoney}
       {currencySymbol === ECurrencySymbol.CODE && (
         <span className={cn(currencyClassName)} style={currencyStyle}>
           {" "}
@@ -118,4 +121,15 @@ export const Money: React.SFC<IProps> = ({
       )}
     </span>
   );
+};
+
+export {
+  Money,
+  selectCurrencySymbol,
+  selectCurrencyCode,
+  selectDecimalPlaces,
+  TMoneyTransfer,
+  EMoneyFormat,
+  TCurrency,
+  ECurrencySymbol,
 };

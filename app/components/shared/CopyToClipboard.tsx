@@ -20,7 +20,7 @@ class CopyToClipboard extends React.Component<IProps> {
     this.inputNode.select();
     document.execCommand("copy");
 
-    toast.info(this.props.message || "Copied to clipboard");
+    toast.info(this.props.message || "Info has been copied");
   };
 
   render(): React.ReactNode {

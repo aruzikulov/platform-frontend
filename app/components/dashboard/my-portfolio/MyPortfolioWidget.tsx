@@ -69,9 +69,7 @@ export const MyPortfolioWidgetComponentBody: React.SFC<IBodyProps> = ({
           </>
         )}
       </div>
-      <div className={styles.side}>
-        <MyNeuWidget balanceNeu={balanceNeu} balanceEur={balanceEur} />
-      </div>
+      <MyNeuWidget balanceNeu={balanceNeu} balanceEur={balanceEur} />
     </div>
   );
 };

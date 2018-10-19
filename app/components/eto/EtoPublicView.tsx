@@ -6,7 +6,6 @@ import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../modules/public-etos/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/public-etos/types";
-import { IWalletState } from "../../modules/wallet/reducer";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer";
@@ -18,7 +17,6 @@ import { EtoPublicComponent } from "./shared/EtoPublicComponent";
 interface IStateProps {
   eto?: TEtoWithCompanyAndContract;
   userType?: EUserType;
-  wallet?: IWalletState;
 }
 
 interface IRouterParams {
@@ -37,13 +35,7 @@ class EtoPreviewComponent extends React.Component<IProps> {
       return <LoadingIndicator />;
     }
 
-    return (
-      <EtoPublicComponent
-        wallet={this.props.wallet}
-        companyData={this.props.eto.company}
-        etoData={this.props.eto}
-      />
-    );
+    return <EtoPublicComponent companyData={this.props.eto.company} etoData={this.props.eto} />;
   }
 }
 
@@ -52,7 +44,6 @@ export const EtoPublicView = compose<IProps, IRouterParams>(
     stateToProps: (state, props) => ({
       userType: selectUserType(state.auth),
       eto: selectEtoWithCompanyAndContractById(state, props.etoId),
-      wallet: state.wallet,
     }),
   }),
   onEnterAction({

@@ -16,6 +16,7 @@ import { EmailVerify } from "./EmailVerify";
 import { EtoIssuerView } from "./eto/EtoIssuerView";
 import { EtoPreview } from "./eto/EtoPreview";
 import { EtoPublicView } from "./eto/EtoPublicView";
+import { EtoWidgetView } from "./eto/EtoWidgetView";
 import { EtoRegister } from "./eto/registration/Start";
 import { Landing } from "./landing/Landing";
 import { LandingEto } from "./landing/LandingEto";
@@ -37,6 +38,11 @@ export const AppRouter: React.SFC = () => (
     <Route
       path={appRoutes.etoPublicView}
       render={({ match }) => <EtoPublicView etoId={match.params.etoId} />}
+    />
+
+    <Route
+      path={appRoutes.etoWidgetView}
+      render={({ match }) => <EtoWidgetView etoId={match.params.etoId} />}
     />
 
     <OnlyPublicRoute path={appRoutes.root} component={Landing} exact />

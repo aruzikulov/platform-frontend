@@ -8,7 +8,6 @@ import { compose } from "redux";
 import { actions } from "../../../modules/actions";
 import { selectPublicEtos } from "../../../modules/public-etos/selectors";
 import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
-import { IWalletState } from "../../../modules/wallet/reducer";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { EtoOverviewStatus } from "../../eto/overview/EtoOverviewStatus";
@@ -16,12 +15,11 @@ import { SectionHeader } from "../../shared/SectionHeader";
 
 interface IStateProps {
   etos: TEtoWithCompanyAndContract[] | undefined;
-  wallet: IWalletState;
 }
 
 type IProps = IStateProps;
 
-const EtoListComponent: React.SFC<IProps> = ({ etos, wallet }) => (
+const EtoListComponent: React.SFC<IProps> = ({ etos }) => (
   <>
     <Col xs={12}>
       <SectionHeader>
@@ -38,7 +36,6 @@ const EtoListComponent: React.SFC<IProps> = ({ etos, wallet }) => (
               equityTokensPerShare={eto.equityTokensPerShare}
               minimumNewSharesToIssue={eto.minimumNewSharesToIssue}
               contract={eto.contract!}
-              wallet={wallet}
               etoId={eto.etoId}
               previewCode={eto.previewCode}
               prospectusApproved={keyBy(eto.documents, "documentType")["approved_prospectus"]}
@@ -56,12 +53,12 @@ const EtoListComponent: React.SFC<IProps> = ({ etos, wallet }) => (
               }}
               tokenName={eto.equityTokenName || ""}
               tokenSymbol={eto.equityTokenSymbol || ""}
+              quote={eto.company.keyQuoteFounder}
               campaigningWidget={{
                 investorsLimit: eto.maxPledges || 0,
                 maxPledge: eto.maxTicketEur || 0,
                 minPledge: eto.minTicketEur || 0,
                 isActivated: eto.isBookbuilding || false,
-                quote: eto.company.keyQuoteFounder,
               }}
             />
           </div>
@@ -81,7 +78,6 @@ export const EtoList = compose<React.ComponentClass>(
   appConnect<IStateProps>({
     stateToProps: state => ({
       etos: selectPublicEtos(state),
-      wallet: state.wallet,
     }),
   }),
 )(EtoListComponent);

@@ -9,9 +9,9 @@ import { actions } from "../../../../modules/actions";
 import { selectEurValueUlps } from "../../../../modules/investment-flow/selectors";
 import {
   selectEquityTokenCountByEtoId,
-  selectEtoWithCompanyAndContractById,
   selectNeuRewardUlpsByEtoId,
-} from "../../../../modules/public-etos/selectors";
+} from "../../../../modules/investor-tickets/selectors";
+import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
 import { appConnect } from "../../../../store";
 import { divideBigNumbers } from "../../../../utils/BigNumberUtils";
 import { formatMoney } from "../../../../utils/Money.utils";
@@ -123,15 +123,14 @@ const BankTransferSummary = compose<IProps, {}>(
   appConnect<IStateProps>({
     stateToProps: state => {
       const i = state.investmentFlow;
-      const p = state.publicEtos;
       // eto and computed values are guaranteed to be present at investment summary state
       const eto = selectEtoWithCompanyAndContractById(state, i.etoId)!;
       return {
         etoAddress: eto.etoId,
         companyName: eto.company.name,
         investmentEur: selectEurValueUlps(i),
-        equityTokens: selectEquityTokenCountByEtoId(i.etoId, p) as string,
-        estimatedReward: selectNeuRewardUlpsByEtoId(i.etoId, p) as string,
+        equityTokens: selectEquityTokenCountByEtoId(i.etoId, state) as string,
+        estimatedReward: selectNeuRewardUlpsByEtoId(i.etoId, state) as string,
       };
     },
     dispatchToProps: d => ({

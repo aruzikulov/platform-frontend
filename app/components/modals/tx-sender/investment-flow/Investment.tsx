@@ -22,9 +22,9 @@ import {
 } from "../../../../modules/investment-flow/selectors";
 import {
   selectEquityTokenCountByEtoId,
-  selectEtoWithCompanyAndContractById,
   selectNeuRewardUlpsByEtoId,
-} from "../../../../modules/public-etos/selectors";
+} from "../../../../modules/investor-tickets/selectors";
+import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
 import { appConnect } from "../../../../store";
 import {
@@ -40,8 +40,6 @@ import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormFieldRaw } from "../../../shared/forms/form-field/FormFieldRaw";
 import { Heading } from "../../../shared/modals/Heading";
 import { InvestmentTypeSelector, WalletSelectionData } from "./InvestmentTypeSelector";
-
-import * as styles from "./Investment.module.scss";
 import {
   createWallets,
   formatEth,
@@ -49,6 +47,8 @@ import {
   getInputErrorMessage,
   getInvestmentTypeMessages,
 } from "./utils";
+
+import * as styles from "./Investment.module.scss";
 
 interface IStateProps {
   eto: TPublicEtoData;
@@ -272,8 +272,8 @@ export const InvestmentSelection: React.SFC = compose<any>(
         gasCostEth: selectInvestmentGasCostEth(state.investmentFlow),
         investmentType: selectInvestmentType(investmentFlow),
         wallets: createWallets(state),
-        neuReward: selectNeuRewardUlpsByEtoId(investmentFlow.etoId, state.publicEtos),
-        equityTokenCount: selectEquityTokenCountByEtoId(investmentFlow.etoId, state.publicEtos),
+        neuReward: selectNeuRewardUlpsByEtoId(investmentFlow.etoId, state),
+        equityTokenCount: selectEquityTokenCountByEtoId(investmentFlow.etoId, state),
         showTokens: !!(eur && investmentFlow.isValidatedInput),
         readyToInvest: selectReadyToInvest(state.investmentFlow),
       };

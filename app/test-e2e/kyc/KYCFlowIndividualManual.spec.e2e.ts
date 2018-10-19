@@ -1,6 +1,6 @@
 import { kycRoutes } from "../../components/kyc/routes";
 import { confirmAccessModal, tid } from "../utils";
-import { fillForm, uploadFileToFieldWithTid } from "../utils/forms";
+import { fillForm, uploadMultipleFilesToFieldWithTid } from "../utils/forms";
 import { createAndLoginNewUser } from "../utils/userHelpers";
 import { kycInvidualForm } from "./fixtures";
 
@@ -21,7 +21,7 @@ describe("KYC Personal flow with manual verification", () => {
     cy.url().should("eq", `https://localhost:9090${kycRoutes.individualUpload}`);
 
     // upload file
-    uploadFileToFieldWithTid("kyc-personal-upload-dropzone");
+    uploadMultipleFilesToFieldWithTid("kyc-personal-upload-dropzone", ["example.jpg"]);
 
     // submt request and accept with the wallet
     cy.get(tid("kyc-personal-upload-submit")).awaitedClick();

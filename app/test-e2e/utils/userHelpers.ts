@@ -20,7 +20,7 @@ export const createAndLoginNewUser = (
     clearPendingTransactions?: boolean;
   } = {},
 ) => {
-  cy.clearLocalStorage().then(async ls => {
+  return cy.clearLocalStorage().then(async ls => {
     const userType = params.type ? params.type : "investor";
 
     const {
