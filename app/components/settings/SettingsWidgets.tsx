@@ -2,9 +2,9 @@ import * as React from "react";
 import { Col } from "reactstrap";
 
 import { TRequestStatus } from "../../lib/api/KycApi.interfaces";
-import { BackupSeedWidget } from "./backupSeed/BackupSeedWidget";
-import { KycStatusWidget } from "./kycStates/KycStatusWidget";
-import { VerifyEmailWidget } from "./verifyEmail/VerifyEmailWidget";
+import { BackupSeedWidget } from "./backup-seed/BackupSeedWidget";
+import { KycStatusWidget } from "./kyc-states/KycStatusWidget";
+import { VerifyEmailWidget } from "./verify-email/VerifyEmailWidget";
 
 interface IProps {
   isDynamic: boolean;

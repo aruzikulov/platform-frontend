@@ -11,7 +11,7 @@ import {
 } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/sagas";
-import { downloadLink } from "../immutableFile/sagas";
+import { downloadLink } from "../immutable-file/sagas";
 import { neuCall, neuTakeEvery } from "../sagas";
 
 export function* generateTemplate(

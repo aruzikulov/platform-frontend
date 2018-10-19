@@ -4,7 +4,7 @@ import { DatetimeProps, TypedDatetime } from "./forms/index";
 import { InlineIcon } from "./InlineIcon";
 
 import * as iconCalendar from "../../assets/img/inline_icons/calendar.svg";
-import * as styles from "../shared/forms/formField/FormFieldDatePicker.module.scss";
+import * as styles from "./forms/form-field/FormFieldDatePicker.module.scss";
 
 const DatePicker: React.SFC<DatetimeProps> = props => {
   return (

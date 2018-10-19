@@ -41,7 +41,7 @@ export const ChartDoughnut: React.SFC<IProps> = ({ data, layout, className, defa
           legend={{ display: false }}
           height={100}
           width={100}
-          options={{ tooltips: { enabled: false } }}
+          options={{ tooltips: { enabled: hasData(data) } }}
         />
       </div>
       <div className={styles.legendWrapper}>

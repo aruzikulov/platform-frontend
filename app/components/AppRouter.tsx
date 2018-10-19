@@ -20,13 +20,13 @@ import { EtoWidgetView } from "./eto/EtoWidgetView";
 import { EtoRegister } from "./eto/registration/Start";
 import { Landing } from "./landing/Landing";
 import { LandingEto } from "./landing/LandingEto";
-import { BackupSeed } from "./settings/backupSeed/BackupSeed";
+import { BackupSeed } from "./settings/backup-seed/BackupSeed";
 import { settingsRoutes } from "./settings/routes";
 import { Settings } from "./settings/Settings";
 import { SwitchConnected } from "./shared/connectedRouting";
+import { WalletRecoverMain } from "./wallet-selector/wallet-recover/WalletRecoverMain";
+import { WalletSelector } from "./wallet-selector/WalletSelector";
 import { Wallet } from "./wallet/Wallet";
-import { WalletRecoverMain } from "./walletSelector/walletRecover/WalletRecoverMain";
-import { WalletSelector } from "./walletSelector/WalletSelector";
 
 export const AppRouter: React.SFC = () => (
   <SwitchConnected>

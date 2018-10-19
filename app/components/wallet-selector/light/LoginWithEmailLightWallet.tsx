@@ -10,7 +10,7 @@ import { FormField } from "../../shared/forms";
 
 import { FormattedMessage } from "react-intl-phraseapp";
 import { actions } from "../../../modules/actions";
-import { FormConstantField } from "../../shared/forms/formField/FormConstantField";
+import { FormConstantField } from "../../shared/forms/form-field/FormConstantField";
 import { WarningAlert } from "../../shared/WarningAlert";
 
 const PASSWORD = "password";

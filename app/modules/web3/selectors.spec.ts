@@ -1,15 +1,15 @@
 import { expect } from "chai";
 import { RouterState } from "react-router-redux";
-import { dummyEthereumAddress } from "../../../../test/fixtures";
-import { IWeb3State } from "../reducer";
+import { dummyEthereumAddress } from "../../../test/fixtures";
+import { getDummyLightWalletMetadata } from "./fixtures";
+import { IWeb3State } from "./reducer";
 import {
   selectActivationCodeFromQueryString,
   selectIsLightWallet,
   selectLightWalletEmailFromQueryString,
   selectLightWalletFromQueryString,
-} from "../selectors";
-import { EWalletSubType, EWalletType } from "../types";
-import { getDummyLightWalletMetadata } from "./fixtures";
+} from "./selectors";
+import { EWalletSubType, EWalletType } from "./types";
 
 describe("web3 > selectors", () => {
   const salt = "salt";

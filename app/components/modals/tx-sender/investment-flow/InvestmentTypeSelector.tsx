@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { Col, FormGroup } from "reactstrap";
 
-import { EInvestmentType } from "../../../../modules/investmentFlow/reducer";
+import { EInvestmentType } from "../../../../modules/investment-flow/reducer";
 import { Money } from "../../../shared/Money";
 
 import * as styles from "./InvestmentTypeSelector.module.scss";
