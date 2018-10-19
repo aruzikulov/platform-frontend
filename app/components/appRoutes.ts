@@ -12,6 +12,7 @@ export const appRoutes = {
   etoIssuerView: "/eto-view",
   etoPublicView: "/eto-view/:etoId",
   etoPreview: "/eto-preview/:previewCode",
+  etoWidgetView: "/eto-widget/:etoId",
 
   kyc: "/kyc",
   wallet: "/wallet",

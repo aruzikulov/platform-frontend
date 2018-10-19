@@ -16,7 +16,7 @@ import { appConnect } from "../../../../store";
 import { formatMoney } from "../../../../utils/Money.utils";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField } from "../../../shared/forms";
-import { FormTransformingField } from "../../../shared/forms/formField/FormTransformingField";
+import { FormTransformingField } from "../../../shared/forms/form-field/FormTransformingField";
 import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
 import { EtoFormBase } from "../EtoFormBase";
 

@@ -20,7 +20,7 @@ import {
 } from "../../lib/api/KycApi.interfaces";
 import { IAppAction, IAppState } from "../../store";
 import { ensurePermissionsArePresent } from "../auth/sagas";
-import { displayErrorModalSaga } from "../genericModal/sagas";
+import { displayErrorModalSaga } from "../generic-modal/sagas";
 import {
   selectCombinedBeneficialOwnerOwnership,
   selectKycRequestOutsourcedStatus,
