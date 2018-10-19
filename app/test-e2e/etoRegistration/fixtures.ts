@@ -18,11 +18,11 @@ export const aboutForm: TFormFixture = {
   keyQuoteInvestor: "They're making it a great day!",
   "eto-registration-company-logo": {
     value: "example.jpg",
-    type: "file",
+    type: "single-file",
   },
   "eto-registration-company-banner": {
     value: "example.jpg",
-    type: "file",
+    type: "single-file",
   },
   "eto-registration-company-information-submit": {
     type: "submit",
@@ -118,7 +118,7 @@ export const etoKeyIndividualsForm: TFormFixture = {
   "team.members.0.website": "http://www.zoe.com",
   "team.members.0.image": {
     value: "example.jpg",
-    type: "file",
+    type: "single-file",
   },
   "team.members.0.socialChannels": {
     type: "media",
@@ -135,7 +135,7 @@ export const etoKeyIndividualsForm: TFormFixture = {
   "advisors.members.0.website": "http://www.zoe.com",
   "advisors.members.0.image": {
     value: "example.jpg",
-    type: "file",
+    type: "single-file",
   },
   "advisors.members.0.socialChannels": {
     type: "media",
@@ -152,7 +152,7 @@ export const etoKeyIndividualsForm: TFormFixture = {
   "keyAlliances.members.0.website": "http://www.zoe.com",
   "keyAlliances.members.0.image": {
     value: "example.jpg",
-    type: "file",
+    type: "single-file",
   },
   "keyAlliances.members.0.socialChannels": {
     type: "media",
@@ -169,7 +169,7 @@ export const etoKeyIndividualsForm: TFormFixture = {
   "boardMembers.members.0.website": "http://www.zoe.com",
   "boardMembers.members.0.image": {
     value: "example.jpg",
-    type: "file",
+    type: "single-file",
   },
   "boardMembers.members.0.socialChannels": {
     type: "media",
@@ -186,7 +186,7 @@ export const etoKeyIndividualsForm: TFormFixture = {
   "notableInvestors.members.0.website": "http://www.zoe.com",
   "notableInvestors.members.0.image": {
     value: "example.jpg",
-    type: "file",
+    type: "single-file",
   },
   "notableInvestors.members.0.socialChannels": {
     type: "media",
@@ -203,7 +203,7 @@ export const etoKeyIndividualsForm: TFormFixture = {
   "keyCustomers.members.0.website": "http://www.zoe.com",
   "keyCustomers.members.0.image": {
     value: "example.jpg",
-    type: "file",
+    type: "single-file",
   },
   "keyCustomers.members.0.socialChannels": {
     type: "media",
@@ -220,7 +220,7 @@ export const etoKeyIndividualsForm: TFormFixture = {
   "partners.members.0.website": "http://www.zoe.com",
   "partners.members.0.image": {
     value: "example.jpg",
-    type: "file",
+    type: "single-file",
   },
   "partners.members.0.socialChannels": {
     type: "media",
@@ -312,7 +312,7 @@ export const riskForm: TFormFixture = {
 export const equityTokenInfoForm: TFormFixture = {
   "eto-registration-token-logo": {
     value: "example.jpg",
-    type: "file",
+    type: "single-file",
   },
   equityTokenName: "Sharpcoin",
   equityTokenSymbol: "X#C",

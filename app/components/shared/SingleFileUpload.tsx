@@ -69,7 +69,11 @@ export class SingleFileUpload extends React.Component<IProps & CommonHtmlProps> 
         <div className={styles.sideBox}>
           {!disabled &&
             (hasFile ? (
-              <Button layout={EButtonLayout.SECONDARY} onClick={dontPropagateEvent(onDeleteFile)}>
+              <Button
+                data-test-id={`single-file-upload-delete-file`}
+                layout={EButtonLayout.SECONDARY}
+                onClick={dontPropagateEvent(onDeleteFile)}
+              >
                 Delete {label}
               </Button>
             ) : (
