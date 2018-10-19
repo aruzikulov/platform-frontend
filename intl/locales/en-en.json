@@ -410,7 +410,7 @@
   "investment-flow.max-invest": "invest maximum",
   "investment-flow.min-ticket-size": "MIN TICKET SIZE",
   "investment-flow.select-wallet-and-currency": "select wallet and currency",
-  "investment-flow.success.congratulation-text": "Congratulations your investment transaction has been confirmed you can view your transaction on {etherscan}. We will notify you when you can claim your Equity Tokens.",
+  "investment-flow.success.congratulation-text": "Congratulations! Your investment transaction has been confirmed. You can view your transaction on {etherscan}. We will notify you when you can claim your Equity Tokens.",
   "investment-flow.success.title": "Investment confirmed",
   "investment-flow.success.view-portfolio": "View portfolio",
   "investment-flow.summary.company": "company",
