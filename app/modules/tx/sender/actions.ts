@@ -1,14 +1,8 @@
 import { createAction, createSimpleAction } from "../../actionsUtils";
+import { IDraftType } from "../interfaces";
 import { ITxData } from "./../../../lib/web3/Web3Manager";
-import { ETokenType, ETransactionErrorType, ETxSenderType, EValidationErrorType } from "./reducer";
-
-interface IWithdrawDraftType {
-  type: ETxSenderType.WITHDRAW;
-  to: string;
-  value: string;
-}
-
-export type IDraftType = IWithdrawDraftType;
+import { ETxSenderType } from "./../interfaces";
+import { ETransactionErrorType, EValidationErrorType } from "./reducer";
 
 export const txSenderActions = {
   // Modal related actions
@@ -39,10 +33,4 @@ export const txSenderActions = {
   setTransactionData: (txData: ITxData) => createAction("TX_SENDER_LOAD_TRANSACTION", txData),
   setValidationError: (validationError: EValidationErrorType) =>
     createAction("TX_SENDER_SET_VALIDATION_ERROR", validationError),
-
-  /* Transaction Flows */
-  startWithdrawEth: () => createSimpleAction("TX_SENDER_START_WITHDRAW_ETH"),
-  startUpgrade: (tokenType: ETokenType) => createAction("TX_SENDER_START_UPGRADE", tokenType),
-  startInvestment: () => createSimpleAction("TX_SENDER_START_INVESTMENT"),
-  // Add here new custom sagas that represent flows
 };

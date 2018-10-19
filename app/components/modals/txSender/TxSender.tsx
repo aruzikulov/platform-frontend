@@ -4,12 +4,8 @@ import { Modal } from "reactstrap";
 
 import { ITxData } from "../../../lib/web3/Web3Manager";
 import { actions } from "../../../modules/actions";
-import { IDraftType } from "../../../modules/tx/sender/actions";
-import {
-  ETransactionErrorType,
-  ETxSenderState,
-  ETxSenderType,
-} from "../../../modules/tx/sender/reducer";
+import { ETxSenderType, IDraftType } from "../../../modules/tx/interfaces";
+import { ETransactionErrorType, ETxSenderState } from "../../../modules/tx/sender/reducer";
 import { selectTxSenderModalOpened } from "../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../store";
 import { LoadingIndicator } from "../../shared/LoadingIndicator";

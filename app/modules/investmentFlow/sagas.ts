@@ -1,3 +1,5 @@
+import { selectGasPrice } from "./../gas/selectors";
+import { GasModelShape } from "./../../lib/api/GasApi";
 import BigNumber from "bignumber.js";
 import { delay } from "redux-saga";
 import { put, select, takeEvery, takeLatest } from "redux-saga/effects";
@@ -15,6 +17,7 @@ import { selectEtoById } from "../public-etos/selectors";
 import { neuCall } from "../sagas";
 import { selectEtherPriceEur } from "../shared/tokenPrice/selectors";
 import { selectTxGasCostEth } from "../tx/sender/selectors";
+import { INVESTMENT_GAS_AMOUNT } from "../tx/transactions/investment/sagas";
 import {
   selectLiquidEtherBalance,
   selectLockedEtherBalance,
@@ -145,7 +148,7 @@ function* start(action: TAction): any {
   yield put(actions.investmentFlow.resetInvestment());
   yield put(actions.investmentFlow.setEtoId(action.payload.etoId));
   yield put(actions.kyc.kycLoadClientData());
-  yield put(actions.txSender.startInvestment());
+  yield put(actions.txTransactions.startInvestment());
 }
 
 export function* onInvestmentTxModalHide(): any {

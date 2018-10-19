@@ -1,21 +1,24 @@
-import { fork, put } from "redux-saga/effects";
+import { fork, put, select } from "redux-saga/effects";
+import { selectGasPrice } from "./../../gas/selectors";
+
 import { TGlobalDependencies } from "../../../di/setupBindings";
-import { TAction } from "../../actions";
+import { GasModelShape } from "../../../lib/api/GasApi";
+import { actions, TAction } from "../../actions";
 import { onInvestmentTxModalHide } from "../../investmentFlow/sagas";
-import { neuTakeEvery } from "../../sagas";
-import { ETransactionErrorType } from "../sender/reducer";
-import { ITxSendParams, txSendSaga, txValidateSaga } from "../sender/sagas";
-import { actions } from "./../../actions";
-import { ETokenType, ETxSenderType } from "./../sender/reducer";
-import { generateInvestmentTransaction } from "./investment/sagas";
-import { generateEtherUpgradeTransaction, generateEuroUpgradeTransaction } from "./upgrade/sagas";
-import { generateEthWithdrawTransaction } from "./withdraw/sagas";
+import { neuCall, neuTakeEvery } from "../../sagas";
+import { ITxSendParams, txSendSaga } from "../sender/sagas";
+import { ETxSenderType } from "./../interfaces";
+import { generateInvestmentTransaction, INVESTMENT_GAS_AMOUNT } from './investment/sagas';
+import { upgradeTransactionFlow } from "./upgrade/sagas";
+import { ethWithdrawFlow } from "./withdraw/sagas";
 
 export function* withdrawSaga({ logger }: TGlobalDependencies): any {
   try {
+    const withdrawFlowGenerator = neuCall(ethWithdrawFlow);
+
     yield txSendSaga({
       type: ETxSenderType.WITHDRAW,
-      transactionGenerationFunction: generateEthWithdrawTransaction,
+      transactionFlowGenerator: withdrawFlowGenerator,
     });
     logger.info("Withdrawing successful");
   } catch (e) {
@@ -25,22 +28,19 @@ export function* withdrawSaga({ logger }: TGlobalDependencies): any {
 
 export function* upgradeSaga({ logger }: TGlobalDependencies, action: TAction): any {
   try {
-    if (action.type !== "TX_SENDER_START_UPGRADE") return;
+    if (action.type !== "TRANSACTIONS_START_UPGRADE") return;
 
+    const tokenType = action.payload;
+    const upgradeFlowGenerator = neuCall(upgradeTransactionFlow, tokenType);
     const params: ITxSendParams = {
       type: ETxSenderType.UPGRADE,
-      requiresUserInput: false,
-      transactionGenerationFunction:
-        action.payload === ETokenType.EURO
-          ? generateEuroUpgradeTransaction
-          : generateEtherUpgradeTransaction,
+      transactionFlowGenerator: upgradeFlowGenerator,
     };
     yield txSendSaga(params);
 
-    logger.info("Withdrawing successful");
+    logger.info("Upgrading successful");
   } catch (e) {
-    logger.error("Upgrade Saga Error", e);
-    return yield put(actions.txSender.txSenderError(ETransactionErrorType.FAILED_TO_GENERATE_TX));
+    logger.warn("Upgrading cancelled", e);
   }
 }
 
@@ -48,19 +48,19 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
   try {
     yield txSendSaga({
       type: ETxSenderType.INVEST,
-      transactionGenerationFunction: generateInvestmentTransaction,
-      cleanupFunction: onInvestmentTxModalHide,
+      transactionFlowGenerator: generateInvestmentTransaction,
     });
     logger.info("Investment successful");
   } catch (e) {
+    // Add clean up functions here ...
+    yield onInvestmentTxModalHide();
     logger.warn("Investment cancelled", e);
   }
 }
 
-export const txSendingSagasWatcher = function*(): Iterator<any> {
-  yield fork(neuTakeEvery, "TX_SENDER_VALIDATE_DRAFT", txValidateSaga);
-  yield fork(neuTakeEvery, "TX_SENDER_START_WITHDRAW_ETH", withdrawSaga);
-  yield fork(neuTakeEvery, "TX_SENDER_START_UPGRADE", upgradeSaga);
-  yield fork(neuTakeEvery, "TX_SENDER_START_INVESTMENT", investSaga);
+export const txTransactionsSagasWatcher = function*(): Iterator<any> {
+  yield fork(neuTakeEvery, "TRANSACTIONS_START_WITHDRAW_ETH", withdrawSaga);
+  yield fork(neuTakeEvery, "TRANSACTIONS_START_UPGRADE", upgradeSaga);
+  yield fork(neuTakeEvery, "TRANSACTIONS_START_INVESTMENT", investSaga);
   // Add new transaction types here...
 };

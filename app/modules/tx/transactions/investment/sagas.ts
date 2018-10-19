@@ -1,6 +1,5 @@
 import { BigNumber } from "bignumber.js";
-import { addHexPrefix } from "ethereumjs-util";
-import { select } from "redux-saga/effects";
+import { select, take } from "redux-saga/effects";
 import { DeferredTransactionWrapper, ITxParams } from "../../../../lib/contracts/typechain-runtime";
 import { compareBigNumbers } from "./../../../../utils/BigNumberUtils";
 import { EInvestmentType } from "./../../../investmentFlow/reducer";
@@ -10,28 +9,28 @@ import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ContractsService } from "../../../../lib/web3/ContractsService";
 import { ITxData } from "../../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../../store";
+import { TAction } from "../../../actions";
 import { selectGasPrice } from "../../../gas/selectors";
 import { selectReadyToInvest } from "../../../investmentFlow/selectors";
 import { selectEtoById } from "../../../public-etos/selectors";
+import { neuCall } from "../../../sagas";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 
-async function createTxData(
+export const INVESTMENT_GAS_AMOUNT = "600000";
+
+async function createInvestmentTxData(
   state: IAppState,
   txData: DeferredTransactionWrapper<ITxParams>,
   contractAddress: string,
   value = "0",
 ): Promise<ITxData> {
-  const txInitialDetails = {
+  return {
     to: contractAddress,
     from: selectEthereumAddressWithChecksum(state),
     data: txData.getData(),
     value: value,
     gasPrice: selectGasPrice(state)!.standard,
-  };
-  const estimatedGas = await txData.estimateGas(txInitialDetails);
-  return {
-    ...txInitialDetails,
-    gas: addHexPrefix(new BigNumber(estimatedGas).toString(16)),
+    gas: INVESTMENT_GAS_AMOUNT,
   };
 }
 
@@ -45,7 +44,7 @@ function getEtherLockTransaction(
     new BigNumber(state.investmentFlow.ethValueUlps),
     [""],
   );
-  return createTxData(state, txData, contractsService.etherLock.address);
+  return createInvestmentTxData(state, txData, contractsService.etherLock.address);
 }
 
 function getEuroLockTransaction(
@@ -58,7 +57,7 @@ function getEuroLockTransaction(
     new BigNumber(state.investmentFlow.euroValueUlps),
     [""],
   );
-  return createTxData(state, txData, contractsService.euroLock.address);
+  return createInvestmentTxData(state, txData, contractsService.euroLock.address);
 }
 
 async function getEtherTokenTransaction(
@@ -80,14 +79,19 @@ async function getEtherTokenTransaction(
     const txInput = contractsService.etherToken.rawWeb3Contract.transfer[
       "address,uint256,bytes"
     ].getData(etoId, etherValue, "");
-    return createTxData(state, txInput, contractsService.etherToken.address);
+    return createInvestmentTxData(state, txInput, contractsService.etherToken.address);
   } else {
     // fill up etherToken with ether from wallet
     const ethVal = new BigNumber(etherValue);
     const value = ethVal.sub(etherTokenBalance);
     const txCall = contractsService.etherToken.depositAndTransferTx(etoId, ethVal, [""]);
 
-    return createTxData(state, txCall, contractsService.etherToken.address, value.toString());
+    return createInvestmentTxData(
+      state,
+      txCall,
+      contractsService.etherToken.address,
+      value.toString(),
+    );
   }
 }
 
@@ -108,4 +112,11 @@ export function* generateInvestmentTransaction({ contractsService }: TGlobalDepe
     case EInvestmentType.ICBMnEuro:
       return getEuroLockTransaction(state, contractsService, eto.etoId);
   }
+}
+
+export function* investmentFlowGenerator(_: TGlobalDependencies): any {
+  const action: TAction = yield take("TX_SENDER_ACCEPT_DRAFT");
+  if (action.type !== "TX_SENDER_ACCEPT_DRAFT") return;
+  const generatedTxDetails = yield neuCall(generateInvestmentTransaction);
+  return generatedTxDetails;
 }

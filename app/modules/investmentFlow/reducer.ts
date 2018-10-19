@@ -1,3 +1,4 @@
+import { INVESTMENT_GAS_AMOUNT } from './../tx/transactions/investment/sagas';
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 
@@ -34,6 +35,7 @@ export interface IInvestmentFlowState {
   isValidatedInput: boolean;
   bankTransferFlowState?: EBankTransferFlowState;
   bankTransferGasStipend?: boolean;
+  gasAmount: string;
 }
 
 export const investmentFlowInitialState: IInvestmentFlowState = {
@@ -42,6 +44,7 @@ export const investmentFlowInitialState: IInvestmentFlowState = {
   ethValueUlps: "",
   investmentType: EInvestmentType.InvestmentWallet,
   isValidatedInput: false,
+  gasAmount: INVESTMENT_GAS_AMOUNT,
 };
 
 export const investmentFlowReducer: AppReducer<IInvestmentFlowState> = (

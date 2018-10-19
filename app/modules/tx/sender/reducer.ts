@@ -1,18 +1,8 @@
 import { AppReducer } from "../../../store";
 import { ITxData } from "./../../../lib/web3/Web3Manager";
+import { ETxSenderType } from "./../interfaces";
 
 export const GAS_PRICE_MULTIPLIER = 1 + parseFloat(process.env.NF_GAS_OVERHEAD || "0");
-
-export enum ETxSenderType {
-  WITHDRAW = "WITHDRAW",
-  INVEST = "INVEST",
-  UPGRADE = "UPGRADE",
-}
-
-export enum ETokenType {
-  ETHER = "ETHER",
-  EURO = "EURO",
-}
 
 export enum ETransactionErrorType {
   NOT_ENOUGH_ETHER_FOR_GAS = "not_enough_ether_for_gas",

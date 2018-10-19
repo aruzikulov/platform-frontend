@@ -19,8 +19,7 @@ import { Button } from "../../../shared/buttons";
 import { FormFieldImportant } from "../../../shared/forms/formField/FormFieldImportant";
 import { ITxInitDispatchProps } from "../TxSender";
 
-import { IDraftType } from "../../../../modules/tx/sender/actions";
-import { ETxSenderType } from "../../../../modules/tx/sender/reducer";
+import { ETxSenderType, IDraftType } from '../../../../modules/tx/interfaces';
 import * as styles from "./Withdraw.module.scss";
 
 interface IStateProps {

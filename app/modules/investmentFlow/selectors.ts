@@ -1,8 +1,10 @@
+import { selectStandardGasPrice } from "./../gas/selectors";
 import { IAppState } from "../../store";
-import { addBigNumbers, compareBigNumbers } from "../../utils/BigNumberUtils";
+import { addBigNumbers, compareBigNumbers, multiplyBigNumbers } from "../../utils/BigNumberUtils";
 import { convertToBigInt } from "../../utils/Money.utils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { EInvestmentCurrency, EInvestmentType, IInvestmentFlowState } from "./reducer";
+import { selectGasPrice } from "../gas/selectors";
 
 // State Selectors
 
@@ -63,4 +65,11 @@ export const GAS_STIPEND_PRICE = convertToBigInt("10");
 export const selectBankTransferAmount = (state: IInvestmentFlowState) => {
   const eur = selectEurValueUlps(state);
   return state.bankTransferGasStipend ? addBigNumbers([GAS_STIPEND_PRICE, eur]) : eur;
+};
+
+export const selectInvestmentGasLimit = (state: IAppState): string =>
+  state.investmentFlow.gasAmount;
+
+export const selectInvestmentGasCostEth = (state: IAppState) => {
+  return multiplyBigNumbers([selectStandardGasPrice(state), selectInvestmentGasLimit(state)]);
 };

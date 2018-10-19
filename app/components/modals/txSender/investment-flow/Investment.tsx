@@ -49,6 +49,7 @@ import {
 } from "./utils";
 
 import * as styles from "./Investment.module.scss";
+import { selectInvestmentGasCostEth } from "../../../../modules/investmentFlow/selectors";
 
 interface IStateProps {
   eto: TPublicEtoData;
@@ -263,7 +264,7 @@ export const InvestmentSelection: React.SFC = compose<any>(
         euroValue: eur,
         ethValue: selectEthValueUlps(investmentFlow),
         errorState: selectErrorState(investmentFlow),
-        gasCostEth: selectTxGasCostEth(state.txSender),
+        gasCostEth: selectInvestmentGasCostEth(state),
         investmentType: selectInvestmentType(investmentFlow),
         wallets: createWallets(state),
         neuReward: selectNeuRewardUlpsByEtoId(investmentFlow.etoId, state),

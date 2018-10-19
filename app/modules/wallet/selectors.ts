@@ -73,7 +73,7 @@ export const selectLockedWalletHasFunds = (state: IAppState): boolean =>
 /**
  * ICBM Wallet Assets
  */
-export const selectICBMLockedEtherBalance = (state: IAppState) =>
+export const selectICBMLockedEtherBalance = (state: IAppState): string =>
   (state.wallet.data &&
     state.wallet.data.etherTokenICBMLockedWallet &&
     state.wallet.data.etherTokenICBMLockedWallet.LockedBalance) ||

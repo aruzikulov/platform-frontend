@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
 import { END, eventChannel } from "redux-saga";
-import { call, put, race, select, take } from "redux-saga/effects";
+import { call, fork, put, race, select, take } from "redux-saga/effects";
 import * as Web3 from "web3";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
@@ -21,23 +21,21 @@ import { delay } from "../../../utils/delay";
 import { connectWallet } from "../../accessWallet/sagas";
 import { actions, TAction } from "../../actions";
 import { IGasState } from "../../gas/reducer";
-import { neuCall } from "../../sagas";
+import { neuCall, neuTakeEvery } from "../../sagas";
 import { selectEtherBalance } from "../../wallet/selectors";
+import { ETxSenderType } from "../interfaces";
 import { updateTxs } from "../monitor/sagas";
-
 import { generateEthWithdrawTransaction } from "../transactions/withdraw/sagas";
 import { OutOfGasError } from "./../../../lib/web3/Web3Adapter";
 import { ITxData } from "./../../../lib/web3/Web3Manager";
-import { ETransactionErrorType, ETxSenderType, EValidationErrorType } from "./reducer";
+import { ETransactionErrorType, EValidationErrorType } from "./reducer";
 import { selectTxDetails, selectTxType } from "./selectors";
 
 class NotEnoughEtherForGasError extends Error {}
 
 export interface ITxSendParams {
   type: ETxSenderType;
-  transactionGenerationFunction: any;
-  requiresUserInput?: boolean;
-  cleanupFunction?: any;
+  transactionFlowGenerator: any;
 }
 
 export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction): any {
@@ -56,24 +54,18 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
   }
 }
 
-export function* txSendSaga({
-  type,
-  transactionGenerationFunction,
-  requiresUserInput = true,
-  cleanupFunction,
-}: ITxSendParams): any {
+export function* txSendSaga({ type, transactionFlowGenerator }: ITxSendParams): any {
   const gas: IGasState = yield select((s: IAppState) => s.gas);
   if (!gas.gasPrice) {
     yield take("GAS_API_LOADED");
   }
 
   const { result, cancel } = yield race({
-    result: neuCall(txSendProcess, type, transactionGenerationFunction, requiresUserInput),
+    result: neuCall(txSendProcess, type, transactionFlowGenerator),
     cancel: take("TX_SENDER_HIDE_MODAL"),
   });
 
   if (cancel) {
-    if (cleanupFunction) yield cleanupFunction();
     throw new Error("TX_SENDING_CANCELLED");
   }
 
@@ -87,28 +79,21 @@ export function* txSendSaga({
 export function* txSendProcess(
   { logger }: TGlobalDependencies,
   transactionType: ETxSenderType,
-  transactionGenerationFunction: any,
-  requiresUserInput: boolean,
+  transactionFlowGenerator: any,
 ): any {
   try {
-    yield put(actions.gas.gasApiEnsureLoading());
     yield put(actions.txSender.txSenderShowModal(transactionType));
-
     yield neuCall(ensureNoPendingTx, transactionType);
-    let txDetails;
-    if (requiresUserInput) {
-      yield put(actions.txSender.txSenderWatchPendingTxsDone(transactionType));
-      txDetails = yield take("TX_SENDER_ACCEPT_DRAFT");
-    }
-    const generatedTxDetails: ITxData = yield neuCall(transactionGenerationFunction, txDetails);
+    
+    yield put(actions.txSender.txSenderWatchPendingTxsDone(transactionType));
+    const generatedTxDetails: ITxData = yield transactionFlowGenerator;
     yield put(actions.txSender.setTransactionData(generatedTxDetails));
 
     yield take("TX_SENDER_ACCEPT");
-
     yield call(connectWallet, "Send funds!");
     yield put(actions.txSender.txSenderWalletPlugged());
-    const txHash = yield neuCall(sendTxSubSaga);
 
+    const txHash = yield neuCall(sendTxSubSaga);
     yield neuCall(watchTxSubSaga, txHash);
   } catch (error) {
     logger.error(error);
@@ -330,3 +315,7 @@ const createWatchTxChannel = ({ web3Manager }: TGlobalDependencies, txHash: stri
       // @todo missing unsubscribe
     };
   });
+
+export const txSendingSagasWatcher = function*(): Iterator<any> {
+  yield fork(neuTakeEvery, "TX_SENDER_VALIDATE_DRAFT", txValidateSaga);
+};

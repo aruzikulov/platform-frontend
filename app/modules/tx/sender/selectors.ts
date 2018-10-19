@@ -1,5 +1,5 @@
 import { IAppState } from "../../../store";
-import { getTxGasCostEth } from "../utils";
+import { multiplyBigNumbers } from "./../../../utils/BigNumberUtils";
 import { ITxSenderState } from "./reducer";
 
 export const selectTxSenderModalOpened = (state: ITxSenderState) => state.state !== "UNINITIALIZED";
@@ -13,6 +13,7 @@ export const selectTxType = (state: ITxSenderState) => state.type;
 export const selectTxSummaryData = (state: ITxSenderState) => state.summaryData || state.txDetails;
 
 export const selectTxGasCostEth = (state: ITxSenderState) => {
-  const details = selectTxDetails(state);
-  return details ? getTxGasCostEth(details) : "0";
+  const gasPrice = (state.txDetails && state.txDetails.gasPrice) || "0";
+  const gasLimit = (state.txDetails && state.txDetails.gas) || "0";
+  return multiplyBigNumbers([gasPrice, gasLimit]);
 };

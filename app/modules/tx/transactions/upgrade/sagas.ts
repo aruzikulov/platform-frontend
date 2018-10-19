@@ -1,17 +1,23 @@
 import { BigNumber } from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
-import { select } from "redux-saga/effects";
+import { put, select } from "redux-saga/effects";
+import { GasModelShape } from "./../../../../lib/api/GasApi";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ITxData } from "../../../../lib/web3/Web3Manager";
+import { EthereumAddress } from "../../../../types";
+import { actions } from "../../../actions";
+import { neuCall } from "../../../sagas";
 import {
   selectICBMLockedEtherBalance,
   selectIsEtherUpgradeTargetSet,
   selectIsEuroUpgradeTargetSet,
 } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
+import { ETokenType } from "../../interfaces";
 import { selectGasPrice } from "./../../../gas/selectors";
 import { selectICBMLockedEuroTokenBalance } from "./../../../wallet/selectors";
+import { selectStandardGasPrice } from "../../../gas/selectors";
 
 export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
   const userAddress = yield select(selectEthereumAddressWithChecksum);
@@ -44,10 +50,10 @@ export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDep
 }
 
 export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
-  const userAddress = yield select(selectEthereumAddressWithChecksum);
-  const gasPrice = yield select(selectGasPrice);
-  const migrationTarget = yield select(selectIsEtherUpgradeTargetSet);
-  const etherBalance = yield select(selectICBMLockedEtherBalance);
+  const userAddress: EthereumAddress = yield select(selectEthereumAddressWithChecksum);
+  const gasPrice: string = yield select(selectStandardGasPrice);
+  const migrationTarget: boolean = yield select(selectIsEtherUpgradeTargetSet);
+  const etherBalance: string = yield select(selectICBMLockedEtherBalance);
 
   if (!migrationTarget || new BigNumber(etherBalance).equals(0)) {
     throw new Error();
@@ -72,4 +78,14 @@ export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDe
   };
 
   return txDetails;
+}
+
+export function* upgradeTransactionFlow(_: TGlobalDependencies, tokenType: ETokenType): any {
+  const transactionGenerator =
+    tokenType === ETokenType.ETHER
+      ? generateEtherUpgradeTransaction
+      : generateEuroUpgradeTransaction;
+  const generatedTxDetails = yield neuCall(transactionGenerator);
+  yield put(actions.txSender.setSummaryData(generatedTxDetails));
+  return generatedTxDetails;
 }

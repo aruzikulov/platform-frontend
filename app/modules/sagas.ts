@@ -14,14 +14,14 @@ import { initSagas } from "./init/sagas";
 import { investmentFlowSagas } from "./investmentFlow/sagas";
 import { investorTicketsSagas } from "./investor-tickets/sagas";
 import { kycSagas } from "./kyc/sagas";
-import { etoSagas } from './public-etos/sagas';
+import { etoSagas } from "./public-etos/sagas";
 import { settingsSagas } from "./settings/sagas";
 import { formSingleFileUploadSagas } from "./shared/formSingleFileUpload/sagas";
 import { remoteFileSagas } from "./shared/remoteFile/sagas";
 import { tokenPriceSagas } from "./shared/tokenPrice/sagas";
-
 import { txMonitorSagas } from "./tx/monitor/sagas";
-import { txSendingSagasWatcher } from './tx/transactions/sagas';
+import { txSendingSagasWatcher } from './tx/sender/sagas';
+import { txTransactionsSagasWatcher } from "./tx/transactions/sagas";
 import { lightWalletSagas } from "./wallet-selector/light-wizard/sagas";
 import { walletSelectorSagas } from "./wallet-selector/sagas";
 import { walletSagas } from "./wallet/sagas";
@@ -49,6 +49,7 @@ function* allSagas(): Iterator<effects.Effect> {
     effects.fork(formSingleFileUploadSagas),
     effects.fork(remoteFileSagas),
     effects.fork(txSendingSagasWatcher),
+    effects.fork(txTransactionsSagasWatcher),
     effects.fork(gasApiSagas),
     effects.fork(etoDocumentsSagas),
     effects.fork(txMonitorSagas),

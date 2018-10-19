@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ETxSenderType } from "../../../../modules/tx/sender/reducer";
+import { ETxSenderType } from "../../../../modules/tx/interfaces";
 import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
 import { EtherscanTxLink } from "../../../shared/EtherscanLink";
 

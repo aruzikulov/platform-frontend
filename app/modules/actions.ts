@@ -23,6 +23,7 @@ import { remoteFileActions } from "./shared/remoteFile/actions";
 import { tokenPriceActions } from "./shared/tokenPrice/actions";
 import { txMonitorActions } from "./tx/monitor/actions";
 import { txSenderActions } from "./tx/sender/actions";
+import { txTransactionsActions } from "./tx/transactions/actions";
 import { userAgentActions } from "./userAgent/actions";
 import { verifyEmailActions } from "./verifyEmailWidget/actions";
 import { videoModalActions } from "./videoModal/actions";
@@ -32,6 +33,7 @@ import { web3Actions } from "./web3/actions";
 
 /** You should add new actions also here (with a namespace).*/
 export const actions = {
+  txTransactions: txTransactionsActions,
   settings: settingsActions,
   immutableStorage: immutableStorageActions,
   verifyEmail: verifyEmailActions,
