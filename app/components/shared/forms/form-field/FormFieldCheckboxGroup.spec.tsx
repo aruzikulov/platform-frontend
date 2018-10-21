@@ -3,10 +3,10 @@ import { mount } from "enzyme";
 import * as React from "react";
 import { spy } from "sinon";
 
-import { submit } from "../../../../../../test/integrationTestUtils";
-import { tid } from "../../../../../../test/testUtils";
-import { formWrapper } from "../form-utils";
-import { FormFieldCheckbox, FormFieldCheckboxGroup } from "../FormFieldCheckboxGroup";
+import { submit } from "../../../../../test/integrationTestUtils";
+import { tid } from "../../../../../test/testUtils";
+import { formWrapper } from "./form-utils";
+import { FormFieldCheckbox, FormFieldCheckboxGroup } from "./FormFieldCheckboxGroup";
 
 describe("FormFieldCheckboxGroup", () => {
   it("should work", async () => {

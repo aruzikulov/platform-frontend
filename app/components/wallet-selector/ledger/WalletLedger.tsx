@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { isSupportingLedger } from "../../../modules/userAgent/reducer";
+import { isSupportingLedger } from "../../../modules/user-agent/reducer";
 import { appConnect } from "../../../store";
 import { WalletLedgerChooser } from "./WalletLedgerChooser";
 import { WalletLedgerInit } from "./WalletLedgerInitComponent";

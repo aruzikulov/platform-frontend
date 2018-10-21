@@ -2,13 +2,13 @@ import { expect } from "chai";
 import { delay } from "redux-saga";
 import { call, put } from "redux-saga/effects";
 
-import { createMock } from "../../../../test/testUtils";
-import { LIGHT_WALLET_PASSWORD_CACHE_TIME } from "../../../config/constants";
-import { TGlobalDependencies } from "../../../di/setupBindings";
-import { noopLogger } from "../../../lib/dependencies/Logger";
-import { Web3Manager } from "../../../lib/web3/Web3Manager";
-import { actions } from "../../actions";
-import { autoLockLightWallet } from "../sagas";
+import { createMock } from "../../../test/testUtils";
+import { LIGHT_WALLET_PASSWORD_CACHE_TIME } from "../../config/constants";
+import { TGlobalDependencies } from "../../di/setupBindings";
+import { noopLogger } from "../../lib/dependencies/Logger";
+import { Web3Manager } from "../../lib/web3/Web3Manager";
+import { actions } from "../actions";
+import { autoLockLightWallet } from "./sagas";
 
 describe("Web3 sagas", () => {
   describe("light wallet password", () => {

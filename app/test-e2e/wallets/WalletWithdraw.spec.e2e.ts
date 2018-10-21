@@ -10,7 +10,7 @@ import {
   goToDashboard,
 } from "../utils";
 import { getTransactionByHashRpc, getBalanceRpc } from "../utils/ethRpcUtils";
-import { recoverRoutes } from "../../components/walletSelector/walletRecover/recoverRoutes";
+import { recoverRoutes } from "../../components/wallet-selector/wallet-recover/recoverRoutes";
 import { confirmAccessModal } from "../utils/index";
 
 const Q18 = new BigNumber(10).pow(18);

@@ -1,16 +1,16 @@
 import { expect } from "chai";
 import { spy } from "sinon";
 
-import { createMock } from "../../../../test/testUtils";
-import { NotificationCenter } from "../../../lib/dependencies/NotificationCenter";
-import { IAppState } from "../../../store";
-import { dummyIntl } from "../../../utils/injectIntlHelpers.fixtures";
-import { web3Flows } from "../flows";
+import { createMock } from "../../../test/testUtils";
+import { NotificationCenter } from "../../lib/dependencies/NotificationCenter";
+import { IAppState } from "../../store";
+import { dummyIntl } from "../../utils/injectIntlHelpers.fixtures";
 import {
   getDummyBrowserWalletMetadata,
   getDummyLedgerWalletMetadata,
   getDummyLightWalletMetadata,
 } from "./fixtures";
+import { web3Flows } from "./flows";
 
 describe("web3 > flows", () => {
   describe("personalWalletDisconnected", () => {

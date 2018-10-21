@@ -2,8 +2,8 @@ import * as React from "react";
 import { Modal } from "reactstrap";
 
 import { actions } from "../../../../modules/actions";
-import { EBankTransferFlowState } from "../../../../modules/investmentFlow/reducer";
-import { selectIsBankTransferModalOpened } from "../../../../modules/investmentFlow/selectors";
+import { EBankTransferFlowState } from "../../../../modules/investment-flow/reducer";
+import { selectIsBankTransferModalOpened } from "../../../../modules/investment-flow/selectors";
 import { appConnect } from "../../../../store";
 import { ModalComponentBody } from "../../ModalComponentBody";
 import { BankTransferDetails } from "./BankTransferDetails";

@@ -4,7 +4,10 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
 import { MONEY_DECIMALS } from "../../../../config/constants";
 import { TPublicEtoData } from "../../../../lib/api/eto/EtoApi.interfaces";
-import { EInvestmentErrorState, EInvestmentType } from "../../../../modules/investmentFlow/reducer";
+import {
+  EInvestmentErrorState,
+  EInvestmentType,
+} from "../../../../modules/investment-flow/reducer";
 import {
   selectLiquidEtherBalance,
   selectLiquidEtherBalanceEuroAmount,

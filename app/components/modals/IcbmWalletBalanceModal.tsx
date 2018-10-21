@@ -4,13 +4,13 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Modal } from "reactstrap";
 
 import { actions } from "../../modules/actions";
-import { IWalletMigrationData } from "../../modules/icbmWalletBalanceModal/reducer";
+import { IWalletMigrationData } from "../../modules/icbm-wallet-balance-modal/reducer";
 import {
   selectAllNeumakrsDueIcbmModal,
   selectEtherBalanceIcbmModal,
   selectIcbmWalletEthAddress,
   selectWalletMigrationData,
-} from "../../modules/icbmWalletBalanceModal/selectors";
+} from "../../modules/icbm-wallet-balance-modal/selectors";
 import { SelectIsVerificationFullyDone } from "../../modules/selectors";
 import { selectLockedWalletConnected } from "../../modules/wallet/selectors";
 import { appConnect } from "../../store";

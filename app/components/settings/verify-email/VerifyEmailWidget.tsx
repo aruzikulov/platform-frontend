@@ -13,7 +13,7 @@ import {
   selectUnverifiedUserEmail,
   selectVerifiedUserEmail,
 } from "../../../modules/auth/selectors";
-import { selectIsConnectedButtonLocked } from "../../../modules/verifyEmailWidget/reducer";
+import { selectIsConnectedButtonLocked } from "../../../modules/verify-email-widget/reducer";
 import { appConnect } from "../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { Button, EButtonLayout } from "../../shared/buttons";

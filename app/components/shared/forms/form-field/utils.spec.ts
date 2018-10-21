@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { isNonValid, isValid } from "../utils";
+import { isNonValid, isValid } from "./utils";
 
 describe("Form utils", () => {
   describe("isValid", () => {

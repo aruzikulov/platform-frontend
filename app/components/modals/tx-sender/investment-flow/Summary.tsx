@@ -10,7 +10,7 @@ import {
   selectEthValueUlps,
   selectEurValueUlps,
   selectInvestmentGasCostEth,
-} from "../../../../modules/investmentFlow/selectors";
+} from "../../../../modules/investment-flow/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
 import { appConnect } from "../../../../store";

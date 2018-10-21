@@ -11,7 +11,7 @@ import {
   EInvestmentCurrency,
   EInvestmentErrorState,
   EInvestmentType,
-} from "../../../../modules/investmentFlow/reducer";
+} from "../../../../modules/investment-flow/reducer";
 import {
   selectErrorState,
   selectEthValueUlps,
@@ -19,7 +19,7 @@ import {
   selectInvestmentGasCostEth,
   selectInvestmentType,
   selectReadyToInvest,
-} from "../../../../modules/investmentFlow/selectors";
+} from "../../../../modules/investment-flow/selectors";
 import {
   selectEquityTokenCountByEtoId,
   selectNeuRewardUlpsByEtoId,
@@ -37,7 +37,7 @@ import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpe
 import { formatMoney, formatThousands } from "../../../../utils/Money.utils";
 import { InfoAlert } from "../../../shared/Alerts";
 import { Button, EButtonLayout } from "../../../shared/buttons";
-import { FormFieldRaw } from "../../../shared/forms/formField/FormFieldRaw";
+import { FormFieldRaw } from "../../../shared/forms/form-field/FormFieldRaw";
 import { Heading } from "../../../shared/modals/Heading";
 import { InvestmentTypeSelector, WalletSelectionData } from "./InvestmentTypeSelector";
 import {

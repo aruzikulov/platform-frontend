@@ -5,7 +5,7 @@ import { CHANGE_EMAIL_PERMISSION } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { EmailAlreadyExists } from "../../lib/api/users/UsersApi";
 import { IAppState } from "../../store";
-import { accessWalletAndRunEffect } from "../accessWallet/sagas";
+import { accessWalletAndRunEffect } from "../access-wallet/sagas";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent, loadUser, updateUser } from "../auth/sagas";
 import { selectDoesEmailExist, selectUser } from "../auth/selectors";

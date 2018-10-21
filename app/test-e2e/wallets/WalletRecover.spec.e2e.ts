@@ -8,7 +8,7 @@ import {
   typeLightwalletRecoveryPhrase,
   tid,
 } from "../utils";
-import { recoverRoutes } from "../../components/walletSelector/walletRecover/recoverRoutes";
+import { recoverRoutes } from "../../components/wallet-selector/wallet-recover/recoverRoutes";
 
 describe("Wallet recover", () => {
   const words = [
