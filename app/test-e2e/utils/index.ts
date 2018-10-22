@@ -1,6 +1,6 @@
 import { get } from "lodash";
 import { appRoutes } from "../../components/appRoutes";
-import { walletRegisterRoutes } from "../../components/walletSelector/walletRoutes";
+import { walletRegisterRoutes } from "../../components/wallet-selector/walletRoutes";
 import { DEFAULT_PASSWORD } from "./userHelpers";
 
 export function tid(id: string, rest?: string): string {
