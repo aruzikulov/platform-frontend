@@ -1,10 +1,9 @@
-import { selectStandardGasPrice } from "./../gas/selectors";
 import { IAppState } from "../../store";
 import { addBigNumbers, compareBigNumbers, multiplyBigNumbers } from "../../utils/BigNumberUtils";
 import { convertToBigInt } from "../../utils/Money.utils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
+import { selectStandardGasPrice } from "./../gas/selectors";
 import { EInvestmentCurrency, EInvestmentType, IInvestmentFlowState } from "./reducer";
-import { selectGasPrice } from "../gas/selectors";
 
 // State Selectors
 

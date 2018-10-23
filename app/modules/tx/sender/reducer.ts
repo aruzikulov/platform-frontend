@@ -2,8 +2,6 @@ import { AppReducer } from "../../../store";
 import { ITxData } from "./../../../lib/web3/Web3Manager";
 import { ETxSenderType } from "./../interfaces";
 
-export const GAS_PRICE_MULTIPLIER = 1 + parseFloat(process.env.NF_GAS_OVERHEAD || "0");
-
 export enum ETransactionErrorType {
   NOT_ENOUGH_ETHER_FOR_GAS = "not_enough_ether_for_gas",
   FAILED_TO_GENERATE_TX = "failed_to_generate_tx",

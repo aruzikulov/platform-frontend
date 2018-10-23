@@ -15,6 +15,7 @@ import { selectReadyToInvest } from "../../../investmentFlow/selectors";
 import { selectEtoById } from "../../../public-etos/selectors";
 import { neuCall } from "../../../sagas";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
+import { calculateGasPriceWithOverhead } from '../../utils';
 
 export const INVESTMENT_GAS_AMOUNT = "600000";
 
@@ -30,7 +31,7 @@ async function createInvestmentTxData(
     data: txData.getData(),
     value: value,
     gasPrice: selectGasPrice(state)!.standard,
-    gas: INVESTMENT_GAS_AMOUNT,
+    gas: calculateGasPriceWithOverhead(INVESTMENT_GAS_AMOUNT),
   };
 }
 

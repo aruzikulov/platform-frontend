@@ -1,6 +1,6 @@
-import { INVESTMENT_GAS_AMOUNT } from './../tx/transactions/investment/sagas';
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
+import { INVESTMENT_GAS_AMOUNT } from './../tx/transactions/investment/sagas';
 
 export enum EInvestmentType {
   InvestmentWallet = "INVESTMENT_WALLET",

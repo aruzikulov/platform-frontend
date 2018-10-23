@@ -1,6 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { put,select, take } from "redux-saga/effects";
 import { TAction } from "./../../../actions";
+import { calculateGasPriceWithOverhead } from './../../utils';
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { GasModelShape } from "../../../../lib/api/GasApi";
@@ -35,7 +36,7 @@ export function* generateEthWithdrawTransaction(
     from,
     data: txInput,
     value: difference.comparedTo(0) > 0 ? difference.toString() : "0",
-    gas: WITHDRAW_GAS_LIMIT,
+    gas: calculateGasPriceWithOverhead(WITHDRAW_GAS_LIMIT),
     gasPrice: gasPrice!.standard,
   };
 

@@ -1,14 +1,12 @@
-import { fork, put, select } from "redux-saga/effects";
-import { selectGasPrice } from "./../../gas/selectors";
+import { fork } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
-import { GasModelShape } from "../../../lib/api/GasApi";
-import { actions, TAction } from "../../actions";
+import { TAction } from "../../actions";
 import { onInvestmentTxModalHide } from "../../investmentFlow/sagas";
 import { neuCall, neuTakeEvery } from "../../sagas";
 import { ITxSendParams, txSendSaga } from "../sender/sagas";
 import { ETxSenderType } from "./../interfaces";
-import { generateInvestmentTransaction, INVESTMENT_GAS_AMOUNT } from './investment/sagas';
+import { generateInvestmentTransaction } from './investment/sagas';
 import { upgradeTransactionFlow } from "./upgrade/sagas";
 import { ethWithdrawFlow } from "./withdraw/sagas";
 

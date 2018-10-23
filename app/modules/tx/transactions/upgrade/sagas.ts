@@ -1,12 +1,12 @@
 import { BigNumber } from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
 import { put, select } from "redux-saga/effects";
-import { GasModelShape } from "./../../../../lib/api/GasApi";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ITxData } from "../../../../lib/web3/Web3Manager";
 import { EthereumAddress } from "../../../../types";
 import { actions } from "../../../actions";
+import { selectStandardGasPrice } from "../../../gas/selectors";
 import { neuCall } from "../../../sagas";
 import {
   selectICBMLockedEtherBalance,
@@ -15,9 +15,9 @@ import {
 } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { ETokenType } from "../../interfaces";
+import { calculateGasPriceWithOverhead } from '../../utils';
 import { selectGasPrice } from "./../../../gas/selectors";
 import { selectICBMLockedEuroTokenBalance } from "./../../../wallet/selectors";
-import { selectStandardGasPrice } from "../../../gas/selectors";
 
 export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
   const userAddress = yield select(selectEthereumAddressWithChecksum);
@@ -44,7 +44,7 @@ export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDep
 
   const txDetails: ITxData = {
     ...txInitialDetails,
-    gas: addHexPrefix(new BigNumber(estimatedGas).toString(16)),
+    gas: addHexPrefix(new BigNumber(calculateGasPriceWithOverhead(estimatedGas)).toString(16)),
   };
   return txDetails;
 }
@@ -74,7 +74,7 @@ export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDe
 
   const txDetails: ITxData = {
     ...txInitialDetails,
-    gas: addHexPrefix(new BigNumber(estimateGas).toString(16)),
+    gas: addHexPrefix(new BigNumber(calculateGasPriceWithOverhead(estimateGas)).toString(16)),
   };
 
   return txDetails;

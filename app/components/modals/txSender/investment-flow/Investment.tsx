@@ -16,6 +16,7 @@ import {
   selectErrorState,
   selectEthValueUlps,
   selectEurValueUlps,
+  selectInvestmentGasCostEth,
   selectInvestmentType,
   selectReadyToInvest,
 } from "../../../../modules/investmentFlow/selectors";
@@ -25,7 +26,6 @@ import {
 } from "../../../../modules/investor-tickets/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
-import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
 import {
   addBigNumbers,
@@ -49,7 +49,6 @@ import {
 } from "./utils";
 
 import * as styles from "./Investment.module.scss";
-import { selectInvestmentGasCostEth } from "../../../../modules/investmentFlow/selectors";
 
 interface IStateProps {
   eto: TPublicEtoData;
