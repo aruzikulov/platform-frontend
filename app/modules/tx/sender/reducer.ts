@@ -131,6 +131,11 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
         ...state,
         validationState: action.payload,
       };
+    case "TX_SENDER_VALIDATE_DRAFT":
+      return {
+        ...state,
+        validationState: undefined,
+      };
     case "TX_SENDER_SET_SUMMARY_DATA":
       return {
         ...state,

@@ -33,4 +33,5 @@ export const txSenderActions = {
   setTransactionData: (txData: ITxData) => createAction("TX_SENDER_LOAD_TRANSACTION", txData),
   setValidationState: (validationState: EValidationState) =>
     createAction("TX_SENDER_SET_VALIDATION_STATE", validationState),
+  clearValidationState: () => createSimpleAction("TX_SENDER_CLEAR_VALIDATION_STATE"),
 };

@@ -39,11 +39,13 @@ type TProps = IStateProps & ITxInitDispatchProps;
 
 const withdrawFormSchema = YupTS.object({
   to: YupTS.string().enhance(v =>
-    v.test("isEthereumAddress", "is not a valid Ethereum address", (value: string) => {
-      return Web3Utils.isAddress(value);
-    }),
+    v
+      .test("isEthereumAddress", "is not a valid Ethereum address", (value: string) => {
+        return Web3Utils.isAddress(value);
+      })
+      .required(),
   ),
-  value: YupTS.number().enhance((v: NumberSchema) => v.positive()),
+  value: YupTS.number().enhance((v: NumberSchema) => v.moreThan(0).required()),
 });
 const withdrawFormValidator = withdrawFormSchema.toYup();
 
@@ -69,9 +71,16 @@ const WithdrawComponent: React.SFC<TProps> = ({
         onAccept({ ...data, value });
       }}
     >
-      {({ isValid, values }) => {
-        const ethAboveBalance =
-          compareBigNumbers(convertToBigInt(values.value || "0"), maxEther) > 0;
+      {({
+        isValid,
+        values,
+        setErrors,
+        isValidating,
+        setFieldValue,
+        setFieldTouched,
+        validateField,
+        ...props
+      }) => {
         return (
           <Form>
             <Container>
@@ -93,31 +102,32 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     label={<FormattedMessage id="modal.sent-eth.amount-to-send" />}
                     placeholder="Please enter value in eth"
                     data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.value"
-                    errorMessage={
-                      ethAboveBalance ? (
-                        <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance" />
-                      ) : (
-                        undefined
-                      )
-                    }
                     validate={() => {
-                      // Only validate when both field lever validation is valid
-                      if (isValid) onValidate({ ...values, type: ETxSenderType.WITHDRAW });
+                      if (compareBigNumbers(convertToBigInt(values.value || "0"), maxEther) > 0)
+                        return (
+                          <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance" />
+                        );
+                      if (isValid && !isValidating) {
+                        onValidate({ ...values, type: ETxSenderType.WITHDRAW });
+                      }
+                      // return undefined;
+                    }}
+                    onChange={(e: any) => {
+                      setFieldValue("value", e.target.value);
+                      validateField("value");
                     }}
                   />
                   {/* @SEE https://github.com/jaredpalmer/formik/issues/288 */}
-                  {validationState !== EValidationState.VALIDATION_OK && <ValidationErrorMessage type={validationState} />}
+                  {validationState !== EValidationState.VALIDATION_OK && (
+                    <ValidationErrorMessage type={validationState} />
+                  )}
                 </Col>
               </Row>
               <Row>
                 <Col xs={12} className="mt-3 text-center">
                   <Button
                     type="submit"
-                    disabled={
-                      !isValid ||
-                      ethAboveBalance ||
-                      validationState !== EValidationState.VALIDATION_OK
-                    }
+                    disabled={!isValid || isValidating || !!validationState}
                     data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"
                   >
                     <FormattedMessage id="modal.sent-eth.button" />

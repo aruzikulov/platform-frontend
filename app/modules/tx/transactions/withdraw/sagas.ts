@@ -1,8 +1,9 @@
 import { BigNumber } from "bignumber.js";
-import { put,select, take } from "redux-saga/effects";
+import { put, select, take } from "redux-saga/effects";
 import { TAction } from "./../../../actions";
-import { calculateGasPriceWithOverhead } from './../../utils';
+import { calculateGasPriceWithOverhead } from "./../../utils";
 
+import { Q18 } from "../../../../config/constants";
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { GasModelShape } from "../../../../lib/api/GasApi";
 import { actions } from "../../../actions";
@@ -35,7 +36,7 @@ export function* generateEthWithdrawTransaction(
     to: contractsService.etherToken.address,
     from,
     data: txInput,
-    value: difference.comparedTo(0) > 0 ? difference.toString() : "0",
+    value: difference.comparedTo(0) > 0 ? Q18.mul(difference).toString() : "0",
     gas: calculateGasPriceWithOverhead(WITHDRAW_GAS_LIMIT),
     gasPrice: gasPrice!.standard,
   };

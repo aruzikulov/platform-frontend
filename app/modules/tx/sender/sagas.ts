@@ -16,7 +16,11 @@ import {
   UnknownEthNodeError,
 } from "../../../lib/web3/Web3Adapter";
 import { IAppState } from "../../../store";
-import { compareBigNumbers, multiplyBigNumbers } from "../../../utils/BigNumberUtils";
+import {
+  compareBigNumbers,
+  multiplyBigNumbers,
+  subtractBigNumbers,
+} from "../../../utils/BigNumberUtils";
 import { delay } from "../../../utils/delay";
 import { connectWallet } from "../../accessWallet/sagas";
 import { actions, TAction } from "../../actions";
@@ -46,7 +50,7 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
       action.payload,
     );
     yield validateGas(generatedTxDetails);
-    yield put(actions.txSender.setValidationState(EValidationState.VALIDATION_OK));
+    // yield put(actions.txSender.setValidationState(EValidationState.VALIDATION_OK));
   } catch (error) {
     logger.error(error);
     yield put(actions.txSender.setValidationState(EValidationState.NOT_ENOUGH_ETHER_FOR_GAS));
@@ -126,7 +130,10 @@ function* validateGas(txDetails: ITxData): any {
   }
 
   if (
-    compareBigNumbers(multiplyBigNumbers([txDetails.gasPrice, txDetails.gas]), etherBalance) > 0
+    compareBigNumbers(
+      multiplyBigNumbers([txDetails.gasPrice, txDetails.gas]),
+      subtractBigNumbers([etherBalance, txDetails.value]),
+    ) > 0
   ) {
     throw new NotEnoughEtherForGasError("Not enough Ether to pay the Gas for this transaction");
   }
