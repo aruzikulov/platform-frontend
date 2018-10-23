@@ -18,10 +18,9 @@ export enum ETransactionErrorType {
   UNKNOWN_ERROR = "unknown_error",
 }
 
-export enum EValidationErrorType {
+export enum EValidationState {
   NOT_ENOUGH_ETHER_FOR_GAS = "not_enough_ether_for_gas",
-  ADDRESS_IS_SMART_CONTRACT = "address_is_smart_contract",
-  ADDRESS_IS_NOT_CHECKSUMMED = "address_is_smart_contract",
+  VALIDATION_OK = "validation_ok",
 }
 
 export enum ETxSenderState {
@@ -45,7 +44,7 @@ export interface ITxSenderState {
   blockId?: number;
   txHash?: string;
   error?: ETransactionErrorType;
-  validationError?: EValidationErrorType;
+  validationState?: EValidationState;
 }
 
 const initialState: ITxSenderState = {
@@ -127,10 +126,10 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
         state: ETxSenderState.ERROR_SIGN,
         error: action.payload.error,
       };
-    case "TX_SENDER_SET_VALIDATION_ERROR":
+    case "TX_SENDER_SET_VALIDATION_STATE":
       return {
         ...state,
-        validationError: action.payload,
+        validationState: action.payload,
       };
     case "TX_SENDER_SET_SUMMARY_DATA":
       return {

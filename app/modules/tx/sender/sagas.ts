@@ -28,7 +28,7 @@ import { updateTxs } from "../monitor/sagas";
 import { generateEthWithdrawTransaction } from "../transactions/withdraw/sagas";
 import { OutOfGasError } from "./../../../lib/web3/Web3Adapter";
 import { ITxData } from "./../../../lib/web3/Web3Manager";
-import { ETransactionErrorType, EValidationErrorType } from "./reducer";
+import { ETransactionErrorType, EValidationState } from "./reducer";
 import { selectTxDetails, selectTxType } from "./selectors";
 
 class NotEnoughEtherForGasError extends Error {}
@@ -46,11 +46,10 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
       action.payload,
     );
     yield validateGas(generatedTxDetails);
-
-    // TODO: Add more hcecks
+    yield put(actions.txSender.setValidationState(EValidationState.VALIDATION_OK));
   } catch (error) {
     logger.error(error);
-    yield put(actions.txSender.setValidationError(EValidationErrorType.NOT_ENOUGH_ETHER_FOR_GAS));
+    yield put(actions.txSender.setValidationState(EValidationState.NOT_ENOUGH_ETHER_FOR_GAS));
   }
 }
 
@@ -84,7 +83,7 @@ export function* txSendProcess(
   try {
     yield put(actions.txSender.txSenderShowModal(transactionType));
     yield neuCall(ensureNoPendingTx, transactionType);
-    
+
     yield put(actions.txSender.txSenderWatchPendingTxsDone(transactionType));
     const generatedTxDetails: ITxData = yield transactionFlowGenerator;
     yield put(actions.txSender.setTransactionData(generatedTxDetails));

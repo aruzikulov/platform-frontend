@@ -2,7 +2,7 @@ import { createAction, createSimpleAction } from "../../actionsUtils";
 import { IDraftType } from "../interfaces";
 import { ITxData } from "./../../../lib/web3/Web3Manager";
 import { ETxSenderType } from "./../interfaces";
-import { ETransactionErrorType, EValidationErrorType } from "./reducer";
+import { ETransactionErrorType, EValidationState } from "./reducer";
 
 export const txSenderActions = {
   // Modal related actions
@@ -31,6 +31,6 @@ export const txSenderActions = {
   setSummaryData: (summaryData: Partial<ITxData>) =>
     createAction("TX_SENDER_SET_SUMMARY_DATA", summaryData),
   setTransactionData: (txData: ITxData) => createAction("TX_SENDER_LOAD_TRANSACTION", txData),
-  setValidationError: (validationError: EValidationErrorType) =>
-    createAction("TX_SENDER_SET_VALIDATION_ERROR", validationError),
+  setValidationState: (validationState: EValidationState) =>
+    createAction("TX_SENDER_SET_VALIDATION_STATE", validationState),
 };
