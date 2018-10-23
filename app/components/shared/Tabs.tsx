@@ -22,7 +22,7 @@ interface ITabContent {
   "data-test-id"?: string;
 }
 
-export class TabContent extends React.Component<ITabContent> {
+class TabContent extends React.Component<ITabContent> {
   public tab = this.props.tab;
   public routerPath = this.props.routerPath;
   public "data-test-id" = this.props["data-test-id"];
@@ -32,12 +32,10 @@ export class TabContent extends React.Component<ITabContent> {
   }
 }
 
-export class Tabs extends React.Component<ITabsProps & CommonHtmlProps> {
+class Tabs extends React.Component<ITabsProps & CommonHtmlProps> {
   state = {
     activeIndex: this.props.selectedIndex || 0,
   };
-
-  displayName = "Tabs";
 
   static defaultProps = {
     layoutSize: "small",
@@ -51,37 +49,34 @@ export class Tabs extends React.Component<ITabsProps & CommonHtmlProps> {
 
   private renderTab = (index: number, tabContent: TComponent) => {
     const { layoutSize, layoutOrnament } = this.props;
-    const hasOrnament = layoutOrnament ? "has-ornament" : "";
-    const hasRouterPath = !!tabContent && tabContent.props.routerPath;
 
-    if (!tabContent) {
-      return;
-    }
-
-    const isActive = hasRouterPath
-      ? window.location.pathname.includes(tabContent.props.routerPath || "")
-        ? "is-active"
-        : ""
-      : index === this.state.activeIndex
-        ? "is-active"
-        : "";
+    const className = cn(styles.tab, layoutSize, {
+      "has-ornament": layoutOrnament,
+    });
 
     const commonProps = {
-      className: cn(styles.tab, layoutSize, hasOrnament, isActive),
       onClick: () => this.handleClick(index),
       "data-test-id": tabContent && tabContent.props["data-test-id"],
     };
 
-    return hasRouterPath ? (
+    return tabContent.props.routerPath ? (
       <NavLinkConnected
         {...commonProps}
-        to={{ pathname: tabContent.props.routerPath, search: window.location.search }}
         key={tabContent.props.routerPath}
+        className={className}
+        activeClassName="is-active"
+        to={{ pathname: tabContent.props.routerPath, search: window.location.search }}
       >
         {tabContent.props.tab}
       </NavLinkConnected>
     ) : (
-      <div {...commonProps} key={index}>
+      <div
+        {...commonProps}
+        className={cn(className, {
+          "is-active": index === this.state.activeIndex,
+        })}
+        key={index}
+      >
         {tabContent.props.tab}
       </div>
     );
@@ -109,3 +104,5 @@ export class Tabs extends React.Component<ITabsProps & CommonHtmlProps> {
     );
   }
 }
+
+export { TabContent, Tabs };

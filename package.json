@@ -58,6 +58,7 @@
     "@babel/preset-typescript": "^7.0.0-rc.1",
     "@babel/register": "^7.0.0-rc.1",
     "@cypress/webpack-preprocessor": "2.0.1",
+    "@storybook/addon-a11y": "^3.4.11",
     "@storybook/addon-actions": "^3.4.10",
     "@storybook/react": "^4.0.0-alpha.20",
     "@types/bluebird": "^3.5.1",
