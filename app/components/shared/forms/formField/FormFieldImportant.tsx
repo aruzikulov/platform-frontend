@@ -31,6 +31,7 @@ interface IFieldGroup {
   placeholder?: string;
   errorMessage?: string | React.ReactNode;
   type?: InputType;
+  ignoreTouched?: boolean;
 }
 type FieldGroupProps = IFieldGroup & FieldAttributes<any> & CommonHtmlProps;
 
@@ -44,6 +45,7 @@ export class FormFieldImportant extends React.Component<FieldGroupProps> {
       errorMessage,
       validate,
       label,
+      ignoreTouched,
       ...props
     } = this.props;
 
@@ -69,7 +71,7 @@ export class FormFieldImportant extends React.Component<FieldGroupProps> {
                       {...props as any}
                     />
                     <InputGroupAddon addonType="append" className={formStyles.addon}>
-                      {(isNonValid(touched, errors, name) || errorMessage) && (
+                      {(isNonValid(touched, errors, name, ignoreTouched) || errorMessage) && (
                         <>
                           <img id={tooltipId} src={icon} />
                           <CustomTooltip target={tooltipId}>

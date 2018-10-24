@@ -14,10 +14,10 @@ export const selectNeuBalance = (state: IWalletState): string =>
   (state.data && state.data.neuBalance) || "0";
 
 export const selectEtherTokenBalance = (state: IAppState): string | undefined =>
-  state.wallet.data && state.wallet.data.etherTokenBalance;
+  (state.wallet.data && state.wallet.data.etherTokenBalance) || "0";
 
-export const selectEtherBalance = (state: IAppState): string | undefined =>
-  state.wallet.data && state.wallet.data.etherBalance;
+export const selectEtherBalance = (state: IAppState): string =>
+  (state.wallet.data && state.wallet.data.etherBalance) || "0";
 
 /**
  * Liquid Assets

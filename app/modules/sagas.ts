@@ -20,7 +20,7 @@ import { formSingleFileUploadSagas } from "./shared/formSingleFileUpload/sagas";
 import { remoteFileSagas } from "./shared/remoteFile/sagas";
 import { tokenPriceSagas } from "./shared/tokenPrice/sagas";
 import { txMonitorSagas } from "./tx/monitor/sagas";
-import { txSendingSagasWatcher } from './tx/sender/sagas';
+import { txSendingSagasWatcher } from "./tx/sender/sagas";
 import { txTransactionsSagasWatcher } from "./tx/transactions/sagas";
 import { lightWalletSagas } from "./wallet-selector/light-wizard/sagas";
 import { walletSelectorSagas } from "./wallet-selector/sagas";
@@ -73,6 +73,14 @@ export function* rootSaga(): Iterator<effects.Effect> {
  * Helpers
  */
 type TActionType = TAction["type"];
+
+export function* neuTakeLatest(
+  type: TActionType | Array<string>,
+  saga: (deps: TGlobalDependencies, action: TAction) => any,
+): Iterator<effects.Effect> {
+  const deps: TGlobalDependencies = yield effects.getContext("deps");
+  yield takeLatest(type, saga, deps);
+}
 
 export function* neuTakeEvery(
   type: TActionType | Array<string>,

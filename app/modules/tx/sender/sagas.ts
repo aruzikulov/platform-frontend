@@ -51,7 +51,7 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
       action.payload,
     );
     yield validateGas(generatedTxDetails);
-    // yield put(actions.txSender.setValidationState(EValidationState.VALIDATION_OK));
+    yield put(actions.txSender.setValidationState(EValidationState.VALIDATION_OK));
   } catch (error) {
     logger.error(error);
     yield put(actions.txSender.setValidationState(EValidationState.NOT_ENOUGH_ETHER_FOR_GAS));
@@ -131,7 +131,7 @@ function* validateGas(txDetails: ITxData): any {
   if (
     compareBigNumbers(
       multiplyBigNumbers([txDetails.gasPrice, txDetails.gas]),
-      subtractBigNumbers([etherBalance, Q18.mul(txDetails.value).toString()]),
+      subtractBigNumbers([etherBalance, txDetails.value.toString()]),
     ) > 0
   ) {
     throw new NotEnoughEtherForGasError("Not enough Ether to pay the Gas for this transaction");

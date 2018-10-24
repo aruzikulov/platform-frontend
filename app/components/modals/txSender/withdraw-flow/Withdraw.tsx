@@ -66,21 +66,9 @@ const WithdrawComponent: React.SFC<TProps> = ({
       validationSchema={withdrawFormValidator}
       isInitialValid={false}
       initialValues={{ value: "", to: "" }}
-      onSubmit={data => {
-        const value = Web3Utils.toWei(data.value.toString(), "ether");
-        onAccept({ ...data, value });
-      }}
+      onSubmit={onAccept}
     >
-      {({
-        isValid,
-        values,
-        setErrors,
-        isValidating,
-        setFieldValue,
-        setFieldTouched,
-        validateField,
-        ...props
-      }) => {
+      {({ isValid, values, isValidating, setFieldValue, validateField }) => {
         return (
           <Form>
             <Container>
@@ -90,6 +78,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     name="to"
                     label={<FormattedMessage id="modal.sent-eth.to-address" />}
                     placeholder="0x0"
+                    ignoreTouched={true}
                     data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.to-address"
                   />
                 </Col>
@@ -102,32 +91,36 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     label={<FormattedMessage id="modal.sent-eth.amount-to-send" />}
                     placeholder="Please enter value in eth"
                     data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.value"
+                    ignoreTouched={true}
                     validate={() => {
                       if (compareBigNumbers(convertToBigInt(values.value || "0"), maxEther) > 0)
                         return (
                           <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance" />
                         );
-                      if (isValid && !isValidating) {
-                        onValidate({ ...values, type: ETxSenderType.WITHDRAW });
-                      }
-                      // return undefined;
                     }}
                     onChange={(e: any) => {
                       setFieldValue("value", e.target.value);
                       validateField("value");
+                      onValidate({
+                        ...values,
+                        value: e.target.value,
+                        type: ETxSenderType.WITHDRAW,
+                      });
                     }}
                   />
                   {/* @SEE https://github.com/jaredpalmer/formik/issues/288 */}
-                  {validationState !== EValidationState.VALIDATION_OK && (
-                    <ValidationErrorMessage type={validationState} />
-                  )}
+                  {validationState !== EValidationState.VALIDATION_OK &&
+                    isValid &&
+                    !isValidating && <ValidationErrorMessage type={validationState} />}
                 </Col>
               </Row>
               <Row>
                 <Col xs={12} className="mt-3 text-center">
                   <Button
                     type="submit"
-                    disabled={!isValid || isValidating || !!validationState}
+                    disabled={
+                      !isValid || isValidating || validationState !== EValidationState.VALIDATION_OK
+                    }
                     data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"
                   >
                     <FormattedMessage id="modal.sent-eth.button" />
