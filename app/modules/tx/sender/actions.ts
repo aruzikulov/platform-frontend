@@ -1,8 +1,10 @@
+import { ITxData } from "../../../lib/web3/Web3Manager";
 import { createAction, createSimpleAction } from "../../actionsUtils";
 import { IDraftType } from "../interfaces";
 import { ITxData } from "./../../../lib/web3/Web3Manager";
 import { ETxSenderType } from "./../interfaces";
 import { ETransactionErrorType, EValidationState } from "./reducer";
+import { ETokenType, ETxSenderType } from "./reducer";
 
 export const txSenderActions = {
   // Modal related actions
@@ -13,6 +15,7 @@ export const txSenderActions = {
     createAction("TX_SENDER_ACCEPT_DRAFT", txDraftData!),
   txSenderAccept: () => createSimpleAction("TX_SENDER_ACCEPT"),
   txSenderValidateDraft: (txDraft: IDraftType) => createAction("TX_SENDER_VALIDATE_DRAFT", txDraft),
+  txSenderChange: (type: ETxSenderType) => createAction("TX_SENDER_CHANGE", { type }),
   // Signer actions
   txSenderSigned: (txHash: string, type: ETxSenderType) =>
     createAction("TX_SENDER_SIGNED", { txHash, type }),

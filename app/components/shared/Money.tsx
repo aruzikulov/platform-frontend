@@ -3,7 +3,8 @@ import * as cn from "classnames";
 import * as React from "react";
 
 import { MONEY_DECIMALS } from "../../config/constants";
-import { formatMoney, formatThousands } from "../../utils/Money.utils";
+import { formatMoney } from "../../utils/Money.utils";
+import { NumberFormat } from "./NumberFormat";
 
 import * as styles from "./Money.module.scss";
 
@@ -100,11 +101,9 @@ const Money: React.SFC<IProps> = ({
       ? getFormattedMoney(value as BigNumber, currency)
       : value;
 
-  const formattedMoney =
-    !doNotSeparateThousands && !React.isValidElement(money)
-      ? formatThousands(money.toString())
-      : money;
+  const doFormat = !doNotSeparateThousands && !React.isValidElement(money);
 
+  const formattedMoney = doFormat ? <NumberFormat value={money as string} /> : money;
   return (
     <span {...props} className={cn(styles.money, transfer, props.className, theme)}>
       {currencySymbol === ECurrencySymbol.SYMBOL && (

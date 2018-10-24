@@ -1,6 +1,7 @@
 import { get } from "lodash";
 import { appRoutes } from "../../components/appRoutes";
-import { DEFAULT_PASSWORD } from "../utils/userHelpers";
+import { walletRegisterRoutes } from "../../components/wallet-selector/walletRoutes";
+import { DEFAULT_PASSWORD } from "./userHelpers";
 
 export function tid(id: string, rest?: string): string {
   return `[data-test-id="${id}"]` + (rest ? ` ${rest}` : "");
@@ -18,6 +19,11 @@ export const assertEtoDashboard = () => {
 export const assertDashboard = () => {
   cy.url().should("contain", "/dashboard");
   cy.get(tid("dashboard-application")).should("exist");
+};
+
+export const assertRegister = () => {
+  cy.url().should("contain", walletRegisterRoutes.light);
+  cy.get(tid("register-layout")).should("exist");
 };
 
 export const goToDashboard = () => {

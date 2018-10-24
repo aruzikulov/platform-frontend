@@ -23,9 +23,10 @@ import {
   subtractBigNumbers,
 } from "../../../utils/BigNumberUtils";
 import { delay } from "../../../utils/delay";
-import { connectWallet } from "../../accessWallet/sagas";
+import { connectWallet } from "../../access-wallet/sagas";
 import { actions, TAction } from "../../actions";
 import { IGasState } from "../../gas/reducer";
+import { onInvestmentTxModalHide } from "../../investment-flow/sagas";
 import { neuCall, neuTakeEvery } from "../../sagas";
 import { selectEtherBalance } from "../../wallet/selectors";
 import { ETxSenderType } from "../interfaces";

@@ -4,7 +4,6 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
-import { Schema } from "yup";
 
 import {
   EtoKeyIndividualsType,
@@ -15,11 +14,11 @@ import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
 import { TFormikConnect, TTranslatedString } from "../../../../types";
-import { getField, isRequired } from "../../../../utils/yupUtils";
+import { getFieldSchema, isRequired } from "../../../../utils/yupUtils";
 import { Button, ButtonIcon, EButtonLayout } from "../../../shared/buttons";
 import { FormField, FormTextArea } from "../../../shared/forms";
-import { FormLabel } from "../../../shared/forms/formField/FormLabel";
-import { FormSingleFileUpload } from "../../../shared/forms/formField/FormSingleFileUpload";
+import { FormLabelRaw } from "../../../shared/forms/form-field/FormLabel";
+import { FormSingleFileUpload } from "../../../shared/forms/form-field/FormSingleFileUpload";
 import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
 import { FormSection } from "../../../shared/forms/FormSection";
 import { SOCIAL_PROFILES_PERSON, SocialProfilesEditor } from "../../../shared/SocialProfilesEditor";
@@ -51,7 +50,6 @@ interface IIndividual {
 interface IKeyIndividualsGroup {
   name: string;
   title: TTranslatedString;
-  validationSchema: Schema<TEtoKeyIndividualType>;
 }
 
 const getBlankMember = () => ({
@@ -98,9 +96,9 @@ const Individual: React.SFC<IIndividual> = ({
         data-test-id={`${group}.image`}
       />
       <FormField className="mt-4" name={`${group}.website`} placeholder="website" />
-      <FormLabel className="mt-4 mb-2">
+      <FormLabelRaw className="mt-4 mb-2">
         <FormattedMessage id="eto.form.key-individuals.add-social-channels" />
-      </FormLabel>
+      </FormLabelRaw>
       <SocialProfilesEditor profiles={SOCIAL_PROFILES_PERSON} name={`${group}.socialChannels`} />
     </FormHighlightGroup>
   );
@@ -117,7 +115,11 @@ class KeyIndividualsGroupLayout extends React.Component<IKeyIndividualsGroup & T
   }
 
   isRequired(): boolean {
-    return isRequired(this.props.validationSchema);
+    const { formik, name } = this.props;
+    const { validationSchema } = formik;
+
+    const fieldSchema = getFieldSchema(name, validationSchema());
+    return isRequired(fieldSchema);
   }
 
   componentDidMount(): void {
@@ -185,37 +187,30 @@ const EtoRegistrationKeyIndividualsComponent = (props: IProps) => {
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.team.title" />}
         name="team"
-        validationSchema={getField("team", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.advisors.title" />}
         name="advisors"
-        validationSchema={getField("advisors", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.key-alliances.title" />}
         name="keyAlliances"
-        validationSchema={getField("keyAlliances", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.board-members.title" />}
         name="boardMembers"
-        validationSchema={getField("boardMembers", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.notable-investors.title" />}
         name="notableInvestors"
-        validationSchema={getField("notableInvestors", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.key-customers.title" />}
         name="keyCustomers"
-        validationSchema={getField("keyCustomers", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.partners.title" />}
         name="partners"
-        validationSchema={getField("partners", validator)}
       />
       <Col>
         <Row className="justify-content-end">

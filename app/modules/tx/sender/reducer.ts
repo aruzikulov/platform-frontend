@@ -1,3 +1,4 @@
+import { ITxData } from "../../../lib/web3/Web3Manager";
 import { AppReducer } from "../../../store";
 import { ITxData } from "./../../../lib/web3/Web3Manager";
 import { ETxSenderType } from "./../interfaces";
@@ -143,6 +144,13 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
         summaryData: {
           ...action.payload,
         },
+      };
+    //Change Actions
+    case "TX_SENDER_CHANGE":
+      return {
+        ...state,
+        state: "INIT",
+        type: action.payload.type,
       };
   }
 

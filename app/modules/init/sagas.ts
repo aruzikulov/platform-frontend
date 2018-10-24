@@ -11,7 +11,7 @@ import { loadJwt, loadUser } from "../auth/sagas";
 import { selectUserType } from "../auth/selectors";
 import { initializeContracts } from "../contracts/sagas";
 import { neuCall, neuTakeEvery } from "../sagas";
-import { detectUserAgent } from "../userAgent/sagas";
+import { detectUserAgent } from "../user-agent/sagas";
 import { loadPreviousWallet } from "../web3/sagas";
 
 function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any {

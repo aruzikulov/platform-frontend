@@ -4,8 +4,8 @@ import { Col, Row } from "reactstrap";
 import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
 import { EtoList } from "./eto-list/EtoList";
 import { EtoListDummies } from "./eto-list/EtoListDummies";
-import { MyPortfolioWidget } from "./myPortfolio/MyPortfolioWidget";
-import { MyWalletWidget } from "./myWallet/MyWalletWidget";
+import { MyPortfolioWidget } from "./my-portfolio/MyPortfolioWidget";
+import { MyWalletWidget } from "./my-wallet/MyWalletWidget";
 
 export const Dashboard = () => (
   <LayoutAuthorized>

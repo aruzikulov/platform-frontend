@@ -8,7 +8,7 @@ import { selectIsAuthorized, selectUserType } from "../modules/auth/selectors";
 import { appConnect } from "../store";
 import { appRoutes } from "./appRoutes";
 import { Button, ButtonLink, EButtonLayout } from "./shared/buttons";
-import { loginWalletRoutes, walletRegisterRoutes } from "./walletSelector/walletRoutes";
+import { loginWalletRoutes, walletRegisterRoutes } from "./wallet-selector/walletRoutes";
 
 import * as logo from "../../app/assets/img/logo_yellow.svg";
 import * as logoText from "../../app/assets/img/neufund-logo.svg";

@@ -200,6 +200,7 @@ export enum EtoStateToCamelcase {
 
 export const EtoTermsType = YupTS.object({
   currencies: YupTS.array(YupTS.string()),
+  prospectusLanguage: YupTS.string().optional(),
   publicDurationDays: YupTS.number(),
   minTicketEur: YupTS.number().enhance((v: NumberSchema) => {
     const minTicketEur = PlatformTerms.MIN_TICKET_EUR_ULPS.div(Q18).toNumber();

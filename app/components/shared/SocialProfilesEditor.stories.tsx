@@ -1,6 +1,6 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
-import { formWrapper } from "./forms/formField/form-utils";
+import { formWrapper } from "./forms/form-field/form-utils";
 
 import { SocialProfilesEditor } from "./SocialProfilesEditor";
 

@@ -20,9 +20,9 @@ import {
 import {
   FormFieldCheckbox,
   FormFieldCheckboxGroup,
-} from "../../../shared/forms/formField/FormFieldCheckboxGroup";
-import { FormLabel } from "../../../shared/forms/formField/FormLabel";
-import { FormRange } from "../../../shared/forms/formField/FormRange";
+} from "../../../shared/forms/form-field/FormFieldCheckboxGroup";
+import { FormLabel } from "../../../shared/forms/form-field/FormLabel";
+import { FormRange } from "../../../shared/forms/form-field/FormRange";
 import { EtoFormBase } from "../EtoFormBase";
 
 interface IExternalProps {
@@ -57,7 +57,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
     title={<FormattedMessage id="eto.form.eto-terms.title" />}
     validator={EtoTermsType.toYup()}
   >
-    <FormLabel>
+    <FormLabel name="currencies">
       <FormattedMessage id="eto.form.section.eto-terms.fundraising-currency" />
     </FormLabel>
     <div className="form-group">
@@ -107,7 +107,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
     </div>
 
     <div className="form-group">
-      <FormLabel>
+      <FormLabel name="prospectusLanguage">
         <FormattedMessage id="eto.form.section.eto-terms.prospectus-language" />
       </FormLabel>
       <div>
@@ -119,7 +119,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
     </div>
 
     <div className="form-group">
-      <FormLabel>
+      <FormLabel name="whitelistDurationDays">
         <FormattedMessage id="eto.form.section.eto-terms.pre-sale-duration" />
       </FormLabel>
       <FormRange
@@ -133,7 +133,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
     </div>
 
     <div className="form-group">
-      <FormLabel>
+      <FormLabel name="publicDurationDays">
         <FormattedMessage id="eto.form.section.eto-terms.public-offer-duration" />
       </FormLabel>
       <FormRange
@@ -146,7 +146,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
     </div>
 
     <div className="form-group">
-      <FormLabel>
+      <FormLabel name="signingDurationDays">
         <FormattedMessage id="eto.form.section.eto-terms.signing-duration" />
       </FormLabel>
       <FormRange
@@ -159,7 +159,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
     </div>
 
     <div className="form-group">
-      <FormLabel>
+      <FormLabel name="enableTransferOnSuccess">
         <FormattedMessage id="eto.form.section.eto-terms.token-tradable" />
       </FormLabel>
       <div>

@@ -44,21 +44,17 @@ interface IDispatchProps {
 }
 
 class PeopleSwiperWidgetComponent extends React.Component<IOwnProps & IDispatchProps> {
-  swiper: any = null;
-
-  swiperRef = (ref: any) => {
-    if (ref) this.swiper = ref.swiper;
-  };
+  swiperRef = React.createRef();
 
   goNext = () => {
-    if (this.swiper) {
-      this.swiper.slideNext();
+    if (this.swiperRef.current !== null) {
+      (this.swiperRef.current as any).swiper.slideNext();
     }
   };
 
   goPrev = () => {
-    if (this.swiper) {
-      this.swiper.slidePrev();
+    if (this.swiperRef.current !== null) {
+      (this.swiperRef.current as any).swiper.slidePrev();
     }
   };
 
@@ -76,15 +72,16 @@ class PeopleSwiperWidgetComponent extends React.Component<IOwnProps & IDispatchP
           slidesPerView: 2,
         },
         992: {
-          slidesPerView: slidesPerView - 2,
+          slidesPerView: isHorizontal ? (isSingle ? 1 : 2) : 4,
         },
         1200: {
-          slidesPerView: slidesPerView - 1,
+          slidesPerView: isHorizontal ? (isSingle ? 1 : 2) : 5,
         },
       },
       observer: true,
       centeredSlides: isSingle,
       slidesPerView,
+      wrapperClass: people.length === 3 ? styles.swiperWrapperCentered : styles.swiperWrapper,
     };
 
     return (

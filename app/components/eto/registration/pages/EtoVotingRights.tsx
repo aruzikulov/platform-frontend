@@ -14,8 +14,8 @@ import { selectIssuerEto } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { BOOL_TRUE_KEY, FormSelectField } from "../../../shared/forms";
-import { FormLabel } from "../../../shared/forms/formField/FormLabel";
-import { FormToggle } from "../../../shared/forms/formField/FormToggle";
+import { FormLabel } from "../../../shared/forms/form-field/FormLabel";
+import { FormToggle } from "../../../shared/forms/form-field/FormToggle";
 import { EtoFormBase } from "../EtoFormBase";
 
 // TODO: this keys will be replaced dynamically by addresses from an API endpoint, once there are more than one
@@ -65,7 +65,7 @@ const EtoVotingRightsComponent: React.SFC<IProps> = ({ readonly, savingData }) =
     />
 
     <div className="form-group">
-      <FormLabel>
+      <FormLabel name="generalVotingRule">
         <FormattedMessage id="eto.form.section.token-holders-rights.voting-rights-enabled" />
       </FormLabel>
       <FormToggle

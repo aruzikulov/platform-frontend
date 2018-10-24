@@ -22,9 +22,9 @@ import { TwitterTimelineEmbed } from "../../shared/TwitterTimeline";
 import { Video } from "../../shared/Video";
 import { EtoOverviewStatus } from "../overview/EtoOverviewStatus";
 import { EtoTimeline } from "../overview/EtoTimeline";
-import { Cover } from "../publicView/Cover";
-import { EtoInvestmentTermsWidget } from "../publicView/EtoInvestmentTermsWidget";
-import { LegalInformationWidget } from "../publicView/LegalInformationWidget";
+import { Cover } from "../public-view/Cover";
+import { EtoInvestmentTermsWidget } from "../public-view/EtoInvestmentTermsWidget";
+import { LegalInformationWidget } from "../public-view/LegalInformationWidget";
 import { areThereIndividuals, selectActiveCarouselTab } from "./EtoPublicComponent.utils";
 
 import * as icon_link from "../../../assets/img/inline_icons/social_link.svg";
@@ -127,12 +127,12 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) 
           preEtoDuration={etoData.whitelistDurationDays}
           publicEtoDuration={etoData.publicDurationDays}
           inSigningDuration={etoData.signingDurationDays}
+          quote={companyData.keyQuoteFounder}
           campaigningWidget={{
             investorsLimit: etoData.maxPledges,
             maxPledge: etoData.maxTicketEur,
             minPledge: etoData.minTicketEur,
             isActivated: etoData.isBookbuilding,
-            quote: companyData.keyQuoteFounder,
           }}
         />
 

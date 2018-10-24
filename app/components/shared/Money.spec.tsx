@@ -8,7 +8,7 @@ describe("Money", () => {
   it("should format money from wei", () => {
     const component = shallow(<Money value={"1234567" + "0".repeat(16)} currency="eth" />);
 
-    expect(component.text()).to.be.eq("12 345.6700 ETH");
+    expect(component.render().text()).to.be.eq("12 345.6700 ETH");
   });
 
   it("should not add thousand separator format money", () => {
@@ -16,7 +16,7 @@ describe("Money", () => {
       <Money value={"1234567" + "0".repeat(16)} currency="eth" doNotSeparateThousands />,
     );
 
-    expect(component.text()).to.be.eq("12345.6700 ETH");
+    expect(component.render().text()).to.be.eq("12345.6700 ETH");
   });
 
   it("should format money when format is set to FLOAT", () => {
@@ -24,7 +24,7 @@ describe("Money", () => {
       <Money value={"2501234"} currency="eur" format={EMoneyFormat.FLOAT} />,
     );
 
-    expect(component.text()).to.be.eq("2 501 234 EUR");
+    expect(component.render().text()).to.be.eq("2 501 234 EUR");
   });
 
   it("should use currency symbol for eur", () => {
@@ -36,7 +36,7 @@ describe("Money", () => {
       />,
     );
 
-    expect(component.text()).to.be.eq("€1 234.56");
+    expect(component.render().text()).to.be.eq("€1 234.56");
   });
 
   it("should not add either currency symbol or code  ", () => {
@@ -48,7 +48,7 @@ describe("Money", () => {
       />,
     );
 
-    expect(component.text()).to.be.eq("1 234.56");
+    expect(component.render().text()).to.be.eq("1 234.56");
   });
 
   it("should output - when no value is provided", () => {
@@ -62,13 +62,13 @@ describe("Money", () => {
       <Money value={value} currency="eur" currencySymbol={ECurrencySymbol.NONE} />,
     );
 
-    expect(component.text()).to.be.eq("1234567");
+    expect(component.render().text()).to.be.eq("1234567");
   });
 
   it("should format eur_token currency", () => {
     const component = shallow(<Money value={"123456" + "0".repeat(16)} currency="eur_token" />);
 
-    expect(component.text()).to.be.eq("1 234.56 nEUR");
+    expect(component.render().text()).to.be.eq("1 234.56 nEUR");
   });
 
   it("should throw error for non existing currency symbol", () => {

@@ -33,7 +33,7 @@ const SlidePerson: React.SFC<IProps> = ({
     <div className={cn(styles.slidePerson, layout)}>
       <div className={styles.profile}>
         <div className={styles.image}>
-          <ResponsiveImage srcSet={srcSet} alt={name} />
+          <ResponsiveImage srcSet={srcSet} alt={name} theme={"transparent"} />
         </div>
         <h5 className={styles.name}>{name}</h5>
         {role && <h6 className={styles.title}>{role}</h6>}

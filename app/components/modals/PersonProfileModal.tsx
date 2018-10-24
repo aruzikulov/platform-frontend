@@ -6,7 +6,7 @@ import {
   IPersonProfileModal,
   selectIsOpen,
   selectPersonProfileModalObj,
-} from "../../modules/personProfileModal/reducer";
+} from "../../modules/person-profile-modal/reducer";
 import { appConnect } from "../../store";
 import { SlidePerson } from "../shared/SlidePerson";
 import { ModalComponentBody } from "./ModalComponentBody";

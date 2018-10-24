@@ -6,7 +6,7 @@ import {
   IVideoModal,
   selectVideoModalIsOpen,
   selectVideoModalObj,
-} from "../../modules/videoModal/reducer";
+} from "../../modules/video-modal/reducer";
 import { appConnect } from "../../store";
 import { Proportion } from "../shared/Proportion";
 

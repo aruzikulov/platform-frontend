@@ -12,7 +12,7 @@ interface IProps {
 export const UploadedFiles: React.SFC<IProps> = ({ files }) => (
   <div className={cn("c-uploaded-files", styles.uploadedFiles)}>
     {files.map(({ fileName }, index) => (
-      <div key={index} className={styles.file}>
+      <div data-test-id={`multi-file-upload-file-${fileName}`} key={index} className={styles.file}>
         <span className={styles.text} title={fileName}>
           {fileName}
         </span>

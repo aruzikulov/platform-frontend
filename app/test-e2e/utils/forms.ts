@@ -4,7 +4,7 @@ import { formField, formFieldErrorMessage, tid } from "./selectors";
 type TFormFieldFixture =
   | {
       value: string;
-      type: "submit" | "tags" | "file" | "date" | "select" | "check" | "range";
+      type: "submit" | "tags" | "single-file" | "date" | "select" | "check" | "range";
     }
   | {
       value: string;
@@ -14,6 +14,10 @@ type TFormFieldFixture =
   | {
       type: "media";
       values: Record<string, string>;
+    }
+  | {
+      type: "multiple-files";
+      values: string[];
     }
   | {
       type: "submit";
@@ -89,9 +93,10 @@ export const fillForm = (fixture: TFormFixture, { submit = true }: { submit?: bo
         .type("{enter}", { force: true });
     }
     // files
-    else if (field.type === "file") {
-      uploadFileToFieldWithTid(key, field.value);
-      cy.wait(1000);
+    else if (field.type === "single-file") {
+      uploadSingleFileToFieldWithTid(key, field.value);
+    } else if (field.type === "multiple-files") {
+      uploadMultipleFilesToFieldWithTid(key, field.values);
     } else if (field.type === "media") {
       const socialProfilesTid = tid(key);
 
@@ -134,22 +139,54 @@ export const getFieldError = (formTid: string, key: string): Cypress.Chainable<s
 };
 
 /**
- * Upload a file to a dropzone field
+ * Upload single file to a dropzone field
  * @param targetTid - test id of the dropzone field
  * @param fixture - which fixture to load
  */
-export const uploadFileToFieldWithTid = (targetTid: string, fixture: string = "example.jpg") => {
-  const dropEvent = {
-    dataTransfer: {
-      files: [] as any,
-    },
-  };
+export const uploadSingleFileToFieldWithTid = (targetTid: string, fixture: string) => {
+  cy.fixture(fixture)
+    .then(picture => Cypress.Blob.base64StringToBlob(picture, "image/png"))
+    .then(blob => {
+      const dropEvent = {
+        dataTransfer: {
+          files: [blob],
+        },
+      };
 
-  cy.fixture(fixture).then(picture => {
-    return Cypress.Blob.base64StringToBlob(picture, "image/png").then((blob: any) => {
-      dropEvent.dataTransfer.files.push(blob);
+      const target = cy.get(tid(targetTid));
+
+      target.trigger("drop", dropEvent);
+
+      target.within(() => cy.get(tid("single-file-upload-delete-file")).should("exist"));
     });
-  });
+};
 
-  cy.get(tid(targetTid)).trigger("drop", dropEvent);
+/**
+ * Upload multiple files to a dropzone field
+ * @param targetTid - test id of the dropzone field
+ * @param fixtures - which fixtures to load
+ */
+export const uploadMultipleFilesToFieldWithTid = (targetTid: string, fixtures: string[]) => {
+  fixtures.forEach(fixture =>
+    cy
+      .fixture(fixture)
+      .then(file => Cypress.Blob.base64StringToBlob(file))
+      .then(blob => {
+        const nameSegments = fixture.split("/");
+        const name = nameSegments[nameSegments.length - 1];
+        const testFile = new File([blob], name, { type: "image/png" });
+
+        const dropEvent = {
+          dataTransfer: {
+            files: [testFile],
+          },
+        };
+
+        cy.get(tid(targetTid)).within(() => {
+          cy.get(tid("multi-file-upload-dropzone")).trigger("drop", dropEvent);
+
+          cy.get(tid(`multi-file-upload-file-${fixture}`)).should("exist");
+        });
+      }),
+  );
 };

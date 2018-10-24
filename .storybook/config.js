@@ -2,9 +2,9 @@ import "reflect-metadata";
 
 import { configure, addDecorator } from "@storybook/react";
 import { setIntlConfig, withIntl } from "storybook-addon-intl";
-import { Provider as ReduxProvider } from "react-redux";
 import StoryRouter from "storybook-react-router";
 import { initScreenshot, withScreenshot } from "storybook-chrome-screenshot/lib";
+import { checkA11y } from "@storybook/addon-a11y";
 
 // Load the locale data for all your defined locales
 import { addLocaleData } from "react-intl";
@@ -27,6 +27,7 @@ setIntlConfig({
   getMessages,
 });
 
+addDecorator(checkA11y);
 addDecorator(initScreenshot());
 addDecorator(
   withScreenshot({

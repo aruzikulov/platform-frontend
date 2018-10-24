@@ -8,7 +8,7 @@ import {
   IGenericModal,
   selectGenericModalIsOpen,
   selectGenericModalObj,
-} from "../../modules/genericModal/reducer";
+} from "../../modules/generic-modal/reducer";
 import { appConnect, AppDispatch } from "../../store";
 import { Button } from "../shared/buttons";
 import { ModalComponentBody } from "./ModalComponentBody";
