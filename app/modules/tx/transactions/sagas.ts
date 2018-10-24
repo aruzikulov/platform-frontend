@@ -6,7 +6,7 @@ import { onInvestmentTxModalHide } from "../../investmentFlow/sagas";
 import { neuCall, neuTakeEvery } from "../../sagas";
 import { ITxSendParams, txSendSaga } from "../sender/sagas";
 import { ETxSenderType } from "./../interfaces";
-import { generateInvestmentTransaction } from './investment/sagas';
+import { investmentFlowGenerator } from "./investment/sagas";
 import { upgradeTransactionFlow } from "./upgrade/sagas";
 import { ethWithdrawFlow } from "./withdraw/sagas";
 
@@ -46,7 +46,7 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
   try {
     yield txSendSaga({
       type: ETxSenderType.INVEST,
-      transactionFlowGenerator: generateInvestmentTransaction,
+      transactionFlowGenerator: neuCall(investmentFlowGenerator),
     });
     logger.info("Investment successful");
   } catch (e) {

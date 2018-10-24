@@ -3,6 +3,7 @@ import { addHexPrefix } from "ethereumjs-util";
 import { END, eventChannel } from "redux-saga";
 import { call, fork, put, race, select, take } from "redux-saga/effects";
 import * as Web3 from "web3";
+import { Q18 } from "./../../../config/constants";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { TPendingTxs, TxWithMetadata } from "../../../lib/api/users/interfaces";
@@ -91,11 +92,9 @@ export function* txSendProcess(
     yield put(actions.txSender.txSenderWatchPendingTxsDone(transactionType));
     const generatedTxDetails: ITxData = yield transactionFlowGenerator;
     yield put(actions.txSender.setTransactionData(generatedTxDetails));
-
     yield take("TX_SENDER_ACCEPT");
     yield call(connectWallet, "Send funds!");
     yield put(actions.txSender.txSenderWalletPlugged());
-
     const txHash = yield neuCall(sendTxSubSaga);
     yield neuCall(watchTxSubSaga, txHash);
   } catch (error) {
@@ -132,7 +131,7 @@ function* validateGas(txDetails: ITxData): any {
   if (
     compareBigNumbers(
       multiplyBigNumbers([txDetails.gasPrice, txDetails.gas]),
-      subtractBigNumbers([etherBalance, txDetails.value]),
+      subtractBigNumbers([etherBalance, Q18.mul(txDetails.value).toString()]),
     ) > 0
   ) {
     throw new NotEnoughEtherForGasError("Not enough Ether to pay the Gas for this transaction");
