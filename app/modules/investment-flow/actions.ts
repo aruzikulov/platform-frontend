@@ -1,5 +1,5 @@
 import { createAction, createSimpleAction } from "../actionsUtils";
-import { ETxSenderType } from "../tx/sender/reducer";
+import { ETxSenderType } from "../tx/interfaces";
 import {
   EBankTransferFlowState,
   EInvestmentCurrency,

@@ -4,7 +4,7 @@ import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
 import { actions } from "../../../../modules/actions";
-import { ETokenType } from '../../../../modules/tx/interfaces';
+import { ETokenType } from "../../../../modules/tx/interfaces";
 import {
   selectICBMLockedEtherBalance,
   selectICBMLockedEtherBalanceEuroAmount,
@@ -154,7 +154,7 @@ export const WalletStart = compose<React.SFC>(
       withdrawEthUnlockedWallet: () => dispatch(actions.txTransactions.startWithdrawEth()),
       upgradeWalletEuroToken: () => dispatch(actions.txTransactions.startUpgrade(ETokenType.EURO)),
       upgradeWalletEtherToken: () =>
-      dispatch(actions.txTransactions.startUpgrade(ETokenType.ETHER)),
+        dispatch(actions.txTransactions.startUpgrade(ETokenType.ETHER)),
     }),
   }),
 )(WalletStartComponent);

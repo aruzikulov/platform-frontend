@@ -2,8 +2,8 @@ import { fork } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { TAction } from "../../actions";
-import { onInvestmentTxModalHide } from "../../investmentFlow/sagas";
-import { neuCall, neuTakeEvery } from "../../sagas";
+import { onInvestmentTxModalHide } from "../../investment-flow/sagas";
+import { neuCall, neuTakeLatest } from "../../sagas";
 import { ITxSendParams, txSendSaga } from "../sender/sagas";
 import { ETxSenderType } from "./../interfaces";
 import { investmentFlowGenerator } from "./investment/sagas";
@@ -46,7 +46,7 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
   try {
     yield txSendSaga({
       type: ETxSenderType.INVEST,
-      transactionFlowGenerator: neuCall(investmentFlowGenerator),
+      transactionFlowGenerator: investmentFlowGenerator,
     });
     logger.info("Investment successful");
   } catch (e) {
@@ -57,8 +57,8 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
 }
 
 export const txTransactionsSagasWatcher = function*(): Iterator<any> {
-  yield fork(neuTakeEvery, "TRANSACTIONS_START_WITHDRAW_ETH", withdrawSaga);
-  yield fork(neuTakeEvery, "TRANSACTIONS_START_UPGRADE", upgradeSaga);
-  yield fork(neuTakeEvery, "TRANSACTIONS_START_INVESTMENT", investSaga);
+  yield fork(neuTakeLatest, "TRANSACTIONS_START_WITHDRAW_ETH", withdrawSaga);
+  yield fork(neuTakeLatest, "TRANSACTIONS_START_UPGRADE", upgradeSaga);
+  yield fork(neuTakeLatest, "TRANSACTIONS_START_INVESTMENT", investSaga);
   // Add new transaction types here...
 };

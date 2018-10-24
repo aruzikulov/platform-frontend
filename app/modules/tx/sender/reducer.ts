@@ -1,6 +1,5 @@
 import { ITxData } from "../../../lib/web3/Web3Manager";
 import { AppReducer } from "../../../store";
-import { ITxData } from "./../../../lib/web3/Web3Manager";
 import { ETxSenderType } from "./../interfaces";
 
 export enum ETransactionErrorType {
@@ -149,7 +148,7 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
     case "TX_SENDER_CHANGE":
       return {
         ...state,
-        state: "INIT",
+        state: ETxSenderState.INIT,
         type: action.payload.type,
       };
   }

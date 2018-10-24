@@ -1,5 +1,5 @@
 import { effects } from "redux-saga";
-import { call, spawn, takeEvery } from "redux-saga/effects";
+import { call, spawn, takeEvery, takeLatest } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../di/setupBindings";
 import { TAction } from "./actions";

@@ -1,6 +1,5 @@
-import { Q18 } from "./../../../../config/constants";
-import { BigNumber } from "bignumber.js";
 import { put, select, take } from "redux-saga/effects";
+import { Q18 } from "./../../../../config/constants";
 import { TAction } from "./../../../actions";
 import { calculateGasPriceWithOverhead } from "./../../utils";
 
@@ -8,12 +7,12 @@ import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { GasModelShape } from "../../../../lib/api/GasApi";
 import { actions } from "../../../actions";
 import { neuCall } from "../../../sagas";
-import { selectEtherTokenBalance, selectEtherBalance } from "../../../wallet/selectors";
+import { selectEtherBalance, selectEtherTokenBalance } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { IDraftType } from "../../interfaces";
+import { EMPTY_DATA } from "../../utils";
 import { ITxData } from "./../../../../lib/web3/Web3Manager";
 import { selectGasPrice } from "./../../../gas/selectors";
-import { EMPTY_DATA } from "../../utils";
 
 const WITHDRAW_GAS_LIMIT = "100000";
 
@@ -69,5 +68,5 @@ export function* ethWithdrawFlow(_: TGlobalDependencies): any {
     }),
   );
   const generatedTxDetails = yield neuCall(generateEthWithdrawTransaction, txDataFromUser);
-  return generatedTxDetails;
+  yield put(actions.txSender.setTransactionData(generatedTxDetails));
 }

@@ -3,7 +3,6 @@ import { addHexPrefix } from "ethereumjs-util";
 import { END, eventChannel } from "redux-saga";
 import { call, fork, put, race, select, take } from "redux-saga/effects";
 import * as Web3 from "web3";
-import { Q18 } from "./../../../config/constants";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { TPendingTxs, TxWithMetadata } from "../../../lib/api/users/interfaces";
@@ -26,8 +25,8 @@ import { delay } from "../../../utils/delay";
 import { connectWallet } from "../../access-wallet/sagas";
 import { actions, TAction } from "../../actions";
 import { IGasState } from "../../gas/reducer";
-import { onInvestmentTxModalHide } from "../../investment-flow/sagas";
 import { neuCall, neuTakeEvery } from "../../sagas";
+import { neuResetIf } from "../../sagasUtils";
 import { selectEtherBalance } from "../../wallet/selectors";
 import { ETxSenderType } from "../interfaces";
 import { updateTxs } from "../monitor/sagas";
@@ -89,11 +88,10 @@ export function* txSendProcess(
   try {
     yield put(actions.txSender.txSenderShowModal(transactionType));
     yield neuCall(ensureNoPendingTx, transactionType);
-
     yield put(actions.txSender.txSenderWatchPendingTxsDone(transactionType));
-    const generatedTxDetails: ITxData = yield transactionFlowGenerator;
-    yield put(actions.txSender.setTransactionData(generatedTxDetails));
-    yield take("TX_SENDER_ACCEPT");
+
+    yield neuResetIf("TX_SENDER_CHANGE", "TX_SENDER_ACCEPT", transactionFlowGenerator);
+
     yield call(connectWallet, "Send funds!");
     yield put(actions.txSender.txSenderWalletPlugged());
     const txHash = yield neuCall(sendTxSubSaga);
@@ -180,6 +178,7 @@ function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): a
 
     const txHash: string = yield web3Manager.sendTransaction(txData);
     yield put(actions.txSender.txSenderSigned(txHash, type));
+
     const txWithMetadata: TxWithMetadata = {
       transaction: {
         from: addHexPrefix(txData.from),

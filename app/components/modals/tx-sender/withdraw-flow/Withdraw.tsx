@@ -9,20 +9,20 @@ import { NumberSchema } from "yup";
 import { ITxData } from "../../../../lib/web3/Web3Manager";
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
+import { selectStandardGasPrice } from "../../../../modules/gas/selectors";
+import { ETxSenderType, IDraftType } from "../../../../modules/tx/interfaces";
+import { EValidationState } from "../../../../modules/tx/sender/reducer";
 import { selectTxGasCostEth, selectValidationState } from "../../../../modules/tx/sender/selectors";
 import { selectLiquidEtherBalance } from "../../../../modules/wallet/selectors";
 import { appConnect } from "../../../../store";
 import { compareBigNumbers, subtractBigNumbers } from "../../../../utils/BigNumberUtils";
-import { convertToBigInt } from "../../../../utils/Money.utils";
+import { convertToBigInt } from "../../../../utils/Number.utils";
 import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
 import { Button } from "../../../shared/buttons";
-import { FormFieldImportant } from "../../../shared/forms/formField/FormFieldImportant";
+import { FormFieldImportant } from "../../../shared/forms/form-field/FormFieldImportant";
+import { ValidationErrorMessage } from "../../txSender/shared/ValidationErrorMessage";
 import { ITxInitDispatchProps } from "../TxSender";
 
-import { selectStandardGasPrice } from "../../../../modules/gas/selectors";
-import { ETxSenderType, IDraftType } from "../../../../modules/tx/interfaces";
-import { EValidationState } from "../../../../modules/tx/sender/reducer";
-import { ValidationErrorMessage } from "../shared/ValidationErrorMessage";
 import * as styles from "./Withdraw.module.scss";
 
 interface IStateProps {

@@ -1,7 +1,7 @@
-import { cancel, take } from "redux-saga/effects";
+import { cancel, race, take } from "redux-saga/effects";
 import { TGlobalDependencies } from "../di/setupBindings";
 import { TActionType } from "./actions";
-import { neuFork } from "./sagas";
+import { neuCall, neuFork } from "./sagas";
 
 /**
  * Starts saga on `startAction`, cancels on `stopAction`, loops...
@@ -30,5 +30,28 @@ export function* neuTakeOnly(action: TActionType, payload: any): any {
   while (true) {
     const takenAction = yield take(action);
     if (JSON.stringify(takenAction.payload) === JSON.stringify(payload)) return;
+  }
+}
+
+/**
+ *  Resets generator is resetAction is given and waits until endAction occurs then
+ *  it repeats
+ */
+export function* neuResetIf(
+  resetAction: TActionType | TActionType[],
+  endAction: TActionType | TActionType[],
+  transactionFlowGenerator: any,
+): any {
+  while (true) {
+    yield neuCall(transactionFlowGenerator);
+
+    const { change, accept } = yield race({
+      change: take(resetAction),
+      accept: take(endAction),
+    });
+    if (change) {
+      continue;
+    }
+    if (accept) return;
   }
 }

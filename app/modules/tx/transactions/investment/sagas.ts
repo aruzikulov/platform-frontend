@@ -1,20 +1,20 @@
 import { BigNumber } from "bignumber.js";
 import { put, select, take } from "redux-saga/effects";
-import { compareBigNumbers } from "./../../../../utils/BigNumberUtils";
-import { actions } from "./../../../actions";
-import { EInvestmentType } from "./../../../investmentFlow/reducer";
-import { selectEtherTokenBalance } from "./../../../wallet/selectors";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ContractsService } from "../../../../lib/web3/ContractsService";
 import { ITxData } from "../../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../../store";
 import { selectGasPrice } from "../../../gas/selectors";
-import { selectReadyToInvest } from "../../../investmentFlow/selectors";
+import { selectReadyToInvest } from "../../../investment-flow/selectors";
 import { selectEtoById } from "../../../public-etos/selectors";
 import { neuCall } from "../../../sagas";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { calculateGasPriceWithOverhead } from "../../utils";
+import { compareBigNumbers } from "./../../../../utils/BigNumberUtils";
+import { actions } from "./../../../actions";
+import { EInvestmentType } from "./../../../investment-flow/reducer";
+import { selectEtherTokenBalance } from "./../../../wallet/selectors";
 
 export const INVESTMENT_GAS_AMOUNT = "600000";
 
@@ -114,5 +114,5 @@ export function* investmentFlowGenerator(_: TGlobalDependencies): any {
   yield take("TX_SENDER_ACCEPT_DRAFT");
   const generatedTxDetails = yield neuCall(generateInvestmentTransaction);
   yield put(actions.txSender.setSummaryData(generatedTxDetails));
-  return generatedTxDetails;
+  yield put(actions.txSender.setTransactionData(generatedTxDetails));
 }

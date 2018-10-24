@@ -9,7 +9,7 @@ import {
   selectBankTransferReferenceCode,
 } from "../../../../modules/investment-flow/selectors";
 import { selectClientCountry, selectClientName } from "../../../../modules/kyc/selectors";
-import { ETxSenderType } from "../../../../modules/tx/sender/reducer";
+import { ETxSenderType } from "../../../../modules/tx/interfaces";
 import { appConnect } from "../../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
 import { formatMoney } from "../../../../utils/Money.utils";

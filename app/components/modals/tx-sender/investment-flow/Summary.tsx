@@ -9,7 +9,6 @@ import { actions } from "../../../../modules/actions";
 import {
   selectEthValueUlps,
   selectEurValueUlps,
-  selectInvestmentGasCostEth,
 } from "../../../../modules/investment-flow/selectors";
 import {
   selectEquityTokenCountByEtoId,
@@ -17,7 +16,7 @@ import {
 } from "../../../../modules/investor-tickets/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
-import { ETxSenderType } from "../../../../modules/tx/sender/reducer";
+import { ETxSenderType } from "../../../../modules/tx/interfaces";
 import { appConnect } from "../../../../store";
 import {
   addBigNumbers,
@@ -35,7 +34,7 @@ import { ITxSummaryDispatchProps } from "../TxSender";
 
 import * as neuIcon from "../../../../assets/img/neu_icon.svg";
 import * as tokenIcon from "../../../../assets/img/token_icon.svg";
-import { selectTxGasCostEth } from '../../../../modules/tx/sender/selectors';
+import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import * as styles from "./Summary.module.scss";
 
 interface IStateProps {

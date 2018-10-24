@@ -15,7 +15,7 @@ import {
 } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { ETokenType } from "../../interfaces";
-import { calculateGasPriceWithOverhead } from '../../utils';
+import { calculateGasPriceWithOverhead } from "../../utils";
 import { selectGasPrice } from "./../../../gas/selectors";
 import { selectICBMLockedEuroTokenBalance } from "./../../../wallet/selectors";
 
@@ -87,5 +87,5 @@ export function* upgradeTransactionFlow(_: TGlobalDependencies, tokenType: EToke
       : generateEuroUpgradeTransaction;
   const generatedTxDetails = yield neuCall(transactionGenerator);
   yield put(actions.txSender.setSummaryData(generatedTxDetails));
-  return generatedTxDetails;
+  yield put(actions.txSender.setTransactionData(generatedTxDetails));
 }
