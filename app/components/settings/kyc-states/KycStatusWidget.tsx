@@ -21,7 +21,7 @@ import { Panel } from "../../shared/Panel";
 
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { onLeaveAction } from "../../../utils/OnLeaveAction";
-import { LoadingIndicator } from "../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../shared/loading-indicator";
 import { WarningAlert } from "../../shared/WarningAlert";
 
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";

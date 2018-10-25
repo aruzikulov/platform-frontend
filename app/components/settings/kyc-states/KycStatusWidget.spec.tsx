@@ -4,7 +4,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { EUserType } from "../../../lib/api/users/interfaces";
-import { LoadingIndicator } from "../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../shared/loading-indicator";
 import { KycStatusWidgetComponent } from "./KycStatusWidget";
 
 describe("<KycStatusWidgetComponent />", () => {

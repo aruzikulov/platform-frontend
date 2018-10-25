@@ -24,7 +24,7 @@ export const MAX_EXPIRATION_DIFF_MINUTES = 10;
 /**
  * Useful for money related calculations
  */
-export const Q18 = new BigNumber(10).pow(18);
+export const Q18 = new BigNumber(10).pow(MONEY_DECIMALS);
 
 /**
  * Represesnt zero address on Etherum - non existing address used by ERC20 to mark minting and burning

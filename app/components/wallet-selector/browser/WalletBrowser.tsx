@@ -8,7 +8,7 @@ import { appConnect } from "../../../store";
 import { withActionWatcher } from "../../../utils/withActionWatcher";
 import { HiResImage } from "../../shared/HiResImage";
 import { HorizontalLine } from "../../shared/HorizontalLine";
-import { LoadingIndicator } from "../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../shared/loading-indicator";
 import { StepCard } from "../../shared/StepCard";
 import { WarningAlert } from "../../shared/WarningAlert";
 

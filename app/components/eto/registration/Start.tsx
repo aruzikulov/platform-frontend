@@ -6,7 +6,7 @@ import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { LayoutAuthorized } from "../../layouts/LayoutAuthorized";
-import { LoadingIndicator } from "../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../shared/loading-indicator";
 import { EtoRegistrationPanel } from "./EtoRegistrationPanel";
 
 interface IStateProps {

@@ -2,8 +2,9 @@ import * as cn from "classnames";
 import * as React from "react";
 
 import * as styles from "./LoadingIndicator.module.scss";
+import { LoadingIndicatorHexagon } from "./LoadingIndicatorHexagon";
 
-type TLoadingIndicator = "pulse" | "blocks";
+type TLoadingIndicator = "pulse" | "blocks" | "hexagon";
 
 interface ILoadingIndicatorProps {
   className?: string;
@@ -29,6 +30,8 @@ const LoadingIndicator: React.SFC<ILoadingIndicatorProps> = ({
           <span />
         </div>
       );
+    case "hexagon":
+      return <LoadingIndicatorHexagon />;
   }
 };
 

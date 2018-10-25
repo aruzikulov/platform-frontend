@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 
 import { ButtonLink, EButtonLayout } from "./buttons";
 import { ChartCircle, IChartCircleProps } from "./charts/ChartCircle";
-import { LoadingIndicator } from "./LoadingIndicator";
+import { LoadingIndicator } from "./loading-indicator";
 import { Panel } from "./Panel";
 import { Proportion } from "./Proportion";
 

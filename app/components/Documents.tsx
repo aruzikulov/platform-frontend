@@ -28,7 +28,7 @@ import { ETOAddDocuments } from "./eto/shared/EtoAddDocument";
 import { EtoFileIpfsModal } from "./eto/shared/EtoFileIpfsModal";
 import { LayoutAuthorized } from "./layouts/LayoutAuthorized";
 import { ClickableDocumentTile, DocumentTile } from "./shared/Document";
-import { LoadingIndicator } from "./shared/LoadingIndicator";
+import { LoadingIndicator } from "./shared/loading-indicator";
 import { SectionHeader } from "./shared/SectionHeader";
 import { SingleColDocuments } from "./shared/SingleColDocumentWidget";
 

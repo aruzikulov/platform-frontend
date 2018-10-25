@@ -11,7 +11,7 @@ import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer";
 import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
 import { LayoutBase } from "../layouts/LayoutBase";
-import { LoadingIndicator } from "../shared/LoadingIndicator";
+import { LoadingIndicator } from "../shared/loading-indicator";
 import { EtoPublicComponent } from "./shared/EtoPublicComponent";
 
 interface IStateProps {

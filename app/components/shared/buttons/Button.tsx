@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 
 import { InlineIcon } from "../InlineIcon";
-import { LoadingIndicator } from "../LoadingIndicator";
+import { LoadingIndicator } from "../loading-indicator";
 
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as closeIcon from "../../../assets/img/inline_icons/close.svg";

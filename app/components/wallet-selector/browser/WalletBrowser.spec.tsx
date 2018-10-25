@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { tid } from "../../../../test/testUtils";
 import { dummyIntl } from "../../../utils/injectIntlHelpers.fixtures";
-import { LoadingIndicator } from "../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../shared/loading-indicator";
 import { WalletBrowserComponent } from "./WalletBrowser";
 
 describe("<WalletBrowser />", () => {

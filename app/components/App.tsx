@@ -14,7 +14,7 @@ import { AppRouter } from "./AppRouter";
 import { GenericModal } from "./modals/GenericModal";
 import { VideoModal } from "./modals/VideoModal";
 import { AccessWalletModal } from "./modals/walletAccess/AccessWalletModal";
-import { LoadingIndicator } from "./shared/LoadingIndicator";
+import { LoadingIndicator } from "./shared/loading-indicator";
 import { ScrollToTop } from "./shared/ScrollToTop";
 
 interface IStateProps {

@@ -7,7 +7,7 @@ import { TEtoWithCompanyAndContract } from "../../modules/public-etos/types";
 import { appConnect } from "../../store";
 import { withContainer } from "../../utils/withContainer";
 import { LayoutBase } from "../layouts/LayoutBase";
-import { LoadingIndicator } from "../shared/LoadingIndicator";
+import { LoadingIndicator } from "../shared/loading-indicator";
 import { EtoPublicComponent } from "./shared/EtoPublicComponent";
 
 interface IStateProps {

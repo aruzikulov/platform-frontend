@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { getInvestmentAmount } from "../../../lib/api/eto/EtoUtils";
 import { ECurrencySymbol, EMoneyFormat, Money } from "../../shared/Money";
 import { ToHumanReadableForm } from "../../shared/ToHumanReadableForm";
 
@@ -8,20 +9,36 @@ type TExternalProps = {
   existingCompanyShares: number | undefined;
   newSharesToIssue: number | undefined;
   minimumNewSharesToIssue: number | undefined;
+  newSharesToIssueInFixedSlots: number | undefined;
+  newSharesToIssueInWhitelist: number | undefined;
+  fixedSlotsMaximumDiscountFraction: number | undefined;
+  whitelistDiscountFraction: number | undefined;
 };
 
 const InvestmentAmount: React.SFC<TExternalProps> = ({
-  preMoneyValuationEur = 1,
-  existingCompanyShares = 1,
-  newSharesToIssue = 1,
-  minimumNewSharesToIssue = 1,
+  preMoneyValuationEur,
+  existingCompanyShares,
+  newSharesToIssue,
+  whitelistDiscountFraction,
+  fixedSlotsMaximumDiscountFraction,
+  minimumNewSharesToIssue,
+  newSharesToIssueInWhitelist,
+  newSharesToIssueInFixedSlots,
 }) => {
-  const minimumNewShares = (preMoneyValuationEur / existingCompanyShares) * minimumNewSharesToIssue;
-  const newShares = (preMoneyValuationEur / existingCompanyShares) * newSharesToIssue;
+  const { minInvestmentAmount, maxInvestmentAmount } = getInvestmentAmount({
+    minimumNewSharesToIssue,
+    newSharesToIssue,
+    newSharesToIssueInFixedSlots,
+    newSharesToIssueInWhitelist,
+    preMoneyValuationEur,
+    fixedSlotsMaximumDiscountFraction,
+    whitelistDiscountFraction,
+    existingCompanyShares,
+  });
 
   const value = (
-    <ToHumanReadableForm number={minimumNewShares}>
-      {divider => <ToHumanReadableForm number={newShares} divider={divider} />}
+    <ToHumanReadableForm number={minInvestmentAmount}>
+      {divider => <ToHumanReadableForm number={maxInvestmentAmount} divider={divider} />}
     </ToHumanReadableForm>
   );
 

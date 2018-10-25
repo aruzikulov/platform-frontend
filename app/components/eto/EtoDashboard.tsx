@@ -30,7 +30,7 @@ import { appConnect } from "../../store";
 import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
 import { SettingsWidgets } from "../settings/SettingsWidgets";
 import { EProjecStatusLayout, EProjectStatusSize, ETOState } from "../shared/ETOState";
-import { LoadingIndicator } from "../shared/LoadingIndicator";
+import { LoadingIndicator } from "../shared/loading-indicator";
 import { BookBuildingWidget } from "./dashboard/bookBuildingWidget/BookBuildingWidget";
 import { ChoosePreEtoDateWidget } from "./dashboard/choosePreEtoDateWidget/ChoosePreEtoDateWidget";
 import { ETOFormsProgressSection } from "./dashboard/ETOFormsProgressSection";

@@ -74,10 +74,23 @@ const selectCurrencySymbol = (currency: TCurrency): string => {
   }
 };
 
-function getFormattedMoney(value: string | BigNumber, currency: TCurrency): string {
-  const decimalPlaces = selectDecimalPlaces(currency);
+function getFormatDecimals(format: EMoneyFormat): number {
+  switch (format) {
+    case EMoneyFormat.WEI:
+      return MONEY_DECIMALS;
+    case EMoneyFormat.FLOAT:
+      return 0;
+    default:
+      throw new Error("Unsupported money format");
+  }
+}
 
-  return formatMoney(value, MONEY_DECIMALS, decimalPlaces);
+export function getFormattedMoney(
+  value: string | number | BigNumber,
+  currency: TCurrency,
+  format: EMoneyFormat,
+): string {
+  return formatMoney(value, getFormatDecimals(format), selectDecimalPlaces(currency));
 }
 
 const Money: React.SFC<IProps> = ({
@@ -98,7 +111,7 @@ const Money: React.SFC<IProps> = ({
 
   const money =
     format === EMoneyFormat.WEI && !React.isValidElement(value)
-      ? getFormattedMoney(value as BigNumber, currency)
+      ? getFormattedMoney(value as BigNumber, currency, EMoneyFormat.WEI)
       : value;
 
   const doFormat = !doNotSeparateThousands && !React.isValidElement(money);

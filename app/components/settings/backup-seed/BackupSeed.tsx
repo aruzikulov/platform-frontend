@@ -5,7 +5,7 @@ import { selectIsUnlocked, selectSeed } from "../../../modules/web3/selectors";
 import { appConnect } from "../../../store";
 
 import { selectBackupCodesVerified } from "../../../modules/auth/selectors";
-import { LoadingIndicator } from "../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../shared/loading-indicator";
 import { BackupSeedFlowContainer } from "./BackupSeedFlowContainer";
 
 interface IDispatchProps {

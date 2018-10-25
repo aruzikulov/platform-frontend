@@ -7,7 +7,7 @@ import { actions } from "../../modules/actions";
 import { selectIsLightWallet } from "../../modules/web3/selectors";
 import { appConnect } from "../../store";
 import { Button } from "../shared/buttons";
-import { LoadingIndicator } from "../shared/LoadingIndicator";
+import { LoadingIndicator } from "../shared/loading-indicator";
 import { WarningAlert } from "../shared/WarningAlert";
 import { MessageSignPrompt } from "../signing/MessageSignPrompt";
 import * as styles from "./WalletMessageSigner.module.scss";

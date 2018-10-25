@@ -14,7 +14,7 @@ import {
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { ButtonLink, EButtonLayout } from "../../shared/buttons";
-import { LoadingIndicator } from "../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../shared/loading-indicator";
 import { ECurrencySymbol, Money } from "../../shared/Money";
 import { MoneySuiteWidget } from "../../shared/MoneySuiteWidget";
 import { Panel } from "../../shared/Panel";

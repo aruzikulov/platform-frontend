@@ -27,7 +27,7 @@ import { ModalComponentBody } from "./ModalComponentBody";
 import * as iconEth from "../../assets/img/eth_icon.svg";
 import * as iconDownload from "../../assets/img/inline_icons/download.svg";
 import * as iconNeu from "../../assets/img/neu_icon.svg";
-import { LoadingIndicator } from "../shared/LoadingIndicator";
+import { LoadingIndicator } from "../shared/loading-indicator";
 import * as styles from "./IcbmWalletBalanceModal.module.scss";
 
 interface IStateProps {

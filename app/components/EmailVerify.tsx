@@ -2,7 +2,7 @@ import * as React from "react";
 import { Container } from "reactstrap";
 import { actions } from "../modules/actions";
 import { appConnect } from "../store";
-import { LoadingIndicator } from "./shared/LoadingIndicator";
+import { LoadingIndicator } from "./shared/loading-indicator";
 
 interface IEmailVerifyDispatchProps {
   verifyEmail: () => void;

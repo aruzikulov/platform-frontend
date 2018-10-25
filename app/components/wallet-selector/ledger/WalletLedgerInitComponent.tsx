@@ -8,7 +8,7 @@ import { ledgerWizardFlows } from "../../../modules/wallet-selector/ledger-wizar
 import { appConnect } from "../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { withActionWatcher } from "../../../utils/withActionWatcher";
-import { LoadingIndicator } from "../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../shared/loading-indicator";
 import { WarningAlert } from "../../shared/WarningAlert";
 import { LedgerHeader } from "./LedgerHeader";
 

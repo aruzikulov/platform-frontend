@@ -28,7 +28,7 @@ import {
 import { selectEthereumAddressWithChecksum } from "../../../../modules/web3/selectors";
 import { appConnect } from "../../../../store";
 import { onEnterAction } from "../../../../utils/OnEnterAction";
-import { LoadingIndicator } from "../../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../../shared/loading-indicator";
 import { ClaimedDividends } from "../../claimed-dividends/ClaimedDividends";
 import { IcbmWallet, IIcbmWalletValues } from "../../wallet-balance/IcbmWallet";
 import { LockedWallet } from "../../wallet-balance/LockedWallet";

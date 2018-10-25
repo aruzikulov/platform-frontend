@@ -9,6 +9,7 @@ import {
   EtoInvestmentTermsType,
   TPartialEtoSpecData,
 } from "../../../../lib/api/eto/EtoApi.interfaces";
+import { getInvestmentAmount, getSharePrice } from "../../../../lib/api/eto/EtoUtils";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerEto } from "../../../../modules/eto-flow/selectors";
 import { etoInvestmentTermsProgressOptions } from "../../../../modules/eto-flow/utils";
@@ -19,6 +20,7 @@ import { FormField } from "../../../shared/forms";
 import { FormFieldRaw } from "../../../shared/forms/form-field/FormFieldRaw";
 import { FormTransformingField } from "../../../shared/forms/form-field/FormTransformingField";
 import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
+import { EMoneyFormat, getFormattedMoney } from "../../../shared/Money";
 import { EtoFormBase } from "../EtoFormBase";
 
 interface IExternalProps {
@@ -38,19 +40,32 @@ interface IDispatchProps {
 type IProps = IExternalProps & IStateProps & IDispatchProps & FormikProps<TPartialEtoSpecData>;
 
 const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingData, readonly }) => {
-  const preMoneyValuationEur = stateValues.preMoneyValuationEur || 1;
   const existingCompanyShares = stateValues.existingCompanyShares || 1;
   const newSharesToIssue = stateValues.newSharesToIssue || 1;
   const equityTokensPerShare = stateValues.equityTokensPerShare || 1;
   const minimumNewSharesToIssue = stateValues.minimumNewSharesToIssue || 0;
 
-  const computedNewSharePrice = preMoneyValuationEur / existingCompanyShares;
   const computedMaxNumberOfTokens = newSharesToIssue * equityTokensPerShare;
   const computedMinNumberOfTokens = minimumNewSharesToIssue * equityTokensPerShare;
   const computedMaxCapPercent = (newSharesToIssue / existingCompanyShares) * 100;
   const computedMinCapPercent = (minimumNewSharesToIssue / existingCompanyShares) * 100;
 
-  const computedTokenPrice = computedNewSharePrice / equityTokensPerShare;
+  const { minInvestmentAmount, maxInvestmentAmount } = getInvestmentAmount({
+    minimumNewSharesToIssue: stateValues.minimumNewSharesToIssue,
+    newSharesToIssue: stateValues.newSharesToIssue,
+    newSharesToIssueInFixedSlots: stateValues.newSharesToIssueInFixedSlots,
+    newSharesToIssueInWhitelist: stateValues.newSharesToIssueInWhitelist,
+    preMoneyValuationEur: stateValues.preMoneyValuationEur,
+    fixedSlotsMaximumDiscountFraction: stateValues.fixedSlotsMaximumDiscountFraction,
+    whitelistDiscountFraction: stateValues.whitelistDiscountFraction,
+    existingCompanyShares: stateValues.existingCompanyShares,
+  });
+  const sharePrice = getSharePrice({
+    preMoneyValuationEur: stateValues.preMoneyValuationEur,
+    existingCompanyShares: stateValues.existingCompanyShares,
+  });
+
+  const computedTokenPrice = sharePrice / equityTokensPerShare;
 
   return (
     <EtoFormBase
@@ -165,7 +180,7 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
           label={<FormattedMessage id="eto.form.section.investment-terms.new-share-price" />}
           prefix="€"
           name="newSharePrice"
-          value={formatMoney(`${computedNewSharePrice}`, 1, 8)}
+          value={formatMoney(`${sharePrice}`, 1, 8)}
           disabled
         />
         <FormFieldRaw
@@ -183,7 +198,7 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
               prefix="€"
               placeholder="read only"
               name="minNumberOfTokens"
-              value={computedMinNumberOfTokens}
+              value={getFormattedMoney(minInvestmentAmount, "eur", EMoneyFormat.FLOAT)}
               disabled
             />
           </Col>
@@ -193,7 +208,7 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
               prefix="€"
               placeholder="read only"
               name="totalInvestment"
-              value={computedMaxNumberOfTokens}
+              value={getFormattedMoney(maxInvestmentAmount, "eur", EMoneyFormat.FLOAT)}
               disabled
             />
           </Col>

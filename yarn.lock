@@ -1256,6 +1256,7 @@
 "@storybook/addon-a11y@^3.4.11":
   version "3.4.11"
   resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-3.4.11.tgz#884f8caeeaac8e4a35d13ca5d679040edc505e1e"
+  integrity sha512-d/8yozoE1Jo0dvO1o+P5xu/wPGPZhI6zXkrCk4ESjXGUSIrCQu/KGQqXYWCVkhs/oT82j9XcuYLnelmh9oYqdA==
   dependencies:
     "@storybook/components" "3.4.11"
     axe-core "^2.6.1"
@@ -1321,6 +1322,7 @@
 "@storybook/components@3.4.11":
   version "3.4.11"
   resolved "https://registry.yarnpkg.com/@storybook/components/-/components-3.4.11.tgz#dbaa1ee19036cd8617993fb6bf4a07780d111f7e"
+  integrity sha512-M3WhGPR4LNB2NabKyLtxDMevB1LAHOrmrII2U19XYIph93k3SReIwLKWEds0/jWwajgQtI3hBftDCu/QA5bTOA==
   dependencies:
     glamor "^2.20.40"
     glamorous "^4.12.1"
@@ -2671,6 +2673,7 @@ aws4@^1.8.0:
 axe-core@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-2.6.1.tgz#28772c4f76966d373acda35b9a409299dc00d1b5"
+  integrity sha512-QFfI3d+x/v92HJWGBaNfgrxdfon9/xXzd04YYfm5w5NJQOLex8qkJCctOt7+ky6e1l9zcQ5E7jsvbnTgQzyfTw==
 
 babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
   version "6.26.0"

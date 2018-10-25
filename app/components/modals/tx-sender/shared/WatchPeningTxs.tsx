@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { LoadingIndicator } from "../../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../../shared/loading-indicator";
 
 export const WatchPendingTxs = () => (
   <>
