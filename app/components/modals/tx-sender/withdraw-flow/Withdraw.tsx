@@ -19,10 +19,10 @@ import { compareBigNumbers, subtractBigNumbers } from "../../../../utils/BigNumb
 import { convertToBigInt } from "../../../../utils/Number.utils";
 import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
 import { Button } from "../../../shared/buttons";
-import { FormFieldImportant } from "../../../shared/forms/form-field/FormFieldImportant";
 import { ValidationErrorMessage } from "../../txSender/shared/ValidationErrorMessage";
 import { ITxInitDispatchProps } from "../TxSender";
 
+import { FormField } from "../../../shared/forms";
 import * as styles from "./Withdraw.module.scss";
 
 interface IStateProps {
@@ -30,6 +30,7 @@ interface IStateProps {
   validationState?: EValidationState;
 }
 
+// tslint:disable-next-line:no-unused-variable
 interface IFormikProps {
   value: string;
   to: string;
@@ -74,7 +75,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
             <Container>
               <Row>
                 <Col xs={12} className="mb-3">
-                  <FormFieldImportant
+                  <FormField
                     name="to"
                     label={<FormattedMessage id="modal.sent-eth.to-address" />}
                     placeholder="0x0"
@@ -85,7 +86,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
               </Row>
               <Row>
                 <Col xs={12} className="mb-3">
-                  <FormFieldImportant
+                  <FormField
                     name="value"
                     type="number"
                     label={<FormattedMessage id="modal.sent-eth.amount-to-send" />}
