@@ -59,6 +59,44 @@ const typeWrongValue = () => {
   cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.value")).clear();
 };
 
+const checkTransactionWithRPCNode = (
+  expectedTransaction: {
+    expectedFrom: string;
+    expectedInput: string;
+    expectedGasLimit: string;
+    writtenValue: string;
+    expectedTo: string;
+  },
+  txHash: string,
+) => {
+  getTransactionByHashRpc(NODE_ADDRESS, txHash).then(data => {
+    const { from, gas, input, hash, value } = data.body.result;
+    const {
+      expectedFrom,
+      expectedInput,
+      expectedGasLimit,
+      writtenValue,
+      expectedTo,
+    } = expectedTransaction;
+
+    const ethValue = new BigNumber(value).toString();
+
+    expect(from).to.equal(expectedFrom);
+    expect(hash).to.equal(txHash);
+    expect(input).to.equal(expectedInput);
+    expect(gas).to.equal(expectedGasLimit);
+    expect(ethValue).to.equal(Q18.mul(writtenValue).toString());
+
+    // TODO: Connect artifacts with tests to get deterministic addresses
+    // expect(etherTokenAddress).to.equal(to);
+
+    getBalanceRpc(NODE_ADDRESS, expectedTo).then(balance => {
+      const receivedEtherValue = new BigNumber(balance.body.result).toString();
+      expect(receivedEtherValue).to.equal(Q18.mul(writtenValue).toString());
+    });
+  });
+};
+
 describe("Wallet Withdraw", () => {
   beforeEach(() => createAndLoginNewUser({ type: "investor", seed: SEED }));
 

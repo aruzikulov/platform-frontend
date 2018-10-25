@@ -38,6 +38,10 @@ export class Web3Adapter {
     return promisify(this.web3.eth.getBalance)(address);
   }
 
+  public async estimateGas(txData: Partial<Web3.TxData>): Promise<number> {
+    return promisify(this.web3.eth.estimateGas)(txData);
+  }
+
   public async getAccountAddress(): Promise<EthereumAddress> {
     const getAccounts = promisify(this.web3.eth.getAccounts);
     const accounts = await getAccounts();

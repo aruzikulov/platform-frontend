@@ -1,5 +1,6 @@
 import * as Eip55 from "eip55";
 
+import * as Web3Utils from "web3-utils";
 import { EthereumAddress, EthereumAddressWithChecksum, EthereumNetworkId } from "../../types";
 
 export function makeEthereumAddressChecksummed(
@@ -24,3 +25,5 @@ export function ethereumNetworkIdToNetworkName(networkId: EthereumNetworkId): st
       return "Unknown";
   }
 }
+
+export const validateAddress = (value: string) => Web3Utils.isAddress(value.toUpperCase());

@@ -14,10 +14,8 @@ import { IDraftType } from "../../interfaces";
 import { EMPTY_DATA } from "../../utils";
 import { selectGasPrice } from "./../../../gas/selectors";
 
-const WITHDRAW_GAS_LIMIT = "100000";
-
 export function* generateEthWithdrawTransaction(
-  { contractsService }: TGlobalDependencies,
+  { contractsService, web3Manager }: TGlobalDependencies,
   payload: IDraftType,
 ): any {
   const { to, value } = payload;
@@ -30,30 +28,30 @@ export function* generateEthWithdrawTransaction(
   const ethVal = Q18.mul(value || "0");
   if (ethVal.comparedTo(etherBalance) < 0) {
     // transaction can be fully covered ether balance
-    const txDetails: ITxData = {
+    const txDetails: Partial<ITxData> = {
       to,
       from,
       data: EMPTY_DATA,
       value: ethVal.toString(),
-      gas: calculateGasPriceWithOverhead(WITHDRAW_GAS_LIMIT),
       gasPrice: gasPrice!.standard,
     };
-    return txDetails;
+    const estimatedGas = yield web3Manager.estimateGas(txDetails);
+    return { ...txDetails, gas: calculateGasPriceWithOverhead(estimatedGas) };
   } else {
     // transaction can be fully covered by etherTokens
     const txInput = contractsService.etherToken.withdrawAndSendTx(to || "0x0", ethVal).getData();
+
     const difference = ethVal.sub(etherTokenBalance);
 
-    // txDetails main purpose is type safety
-    const txDetails: ITxData = {
+    const txDetails: Partial<ITxData> = {
       to: contractsService.etherToken.address,
       from,
       data: txInput,
       value: difference.comparedTo(0) > 0 ? difference.toString() : "0",
-      gas: calculateGasPriceWithOverhead(WITHDRAW_GAS_LIMIT),
       gasPrice: gasPrice!.standard,
     };
-    return txDetails;
+    const estimatedGas = yield web3Manager.estimateGas(txDetails);
+    return { ...txDetails, gas: calculateGasPriceWithOverhead(estimatedGas) };
   }
 }
 

@@ -3,6 +3,7 @@ import { inject, injectable } from "inversify";
 import * as Web3 from "web3";
 
 import { symbols } from "../../di/symbols";
+import { encodeTransaction } from "../../modules/tx/utils";
 import { web3Actions } from "../../modules/web3/actions";
 import { web3Flows } from "../../modules/web3/flows";
 import { AppDispatch } from "../../store";
@@ -100,19 +101,15 @@ export class Web3Manager {
   }
 
   public async getTransactionByHash(txHash: string): Promise<Web3.Transaction> {
-    if (this.personalWallet) {
-      return this.personalWallet.web3Adapter.getTransactionByHash(txHash);
-    } else {
-      throw new Error("No wallet!");
-    }
+    return this.internalWeb3Adapter.getTransactionByHash(txHash);
   }
 
   public async getBalance(userAddress: string): Promise<BigNumber> {
-    if (this.personalWallet) {
-      return this.personalWallet.web3Adapter.getBalance(userAddress);
-    } else {
-      throw new Error("No wallet!");
-    }
+    return this.internalWeb3Adapter.getBalance(userAddress);
+  }
+  public async estimateGas(txData: Partial<Web3.TxData>): Promise<number> {
+    const encodedTxData = encodeTransaction(txData);
+    return this.internalWeb3Adapter.estimateGas(encodedTxData);
   }
 
   private watchConnection = async () => {
