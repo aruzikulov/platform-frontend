@@ -40,11 +40,9 @@ type TProps = IStateProps & ITxInitDispatchProps;
 
 const withdrawFormSchema = YupTS.object({
   to: YupTS.string().enhance(v =>
-    v
-      .test("isEthereumAddress", "is not a valid Ethereum address", (value: string) => {
-        return Web3Utils.isAddress(value);
-      })
-      .required(),
+    v.required().test("isEthereumAddress", "is not a valid Ethereum address", (value: string) => {
+      return Web3Utils.isAddress(value.toUpperCase());
+    }),
   ),
   value: YupTS.number().enhance((v: NumberSchema) => v.moreThan(0).required()),
 });
