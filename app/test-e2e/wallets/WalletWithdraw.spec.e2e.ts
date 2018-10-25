@@ -2,14 +2,7 @@ import BigNumber from "bignumber.js";
 import web3Accounts from "web3-eth-accounts";
 import { createAndLoginNewUser, DEFAULT_PASSWORD } from "../utils/userHelpers";
 
-import { recoverRoutes } from "../../components/walletSelector/walletRecover/recoverRoutes";
-import {
-  assertUserInDashboard,
-  goToDashboard,
-  numberRegExPattern,
-  tid,
-  typeLightwalletRecoveryPhrase,
-} from "../utils";
+import { assertUserInDashboard, goToDashboard, tid } from "../utils";
 import { getBalanceRpc, getTransactionByHashRpc } from "../utils/ethRpcUtils";
 import { confirmAccessModal } from "../utils/index";
 

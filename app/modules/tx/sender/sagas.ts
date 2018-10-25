@@ -41,6 +41,9 @@ class NotEnoughEtherForGasError extends Error {}
 export interface ITxSendParams {
   type: ETxSenderType;
   transactionFlowGenerator: any;
+  extraParam?: any;
+  // Design extraParam to be a tuple that handels any number of params
+  // @see neuCall
 }
 
 export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction): any {
@@ -58,14 +61,14 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
   }
 }
 
-export function* txSendSaga({ type, transactionFlowGenerator }: ITxSendParams): any {
+export function* txSendSaga({ type, transactionFlowGenerator, extraParam }: ITxSendParams): any {
   const gas: IGasState = yield select((s: IAppState) => s.gas);
   if (!gas.gasPrice) {
     yield take("GAS_API_LOADED");
   }
 
   const { result, cancel } = yield race({
-    result: neuCall(txSendProcess, type, transactionFlowGenerator),
+    result: neuCall(txSendProcess, type, transactionFlowGenerator, extraParam),
     cancel: take("TX_SENDER_HIDE_MODAL"),
   });
 
@@ -84,15 +87,16 @@ export function* txSendProcess(
   { logger }: TGlobalDependencies,
   transactionType: ETxSenderType,
   transactionFlowGenerator: any,
+  extraParam?: any,
 ): any {
   try {
     yield put(actions.txSender.txSenderShowModal(transactionType));
     yield neuCall(ensureNoPendingTx, transactionType);
     yield put(actions.txSender.txSenderWatchPendingTxsDone(transactionType));
 
-    yield neuResetIf("TX_SENDER_CHANGE", "TX_SENDER_ACCEPT", transactionFlowGenerator);
+    yield neuResetIf("TX_SENDER_CHANGE", "TX_SENDER_ACCEPT", transactionFlowGenerator, extraParam);
 
-    yield call(connectWallet, "Send funds!");
+    yield call(connectWallet);
     yield put(actions.txSender.txSenderWalletPlugged());
     const txHash = yield neuCall(sendTxSubSaga);
     yield neuCall(watchTxSubSaga, txHash);

@@ -41,9 +41,10 @@ export function* neuResetIf(
   resetAction: TActionType | TActionType[],
   endAction: TActionType | TActionType[],
   transactionFlowGenerator: any,
+  extraParam?: any,
 ): any {
   while (true) {
-    yield neuCall(transactionFlowGenerator);
+    yield neuCall(transactionFlowGenerator, extraParam);
 
     const { change, accept } = yield race({
       change: take(resetAction),

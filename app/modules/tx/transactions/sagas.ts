@@ -3,7 +3,7 @@ import { fork } from "redux-saga/effects";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { TAction } from "../../actions";
 import { onInvestmentTxModalHide } from "../../investment-flow/sagas";
-import { neuCall, neuTakeLatest } from "../../sagas";
+import { neuTakeLatest } from "../../sagas";
 import { ITxSendParams, txSendSaga } from "../sender/sagas";
 import { ETxSenderType } from "./../interfaces";
 import { investmentFlowGenerator } from "./investment/sagas";
@@ -12,11 +12,9 @@ import { ethWithdrawFlow } from "./withdraw/sagas";
 
 export function* withdrawSaga({ logger }: TGlobalDependencies): any {
   try {
-    const withdrawFlowGenerator = neuCall(ethWithdrawFlow);
-
     yield txSendSaga({
       type: ETxSenderType.WITHDRAW,
-      transactionFlowGenerator: withdrawFlowGenerator,
+      transactionFlowGenerator: ethWithdrawFlow,
     });
     logger.info("Withdrawing successful");
   } catch (e) {
@@ -29,10 +27,10 @@ export function* upgradeSaga({ logger }: TGlobalDependencies, action: TAction): 
     if (action.type !== "TRANSACTIONS_START_UPGRADE") return;
 
     const tokenType = action.payload;
-    const upgradeFlowGenerator = neuCall(upgradeTransactionFlow, tokenType);
     const params: ITxSendParams = {
       type: ETxSenderType.UPGRADE,
-      transactionFlowGenerator: upgradeFlowGenerator,
+      transactionFlowGenerator: upgradeTransactionFlow,
+      extraParam: tokenType,
     };
     yield txSendSaga(params);
 

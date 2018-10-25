@@ -407,7 +407,6 @@
   "investment-flow.error-message.below-minimum-ticket-size": "The amount is below the minimum ticket size of {minAmount}",
   "investment-flow.error-message.exceeds-token-amount": "The amount exceeds the amount of {tokenName} Tokens left in the sale, please reduce the investment",
   "investment-flow.error-message.exceeds-wallet-balance": "The amount exceeds your wallet balance",
-  "investment-flow.error-message.not-enough-ether-for-gas": "Your wallet does not contain enough ether to cover gas for the transaction",
   "investment-flow.estimated-gas-cost": "Estimated Gas Cost",
   "investment-flow.estimated-neu-tokens": "Estimated NEU Tokens",
   "investment-flow.invest-entire-balance": "Invest Entire Wallet Balance",
