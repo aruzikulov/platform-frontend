@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { Modal } from "reactstrap";
 
-import { ITxData } from "../../../lib/web3/Web3Manager";
+import { ITxData } from "../../../lib/web3/types";
 import { actions } from "../../../modules/actions";
 import { ETxSenderType, IDraftType } from "../../../modules/tx/interfaces";
 import { ETransactionErrorType, ETxSenderState } from "../../../modules/tx/sender/reducer";

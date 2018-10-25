@@ -1,4 +1,4 @@
-import { ITxData } from "../../../lib/web3/Web3Manager";
+import { ITxData } from "../../../lib/web3/types";
 import { AppReducer } from "../../../store";
 import { ETxSenderType } from "./../interfaces";
 

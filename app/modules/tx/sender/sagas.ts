@@ -31,8 +31,8 @@ import { selectEtherBalance } from "../../wallet/selectors";
 import { ETxSenderType } from "../interfaces";
 import { updateTxs } from "../monitor/sagas";
 import { generateEthWithdrawTransaction } from "../transactions/withdraw/sagas";
+import { ITxData } from "./../../../lib/web3/types";
 import { OutOfGasError } from "./../../../lib/web3/Web3Adapter";
-import { ITxData } from "./../../../lib/web3/Web3Manager";
 import { ETransactionErrorType, EValidationState } from "./reducer";
 import { selectTxDetails, selectTxType } from "./selectors";
 

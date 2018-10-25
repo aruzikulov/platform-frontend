@@ -15,25 +15,8 @@ import { promiseTimeout } from "../../utils/promiseTimeout";
 import { ILogger } from "../dependencies/Logger";
 import { LightWallet } from "./LightWallet";
 import { IPersonalWallet } from "./PersonalWeb3";
+import { IEthereumNetworkConfig } from "./types";
 import { Web3Adapter } from "./Web3Adapter";
-
-export interface ITxData {
-  to: string;
-  value: string;
-  data?: string;
-  from: string;
-  input?: string;
-  gas: string;
-  gasPrice: string;
-}
-
-export interface IRawTxData extends ITxData {
-  nonce: string;
-}
-
-export interface IEthereumNetworkConfig {
-  rpcUrl: string;
-}
 
 export class WalletNotConnectedError extends Error {
   constructor(public readonly wallet: IPersonalWallet) {

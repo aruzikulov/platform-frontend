@@ -5,13 +5,13 @@ import { calculateGasPriceWithOverhead } from "./../../utils";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { GasModelShape } from "../../../../lib/api/GasApi";
+import { ITxData } from "../../../../lib/web3/types";
 import { actions } from "../../../actions";
 import { neuCall } from "../../../sagas";
 import { selectEtherBalance, selectEtherTokenBalance } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { IDraftType } from "../../interfaces";
 import { EMPTY_DATA } from "../../utils";
-import { ITxData } from "./../../../../lib/web3/Web3Manager";
 import { selectGasPrice } from "./../../../gas/selectors";
 
 const WITHDRAW_GAS_LIMIT = "100000";

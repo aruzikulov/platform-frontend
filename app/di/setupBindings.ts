@@ -16,7 +16,7 @@ import { Storage } from "../lib/persistence/Storage";
 import { BrowserWalletConnector } from "../lib/web3/BrowserWallet";
 import { LedgerWalletConnector } from "../lib/web3/LedgerWallet";
 import { LightWalletConnector, LightWalletUtil } from "../lib/web3/LightWallet";
-import { IEthereumNetworkConfig, Web3Manager } from "../lib/web3/Web3Manager";
+import { Web3Manager } from "../lib/web3/Web3Manager";
 import { IAppState } from "../store";
 import {
   AsyncIntervalSchedulerFactory,
@@ -38,6 +38,7 @@ import { ObjectStorage } from "../lib/persistence/ObjectStorage";
 import { TWalletMetadata } from "../lib/persistence/WalletMetadataObjectStorage";
 import { WalletStorage } from "../lib/persistence/WalletStorage";
 import { ContractsService } from "../lib/web3/ContractsService";
+import { IEthereumNetworkConfig } from "./../lib/web3/types";
 import { symbols } from "./symbols";
 
 export type NavigateTo = (path: string) => void;

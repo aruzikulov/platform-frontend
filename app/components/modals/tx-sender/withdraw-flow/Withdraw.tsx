@@ -6,7 +6,6 @@ import { compose } from "recompose";
 import * as Web3Utils from "web3-utils";
 import { NumberSchema } from "yup";
 
-import { ITxData } from "../../../../lib/web3/Web3Manager";
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
 import { selectStandardGasPrice } from "../../../../modules/gas/selectors";
@@ -22,6 +21,7 @@ import { Button } from "../../../shared/buttons";
 import { ValidationErrorMessage } from "../../txSender/shared/ValidationErrorMessage";
 import { ITxInitDispatchProps } from "../TxSender";
 
+import { ITxData } from "../../../../lib/web3/types";
 import { FormField } from "../../../shared/forms";
 import * as styles from "./Withdraw.module.scss";
 

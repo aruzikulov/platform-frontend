@@ -3,7 +3,7 @@ import { addHexPrefix } from "ethereumjs-util";
 import { put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../../../di/setupBindings";
-import { ITxData } from "../../../../lib/web3/Web3Manager";
+import { ITxData } from "../../../../lib/web3/types";
 import { EthereumAddress } from "../../../../types";
 import { actions } from "../../../actions";
 import { selectStandardGasPrice } from "../../../gas/selectors";

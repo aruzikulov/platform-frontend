@@ -1,4 +1,4 @@
-import { ITxData } from "../../../lib/web3/Web3Manager";
+import { ITxData } from "../../../lib/web3/types";
 import { createAction, createSimpleAction } from "../../actionsUtils";
 import { IDraftType } from "../interfaces";
 import { ETxSenderType } from "./../interfaces";
