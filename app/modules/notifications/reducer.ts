@@ -14,6 +14,7 @@ export interface INotification {
   text: string;
   onClickAction: AppActionTypes;
   actionLinkText?: string;
+  clickable?: boolean;
 }
 
 export interface INotificationsState {
@@ -67,6 +68,15 @@ export const settingsNotification = () => ({
   text: "Please update your account before proceeding. Head to Settings now. ",
   actionLinkText: "Go to settings",
   onClickAction: routingActions.goToSettings(),
+});
+
+export const settingsNotificationInvestor = () => ({
+  id: Date.now(),
+  type: NotificationType.WARNING,
+  text: "You will not be able to INVEST until you complete required steps in Settings.",
+  actionLinkText: "Go to settings",
+  onClickAction: routingActions.goToSettings(),
+  clickable: true,
 });
 
 //TODO: Add Translation

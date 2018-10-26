@@ -8,11 +8,13 @@ import { compose } from "recompose";
 import { CounterWidget, InvestWidget, TagsWidget, TokenSymbolWidget } from ".";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { selectIsAuthorized } from "../../../../modules/auth/selectors";
+import { selectIsActionRequiredSettings } from "../../../../modules/notifications/selectors";
 import { ETOStateOnChain, TEtoWithCompanyAndContract } from "../../../../modules/public-etos/types";
 import { appConnect } from "../../../../store";
 import { CommonHtmlProps } from "../../../../types";
 import { withParams } from "../../../../utils/withParams";
 import { appRoutes } from "../../../appRoutes";
+import { ButtonLink } from "../../../shared/buttons";
 import { ETOState } from "../../../shared/ETOState";
 import { ECurrencySymbol, EMoneyFormat, Money } from "../../../shared/Money";
 import { InvestmentAmount } from "../../shared/InvestmentAmount";
@@ -32,6 +34,7 @@ interface IStatusOfEto {
 
 interface IStateProps {
   isAuthorized: boolean;
+  settingsUpdateRequired: boolean;
 }
 
 const StatusOfEto: React.SFC<IStatusOfEto> = ({ previewCode }) => {
@@ -58,6 +61,7 @@ const EtoStatusManager = ({
   eto,
   isAuthorized,
   isEligibleToPreEto,
+  settingsUpdateRequired,
 }: IExternalProps & IStateProps & IWithIsEligibleToPreEto) => {
   // It's possible for contract to be undefined if eto is not on chain yet
   const timedState = eto.contract ? eto.contract.timedState : ETOStateOnChain.Setup;
@@ -115,14 +119,22 @@ const EtoStatusManager = ({
     }
 
     case ETOStateOnChain.Public: {
-      return (
-        <InvestWidget
-          raisedTokens={eto.contract!.totalInvestment.totalTokensInt.toNumber()}
-          investorsBacked={eto.contract!.totalInvestment.totalInvestors.toNumber()}
-          tokensGoal={(eto.newSharesToIssue || 1) * (eto.equityTokensPerShare || 1)}
-          etoId={eto.etoId}
-        />
-      );
+      if (settingsUpdateRequired) {
+        return (
+          <ButtonLink to={appRoutes.settings}>
+            <FormattedMessage id="shared-component.eto-overview.settings-update-required" />
+          </ButtonLink>
+        );
+      } else {
+        return (
+          <InvestWidget
+            raisedTokens={eto.contract!.totalInvestment.totalTokensInt.toNumber()}
+            investorsBacked={eto.contract!.totalInvestment.totalInvestors.toNumber()}
+            tokensGoal={(eto.newSharesToIssue || 1) * (eto.equityTokensPerShare || 1)}
+            etoId={eto.etoId}
+          />
+        );
+      }
     }
 
     case ETOStateOnChain.Claim:
@@ -150,7 +162,7 @@ const EtoStatusManager = ({
 
 const EtoOverviewStatusLayout: React.SFC<
   IExternalProps & CommonHtmlProps & IWithIsEligibleToPreEto & IStateProps
-> = ({ eto, className, isAuthorized, isEligibleToPreEto }) => {
+> = ({ eto, className, isAuthorized, isEligibleToPreEto, settingsUpdateRequired }) => {
   const smartContractOnChain = !!eto.contract;
 
   const documentsByType = keyBy(eto.documents, document => document.documentType);
@@ -249,6 +261,7 @@ const EtoOverviewStatusLayout: React.SFC<
             eto={eto}
             isAuthorized={isAuthorized}
             isEligibleToPreEto={isEligibleToPreEto}
+            settingsUpdateRequired={settingsUpdateRequired}
           />
         </div>
       </div>
@@ -263,6 +276,7 @@ export const EtoOverviewStatus = compose<
   appConnect<IStateProps, {}, IExternalProps>({
     stateToProps: state => ({
       isAuthorized: selectIsAuthorized(state.auth),
+      settingsUpdateRequired: selectIsActionRequiredSettings(state),
     }),
   }),
   withIsEligibleToPreEto,

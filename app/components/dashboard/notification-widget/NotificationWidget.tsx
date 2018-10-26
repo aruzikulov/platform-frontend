@@ -28,6 +28,7 @@ const NotificationWidgetComponent: React.SFC<IProps> = ({ notifications, dispatc
           text={notification.text}
           actionLinkText={notification.actionLinkText}
           onClick={() => dispatch(notification.onClickAction)}
+          clickable={notification.clickable}
         />
       ))}
     </div>
