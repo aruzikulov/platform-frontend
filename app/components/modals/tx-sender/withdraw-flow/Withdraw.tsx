@@ -3,9 +3,9 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Container, Row } from "reactstrap";
 import { compose } from "recompose";
-import * as Web3Utils from "web3-utils";
 import { NumberSchema } from "yup";
 
+import { ITxData } from "../../../../lib/web3/types";
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
 import { selectStandardGasPrice } from "../../../../modules/gas/selectors";
@@ -13,16 +13,16 @@ import { ETxSenderType, IDraftType } from "../../../../modules/tx/interfaces";
 import { EValidationState } from "../../../../modules/tx/sender/reducer";
 import { selectTxGasCostEth, selectValidationState } from "../../../../modules/tx/sender/selectors";
 import { selectLiquidEtherBalance } from "../../../../modules/wallet/selectors";
+import { validateAddress } from "../../../../modules/web3/utils";
 import { appConnect } from "../../../../store";
 import { compareBigNumbers, subtractBigNumbers } from "../../../../utils/BigNumberUtils";
 import { convertToBigInt } from "../../../../utils/Number.utils";
 import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
 import { Button } from "../../../shared/buttons";
+import { FormField } from "../../../shared/forms";
 import { ValidationErrorMessage } from "../../txSender/shared/ValidationErrorMessage";
 import { ITxInitDispatchProps } from "../TxSender";
 
-import { ITxData } from "../../../../lib/web3/types";
-import { FormField } from "../../../shared/forms";
 import * as styles from "./Withdraw.module.scss";
 
 interface IStateProps {
@@ -40,8 +40,8 @@ type TProps = IStateProps & ITxInitDispatchProps;
 
 const withdrawFormSchema = YupTS.object({
   to: YupTS.string().enhance(v =>
-    v.required().test("isEthereumAddress", "is not a valid Ethereum address", (value: string) => {
-      return Web3Utils.isAddress(value.toUpperCase());
+    v.required().test("isEthereumAddress", "is not a valid Ethereum Address", (value: string) => {
+      return validateAddress(value);
     }),
   ),
   value: YupTS.number().enhance((v: NumberSchema) => v.moreThan(0).required()),
@@ -67,7 +67,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
       initialValues={{ value: "", to: "" }}
       onSubmit={onAccept}
     >
-      {({ isValid, values, isValidating, setFieldValue, validateField }) => {
+      {({ isValid, values, isValidating, setFieldValue }) => {
         return (
           <Form>
             <Container>
@@ -79,6 +79,18 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     placeholder="0x0"
                     ignoreTouched={true}
                     data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.to-address"
+                    onChange={(e: any) => {
+                      setFieldValue("to", e.target.value);
+                      if (
+                        compareBigNumbers(convertToBigInt(values.value || "0"), maxEther) < 0 &&
+                        validateAddress(e.target.value)
+                      )
+                        onValidate({
+                          ...values,
+                          to: e.target.value,
+                          type: ETxSenderType.WITHDRAW,
+                        });
+                    }}
                   />
                 </Col>
               </Row>
@@ -99,12 +111,15 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     }}
                     onChange={(e: any) => {
                       setFieldValue("value", e.target.value);
-                      validateField("value");
-                      onValidate({
-                        ...values,
-                        value: e.target.value,
-                        type: ETxSenderType.WITHDRAW,
-                      });
+                      if (
+                        compareBigNumbers(convertToBigInt(e.target.value || "0"), maxEther) < 0 &&
+                        validateAddress(values.to)
+                      )
+                        onValidate({
+                          ...values,
+                          value: e.target.value,
+                          type: ETxSenderType.WITHDRAW,
+                        });
                     }}
                   />
                   {/* @SEE https://github.com/jaredpalmer/formik/issues/288 */}

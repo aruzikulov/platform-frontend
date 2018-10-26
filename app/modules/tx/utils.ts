@@ -20,4 +20,3 @@ export const encodeTransaction = (txData: Partial<TxData>) => {
     data: addHexPrefix(txData.data || EMPTY_DATA),
   };
 };
-
