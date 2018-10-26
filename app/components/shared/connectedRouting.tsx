@@ -9,4 +9,5 @@ export const SwitchConnected = appConnect<{}, {}, SwitchProps>({
 
 export const NavLinkConnected = appConnect<{}, {}, NavLinkProps>({
   stateToProps: s => ({ location: s.router.location }),
+  options: { omitDispatch: true },
 })(NavLink);
