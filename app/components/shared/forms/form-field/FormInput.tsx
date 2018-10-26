@@ -113,7 +113,11 @@ export class FormInput extends React.Component<FormInputProps> {
                         </InputGroupAddon>
                       )}
                     </InputGroup>
-                    <FormError name={name} defaultMessage={errorMsg} />
+                    <FormError
+                      name={name}
+                      defaultMessage={errorMsg}
+                      ignoreTouched={ignoreTouched}
+                    />
                     {charactersLimit && <div>{countedCharacters(val, charactersLimit)}</div>}
 
                     {min &&
