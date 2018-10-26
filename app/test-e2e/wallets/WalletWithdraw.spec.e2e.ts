@@ -104,7 +104,7 @@ describe("Wallet Withdraw", () => {
     goToDashboard();
 
     const testValue = (5).toString();
-    const expectedGasLimit = "0x186a0";
+    const expectedGasLimit = "0xebac";
     const account = new web3Accounts().create();
     const expectedInput = `0x64663ea6000000000000000000000000${account.address
       .slice(2)
@@ -147,7 +147,7 @@ describe("Wallet Withdraw", () => {
 
           expect(from).to.equal(accountAddress.text().toLowerCase());
           expect(txHashObject.text()).to.equal(hash);
-          expect(input).to.equal("0x00");
+          expect(input).to.equal(expectedInput);
           expect(gas).to.equal(expectedGasLimit);
           expect(ethValue).to.equal(Q18.mul(testValue).toString());
 

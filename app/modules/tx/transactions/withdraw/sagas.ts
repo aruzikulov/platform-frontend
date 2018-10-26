@@ -11,7 +11,7 @@ import { neuCall } from "../../../sagas";
 import { selectEtherTokenBalanceAsBigNumber } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { IDraftType } from "../../interfaces";
-import { EMPTY_DATA } from "../../utils";
+import { calculateGasPriceWithOverhead, EMPTY_DATA } from "../../utils";
 import { selectGasPrice } from "./../../../gas/selectors";
 
 const SIMPLE_WITHDRAW_TRANSACTION = "21000";
@@ -28,7 +28,7 @@ export function* generateEthWithdrawTransaction(
 
   const weiValue = Q18.mul(value);
 
-  if (etherTokenBalance.comparedTo(0) < 0) {
+  if (etherTokenBalance.isZero()) {
     // transaction can be fully covered ether balance
     const txDetails: Partial<ITxData> = {
       to,
@@ -36,7 +36,7 @@ export function* generateEthWithdrawTransaction(
       data: EMPTY_DATA,
       value: weiValue.toString(),
       gasPrice: gasPrice!.standard,
-      gas: SIMPLE_WITHDRAW_TRANSACTION,
+      gas: calculateGasPriceWithOverhead(SIMPLE_WITHDRAW_TRANSACTION),
     };
     return txDetails;
   } else {

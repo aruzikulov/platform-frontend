@@ -9,7 +9,6 @@ import { actions } from "../../../actions";
 import { selectStandardGasPrice } from "../../../gas/selectors";
 import { neuCall } from "../../../sagas";
 import {
-  selectICBMLockedEtherBalance,
   selectIsEtherUpgradeTargetSet,
   selectIsEuroUpgradeTargetSet,
 } from "../../../wallet/selectors";
@@ -17,15 +16,13 @@ import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { ETokenType } from "../../interfaces";
 import { calculateGasPriceWithOverhead } from "../../utils";
 import { selectGasPrice } from "./../../../gas/selectors";
-import { selectICBMLockedEuroTokenBalance } from "./../../../wallet/selectors";
 
 export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
   const userAddress = yield select(selectEthereumAddressWithChecksum);
   const gasPrice = yield select(selectGasPrice);
   const migrationTarget = yield select(selectIsEuroUpgradeTargetSet);
-  const euroBalance = yield select(selectICBMLockedEuroTokenBalance);
 
-  if (!migrationTarget || new BigNumber(euroBalance).isZero()) {
+  if (!migrationTarget) {
     throw new Error();
     // TODO: Add no balance error
   }
@@ -53,9 +50,8 @@ export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDe
   const userAddress: EthereumAddress = yield select(selectEthereumAddressWithChecksum);
   const gasPrice: string = yield select(selectStandardGasPrice);
   const migrationTarget: boolean = yield select(selectIsEtherUpgradeTargetSet);
-  const etherBalance: string = yield select(selectICBMLockedEtherBalance);
 
-  if (!migrationTarget || new BigNumber(etherBalance).equals(0)) {
+  if (!migrationTarget) {
     throw new Error();
     // TODO: Add no balance error
   }
