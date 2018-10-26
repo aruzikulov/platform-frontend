@@ -49,7 +49,7 @@ export const EtoFileIpfsModalComponent: React.SFC<IStateProps & IDispatchProps> 
           </Col>
         </Row>
         <Row className="mb-3 justify-content-center">
-          <ButtonArrowRight onClick={onContinue} data-test-id="generic-modal-dismiss-button">
+          <ButtonArrowRight onClick={onContinue} data-test-id="documents-ipfs-modal-continue">
             <FormattedMessage id="modal.ipfs-eto.button.continue" />
           </ButtonArrowRight>
         </Row>

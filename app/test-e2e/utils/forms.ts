@@ -1,4 +1,6 @@
 import { findKey, forEach } from "lodash";
+
+import { acceptWallet } from "./index";
 import { formField, formFieldErrorMessage, tid } from "./selectors";
 
 type TFormFieldFixture =
@@ -22,6 +24,11 @@ type TFormFieldFixture =
   | {
       type: "submit";
     }
+  | {
+      type: "custom";
+      method: string;
+      value: any;
+    }
   | string;
 
 export type TFormFixture = {
@@ -44,7 +51,7 @@ const isSubmitField = (field: TFormFieldFixture) =>
  * @param fixture - Which form fixture to load
  * @param submit - wether to submit the form or not, default true
  */
-export const fillForm = (fixture: TFormFixture, { submit = true }: { submit?: boolean } = {}) => {
+export const fillForm = (fixture: TFormFixture, { submit = true, methods = {} }: { submit?: boolean, methods?: any } = {}) => {
   forEach(fixture, (field, key) => {
     // the default is just typing a string into the input
     if (typeof field === "string") {
@@ -95,9 +102,11 @@ export const fillForm = (fixture: TFormFixture, { submit = true }: { submit?: bo
     // files
     else if (field.type === "single-file") {
       uploadSingleFileToFieldWithTid(key, field.value);
-    } else if (field.type === "multiple-files") {
+    }
+    else if (field.type === "multiple-files") {
       uploadMultipleFilesToFieldWithTid(key, field.values);
-    } else if (field.type === "media") {
+    }
+    else if (field.type === "media") {
       const socialProfilesTid = tid(key);
 
       cy.get(socialProfilesTid).then($socialProfiles => {
@@ -111,6 +120,15 @@ export const fillForm = (fixture: TFormFixture, { submit = true }: { submit?: bo
           fillField(`social-profiles.profile-input.${key}`, value, socialProfilesTid);
         });
       });
+    }
+    else if (field.type === "custom") {
+      const method = methods[field.method];
+
+      if (!method) {
+        throw new Error(`Cannot find custom method ${method}`);
+      }
+
+      method(key, field.value);
     }
   });
 
@@ -139,26 +157,29 @@ export const getFieldError = (formTid: string, key: string): Cypress.Chainable<s
 };
 
 /**
+ * Upload ipfs document to a dropzone field
+ * @param targetTid - test id of the dropzone field
+ * @param fixture - which fixture to load
+ */
+export const uploadDocumentToFieldWithTid = (targetTid: string, fixture: string) => {
+  cy.get(tid(targetTid, tid("eto-add-document-drop-zone"))).dropFile(fixture);
+
+  cy.get(tid("documents-ipfs-modal-continue")).click();
+  acceptWallet();
+
+  cy.get(tid(targetTid, tid("documents-download-document"))).should("exist");
+};
+
+/**
  * Upload single file to a dropzone field
  * @param targetTid - test id of the dropzone field
  * @param fixture - which fixture to load
  */
 export const uploadSingleFileToFieldWithTid = (targetTid: string, fixture: string) => {
-  cy.fixture(fixture)
-    .then(picture => Cypress.Blob.base64StringToBlob(picture, "image/png"))
-    .then(blob => {
-      const dropEvent = {
-        dataTransfer: {
-          files: [blob],
-        },
-      };
-
-      const target = cy.get(tid(targetTid));
-
-      target.trigger("drop", dropEvent);
-
-      target.within(() => cy.get(tid("single-file-upload-delete-file")).should("exist"));
-    });
+  cy.get(tid(targetTid)).within(() => {
+    cy.root().dropFile(fixture);
+    cy.get(tid("single-file-upload-delete-file")).should("exist")
+  });
 };
 
 /**
@@ -168,25 +189,10 @@ export const uploadSingleFileToFieldWithTid = (targetTid: string, fixture: strin
  */
 export const uploadMultipleFilesToFieldWithTid = (targetTid: string, fixtures: string[]) => {
   fixtures.forEach(fixture =>
-    cy
-      .fixture(fixture)
-      .then(file => Cypress.Blob.base64StringToBlob(file))
-      .then(blob => {
-        const nameSegments = fixture.split("/");
-        const name = nameSegments[nameSegments.length - 1];
-        const testFile = new File([blob], name, { type: "image/png" });
+    cy.get(tid(targetTid)).within(() => {
+      cy.get(tid("multi-file-upload-dropzone")).dropFile(fixture);
 
-        const dropEvent = {
-          dataTransfer: {
-            files: [testFile],
-          },
-        };
-
-        cy.get(tid(targetTid)).within(() => {
-          cy.get(tid("multi-file-upload-dropzone")).trigger("drop", dropEvent);
-
-          cy.get(tid(`multi-file-upload-file-${fixture}`)).should("exist");
-        });
-      }),
+      cy.get(tid(`multi-file-upload-file-${fixture}`)).should("exist");
+    })
   );
 };

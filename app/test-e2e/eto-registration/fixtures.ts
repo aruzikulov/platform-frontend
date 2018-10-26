@@ -1,6 +1,12 @@
 import { TFormFixture } from "../utils/forms";
 
 // about form
+export const aboutFormSubmit: TFormFixture = {
+  "eto-registration-company-information-submit": {
+    type: "submit",
+  },
+};
+
 export const aboutFormRequired: TFormFixture = {
   companyDescription: "..also Beer!",
   brandName: "Davecoin",
@@ -15,6 +21,7 @@ export const aboutFormRequired: TFormFixture = {
 
 export const aboutForm: TFormFixture = {
   ...aboutFormRequired,
+  ...aboutFormSubmit,
   keyQuoteInvestor: "They're making it a great day!",
   "eto-registration-company-logo": {
     value: "example.jpg",
@@ -24,18 +31,25 @@ export const aboutForm: TFormFixture = {
     value: "example.jpg",
     type: "single-file",
   },
-  "eto-registration-company-information-submit": {
-    type: "submit",
-  },
 };
 
 // legal info
-export const legalInfoForm: TFormFixture = {
-  vatNumber: "123456",
+export const legalInfoRequiredForm: TFormFixture = {
   foundingDate: {
     value: "22/02/99",
     type: "date",
   },
+  companyShares: "5000",
+  "shareholders.0.fullName": "Marcin Rudolf",
+  "shareholders.0.shares": "90",
+  "eto-registration-legal-information-submit": {
+    type: "submit",
+  },
+};
+
+export const legalInfoForm: TFormFixture = {
+  ...legalInfoRequiredForm,
+  vatNumber: "123456",
   numberOfEmployees: {
     value: "10-99",
     type: "select",
@@ -46,22 +60,25 @@ export const legalInfoForm: TFormFixture = {
     type: "select",
   },
   lastFundingSizeEur: "1000000",
-  companyShares: "5000",
-  "shareholders.0.fullName": "Marcin Rudolf",
-  "shareholders.0.shares": "90",
   "eto-registration-legal-information-submit": {
     type: "submit",
   },
 };
 
 // investment terms
-export const investmentTermsForm: TFormFixture = {
+export const investmentTermsRequiredForm: TFormFixture = {
   shareNominalValueEur: "1",
   preMoneyValuationEur: "1000000",
   existingCompanyShares: "1000",
-  authorizedCapitalShares: "100",
   minimumNewSharesToIssue: "10000",
   newSharesToIssue: "20000",
+  "eto-registration-investment-terms-submit": {
+    type: "submit",
+  },
+};
+
+export const investmentTermsForm: TFormFixture = {
+  ...investmentTermsRequiredForm,
   newSharesToIssueInWhitelist: "5000",
   whitelistDiscountFraction: "20",
   newSharesToIssueInFixedSlots: "1000",
@@ -72,7 +89,31 @@ export const investmentTermsForm: TFormFixture = {
 };
 
 // eto terms
+export const etoTermsRequiredForm: TFormFixture = {
+  minTicketEur: "750",
+  whitelistDurationDays: {
+    value: "5",
+    type: "range",
+  },
+  publicDurationDays: {
+    value: "14",
+    type: "range",
+  },
+  signingDurationDays: {
+    value: "15",
+    type: "range",
+  },
+  enableTransferOnSuccess: {
+    value: "",
+    type: "check",
+  },
+  "eto-registration-eto-terms-submit": {
+    type: "submit",
+  },
+};
+
 export const etoTermsForm: TFormFixture = {
+  ...etoTermsRequiredForm,
   currencies: {
     value: "eth",
     mustBeChecked: false,
@@ -263,9 +304,17 @@ export const productVisionForm: TFormFixture = {
 };
 
 // media form
-export const mediaForm: TFormFixture = {
+export const mediaRequiredForm: TFormFixture = {
   "companyVideo.url": "https://www.youtube.com/watch?v=oHg5SJYRHA0",
   "companySlideshare.url": "https://neufund.org/",
+
+  "eto-registration-media-submit": {
+    type: "submit",
+  },
+};
+
+export const mediaForm: TFormFixture = {
+  ...mediaRequiredForm,
   socialChannels: {
     type: "media",
     values: {
@@ -311,7 +360,7 @@ export const riskForm: TFormFixture = {
 // token info
 export const equityTokenInfoForm: TFormFixture = {
   "eto-registration-token-logo": {
-    value: "example.jpg",
+    value: "example.png",
     type: "single-file",
   },
   equityTokenName: "Sharpcoin",
