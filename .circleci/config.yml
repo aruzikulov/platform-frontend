@@ -96,19 +96,19 @@ workflows:
 
   mainflow:
     jobs:
-      - install
-      - lint:
+      - install-1
+      - lint-1:
           requires:
-            - install
-      - test:
+          - install-1
+      - test-1:
           requires:
-            - install
-      - test-e2e:
+          - install-1
+      - test-e2e-1:
           requires:
-            - install
-      - danger-ci:
+          - install-1
+      - danger-ci-1:
           requires:
-            - install
+          - install-1
 
   nightly:
     triggers:
@@ -120,18 +120,18 @@ workflows:
                 - master
                 - production
     jobs:
-     - install
-     - lint:
+     - install-1
+     - lint-1:
          requires:
-           - install
-     - test:
+           - install-1
+     - test-1:
          requires:
-           - install
-     - test-e2e:
+           - install-1
+     - test-e2e-1:
          requires:
-           - install
-     - danger-ci:
+           - install-1
+     - danger-ci-1:
          requires:
-           - install
+           - install-1
 
 
