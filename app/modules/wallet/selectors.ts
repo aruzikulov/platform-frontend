@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import * as Web3Utils from "web3-utils";
 import { IAppState } from "../../store";
 import { addBigNumbers, multiplyBigNumbers } from "../../utils/BigNumberUtils";
@@ -13,8 +14,11 @@ export const selectNeuBalanceEuroAmount = (state: IAppState): string =>
 export const selectNeuBalance = (state: IWalletState): string =>
   (state.data && state.data.neuBalance) || "0";
 
-export const selectEtherTokenBalance = (state: IAppState): string | undefined =>
+export const selectEtherTokenBalance = (state: IAppState): string =>
   (state.wallet.data && state.wallet.data.etherTokenBalance) || "0";
+
+export const selectEtherTokenBalanceAsBigNumber = (state: IAppState): BigNumber =>
+  new BigNumber((state.wallet.data && state.wallet.data.etherTokenBalance) || "0");
 
 export const selectEtherBalance = (state: IAppState): string =>
   (state.wallet.data && state.wallet.data.etherBalance) || "0";

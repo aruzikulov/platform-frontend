@@ -1,18 +1,20 @@
 import { put, select, take } from "redux-saga/effects";
 import { Q18 } from "./../../../../config/constants";
 import { TAction } from "./../../../actions";
-import { calculateGasPriceWithOverhead } from "./../../utils";
 
+import BigNumber from "bignumber.js";
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { GasModelShape } from "../../../../lib/api/GasApi";
 import { ITxData } from "../../../../lib/web3/types";
 import { actions } from "../../../actions";
 import { neuCall } from "../../../sagas";
-import { selectEtherBalance, selectEtherTokenBalance } from "../../../wallet/selectors";
+import { selectEtherTokenBalanceAsBigNumber } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { IDraftType } from "../../interfaces";
 import { EMPTY_DATA } from "../../utils";
 import { selectGasPrice } from "./../../../gas/selectors";
+
+const SIMPLE_WITHDRAW_TRANSACTION = "21000";
 
 export function* generateEthWithdrawTransaction(
   { contractsService, web3Manager }: TGlobalDependencies,
@@ -20,28 +22,28 @@ export function* generateEthWithdrawTransaction(
 ): any {
   const { to, value } = payload;
 
-  const etherTokenBalance: string = yield select(selectEtherTokenBalance);
+  const etherTokenBalance: BigNumber = yield select(selectEtherTokenBalanceAsBigNumber);
   const from: string = yield select(selectEthereumAddressWithChecksum);
   const gasPrice: GasModelShape | undefined = yield select(selectGasPrice);
-  const etherBalance: string = yield select(selectEtherBalance);
 
-  const ethVal = Q18.mul(value || "0");
-  if (ethVal.comparedTo(etherBalance) < 0) {
+  const weiValue = Q18.mul(value);
+
+  if (etherTokenBalance.comparedTo(0) < 0) {
     // transaction can be fully covered ether balance
     const txDetails: Partial<ITxData> = {
       to,
       from,
       data: EMPTY_DATA,
-      value: ethVal.toString(),
+      value: weiValue.toString(),
       gasPrice: gasPrice!.standard,
+      gas: SIMPLE_WITHDRAW_TRANSACTION,
     };
-    const estimatedGas = yield web3Manager.estimateGas(txDetails);
-    return { ...txDetails, gas: calculateGasPriceWithOverhead(estimatedGas) };
+    return txDetails;
   } else {
     // transaction can be fully covered by etherTokens
-    const txInput = contractsService.etherToken.withdrawAndSendTx(to || "0x0", ethVal).getData();
+    const txInput = contractsService.etherToken.withdrawAndSendTx(to || "0x0", weiValue).getData();
 
-    const difference = ethVal.sub(etherTokenBalance);
+    const difference = weiValue.sub(etherTokenBalance);
 
     const txDetails: Partial<ITxData> = {
       to: contractsService.etherToken.address,
@@ -50,8 +52,8 @@ export function* generateEthWithdrawTransaction(
       value: difference.comparedTo(0) > 0 ? difference.toString() : "0",
       gasPrice: gasPrice!.standard,
     };
-    const estimatedGas = yield web3Manager.estimateGas(txDetails);
-    return { ...txDetails, gas: calculateGasPriceWithOverhead(estimatedGas) };
+    const estimatedGas = yield web3Manager.estimateGasWithOverhead(txDetails);
+    return { ...txDetails, gas: estimatedGas };
   }
 }
 

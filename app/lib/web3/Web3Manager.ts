@@ -1,6 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { inject, injectable } from "inversify";
 import * as Web3 from "web3";
+import { calculateGasPriceWithOverhead } from "./../../modules/tx/utils";
 
 import { symbols } from "../../di/symbols";
 import { encodeTransaction } from "../../modules/tx/utils";
@@ -109,6 +110,17 @@ export class Web3Manager {
   }
   public async estimateGas(txData: Partial<Web3.TxData>): Promise<number> {
     const encodedTxData = encodeTransaction(txData);
+    return this.internalWeb3Adapter.estimateGas(encodedTxData);
+  }
+
+  public async estimateGasWithOverhead(txData: Partial<Web3.TxData>): Promise<number> {
+    const gasWithOverhead = txData.gas
+      ? calculateGasPriceWithOverhead(Number(txData.gas).toString())
+      : "0";
+    const encodedTxData = encodeTransaction({
+      ...txData,
+      gas: gasWithOverhead,
+    });
     return this.internalWeb3Adapter.estimateGas(encodedTxData);
   }
 
