@@ -1,12 +1,11 @@
 .document-link {
   align-items: center;
   display: inline-flex;
-  font-weight: $font-weight-light;
-  margin-bottom: $spacing-vertical-lg-1;
-  text-decoration: underline;
-  background-color: transparent;
-  border: 0;
-  cursor: pointer;
+}
+
+.document-link,
+.document-button {
+  font-size: px-to-rem(12px);
 
   :global {
     .fa-link,
@@ -14,12 +13,7 @@
     .inline-icon {
       width: 18px;
       margin-right: 10px;
-      text-decoration: none;
-
-      &::after,
-      &::before {
-        text-decoration: none;
-      }
+      flex-shrink: 0;
     }
   }
 }

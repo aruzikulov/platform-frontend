@@ -30,26 +30,26 @@ export enum EEtoDocumentType {
   OTHER = "other",
 }
 
-type etoFormType = "document" | "template";
+type TEtoFormType = "document" | "template";
 
 export interface IEtoDocument {
   documentType: EEtoDocumentType;
-  form: etoFormType;
+  form: TEtoFormType;
   ipfsHash: string;
   mimeType: string;
   name: string;
   placeholders?: { [key: string]: string };
 }
 
-type IComplextFileInfo = "canDeleteInStates" | "canUploadInStates";
+type TComplextFileInfo = "canDeleteInStates" | "canUploadInStates";
 
-type ISimpleFileInfo = "requiredTemplates" | "uploadableDocuments";
+type TSimpleFileInfo = "requiredTemplates" | "uploadableDocuments";
 
 export interface IEtoFiles {
   etoTemplates: TEtoDocumentTemplates;
   uploadedDocuments: TEtoDocumentTemplates;
-  stateInfo?: { [key in ISimpleFileInfo]: EEtoDocumentType[] } &
-    { [key in IComplextFileInfo]: { [key in EtoStateToCamelcase]: EEtoDocumentType[] } };
+  stateInfo?: { [key in TSimpleFileInfo]: EEtoDocumentType[] } &
+    { [key in TComplextFileInfo]: { [key in EtoStateToCamelcase]: EEtoDocumentType[] } };
 }
 
 export type TEtoDocumentTemplates = { [key: string]: IEtoDocument };

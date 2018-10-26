@@ -2,6 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
+import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
 import { EtoState, EtoStateToCamelcase } from "../lib/api/eto/EtoApi.interfaces";
@@ -11,6 +12,7 @@ import {
   IEtoFiles,
   TEtoDocumentTemplates,
 } from "../lib/api/eto/EtoFileApi.interfaces";
+import { ignoredTemplates } from "../lib/api/eto/EtoFileUtils";
 import { actions } from "../modules/actions";
 import {
   selectEtoDocumentData,
@@ -32,7 +34,6 @@ import { LoadingIndicator } from "./shared/loading-indicator";
 import { SectionHeader } from "./shared/SectionHeader";
 import { SingleColDocuments } from "./shared/SingleColDocumentWidget";
 
-import { setDisplayName } from "recompose";
 import * as styles from "./Documents.module.scss";
 
 type IProps = IStateProps & IDispatchProps;
@@ -50,7 +51,7 @@ interface IDispatchProps {
   downloadDocumentByType: (documentType: EEtoDocumentType) => void;
 }
 
-export const documentTitles: { [key in EEtoDocumentType]: string | React.ReactNode } = {
+export const documentTitles: { [key in EEtoDocumentType]: React.ReactNode } = {
   company_token_holder_agreement: (
     <FormattedMessage id="eto.documents.company-token-holder-agreement" />
   ),
@@ -70,9 +71,6 @@ export const documentTitles: { [key in EEtoDocumentType]: string | React.ReactNo
   ),
   other: <FormattedMessage id="eto.documents.other" />,
 };
-
-// Documents to not be presented
-const ignoredDocuments: string[] = ["pamphletTemplate", "termsheetTemplate", "prospectusTemplate"];
 
 export const GeneratedDocuments: React.SFC<{
   document: IEtoDocument;
@@ -118,7 +116,7 @@ export const DocumentsComponent: React.SFC<IProps> = ({
                 <FormattedMessage id="documents.generated-documents" />
               </Col>
               {Object.keys(etoTemplates)
-                .filter(key => !ignoredDocuments.some(ignoredDocument => ignoredDocument === key))
+                .filter(key => !ignoredTemplates.some(template => template === key))
                 .map((key, index) => {
                   return (
                     <GeneratedDocuments

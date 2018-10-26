@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { TTranslatedString } from "../../types";
+import { Button, EButtonLayout } from "./buttons";
 import { Document } from "./Document";
 
 import * as styles from "./DocumentLink.module.scss";
@@ -32,10 +33,10 @@ const DocumentTemplateButton: React.SFC<IDocumentTemplateButtonProps> = ({
   altIcon,
 }) => {
   return (
-    <button onClick={onClick} className={styles.documentLink}>
+    <Button layout={EButtonLayout.INLINE} onClick={onClick} className={styles.documentButton}>
       {altIcon || <Document extension="pdf" />}
       {title}
-    </button>
+    </Button>
   );
 };
 

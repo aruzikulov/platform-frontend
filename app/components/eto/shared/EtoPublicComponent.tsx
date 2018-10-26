@@ -9,8 +9,6 @@ import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
 import { PersonProfileModal } from "../../modals/PersonProfileModal";
 import { Accordion, AccordionElement } from "../../shared/Accordion";
 import { ChartDoughnut } from "../../shared/charts/ChartDoughnut";
-import { DocumentsWidget } from "../../shared/DocumentsWidget";
-import { InlineIcon } from "../../shared/InlineIcon";
 import { ILink, MediaLinksWidget, normalizedUrl } from "../../shared/MediaLinksWidget";
 import { Panel } from "../../shared/Panel";
 import { IPerson, PeopleSwiperWidget } from "../../shared/PeopleSwiperWidget";
@@ -23,11 +21,11 @@ import { Video } from "../../shared/Video";
 import { EtoOverviewStatus } from "../overview/EtoOverviewStatus";
 import { EtoTimeline } from "../overview/EtoTimeline";
 import { Cover } from "../public-view/Cover";
+import { DocumentsWidget } from "../public-view/DocumentsWidget";
 import { EtoInvestmentTermsWidget } from "../public-view/EtoInvestmentTermsWidget";
 import { LegalInformationWidget } from "../public-view/LegalInformationWidget";
 import { areThereIndividuals, selectActiveCarouselTab } from "./EtoPublicComponent.utils";
 
-import * as icon_link from "../../../assets/img/inline_icons/social_link.svg";
 import * as styles from "./EtoPublicComponent.module.scss";
 
 const DEFAULT_PLACEHOLDER = "N/A";
@@ -57,24 +55,6 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) 
     isTwitterFeedEnabled && socialChannels
       ? (socialChannels.find(c => c.type === "twitter") as any).url
       : "";
-
-  const marketingLinks = companyData.marketingLinks && {
-    documents: companyData.marketingLinks.map(l => ({
-      url: l.url || "",
-      name: l.title || "",
-      icon: <InlineIcon svgIcon={icon_link} />,
-    })),
-    name: (
-      <FormattedMessage
-        id="eto.public-view.documents.more-information-about-brand"
-        values={{
-          brandName: companyData.brandName,
-        }}
-      />
-    ),
-  };
-
-  const links = marketingLinks ? [marketingLinks] : [];
 
   return (
     <>
@@ -510,16 +490,20 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) 
             )}
           </Col>
           <Col sm={12} md={4}>
-            {links[0] &&
-              !!links[0].documents[0].url && (
-                <>
-                  <SectionHeader layoutHasDecorator={false} className="mb-4">
-                    <FormattedMessage id="eto.form.documents.title" />
-                  </SectionHeader>
+            {companyData.marketingLinks && (
+              <>
+                <SectionHeader layoutHasDecorator={false} className="mb-4">
+                  <FormattedMessage id="eto.form.documents.title" />
+                </SectionHeader>
 
-                  <DocumentsWidget className="mb-4" groups={links} />
-                </>
-              )}
+                <DocumentsWidget
+                  className="mb-4"
+                  companyMarketingLinks={companyData.marketingLinks}
+                  etoTemplates={etoData.templates}
+                  etoDocuments={etoData.documents}
+                />
+              </>
+            )}
 
             {companyData.companyNews &&
               !!companyData.companyNews[0].url && (

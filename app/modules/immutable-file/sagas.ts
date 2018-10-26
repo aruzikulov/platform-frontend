@@ -17,7 +17,7 @@ export function* downloadFile(
 
     yield neuCall(downloadLink, downloadedFile, action.payload.fileName, extension);
   } catch (e) {
-    logger.debug(e);
+    logger.error("Failed to download file from IPFS", e);
     notificationCenter.error("Failed to download file from IPFS");
   }
 }

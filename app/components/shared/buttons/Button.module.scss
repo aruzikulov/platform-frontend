@@ -130,6 +130,8 @@ $_active-color: lighten($_hover-color, 20%);
 
     .content {
       padding: 0;
+      margin-top: 0;
+      text-align: left;
     }
   }
 
