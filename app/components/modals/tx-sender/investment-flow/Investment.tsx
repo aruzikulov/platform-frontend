@@ -1,8 +1,10 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
+import MaskedInput from "react-text-mask";
 import { Col, Container, FormGroup, Label, Row } from "reactstrap";
 import { withHandlers, withProps } from "recompose";
 import { compose } from "redux";
+import { createNumberMask } from "text-mask-addons";
 
 import { MONEY_DECIMALS } from "../../../../config/constants";
 import { TPublicEtoData } from "../../../../lib/api/eto/EtoApi.interfaces";
@@ -45,6 +47,7 @@ import {
   createWallets,
   formatEth,
   formatEur,
+  formatVaryingDecimals,
   getInputErrorMessage,
   getInvestmentTypeMessages,
 } from "./utils";
@@ -161,9 +164,20 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
             placeholder={`${intl.formatIntlMessage(
               "investment-flow.min-ticket-size",
             )} ${minTicketEur} €`}
-            controlCursor
             value={formatEur(euroValue)}
-            onChange={e => changeEuroValue(e.target.value)}
+            className="form-control"
+            renderInput={props => (
+              <MaskedInput
+                {...props}
+                mask={createNumberMask({
+                  prefix: "",
+                  thousandsSeparatorSymbol: " ",
+                  allowDecimal: false,
+                  integerLimit: 20,
+                })}
+                onChange={e => changeEuroValue(e.target.value)}
+              />
+            )}
           />
         </Col>
         <Col sm="1">
@@ -176,9 +190,21 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
             placeholder={`${intl.formatIntlMessage(
               "investment-flow.min-ticket-size",
             )} ${formatMoney(minTicketEth, 0, 4)} ETH`}
-            controlCursor
-            value={formatEth(ethValue)}
-            onChange={e => changeEthValue(e.target.value)}
+            value={formatVaryingDecimals(ethValue)}
+            className="form-control"
+            renderInput={props => (
+              <MaskedInput
+                {...props}
+                mask={createNumberMask({
+                  prefix: "",
+                  thousandsSeparatorSymbol: " ",
+                  allowDecimal: true,
+                  decimalLimit: 4,
+                  integerLimit: 15, // integer limit due to weird behavior on large inputs
+                })}
+                onChange={e => changeEthValue(e.target.value)}
+              />
+            )}
           />
           {isWalletBalanceKnown && (
             <a

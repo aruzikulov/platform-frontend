@@ -9,7 +9,7 @@ import * as ethIcon from "../../../../assets/img/eth_icon2.svg";
 import * as euroIcon from "../../../../assets/img/euro_icon.svg";
 import * as neuroIcon from "../../../../assets/img/neuro_icon.svg";
 
-const wallets: WalletSelectionData[] = [
+export const wallets: WalletSelectionData[] = [
   {
     balanceEur: "32112",
     balanceEth: "30000000000000000000",
