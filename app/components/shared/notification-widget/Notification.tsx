@@ -11,7 +11,7 @@ import {
   ButtonTextPosition,
   ButtonWidth,
   EButtonLayout,
-} from "../../shared/buttons";
+} from "../buttons/index";
 
 import * as infoIcon from "../../../assets/img/notifications/info.svg";
 import * as warningIcon from "../../../assets/img/notifications/warning.svg";
