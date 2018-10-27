@@ -27,7 +27,7 @@ const EtoListComponent: React.SFC<IStateProps> = ({ etos }) => (
     <Col xs={12}>
       {etos ? (
         etos.map(eto => (
-          <div className="mb-3">
+          <div className="mb-3" key={eto.previewCode}>
             <EtoOverviewStatus eto={eto} />
           </div>
         ))

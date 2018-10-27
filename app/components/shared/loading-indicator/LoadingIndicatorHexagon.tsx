@@ -23,21 +23,21 @@ const LoadingIndicatorHexagon: React.SFC = () => (
 
     {times(
       n => (
-        <HexBrick c={styles[`c${n + 1}`]} r={styles.r1} />
+        <HexBrick key={n} c={styles[`c${n + 1}`]} r={styles.r1} />
       ),
       6,
     )}
 
     {times(
       n => (
-        <HexBrick c={styles[`c${n + 7}`]} r={styles.r2} />
+        <HexBrick key={n} c={styles[`c${n + 7}`]} r={styles.r2} />
       ),
       12,
     )}
 
     {times(
       n => (
-        <HexBrick c={styles[`c${n + 19}`]} r={styles.r3} />
+        <HexBrick key={n} c={styles[`c${n + 19}`]} r={styles.r3} />
       ),
       18,
     )}

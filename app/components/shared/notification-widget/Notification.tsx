@@ -5,13 +5,7 @@ import { branch } from "recompose";
 import { NotificationType } from "../../../modules/notifications/reducer";
 import { TTranslatedString } from "../../../types";
 import { withContainer } from "../../../utils/withContainer";
-import {
-  Button,
-  ButtonClose,
-  ButtonTextPosition,
-  ButtonWidth,
-  EButtonLayout,
-} from "../buttons/index";
+import { Button, ButtonClose, ButtonTextPosition, ButtonWidth, EButtonLayout } from "../buttons";
 
 import * as infoIcon from "../../../assets/img/notifications/info.svg";
 import * as warningIcon from "../../../assets/img/notifications/warning.svg";
