@@ -673,6 +673,7 @@
   "shared-component.eto-overview.refund": "The ETO has been unsuccessful please collect your refund below",
   "shared-component.eto-overview.register": "Register",
   "shared-component.eto-overview.register-cta": "Interested in taking part? Become a verified investor on the Neufund Platform now",
+  "shared-component.eto-overview.settings-update-required": "Settings update required",
   "shared-component.eto-overview.show-my-email": "Show my email",
   "shared-component.eto-overview.smart-contract-on-chain": "Smart contract on chain",
   "shared-component.eto-overview.status-in-preview": "ETO application",

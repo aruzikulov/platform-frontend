@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { shallow } from "enzyme";
+import { mount, shallow } from "enzyme";
 import * as React from "react";
 import { spy } from "sinon";
 
@@ -25,17 +25,21 @@ describe("<Notification />", () => {
   it("should be of correct type", () => {
     const componentInfo = shallow(<Notification {...props} type={NotificationType.INFO} />);
 
-    expect(componentInfo.hasClass(NotificationType.INFO)).to.be.true;
+    expect(componentInfo.render().hasClass(NotificationType.INFO)).to.be.true;
 
     const componentWarning = shallow(<Notification {...props} type={NotificationType.WARNING} />);
 
-    expect(componentWarning.hasClass(NotificationType.WARNING)).to.be.true;
+    expect(componentWarning.render().hasClass(NotificationType.WARNING)).to.be.true;
   });
 
   it("should call correct click handlers for close button", () => {
     const component = shallow(<Notification {...props} />);
 
-    component.find(tid("notification-close")).simulate("click");
+    component
+      .dive()
+      .find(tid("notification-close"))
+      .first()
+      .simulate("click");
 
     expect(props.onClick).to.be.calledOnce;
   });
