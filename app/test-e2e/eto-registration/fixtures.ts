@@ -79,6 +79,7 @@ export const investmentTermsRequiredForm: TFormFixture = {
 
 export const investmentTermsForm: TFormFixture = {
   ...investmentTermsRequiredForm,
+  authorizedCapitalShares: "100",
   newSharesToIssueInWhitelist: "5000",
   whitelistDiscountFraction: "20",
   newSharesToIssueInFixedSlots: "1000",
