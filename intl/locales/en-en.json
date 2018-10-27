@@ -570,7 +570,7 @@
   "settings.backup-seed-flow-container.bread-crumb-backup-recovery": "Backup Recovery Phrase",
   "settings.backup-seed-flow-container.bread-crumb-security-settings": "Account Settings",
   "settings.backup-seed-flow-container.bread-crumb-settings": "Settings",
-  "settings.backup-seed-flow-container.follow-instructions": "Please make sure to follow the instructions.",
+  "settings.backup-seed-flow-container.follow-instructions": "Please note all the phrases down including numbers.",
   "settings.backup-seed-flow-container.safety-message": "The recovery phrase is crucial for the safety your Light Wallet assets",
   "settings.backup-seed-intro.read-instructions": "I have read the instructions",
   "settings.backup-seed-intro.store-safely": "Store the recovery phrase in a safe place.",
