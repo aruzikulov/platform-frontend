@@ -21,27 +21,8 @@ const fillAndAssert = (section: string, sectionForm: TFormFixture) => {
 describe("Eto Forms", () => {
   beforeEach(() => createAndLoginNewUser({ type: "issuer", kyc: "business" }));
   it("should fill required fields and submit eto", () => {
-    cy.visit("/dashboard");
-    assertEtoDashboard();
+    cy.visit("/documents");
 
-    fillAndAssert("eto-progress-widget-about", {
-      ...aboutFormRequired,
-      ...aboutFormSubmit,
-    });
-
-    fillAndAssert("eto-progress-widget-legal-info", legalInfoRequiredForm);
-
-    fillAndAssert("eto-progress-widget-investment-terms", investmentTermsRequiredForm);
-
-    fillAndAssert("eto-progress-widget-eto-terms", etoTermsRequiredForm);
-
-    fillAndAssert("eto-progress-widget-media", mediaRequiredForm);
-
-    fillAndAssert("eto-progress-widget-equity-token-info", equityTokenInfoForm);
-
-    fillAndAssert("eto-progress-widget-voting-right", votingRights);
-
-    cy.get(tid('dashboard-upload-termsheet')).click();
     assertEtoDocuments();
 
     const documentsForm: TFormFixture = {

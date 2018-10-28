@@ -162,12 +162,22 @@ export const getFieldError = (formTid: string, key: string): Cypress.Chainable<s
  * @param fixture - which fixture to load
  */
 export const uploadDocumentToFieldWithTid = (targetTid: string, fixture: string) => {
-  cy.get(tid(targetTid, tid("eto-add-document-drop-zone"))).dropFile(fixture);
+  cy.fixture(fixture, 'base64')
+    .then(picture => Cypress.Blob.base64StringToBlob(picture, "application/pdf"))
+    .then(blob => {
+      const dropEvent = {
+        dataTransfer: {
+          files: [blob],
+        },
+      };
 
-  cy.get(tid("documents-ipfs-modal-continue")).click();
-  acceptWallet();
+      cy.get(tid(targetTid)).trigger("drop", dropEvent);
 
-  cy.get(tid(targetTid, tid("documents-download-document"))).should("exist");
+      cy.get(tid("documents-ipfs-modal-continue")).click();
+      acceptWallet();
+
+      cy.get(tid(targetTid, tid("documents-download-document"))).should("exist");
+    });
 };
 
 /**
