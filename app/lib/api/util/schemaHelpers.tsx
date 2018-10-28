@@ -1,5 +1,7 @@
 import { includes, mapValues } from "lodash";
 import * as moment from "moment";
+import * as React from "react";
+import { FormattedMessage } from "react-intl-phraseapp";
 import * as Yup from "yup";
 
 /**
@@ -25,23 +27,28 @@ export const date = Yup.string()
     }
     return date.format(DATE_SCHEME);
   })
-  .test("is-valid", "Please enter a valid date", s => {
+  .test("is-valid", <FormattedMessage id="form.field.error.invalid-date" /> as any, s => {
     return parse(s).isValid();
   });
+
 //TODO: Add translations
 export const personBirthDate = date
-  .test("is-old-enough", "You must be older than 18 years", s => {
+  .test("is-old-enough", <FormattedMessage id="form.field.error.older-than-18" /> as any, s => {
     const d = parse(s);
     return d.isValid() && d.isBefore(moment().subtract(18, "years"));
   })
-  .test("is-young-enough", "You must be younger than 100 years", s => {
-    const d = parse(s);
-    return d.isValid() && d.isAfter(moment().subtract(100, "years"));
-  });
+  .test(
+    "is-young-enough",
+    <FormattedMessage id="form.field.error.younger-than-100" /> as any,
+    s => {
+      const d = parse(s);
+      return d.isValid() && d.isAfter(moment().subtract(100, "years"));
+    },
+  );
 
 export const foundingDate = date.test(
   "is-old-enough",
-  "Founding date can not be in the future",
+  <FormattedMessage id="form.field.error.founding-date-in-future" /> as any,
   s => {
     const d = parse(s);
     return d.isValid() && d.isBefore(moment());
@@ -53,10 +60,8 @@ export const citizen = Yup.bool();
 //TODO: add to translations
 export const isUsCitizen = citizen.test(
   "is-us-citizen",
-  "We are very sorry, at the moment we cannot serve US customers due to regulatory uncertainties.",
-  response => {
-    return response === false;
-  },
+  <FormattedMessage id="form.field.error.us-citizen" /> as any,
+  response => response === false,
 );
 
 export const countryCode = Yup.string();
@@ -76,8 +81,6 @@ export const RESTRICTED_COUNTRIES = [
 
 export const restrictedCountry = countryCode.test(
   "country",
-  "Unfortunately, we do not accept investors or companies coming from your country due to regulatory restrictions.",
-  response => {
-    return !includes(RESTRICTED_COUNTRIES, response);
-  },
+  <FormattedMessage id="form.field.error.restricted-country" /> as any,
+  response => !includes(RESTRICTED_COUNTRIES, response),
 );
