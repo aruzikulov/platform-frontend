@@ -565,6 +565,8 @@
   "tx-sender.tx-pending.hash-label": "TX Hash:",
   "tx-sender.tx-pending.title": "Pending transaction",
   "tx-sender.withdraw.error": "Error occured while getting optimal GAS price",
+  "wallet-selector.browser.approval-rejected": "You have rejected account approval. You have to do it to continue.",
+  "wallet-selector.browser.approval-resend": "Resend",
   "wallet-selector.browser.login-prompt": "Login with existing wallet",
   "wallet-selector.browser.register-prompt": "Register your existing wallet",
   "wallet-selector.browser.steps.1": "1. Choose external wallet",

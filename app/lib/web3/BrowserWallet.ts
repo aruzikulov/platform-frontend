@@ -21,6 +21,8 @@ export class BrowserWalletMismatchedNetworkError extends BrowserWalletError {
   }
 }
 export class BrowserWalletLockedError extends BrowserWalletError {}
+export class BrowserWalletAccountApprovalRejectedError extends BrowserWalletError {}
+export class BrowserWalletAccountApprovalPendingError extends BrowserWalletError {}
 export class BrowserWalletConfirmationRejectedError extends BrowserWalletError {}
 export class BrowserWalletUnknownError extends BrowserWalletError {}
 
@@ -79,13 +81,18 @@ export class BrowserWallet implements IPersonalWallet {
 
 @injectable()
 export class BrowserWalletConnector {
+  data_approval_pending: boolean;
+
+  constructor() {
+    this.data_approval_pending = false;
+  }
+
   public async connect(networkId: EthereumNetworkId): Promise<BrowserWallet> {
-    const newInjectedWeb3 = (window as any).web3;
-    if (typeof newInjectedWeb3 === "undefined") {
+    const injectedWeb3Provider = (window as any).ethereum;
+    if (typeof injectedWeb3Provider === "undefined") {
       throw new BrowserWalletMissingError();
     }
-    const newWeb3 = new Web3(newInjectedWeb3.currentProvider);
-
+    const newWeb3 = new Web3(injectedWeb3Provider);
     const web3Adapter = new Web3Adapter(newWeb3);
     // check for mismatched networkIds
     const personalWeb3NetworkId = await web3Adapter.getNetworkId();
@@ -95,7 +102,18 @@ export class BrowserWalletConnector {
 
     // check for locked wallet
     if (!(await web3Adapter.getAccountAddress())) {
-      throw new BrowserWalletLockedError();
+      if (this.data_approval_pending) {
+        throw new BrowserWalletAccountApprovalPendingError();
+      } else {
+        try {
+          this.data_approval_pending = true;
+          await injectedWeb3Provider.enable();
+        } catch (e) {
+          throw new BrowserWalletAccountApprovalRejectedError();
+        } finally {
+          this.data_approval_pending = false;
+        }
+      }
     }
 
     const walletType = await this.getBrowserWalletType(web3Adapter.web3);

@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 import * as React from "react";
 
+import { noop } from "redux-saga/utils";
 import { tid } from "../../../../test/testUtils";
 import { dummyIntl } from "../../../utils/injectIntlHelpers.fixtures";
 import { LoadingIndicator } from "../../shared/LoadingIndicator";
@@ -10,7 +11,13 @@ import { WalletBrowserComponent } from "./WalletBrowser";
 describe("<WalletBrowser />", () => {
   it("should render loading indicator", () => {
     const component = shallow(
-      <WalletBrowserComponent isLoading={true} isLoginRoute intl={dummyIntl} />,
+      <WalletBrowserComponent
+        isLoading={true}
+        isLoginRoute
+        intl={dummyIntl}
+        approval_rejected={false}
+        handleReset={noop}
+      />,
     );
     expect(component.contains(<LoadingIndicator />)).to.be.true;
   });
@@ -23,6 +30,8 @@ describe("<WalletBrowser />", () => {
         errorMessage={errorMsg}
         isLoginRoute
         intl={dummyIntl}
+        approval_rejected={false}
+        handleReset={noop}
       />,
     );
     expect(component.find(tid("browser-wallet-error-msg")).text()).to.be.eq(errorMsg);

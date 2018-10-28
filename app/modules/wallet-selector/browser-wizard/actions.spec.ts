@@ -10,9 +10,19 @@ import {
   BrowserWalletLockedError,
 } from "../../../lib/web3/BrowserWallet";
 import { Web3Manager } from "../../../lib/web3/Web3Manager";
+import { IAppState } from "../../../store";
 import { actions } from "../../actions";
 import { WalletSubType, WalletType } from "../../web3/types";
 import { walletFlows } from "../flows";
+
+// tslint:disable: no-object-literal-type-assertion
+const getStateMock: () => IAppState = () =>
+  <IAppState>{
+    browserWalletWizardState: {
+      approval_rejected: false,
+    },
+  };
+/* tslint:enable:no-object-literal-type-assertion */
 
 describe("Wallet selector > Browser wizard > actions", () => {
   describe("tryConnectingWithBrowserWallet action", () => {
@@ -41,6 +51,7 @@ describe("Wallet selector > Browser wizard > actions", () => {
         browserWalletConnectorMock,
         web3ManagerMock,
         noopLogger,
+        getStateMock,
       );
       expect(browserWalletConnectorMock.connect).to.be.calledWithExactly(expectedNetworkId);
       expect(dispatchMock).to.be.calledWithExactly(actions.walletSelector.connected());
@@ -65,6 +76,7 @@ describe("Wallet selector > Browser wizard > actions", () => {
         browserWalletConnectorMock,
         web3ManagerMock,
         noopLogger,
+        getStateMock,
       );
 
       expect(browserWalletConnectorMock.connect).to.be.calledWithExactly(expectedNetworkId);
