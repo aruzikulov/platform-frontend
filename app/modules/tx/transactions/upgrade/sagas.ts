@@ -1,4 +1,3 @@
-import { BigNumber } from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
 import { put, select } from "redux-saga/effects";
 

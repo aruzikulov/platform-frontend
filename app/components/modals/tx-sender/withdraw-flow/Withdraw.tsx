@@ -11,11 +11,10 @@ import { actions } from "../../../../modules/actions";
 import { selectStandardGasPrice } from "../../../../modules/gas/selectors";
 import { ETxSenderType, IDraftType } from "../../../../modules/tx/interfaces";
 import { EValidationState } from "../../../../modules/tx/sender/reducer";
-import { selectTxGasCostEth, selectValidationState } from "../../../../modules/tx/sender/selectors";
-import { selectLiquidEtherBalance, selectMaxAvailableEther } from '../../../../modules/wallet/selectors';
+import { selectValidationState } from "../../../../modules/tx/sender/selectors";
+import { selectMaxAvailableEther } from "../../../../modules/wallet/selectors";
 import { doesUserHaveEnoughEther, validateAddress } from "../../../../modules/web3/utils";
 import { appConnect } from "../../../../store";
-import { subtractBigNumbers } from "../../../../utils/BigNumberUtils";
 import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
 import { Button } from "../../../shared/buttons";
 import { FormField } from "../../../shared/forms";
@@ -163,7 +162,7 @@ const Withdraw = compose<TProps, {}>(
     }),
     dispatchToProps: d => ({
       onAccept: (tx: Partial<ITxData>) => d(actions.txSender.txSenderAcceptDraft(tx)),
-      onValidate: (txDraft: IDraftType) => d(actions.txSender.txSenderValidateDraft(txDraft)),
+      onValidate: (txDraft: IDraftType) => d(actions.txValidator.txSenderValidateDraft(txDraft)),
     }),
   }),
 )(WithdrawComponent);

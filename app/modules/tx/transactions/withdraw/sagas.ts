@@ -6,12 +6,12 @@ import BigNumber from "bignumber.js";
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ITxData } from "../../../../lib/web3/types";
 import { actions } from "../../../actions";
+import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagas";
 import { selectEtherTokenBalanceAsBigNumber } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { IDraftType } from "../../interfaces";
 import { calculateGasPriceWithOverhead, EMPTY_DATA } from "../../utils";
-import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 
 const SIMPLE_WITHDRAW_TRANSACTION = "21000";
 

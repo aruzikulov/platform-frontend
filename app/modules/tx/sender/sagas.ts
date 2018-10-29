@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
 import { END, eventChannel } from "redux-saga";
-import { call, fork, put, race, select, take } from "redux-saga/effects";
+import { call, put, race, select, take } from "redux-saga/effects";
 import * as Web3 from "web3";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
@@ -11,33 +11,26 @@ import {
   InvalidRlpDataError,
   LongTransactionQueError,
   LowNonceError,
+  NotEnoughEtherForGasError,
   NotEnoughFundsError,
   RevertedTransactionError,
   UnknownEthNodeError,
 } from "../../../lib/web3/Web3Adapter";
 import { IAppState } from "../../../store";
-import {
-  compareBigNumbers,
-  multiplyBigNumbers,
-  subtractBigNumbers,
-} from "../../../utils/BigNumberUtils";
+import { multiplyBigNumbers } from "../../../utils/BigNumberUtils";
 import { delay } from "../../../utils/delay";
 import { connectWallet } from "../../access-wallet/sagas";
-import { actions, TAction } from "../../actions";
+import { actions } from "../../actions";
 import { IGasState } from "../../gas/reducer";
-import { neuCall, neuTakeEvery } from "../../sagas";
+import { selectGasPrice } from "../../gas/selectors";
+import { neuCall } from "../../sagas";
 import { neuResetIf } from "../../sagasUtils";
-import { selectEtherBalance } from "../../wallet/selectors";
 import { ETxSenderType } from "../interfaces";
 import { updateTxs } from "../monitor/sagas";
-import { generateEthWithdrawTransaction } from "../transactions/withdraw/sagas";
 import { ITxData } from "./../../../lib/web3/types";
 import { OutOfGasError } from "./../../../lib/web3/Web3Adapter";
-import { ETransactionErrorType, EValidationState } from "./reducer";
+import { ETransactionErrorType } from "./reducer";
 import { selectTxDetails, selectTxType } from "./selectors";
-import { selectGasPrice } from "../../gas/selectors";
-
-class NotEnoughEtherForGasError extends Error {}
 
 export interface ITxSendParams {
   type: ETxSenderType;
@@ -45,21 +38,6 @@ export interface ITxSendParams {
   extraParam?: any;
   // Design extraParam to be a tuple that handels any number of params
   // @see neuCall
-}
-
-export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction): any {
-  try {
-    if (action.type !== "TX_SENDER_VALIDATE_DRAFT") return;
-    const generatedTxDetails: ITxData = yield neuCall(
-      generateEthWithdrawTransaction,
-      action.payload,
-    );
-    yield validateGas(generatedTxDetails);
-    yield put(actions.txSender.setValidationState(EValidationState.VALIDATION_OK));
-  } catch (error) {
-    logger.error(error);
-    yield put(actions.txSender.setValidationState(EValidationState.NOT_ENOUGH_ETHER_FOR_GAS));
-  }
 }
 
 export function* txSendSaga({ type, transactionFlowGenerator, extraParam }: ITxSendParams): any {
@@ -123,23 +101,6 @@ export function* txSendProcess(
     } else {
       return yield put(actions.txSender.txSenderError(ETransactionErrorType.UNKNOWN_ERROR));
     }
-  }
-}
-
-function* validateGas(txDetails: ITxData): any {
-  const etherBalance: string | undefined = yield select(selectEtherBalance);
-
-  if (!etherBalance) {
-    throw new Error("Ether Balance is undefined");
-  }
-
-  if (
-    compareBigNumbers(
-      multiplyBigNumbers([txDetails.gasPrice, txDetails.gas]),
-      subtractBigNumbers([etherBalance, txDetails.value.toString()]),
-    ) > 0
-  ) {
-    throw new NotEnoughEtherForGasError("Not enough Ether to pay the Gas for this transaction");
   }
 }
 
@@ -326,7 +287,3 @@ const createWatchTxChannel = ({ web3Manager }: TGlobalDependencies, txHash: stri
       // @todo missing unsubscribe
     };
   });
-
-export const txSendingSagasWatcher = function*(): Iterator<any> {
-  yield fork(neuTakeEvery, "TX_SENDER_VALIDATE_DRAFT", txValidateSaga);
-};

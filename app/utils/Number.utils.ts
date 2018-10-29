@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 
 import { Q18 } from "../config/constants";
-import { TBigNumberVariant } from '../lib/web3/types';
+import { TBigNumberVariant } from "../lib/web3/types";
 import { invariant } from "./invariant";
 
 /**

@@ -3,7 +3,7 @@ import { inject, injectable } from "inversify";
 import * as Web3 from "web3";
 
 import { symbols } from "../../di/symbols";
-import { calculateGasLimitWithOverhead, encodeTransaction } from '../../modules/tx/utils';
+import { calculateGasLimitWithOverhead, encodeTransaction } from "../../modules/tx/utils";
 import { web3Actions } from "../../modules/web3/actions";
 import { web3Flows } from "../../modules/web3/flows";
 import { AppDispatch } from "../../store";

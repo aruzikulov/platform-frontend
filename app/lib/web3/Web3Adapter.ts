@@ -7,6 +7,7 @@ import { EthereumAddress, EthereumAddressWithChecksum, EthereumNetworkId } from 
 import { delay } from "../../utils/delay";
 
 class Web3Error extends Error {}
+export class NotEnoughEtherForGasError extends Error {}
 export class RevertedTransactionError extends Web3Error {}
 export class OutOfGasError extends Web3Error {}
 export class NotEnoughFundsError extends Web3Error {}
