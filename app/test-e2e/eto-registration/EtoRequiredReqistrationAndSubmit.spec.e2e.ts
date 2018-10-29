@@ -41,7 +41,7 @@ describe("Eto Forms", () => {
 
     fillAndAssert("eto-progress-widget-voting-right", votingRights);
 
-    cy.get(tid('dashboard-upload-termsheet')).click();
+    cy.get(tid("dashboard-upload-termsheet")).click();
     assertEtoDocuments();
 
     const documentsForm: TFormFixture = {
@@ -52,6 +52,6 @@ describe("Eto Forms", () => {
       },
     };
 
-    fillForm(documentsForm, { submit: false, methods: { document: uploadDocumentToFieldWithTid }});
+    fillForm(documentsForm, { submit: false, methods: { document: uploadDocumentToFieldWithTid } });
   });
 });

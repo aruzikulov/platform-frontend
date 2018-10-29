@@ -51,7 +51,10 @@ const isSubmitField = (field: TFormFieldFixture) =>
  * @param fixture - Which form fixture to load
  * @param submit - wether to submit the form or not, default true
  */
-export const fillForm = (fixture: TFormFixture, { submit = true, methods = {} }: { submit?: boolean, methods?: any } = {}) => {
+export const fillForm = (
+  fixture: TFormFixture,
+  { submit = true, methods = {} }: { submit?: boolean; methods?: any } = {},
+) => {
   forEach(fixture, (field, key) => {
     // the default is just typing a string into the input
     if (typeof field === "string") {
@@ -102,11 +105,9 @@ export const fillForm = (fixture: TFormFixture, { submit = true, methods = {} }:
     // files
     else if (field.type === "single-file") {
       uploadSingleFileToFieldWithTid(key, field.value);
-    }
-    else if (field.type === "multiple-files") {
+    } else if (field.type === "multiple-files") {
       uploadMultipleFilesToFieldWithTid(key, field.values);
-    }
-    else if (field.type === "media") {
+    } else if (field.type === "media") {
       const socialProfilesTid = tid(key);
 
       cy.get(socialProfilesTid).then($socialProfiles => {
@@ -120,8 +121,7 @@ export const fillForm = (fixture: TFormFixture, { submit = true, methods = {} }:
           fillField(`social-profiles.profile-input.${key}`, value, socialProfilesTid);
         });
       });
-    }
-    else if (field.type === "custom") {
+    } else if (field.type === "custom") {
       const method = methods[field.method];
 
       if (!method) {
@@ -178,7 +178,7 @@ export const uploadDocumentToFieldWithTid = (targetTid: string, fixture: string)
 export const uploadSingleFileToFieldWithTid = (targetTid: string, fixture: string) => {
   cy.get(tid(targetTid)).within(() => {
     cy.root().dropFile(fixture);
-    cy.get(tid("single-file-upload-delete-file")).should("exist")
+    cy.get(tid("single-file-upload-delete-file")).should("exist");
   });
 };
 
@@ -193,6 +193,6 @@ export const uploadMultipleFilesToFieldWithTid = (targetTid: string, fixtures: s
       cy.get(tid("multi-file-upload-dropzone")).dropFile(fixture);
 
       cy.get(tid(`multi-file-upload-file-${fixture}`)).should("exist");
-    })
+    }),
   );
 };
