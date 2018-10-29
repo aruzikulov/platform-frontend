@@ -14,8 +14,8 @@ import { Portfolio } from "./portfolio";
 import { appRoutes } from "./appRoutes";
 import { EmailVerify } from "./EmailVerify";
 import { EtoIssuerView } from "./eto/EtoIssuerView";
-import { EtoPreview } from "./eto/EtoPreview";
 import { EtoPublicView } from "./eto/EtoPublicView";
+import { EtoPublicViewByContractId } from "./eto/EtoPublicViewByContractId";
 import { EtoWidgetView } from "./eto/EtoWidgetView";
 import { EtoRegister } from "./eto/registration/Start";
 import { Landing } from "./landing/Landing";
@@ -31,18 +31,21 @@ import { Wallet } from "./wallet/Wallet";
 export const AppRouter: React.SFC = () => (
   <SwitchConnected>
     <Route
-      path={appRoutes.etoPreview}
-      render={({ match }) => <EtoPreview previewCode={match.params.previewCode} />}
+      path={appRoutes.etoPublicView}
+      render={({ match }) => <EtoPublicView previewCode={match.params.previewCode} />}
+      exact
     />
 
     <Route
-      path={appRoutes.etoPublicView}
-      render={({ match }) => <EtoPublicView etoId={match.params.etoId} />}
+      path={appRoutes.etoPublicViewById}
+      render={({ match }) => <EtoPublicViewByContractId etoId={match.params.etoId} />}
+      exact
     />
 
     <Route
       path={appRoutes.etoWidgetView}
-      render={({ match }) => <EtoWidgetView etoId={match.params.etoId} />}
+      render={({ match }) => <EtoWidgetView previewCode={match.params.previewCode} />}
+      exact
     />
 
     <OnlyPublicRoute path={appRoutes.root} component={Landing} exact />

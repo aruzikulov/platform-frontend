@@ -175,7 +175,7 @@ const EtoOverviewStatusLayout: React.SFC<
       <div className={styles.overviewWrapper}>
         <div className={styles.statusWrapper}>
           <StatusOfEto previewCode={eto.previewCode} />
-          <Link to={withParams(appRoutes.etoPublicView, { etoId: eto.etoId })}>
+          <Link to={withParams(appRoutes.etoPublicView, { previewCode: eto.previewCode })}>
             <TokenSymbolWidget
               tokenImage={{
                 alt: eto.equityTokenName || "",
