@@ -1,14 +1,21 @@
 import BigNumber from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
 import { TxData } from "web3";
+
+import { TBigNumberVariant } from "../../lib/web3/types";
 import { multiplyBigNumbers } from "../../utils/BigNumberUtils";
 
-export const GAS_PRICE_MULTIPLIER = 1 + parseFloat(process.env.NF_GAS_OVERHEAD || "0");
+export const GAS_PRICE_MULTIPLIER = 1 + parseFloat(process.env.NF_GAS_PRICE_OVERHEAD || "0");
+
+export const GAS_LIMIT_MULTIPLIER = 1 + parseFloat(process.env.NF_GAS_LIMIT_OVERHEAD || "0");
 
 export const EMPTY_DATA = "0x00";
 
-export const calculateGasPriceWithOverhead = (gasPrice: string) =>
+export const calculateGasPriceWithOverhead = (gasPrice: TBigNumberVariant) =>
   new BigNumber(multiplyBigNumbers([gasPrice, GAS_PRICE_MULTIPLIER])).ceil().toString();
+
+export const calculateGasLimitWithOverhead = (gasLimit: TBigNumberVariant) =>
+  new BigNumber(multiplyBigNumbers([gasLimit, GAS_LIMIT_MULTIPLIER])).ceil().toString();
 
 export const encodeTransaction = (txData: Partial<TxData>) => {
   return {

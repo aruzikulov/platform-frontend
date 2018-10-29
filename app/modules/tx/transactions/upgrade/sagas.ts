@@ -6,7 +6,7 @@ import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ITxData } from "../../../../lib/web3/types";
 import { EthereumAddress } from "../../../../types";
 import { actions } from "../../../actions";
-import { selectStandardGasPrice } from "../../../gas/selectors";
+import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagas";
 import {
   selectIsEtherUpgradeTargetSet,
@@ -14,41 +14,45 @@ import {
 } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { ETokenType } from "../../interfaces";
-import { calculateGasPriceWithOverhead } from "../../utils";
-import { selectGasPrice } from "./../../../gas/selectors";
 
-export function* generateEuroUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
+export function* generateEuroUpgradeTransaction({
+  contractsService,
+  web3Manager,
+}: TGlobalDependencies): any {
   const userAddress = yield select(selectEthereumAddressWithChecksum);
-  const gasPrice = yield select(selectGasPrice);
+  const gasPriceWithOverhead = yield select(selectStandardGasPriceWithOverHead);
   const migrationTarget = yield select(selectIsEuroUpgradeTargetSet);
 
   if (!migrationTarget) {
     throw new Error();
-    // TODO: Add no balance error
+    // TODO: Add shouldn't hit migration target
   }
+
+  const txData = contractsService.icbmEuroLock.migrateTx().getData();
 
   const txInitialDetails = {
     to: contractsService.icbmEtherLock.address,
     from: userAddress,
-    data: contractsService.icbmEuroLock.migrateTx().getData(),
+    data: txData,
     value: addHexPrefix("0"),
-    gasPrice: gasPrice.standard,
+    gasPrice: gasPriceWithOverhead,
   };
 
-  const estimatedGas = yield contractsService.icbmEuroLock
-    .migrateTx()
-    .estimateGas(txInitialDetails);
+  const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txInitialDetails);
 
   const txDetails: ITxData = {
     ...txInitialDetails,
-    gas: addHexPrefix(new BigNumber(calculateGasPriceWithOverhead(estimatedGas)).toString(16)),
+    gas: addHexPrefix(estimatedGasWithOverhead),
   };
   return txDetails;
 }
 
-export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDependencies): any {
+export function* generateEtherUpgradeTransaction({
+  contractsService,
+  web3Manager,
+}: TGlobalDependencies): any {
   const userAddress: EthereumAddress = yield select(selectEthereumAddressWithChecksum);
-  const gasPrice: string = yield select(selectStandardGasPrice);
+  const gasPriceWithOverhead = yield select(selectStandardGasPriceWithOverHead);
   const migrationTarget: boolean = yield select(selectIsEtherUpgradeTargetSet);
 
   if (!migrationTarget) {
@@ -62,15 +66,14 @@ export function* generateEtherUpgradeTransaction({ contractsService }: TGlobalDe
     from: userAddress,
     data: txInput,
     value: "0",
-    gasPrice,
+    gasPrice: gasPriceWithOverhead,
   };
-  const estimateGas = yield contractsService.icbmEtherLock
-    .migrateTx()
-    .estimateGas(txInitialDetails);
+
+  const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txInitialDetails);
 
   const txDetails: ITxData = {
     ...txInitialDetails,
-    gas: addHexPrefix(new BigNumber(calculateGasPriceWithOverhead(estimateGas)).toString(16)),
+    gas: addHexPrefix(estimatedGasWithOverhead),
   };
 
   return txDetails;

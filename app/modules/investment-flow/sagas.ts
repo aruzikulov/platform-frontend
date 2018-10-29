@@ -29,6 +29,8 @@ import {
 } from "./reducer";
 import {
   selectCurrencyByInvestmentType,
+  selectEthValueUlps,
+  selectEurValueUlps,
   selectIsBankTransferModalOpened,
   selectIsICBMInvestment,
 } from "./selectors";

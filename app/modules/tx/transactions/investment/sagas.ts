@@ -5,12 +5,12 @@ import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ContractsService } from "../../../../lib/web3/ContractsService";
 import { ITxData } from "../../../../lib/web3/types";
 import { IAppState } from "../../../../store";
-import { selectGasPrice } from "../../../gas/selectors";
+import { selectGasPrice, selectStandardGasPriceWithOverHead } from '../../../gas/selectors';
 import { selectReadyToInvest } from "../../../investment-flow/selectors";
 import { selectEtoById } from "../../../public-etos/selectors";
 import { neuCall } from "../../../sagas";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
-import { calculateGasPriceWithOverhead } from "../../utils";
+import { calculateGasPriceWithOverhead, calculateGasLimitWithOverhead } from '../../utils';
 import { compareBigNumbers } from "./../../../../utils/BigNumberUtils";
 import { actions } from "./../../../actions";
 import { EInvestmentType } from "./../../../investment-flow/reducer";
@@ -29,8 +29,8 @@ async function createInvestmentTxData(
     from: selectEthereumAddressWithChecksum(state),
     data: txData,
     value: value,
-    gasPrice: selectGasPrice(state)!.standard,
-    gas: calculateGasPriceWithOverhead(INVESTMENT_GAS_AMOUNT),
+    gasPrice: selectStandardGasPriceWithOverHead(state),
+    gas: calculateGasLimitWithOverhead(INVESTMENT_GAS_AMOUNT),
   };
 }
 

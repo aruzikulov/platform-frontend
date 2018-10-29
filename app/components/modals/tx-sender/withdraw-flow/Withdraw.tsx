@@ -12,11 +12,10 @@ import { selectStandardGasPrice } from "../../../../modules/gas/selectors";
 import { ETxSenderType, IDraftType } from "../../../../modules/tx/interfaces";
 import { EValidationState } from "../../../../modules/tx/sender/reducer";
 import { selectTxGasCostEth, selectValidationState } from "../../../../modules/tx/sender/selectors";
-import { selectLiquidEtherBalance } from "../../../../modules/wallet/selectors";
-import { validateAddress } from "../../../../modules/web3/utils";
+import { selectLiquidEtherBalance, selectMaxAvailableEther } from '../../../../modules/wallet/selectors';
+import { doesUserHaveEnoughEther, validateAddress } from "../../../../modules/web3/utils";
 import { appConnect } from "../../../../store";
-import { compareBigNumbers, subtractBigNumbers } from "../../../../utils/BigNumberUtils";
-import { convertToBigInt } from "../../../../utils/Number.utils";
+import { subtractBigNumbers } from "../../../../utils/BigNumberUtils";
 import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
 import { Button } from "../../../shared/buttons";
 import { FormField } from "../../../shared/forms";
@@ -38,15 +37,27 @@ interface IFormikProps {
 
 type TProps = IStateProps & ITxInitDispatchProps;
 
-const withdrawFormSchema = YupTS.object({
-  to: YupTS.string().enhance(v =>
-    v.required().test("isEthereumAddress", "is not a valid Ethereum Address", (value: string) => {
-      return validateAddress(value);
-    }),
-  ),
-  value: YupTS.number().enhance((v: NumberSchema) => v.moreThan(0).required()),
-});
-const withdrawFormValidator = withdrawFormSchema.toYup();
+const getWithdrawFormSchema = (maxEther: string) =>
+  YupTS.object({
+    to: YupTS.string().enhance(v =>
+      v.test("isEthereumAddress", "is not a valid Ethereum Address", (value: string) => {
+        return validateAddress(value);
+      }),
+    ),
+    value: YupTS.number().enhance((v: NumberSchema) =>
+      v
+        .moreThan(0)
+        .test(
+          "isEnoughEther",
+          (
+            <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance" />
+          ) as any,
+          (value: string) => {
+            return doesUserHaveEnoughEther(value, maxEther);
+          },
+        ),
+    ),
+  }).toYup();
 
 const WithdrawComponent: React.SFC<TProps> = ({
   onAccept,
@@ -62,7 +73,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
     </h3>
 
     <Formik<IFormikProps>
-      validationSchema={withdrawFormValidator}
+      validationSchema={getWithdrawFormSchema(maxEther)}
       isInitialValid={false}
       initialValues={{ value: "", to: "" }}
       onSubmit={onAccept}
@@ -82,7 +93,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     onChange={(e: any) => {
                       setFieldValue("to", e.target.value);
                       if (
-                        compareBigNumbers(convertToBigInt(values.value || "0"), maxEther) < 0 &&
+                        doesUserHaveEnoughEther(values.value, maxEther) &&
                         validateAddress(e.target.value)
                       )
                         onValidate({
@@ -103,16 +114,10 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     placeholder="Please enter value in eth"
                     data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.value"
                     ignoreTouched={true}
-                    validate={() => {
-                      if (compareBigNumbers(convertToBigInt(values.value || "0"), maxEther) > 0)
-                        return (
-                          <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance" />
-                        );
-                    }}
                     onChange={(e: any) => {
                       setFieldValue("value", e.target.value);
                       if (
-                        compareBigNumbers(convertToBigInt(e.target.value || "0"), maxEther) < 0 &&
+                        doesUserHaveEnoughEther(e.target.value, maxEther) &&
                         validateAddress(values.to)
                       )
                         onValidate({
@@ -152,10 +157,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
 const Withdraw = compose<TProps, {}>(
   appConnect<IStateProps, ITxInitDispatchProps>({
     stateToProps: state => ({
-      maxEther: subtractBigNumbers([
-        selectLiquidEtherBalance(state.wallet),
-        selectTxGasCostEth(state.txSender),
-      ]),
+      maxEther: selectMaxAvailableEther(state),
       gasPrice: selectStandardGasPrice(state),
       validationState: selectValidationState(state.txSender),
     }),

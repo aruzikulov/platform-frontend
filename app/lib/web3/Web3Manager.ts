@@ -1,10 +1,9 @@
 import { BigNumber } from "bignumber.js";
 import { inject, injectable } from "inversify";
 import * as Web3 from "web3";
-import { calculateGasPriceWithOverhead } from "./../../modules/tx/utils";
 
 import { symbols } from "../../di/symbols";
-import { encodeTransaction } from "../../modules/tx/utils";
+import { calculateGasLimitWithOverhead, encodeTransaction } from '../../modules/tx/utils';
 import { web3Actions } from "../../modules/web3/actions";
 import { web3Flows } from "../../modules/web3/flows";
 import { AppDispatch } from "../../store";
@@ -113,15 +112,12 @@ export class Web3Manager {
     return this.internalWeb3Adapter.estimateGas(encodedTxData);
   }
 
-  public async estimateGasWithOverhead(txData: Partial<Web3.TxData>): Promise<number> {
-    const gasWithOverhead = txData.gas
-      ? calculateGasPriceWithOverhead(Number(txData.gas).toString())
-      : "0";
+  public async estimateGasWithOverhead(txData: Partial<Web3.TxData>): Promise<string> {
     const encodedTxData = encodeTransaction({
       ...txData,
-      gas: gasWithOverhead,
     });
-    return this.internalWeb3Adapter.estimateGas(encodedTxData);
+    const gas = await this.internalWeb3Adapter.estimateGas(encodedTxData);
+    return calculateGasLimitWithOverhead(gas);
   }
 
   private watchConnection = async () => {

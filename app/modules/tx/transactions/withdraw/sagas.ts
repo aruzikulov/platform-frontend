@@ -4,7 +4,6 @@ import { TAction } from "./../../../actions";
 
 import BigNumber from "bignumber.js";
 import { TGlobalDependencies } from "../../../../di/setupBindings";
-import { GasModelShape } from "../../../../lib/api/GasApi";
 import { ITxData } from "../../../../lib/web3/types";
 import { actions } from "../../../actions";
 import { neuCall } from "../../../sagas";
@@ -12,7 +11,7 @@ import { selectEtherTokenBalanceAsBigNumber } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { IDraftType } from "../../interfaces";
 import { calculateGasPriceWithOverhead, EMPTY_DATA } from "../../utils";
-import { selectGasPrice } from "./../../../gas/selectors";
+import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 
 const SIMPLE_WITHDRAW_TRANSACTION = "21000";
 
@@ -24,7 +23,7 @@ export function* generateEthWithdrawTransaction(
 
   const etherTokenBalance: BigNumber = yield select(selectEtherTokenBalanceAsBigNumber);
   const from: string = yield select(selectEthereumAddressWithChecksum);
-  const gasPrice: GasModelShape | undefined = yield select(selectGasPrice);
+  const gasPriceWithOverhead = yield select(selectStandardGasPriceWithOverHead);
 
   const weiValue = Q18.mul(value);
 
@@ -35,7 +34,7 @@ export function* generateEthWithdrawTransaction(
       from,
       data: EMPTY_DATA,
       value: weiValue.toString(),
-      gasPrice: gasPrice!.standard,
+      gasPrice: gasPriceWithOverhead,
       gas: calculateGasPriceWithOverhead(SIMPLE_WITHDRAW_TRANSACTION),
     };
     return txDetails;
@@ -50,10 +49,10 @@ export function* generateEthWithdrawTransaction(
       from,
       data: txInput,
       value: difference.comparedTo(0) > 0 ? difference.toString() : "0",
-      gasPrice: gasPrice!.standard,
+      gasPrice: gasPriceWithOverhead,
     };
-    const estimatedGas = yield web3Manager.estimateGasWithOverhead(txDetails);
-    return { ...txDetails, gas: estimatedGas };
+    const estimatedGasWithOverhead = yield web3Manager.estimateGasWithOverhead(txDetails);
+    return { ...txDetails, gas: estimatedGasWithOverhead };
   }
 }
 

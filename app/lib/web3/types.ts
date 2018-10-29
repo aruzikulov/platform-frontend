@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 export interface ITxData {
   to: string;
   value: string;
@@ -15,3 +16,5 @@ export interface IRawTxData extends ITxData {
 export interface IEthereumNetworkConfig {
   rpcUrl: string;
 }
+
+export type TBigNumberVariant = number | string | BigNumber;

@@ -35,6 +35,7 @@ import { ITxData } from "./../../../lib/web3/types";
 import { OutOfGasError } from "./../../../lib/web3/Web3Adapter";
 import { ETransactionErrorType, EValidationState } from "./reducer";
 import { selectTxDetails, selectTxType } from "./selectors";
+import { selectGasPrice } from "../../gas/selectors";
 
 class NotEnoughEtherForGasError extends Error {}
 
@@ -62,8 +63,9 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
 }
 
 export function* txSendSaga({ type, transactionFlowGenerator, extraParam }: ITxSendParams): any {
-  const gas: IGasState = yield select((s: IAppState) => s.gas);
-  if (!gas.gasPrice) {
+  const gasPrice: IGasState = yield select(selectGasPrice);
+
+  if (!gasPrice) {
     yield take("GAS_API_LOADED");
   }
 

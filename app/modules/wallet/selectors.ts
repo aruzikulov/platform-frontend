@@ -1,8 +1,9 @@
 import BigNumber from "bignumber.js";
 import * as Web3Utils from "web3-utils";
 import { IAppState } from "../../store";
-import { addBigNumbers, multiplyBigNumbers } from "../../utils/BigNumberUtils";
+import { addBigNumbers, multiplyBigNumbers, subtractBigNumbers } from "../../utils/BigNumberUtils";
 import { selectEtherPriceEur, selectNeuPriceEur } from "../shared/tokenPrice/selectors";
+import { selectTxGasCostEth } from "../tx/sender/selectors";
 import { IWalletState } from "./reducer";
 
 /**
@@ -165,3 +166,7 @@ export const selectIsEtherUpgradeTargetSet = (state: IAppState): boolean =>
 
 export const selectIsEuroUpgradeTargetSet = (state: IAppState): boolean =>
   state.wallet.data && Web3Utils.isAddress(state.wallet.data.euroTokenUpgradeTarget);
+
+/**General State Selectors */
+export const selectMaxAvailableEther = (state: IAppState): string =>
+  subtractBigNumbers([selectLiquidEtherBalance(state.wallet), selectTxGasCostEth(state.txSender)]);
