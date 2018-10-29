@@ -31,6 +31,12 @@ export enum ButtonWidth {
   BLOCK = "block",
 }
 
+export enum ButtonTextPosition {
+  CENTER = "",
+  LEFT = "text-left",
+  RIGHT = "text-right",
+}
+
 export interface IGeneralButton {
   onClick?: (event: any) => void;
 }
@@ -50,6 +56,7 @@ export interface IButtonProps extends IGeneralButton, CommonHtmlProps {
   size?: ButtonSize;
   width?: ButtonWidth;
   isLoading?: boolean;
+  textPosition?: ButtonTextPosition;
 }
 
 const Button: React.SFC<IButtonProps> = ({
@@ -64,6 +71,7 @@ const Button: React.SFC<IButtonProps> = ({
   width,
   isLoading,
   type,
+  textPosition,
   ...props
 }) => (
   <button
@@ -72,7 +80,7 @@ const Button: React.SFC<IButtonProps> = ({
     type={type}
     {...props}
   >
-    <div className={cn(styles.content, className)} tabIndex={-1}>
+    <div className={cn(styles.content, className, textPosition)} tabIndex={-1}>
       {isLoading ? (
         <LoadingIndicator light />
       ) : (

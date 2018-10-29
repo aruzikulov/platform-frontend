@@ -13,7 +13,7 @@ export interface IFieldGroupRawExternalProps {
   label?: string | React.ReactNode;
   charactersLimit?: number;
   invalid?: boolean;
-  controlCursor?: boolean;
+  renderInput?: (props: FieldGroupRawProps) => React.ReactNode;
 }
 
 type FieldGroupRawProps = IFormInputExternalProps &
@@ -22,36 +22,6 @@ type FieldGroupRawProps = IFormInputExternalProps &
   CommonHtmlProps;
 
 export class FormFieldRaw extends React.Component<FieldGroupRawProps> {
-  private rawStr = "";
-  private caretPosition = 0;
-  private inputRef?: HTMLInputElement;
-
-  private handleChange = (ev: React.ChangeEvent<any>) => {
-    this.rawStr = String(ev.target.value);
-    this.caretPosition = Number(ev.target.selectionEnd);
-
-    if (this.props.onChange) {
-      this.props.onChange(ev);
-    }
-  };
-
-  componentDidUpdate({ value }: FieldGroupRawProps): void {
-    if (this.props.controlCursor && this.inputRef) {
-      const input = this.inputRef;
-      if (this.props.value !== value) {
-        const str = this.rawStr.substr(0, this.caretPosition);
-        const index = String(this.props.value).indexOf(str) + this.caretPosition;
-
-        if (index !== -1) {
-          input.setSelectionRange(index, index);
-        }
-      } else {
-        const index = this.caretPosition;
-        input.setSelectionRange(index, index);
-      }
-    }
-  }
-
   render(): React.ReactNode {
     const {
       value,
@@ -66,12 +36,28 @@ export class FormFieldRaw extends React.Component<FieldGroupRawProps> {
       charactersLimit,
       errorMsg,
       onChange,
-      controlCursor,
+      renderInput,
+      invalid,
       ...props
     } = this.props;
 
     const val = computedValue(value, charactersLimit);
-    const invalid = props.invalid || !!errorMsg;
+    const isInvalid = invalid || !!errorMsg;
+
+    const inputProps = {
+      className: cn(className, styles.inputField),
+      value: val,
+      type,
+      invalid: isInvalid,
+      valid: !isInvalid,
+      placeholder,
+      onChange,
+      ...props,
+    };
+
+    const renderInputElement = renderInput
+      ? renderInput
+      : (props: FieldGroupRawProps) => <Input {...props} />;
 
     return (
       <FormGroup>
@@ -82,17 +68,7 @@ export class FormFieldRaw extends React.Component<FieldGroupRawProps> {
               {prefix}
             </InputGroupAddon>
           )}
-          <Input
-            className={cn(className, styles.inputField)}
-            type={type}
-            value={val}
-            valid={!invalid}
-            placeholder={placeholder}
-            invalid={invalid}
-            onChange={this.handleChange}
-            innerRef={ref => (this.inputRef = ref)}
-            {...props}
-          />
+          {renderInputElement(inputProps)}
           {suffix && (
             <InputGroupAddon addonType="append" className={cn(styles.addon, addonStyle)}>
               {suffix}

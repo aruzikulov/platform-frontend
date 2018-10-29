@@ -1,8 +1,12 @@
+import { compact, isEmpty } from "lodash";
 import * as React from "react";
+import { branch, compose, renderNothing } from "recompose";
 
-import { compact } from "lodash";
 import { INotification } from "../../../modules/notifications/reducer";
-import { selectSettingsNotification } from "../../../modules/notifications/selectors";
+import {
+  selectNotifications,
+  selectSettingsNotification,
+} from "../../../modules/notifications/selectors";
 import { appConnect, AppDispatch } from "../../../store";
 import { Notification } from "./Notification";
 
@@ -28,21 +32,22 @@ const NotificationWidgetComponent: React.SFC<IProps> = ({ notifications, dispatc
           text={notification.text}
           actionLinkText={notification.actionLinkText}
           onClick={() => dispatch(notification.onClickAction)}
+          clickable={notification.clickable}
         />
       ))}
     </div>
   );
 };
 
-export const NotificationWidget = appConnect<IStateProps, IDispatchProps>({
-  stateToProps: s => {
-    const notifications = s.notifications.notifications;
-    const appStateDerivedNotifications = compact([selectSettingsNotification(s)]);
-    return {
-      notifications: [...notifications, ...appStateDerivedNotifications],
-    };
-  },
-  dispatchToProps: dispatch => ({
-    dispatch,
+export const NotificationWidget = compose<IProps, {}>(
+  appConnect<IStateProps, IDispatchProps>({
+    stateToProps: state => {
+      const notifications = selectNotifications(state);
+      const appStateDerivedNotifications = compact([selectSettingsNotification(state)]);
+      return {
+        notifications: [...notifications, ...appStateDerivedNotifications],
+      };
+    },
   }),
-})(NotificationWidgetComponent);
+  branch<IStateProps>(state => isEmpty(state.notifications), renderNothing),
+)(NotificationWidgetComponent);

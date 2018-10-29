@@ -13,7 +13,7 @@ interface IPlateProps {
 }
 
 interface IState {
-  date: number;
+  timeLeft: number;
 }
 
 const second = 1000;
@@ -31,21 +31,23 @@ const Plate: React.SFC<IPlateProps> = ({ value, label }) => {
 };
 
 export class Counter extends React.Component<IProps, IState> {
+  getTimeLeft = () => this.props.endDate.getTime() - Date.now();
+
   state = {
-    date: this.props.endDate.getTime() - Date.now(),
+    timeLeft: this.getTimeLeft(),
   };
 
   timer: any = null;
 
   componentDidMount(): void {
-    const { date } = this.state;
+    const { timeLeft } = this.state;
 
     this.timer = setInterval(() => {
-      if (date < 0) {
+      if (timeLeft < 0) {
         clearInterval(this.timer);
       }
 
-      this.setState(prevState => ({ date: prevState.date - 1000 }));
+      this.setState({ timeLeft: this.getTimeLeft() });
     }, 1000);
   }
 
@@ -56,12 +58,12 @@ export class Counter extends React.Component<IProps, IState> {
   }
 
   render(): React.ReactNode {
-    const { date } = this.state;
+    const { timeLeft } = this.state;
 
-    const computedDays = Math.floor(date / day);
-    const computedHours = Math.floor((date % day) / hour);
-    const computedMinutes = Math.floor((date % hour) / minute);
-    const computedSeconds = Math.floor((date % minute) / second);
+    const computedDays = Math.floor(timeLeft / day);
+    const computedHours = Math.floor((timeLeft % day) / hour);
+    const computedMinutes = Math.floor((timeLeft % hour) / minute);
+    const computedSeconds = Math.floor((timeLeft % minute) / second);
 
     return (
       <div className={styles.counter}>

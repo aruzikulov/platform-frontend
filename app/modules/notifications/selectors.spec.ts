@@ -1,9 +1,9 @@
 import { expect } from "chai";
 
-import { appRoutes } from "../../../components/appRoutes";
-import { IAppState } from "../../../store";
-import { DeepPartial } from "../../../types";
-import { selectIsVisibleSecurityNotification } from "../selectors";
+import { appRoutes } from "../../components/appRoutes";
+import { IAppState } from "../../store";
+import { DeepPartial } from "../../types";
+import { selectIsVisibleSecurityNotification } from "./selectors";
 
 describe("selectIsVisibleSecurityNotification", () => {
   it("should return false if KYC data is still loading", () => {

@@ -2,11 +2,15 @@ import { indexOf, some } from "lodash";
 
 import { appRoutes } from "../../components/appRoutes";
 import { IAppState } from "../../store";
-import { selectBackupCodesVerified, selectIsUserEmailVerified } from "../auth/selectors";
+import {
+  selectBackupCodesVerified,
+  selectIsInvestor,
+  selectIsUserEmailVerified,
+} from "../auth/selectors";
 import { selectKycRequestStatus, selectWidgetLoading } from "../kyc/selectors";
 import { selectWalletType } from "../web3/selectors";
 import { EWalletType } from "../web3/types";
-import { INotification, settingsNotification } from "./reducer";
+import { INotification, settingsNotification, settingsNotificationInvestor } from "./reducer";
 
 export const selectNotifications = (state: IAppState): INotification[] =>
   state.notifications.notifications;
@@ -39,5 +43,8 @@ export const selectIsVisibleSecurityNotification = (state: IAppState): boolean =
   return selectIsActionRequiredSettings(state);
 };
 
+export const selectSettingsNotificationType = (state: IAppState) =>
+  selectIsInvestor(state) ? settingsNotificationInvestor() : settingsNotification();
+
 export const selectSettingsNotification = (state: IAppState) =>
-  selectIsVisibleSecurityNotification(state) ? settingsNotification() : undefined;
+  selectIsVisibleSecurityNotification(state) ? selectSettingsNotificationType(state) : undefined;

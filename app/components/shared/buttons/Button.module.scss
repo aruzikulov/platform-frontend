@@ -37,7 +37,7 @@ $_active-color: lighten($_hover-color, 20%);
   &:disabled,
   &:global(.primary):disabled, // sass-lint:disable-line force-pseudo-nesting
   &:global(.secondary):disabled, // sass-lint:disable-line force-pseudo-nesting
-  &:global(.inline):disabled // sass-lint:disable-line force-pseudo-nesting
+  &:global(.inline):disabled, // sass-lint:disable-line force-pseudo-nesting
   &:global(.simple):disabled { // sass-lint:disable-line force-pseudo-nesting
     color: $neu-pale-grey;
     cursor: not-allowed;
@@ -110,6 +110,7 @@ $_active-color: lighten($_hover-color, 20%);
     @include font-label;
 
     font-weight: normal;
+    text-transform: none;
 
     .content {
       padding: 0;
@@ -131,7 +132,6 @@ $_active-color: lighten($_hover-color, 20%);
     .content {
       padding: 0;
       margin-top: 0;
-      text-align: left;
     }
   }
 

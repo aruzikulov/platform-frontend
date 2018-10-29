@@ -111,3 +111,7 @@ export function formatEur(val?: string | BigNumber): string | undefined {
 export function formatEth(val?: string | BigNumber): string | undefined {
   return val && formatMoney(val, MONEY_DECIMALS, 4);
 }
+
+export function formatVaryingDecimals(val?: string | BigNumber): string | undefined {
+  return val && formatMoney(val, MONEY_DECIMALS);
+}
