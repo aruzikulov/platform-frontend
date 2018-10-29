@@ -30,6 +30,7 @@ import { Web3ManagerMock } from "../app/lib/web3/Web3Manager.mock";
 import { createInjectMiddleware } from "../app/middlewares/redux-injectify";
 import { rootSaga } from "../app/modules/sagas";
 import { IAppState, reducers } from "../app/store";
+import { DeepPartial } from "../app/types";
 import { dummyIntl } from "../app/utils/injectIntlHelpers.fixtures";
 import { InversifyProvider } from "../app/utils/InversifyProvider";
 import { dummyConfig } from "./fixtures";
@@ -40,7 +41,7 @@ import { createMock, tid } from "./testUtils";
 const defaultTranslations = require("../intl/locales/en-en.json");
 
 interface ICreateIntegrationTestsSetupOptions {
-  initialState?: Partial<IAppState>;
+  initialState?: DeepPartial<IAppState>;
   browserWalletConnectorMock?: BrowserWalletConnector;
   ledgerWalletConnectorMock?: LedgerWalletConnector;
   storageMock?: Storage;

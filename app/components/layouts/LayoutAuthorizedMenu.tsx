@@ -136,6 +136,12 @@ const IssuerMenu: React.SFC<{ actionRequiredSettings: boolean; shouldEtoDataLoad
         menuName={<FormattedMessage id="menu.documents-page" />}
       />
       <MenuEntry
+        svgString={iconWallet}
+        to={appRoutes.wallet}
+        menuName={<FormattedMessage id="menu.wallet" />}
+        data-test-id="authorized-layout-wallet-button"
+      />
+      <MenuEntry
         svgString={iconHelp}
         to="https://support.neufund.org/support/home"
         menuName={<FormattedMessage id="menu.help" />}

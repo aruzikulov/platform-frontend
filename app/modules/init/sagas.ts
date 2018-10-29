@@ -17,6 +17,7 @@ import { loadPreviousWallet } from "../web3/sagas";
 function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any {
   try {
     yield web3Manager.initialize();
+
     yield neuCall(initializeContracts);
 
     yield put(actions.init.done("smartcontractsInit"));

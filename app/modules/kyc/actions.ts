@@ -8,6 +8,7 @@ import {
   TKycBusinessType,
 } from "../../lib/api/KycApi.interfaces";
 import { createAction, createSimpleAction } from "../actionsUtils";
+import { TClaims } from "./types";
 
 export const kycActions = {
   /**
@@ -20,6 +21,12 @@ export const kycActions = {
    */
   kycStartWatching: () => createSimpleAction("KYC_WATCHER_START"),
   kycStopWatching: () => createSimpleAction("KYC_WATCHER_STOP"),
+
+  /**
+   * Contract Claims
+   */
+  kycLoadClaims: () => createSimpleAction("KYC_LOAD_CLAIMS"),
+  kycSetClaims: (claims: TClaims) => createAction("KYC_SET_CLAIMS", { claims }),
 
   /**
    * Individual

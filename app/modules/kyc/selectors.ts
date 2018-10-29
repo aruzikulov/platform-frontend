@@ -3,6 +3,7 @@ import {
   TRequestOutsourcedStatus,
   TRequestStatus,
 } from "../../lib/api/KycApi.interfaces";
+import { IAppState } from "../../store";
 import { IKycState } from "./reducer";
 
 export const selectKycRequestStatus = (state: IKycState): TRequestStatus | undefined => {
@@ -85,3 +86,5 @@ export const selectClientName = (state: IKycState) =>
 export const selectClientCountry = (state: IKycState) =>
   (state.businessData && state.businessData.country) ||
   (state.individualData && state.individualData.country);
+
+export const selectClaims = (state: IAppState) => state.kyc.claims;

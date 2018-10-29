@@ -235,6 +235,13 @@ describe("Wallet selector integration", () => {
       signatureAuthApiMock,
       usersApiMock,
       initialRoute,
+      initialState: {
+        init: {
+          smartcontractsInit: {
+            done: true,
+          },
+        },
+      },
     });
     container
       .get<Web3ManagerMock>(symbols.web3Manager)

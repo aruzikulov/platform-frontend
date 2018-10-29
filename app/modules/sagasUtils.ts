@@ -1,4 +1,6 @@
+import { isEqual } from "lodash/fp";
 import { cancel, take } from "redux-saga/effects";
+
 import { TGlobalDependencies } from "../di/setupBindings";
 import { TActionType } from "./actions";
 import { neuFork } from "./sagas";
@@ -29,6 +31,6 @@ export function* neuTakeOnly(action: TActionType, payload: any): any {
   // TODO: Remove Any and add correct type similar to "TActionType"
   while (true) {
     const takenAction = yield take(action);
-    if (JSON.stringify(takenAction.payload) === JSON.stringify(payload)) return;
+    if (isEqual(takenAction.payload, payload)) return;
   }
 }

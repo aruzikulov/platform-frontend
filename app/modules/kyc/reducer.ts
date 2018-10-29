@@ -1,5 +1,4 @@
 import { filter, findIndex, isNil, omitBy } from "lodash";
-import { AppReducer } from "../../store";
 
 import {
   IKycBeneficialOwner,
@@ -9,7 +8,9 @@ import {
   IKycLegalRepresentative,
   IKycRequestState,
 } from "../../lib/api/KycApi.interfaces";
+import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
+import { TClaims } from "./types";
 
 export interface IKycState {
   // individual
@@ -50,6 +51,9 @@ export interface IKycState {
   beneficialOwnerFilesLoading: { [id: string]: boolean };
   beneficialOwnerFileUploading: { [id: string]: boolean };
   beneficialOwnerFiles: { [id: string]: IKycFileInfo[] };
+
+  // contract claims
+  claims: TClaims | undefined;
 }
 
 const kycInitialState: IKycState = {
@@ -60,6 +64,7 @@ const kycInitialState: IKycState = {
   beneficialOwnerFiles: {},
   beneficialOwnerFilesLoading: {},
   beneficialOwnerFileUploading: {},
+  claims: undefined,
 };
 
 function appendIfExists<T>(array: ReadonlyArray<T>, item: T | undefined): ReadonlyArray<T> {
@@ -97,25 +102,22 @@ export const kycReducer: AppReducer<IKycState> = (
     case "KYC_UPDATE_INDIVIDUAL_REQUEST_STATE":
     case "KYC_UPDATE_INDIVIDUAL_DATA":
     case "KYC_UPDATE_INDIVIDUAL_FILES_INFO":
-      state = { ...state, ...omitUndefined(action.payload) };
-      break;
+      return { ...state, ...omitUndefined(action.payload) };
     case "KYC_UPDATE_INDIVIDUAL_FILE_INFO":
-      state = {
+      return {
         ...state,
         individualFileUploading: action.payload.individualFileUploading,
         individualFiles: appendIfExists(state.individualFiles, action.payload.file),
       };
-      break;
     case "KYC_UPDATE_BUSINESS_DATA":
     case "KYC_UPDATE_BUSINESS_REQUEST_STATE":
     case "KYC_UPDATE_BUSINESS_FILES_INFO":
     case "KYC_UPDATE_LEGAL_REPRESENTATIVE":
     case "KYC_UPDATE_LEGAL_REPRESENTATIVE_FILES_INFO":
     case "KYC_UPDATE_BENEFICIAL_OWNERS":
-      state = { ...state, ...omitUndefined(action.payload) };
-      break;
+      return { ...state, ...omitUndefined(action.payload) };
     case "KYC_UPDATE_LEGAL_REPRESENTATIVE_FILE_INFO":
-      state = {
+      return {
         ...state,
         legalRepresentativeFileUploading: action.payload.legalRepresentativeUploading,
         legalRepresentativeFiles: appendIfExists(
@@ -123,16 +125,14 @@ export const kycReducer: AppReducer<IKycState> = (
           action.payload.file,
         ),
       };
-      break;
     case "KYC_UPDATE_BUSINESS_FILE_INFO":
-      state = {
+      return {
         ...state,
         businessFileUploading: action.payload.businessFileUploading,
         businessFiles: appendIfExists(state.businessFiles, action.payload.file),
       };
-      break;
     case "KYC_UPDATE_BENEFICIAL_OWNER":
-      state = {
+      return {
         ...state,
         loadingBeneficialOwner: action.payload.loadingBeneficialOwner,
         beneficialOwners: updateArrayItem(
@@ -141,9 +141,8 @@ export const kycReducer: AppReducer<IKycState> = (
           action.payload.beneficialOwner,
         ),
       };
-      break;
     case "KYC_UPDATE_BENEFICIAL_OWNER_FILES_INFO":
-      state = {
+      return {
         ...state,
         beneficialOwnerFilesLoading: {
           ...state.beneficialOwnerFilesLoading,
@@ -154,10 +153,9 @@ export const kycReducer: AppReducer<IKycState> = (
           [action.payload.boid]: action.payload.beneficialOwnerFiles,
         },
       };
-      break;
     case "KYC_UPDATE_BENEFICIAL_OWNER_FILE_INFO":
       const { boid } = action.payload;
-      state = {
+      return {
         ...state,
         beneficialOwnerFileUploading: {
           ...state.beneficialOwnerFileUploading,
@@ -168,8 +166,10 @@ export const kycReducer: AppReducer<IKycState> = (
           [boid]: appendIfExists(state.beneficialOwnerFiles[boid], action.payload.file),
         },
       };
-      break;
+    // contract claims
+    case "KYC_SET_CLAIMS":
+      return { ...state, claims: action.payload.claims };
+    default:
+      return state;
   }
-
-  return state;
 };

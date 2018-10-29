@@ -45,6 +45,7 @@ export class ContractsService {
   public async init(): Promise<void> {
     this.logger.info("Initializing contracts...");
     const web3 = this.web3Manager.internalWeb3Adapter.web3;
+
     if (process.env.NF_CONTRACTS_NEW !== "1") {
       return this.initDeprecated();
     }
