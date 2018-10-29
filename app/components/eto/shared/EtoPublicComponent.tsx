@@ -383,11 +383,11 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) 
                         <p>{companyData.customerGroup}</p>
                       </AccordionElement>
                     )}
-                    {companyData.marketTraction && (
+                    {companyData.targetMarketAndIndustry && (
                       <AccordionElement
-                        title={<FormattedMessage id="eto.form.product-vision.market-traction" />}
+                        title={<FormattedMessage id="eto.form.product-vision.target-segment" />}
                       >
-                        <p>{companyData.marketTraction}</p>
+                        <p>{companyData.targetMarketAndIndustry}</p>
                       </AccordionElement>
                     )}
                     {companyData.keyCompetitors && (
@@ -455,7 +455,13 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) 
                         </Row>
                       </AccordionElement>
                     )}
-
+                    {companyData.marketTraction && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.market-traction" />}
+                      >
+                        <p>{companyData.marketTraction}</p>
+                      </AccordionElement>
+                    )}
                     {companyData.roadmap && (
                       <AccordionElement
                         title={<FormattedMessage id="eto.form.product-vision.roadmap" />}
@@ -468,13 +474,6 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) 
                         title={<FormattedMessage id="eto.form.product-vision.business-model" />}
                       >
                         <p>{companyData.businessModel}</p>
-                      </AccordionElement>
-                    )}
-                    {companyData.targetMarketAndIndustry && (
-                      <AccordionElement
-                        title={<FormattedMessage id="eto.form.product-vision.target-segment" />}
-                      >
-                        <p>{companyData.targetMarketAndIndustry}</p>
                       </AccordionElement>
                     )}
                     {companyData.marketingApproach && (
