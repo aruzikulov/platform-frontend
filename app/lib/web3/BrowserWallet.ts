@@ -100,7 +100,6 @@ export class BrowserWalletConnector {
       throw new BrowserWalletMismatchedNetworkError(networkId, personalWeb3NetworkId);
     }
 
-    // check for locked wallet
     if (!(await web3Adapter.getAccountAddress())) {
       if (this.data_approval_pending) {
         throw new BrowserWalletAccountApprovalPendingError();
@@ -114,6 +113,17 @@ export class BrowserWalletConnector {
           this.data_approval_pending = false;
         }
       }
+    }
+
+    /*
+    Problem we have here is that there are two behaviours of promise returned from metamask injectedWeb3Provider.enable()
+    New: when promise is resolved it means that you now can obtain accounts so we can continue
+    In old one enable always resolves but metamask can actually still be locked so getAccountAddress will return nothing.
+    That's why there are those two checks. After 2 Nov 2018 we can remove second check.
+    */
+
+    if (!(await web3Adapter.getAccountAddress())) {
+      throw new BrowserWalletLockedError();
     }
 
     const walletType = await this.getBrowserWalletType(web3Adapter.web3);
