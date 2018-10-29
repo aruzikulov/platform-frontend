@@ -10,16 +10,26 @@ import {
 import { actions, TAction } from "../../actions";
 import { neuCall, neuTakeEvery } from "../../sagas";
 import { selectEtherBalance } from "../../wallet/selectors";
+import { ETxSenderType } from "../interfaces";
 import { EValidationState } from "../sender/reducer";
+import { generateInvestmentTransaction } from "../transactions/investment/sagas";
 import { generateEthWithdrawTransaction } from "../transactions/withdraw/sagas";
 
 export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction): any {
   try {
     if (action.type !== "TX_SENDER_VALIDATE_DRAFT") return;
-    const generatedTxDetails: ITxData = yield neuCall(
-      generateEthWithdrawTransaction,
-      action.payload,
-    );
+
+    let validationGenerator: any;
+
+    switch (action.payload.type) {
+      case ETxSenderType.WITHDRAW:
+        validationGenerator = generateEthWithdrawTransaction;
+        break;
+      case ETxSenderType.INVEST:
+        validationGenerator = generateInvestmentTransaction;
+        break;
+    }
+    const generatedTxDetails: ITxData = yield neuCall(validationGenerator, action.payload);
     yield validateGas(generatedTxDetails);
     yield put(actions.txValidator.setValidationState(EValidationState.VALIDATION_OK));
   } catch (error) {
