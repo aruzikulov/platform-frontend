@@ -31,7 +31,6 @@ export const date = Yup.string()
     return parse(s).isValid();
   });
 
-//TODO: Add translations
 export const personBirthDate = date
   .test("is-old-enough", <FormattedMessage id="form.field.error.older-than-18" /> as any, s => {
     const d = parse(s);
@@ -57,7 +56,6 @@ export const foundingDate = date.test(
 
 export const citizen = Yup.bool();
 
-//TODO: add to translations
 export const isUsCitizen = citizen.test(
   "is-us-citizen",
   <FormattedMessage id="form.field.error.us-citizen" /> as any,
