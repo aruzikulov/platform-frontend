@@ -154,7 +154,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
         name="signingDurationDays"
         min={14}
         unit={<FormattedMessage id="eto.form.section.eto-terms.signing-duration.unit" />}
-        max={30}
+        max={60}
       />
     </div>
 
