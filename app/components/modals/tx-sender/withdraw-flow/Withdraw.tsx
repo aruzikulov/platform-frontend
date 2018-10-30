@@ -40,10 +40,22 @@ const getWithdrawFormSchema = (maxEther: string) =>
   YupTS.object({
     to: YupTS.string().enhance(v =>
       v
-        .test("isRequiredField", "This field is required", (value: string | undefined) => !!value)
-        .test("isEthereumAddress", "is not a valid Ethereum Address", (value: string) => {
-          return validateAddress(value);
-        }),
+        .test(
+          "isRequiredField",
+          (
+            <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.field-is-required" />
+          ) as any,
+          (value: string | undefined) => !!value,
+        )
+        .test(
+          "isEthereumAddress",
+          (
+            <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.not-ethereum-address" />
+          ) as any,
+          (value: string) => {
+            return validateAddress(value);
+          },
+        ),
     ),
     value: YupTS.number().enhance((v: NumberSchema) =>
       v
