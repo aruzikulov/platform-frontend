@@ -1,8 +1,9 @@
+import BigNumber from "bignumber.js";
 import { put, select, take } from "redux-saga/effects";
+import * as Web3Utils from "web3-utils";
 import { Q18 } from "./../../../../config/constants";
 import { TAction } from "./../../../actions";
 
-import BigNumber from "bignumber.js";
 import { TGlobalDependencies } from "../../../../di/setupBindings";
 import { ITxData } from "../../../../lib/web3/types";
 import { actions } from "../../../actions";
@@ -26,8 +27,7 @@ export function* generateEthWithdrawTransaction(
   const etherTokenBalance: BigNumber = yield select(selectEtherTokenBalanceAsBigNumber);
   const from: string = yield select(selectEthereumAddressWithChecksum);
   const gasPriceWithOverhead = yield select(selectStandardGasPriceWithOverHead);
-
-  const weiValue = Q18.mul(value);
+  const weiValue = Web3Utils.toWei(value);
 
   if (etherTokenBalance.isZero()) {
     // transaction can be fully covered ether balance

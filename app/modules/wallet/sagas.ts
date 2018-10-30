@@ -18,7 +18,7 @@ const WALLET_DATA_FETCHING_INTERVAL = 12000;
 
 function* loadWalletDataSaga({ logger }: TGlobalDependencies): any {
   try {
-    const ethAddress = yield select(selectEthereumAddressWithChecksum); 
+    const ethAddress = yield select(selectEthereumAddressWithChecksum);
     yield put(actions.gas.gasApiEnsureLoading());
     yield take("GAS_API_LOADED");
 

@@ -98,65 +98,65 @@ const checkTransactionWithRPCNode = (
 };
 
 describe("Wallet Withdraw", () => {
-  beforeEach(() => createAndLoginNewUser({ type: "investor", seed: SEED }));
-
   it("should recover existing user with verified email from saved phrases and change email", () => {
-    goToDashboard();
+    createAndLoginNewUser({ type: "investor", seed: SEED }).then(() => {
+      goToDashboard();
 
-    const testValue = (5).toString();
-    const expectedGasLimit = "0xebac";
-    const account = new web3Accounts().create();
-    const expectedInput = `0x64663ea6000000000000000000000000${account.address
-      .slice(2)
-      .toLowerCase()}0000000000000000000000000000000000000000000000004563918244f40000`;
+      const testValue = (5).toString();
+      const expectedGasLimit = "0xebac";
+      const account = new web3Accounts().create();
+      const expectedInput = `0x64663ea6000000000000000000000000${account.address
+        .slice(2)
+        .toLowerCase()}0000000000000000000000000000000000000000000000004563918244f40000`;
 
-    const expectedAddress = account.address;
-    const expectedInputValue = "0";
+      const expectedAddress = account.address;
+      const expectedInputValue = "0";
 
-    assertUserInDashboard();
-    cy.get(tid("authorized-layout-wallet-button")).awaitedClick();
-    cy.get(tid("account-address.your.ether-address.from-div")).then(accountAddress => {
-      cy.get(tid("wallet-balance.ether.shared-component.withdraw.button")).awaitedClick();
-      /*Test Address field validation*/
-      typeWrongAddress();
-      cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.to-address")).type(
-        expectedAddress,
-      );
-      /*Test Address field validation*/
-      typeWrongValue();
-      cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.value")).type(testValue);
-      cy.get(
-        tid("modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"),
-      ).should("be.enabled");
-      cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.value")).type("{enter}");
+      assertUserInDashboard();
+      cy.get(tid("authorized-layout-wallet-button")).awaitedClick();
+      cy.get(tid("account-address.your.ether-address.from-div")).then(accountAddress => {
+        cy.get(tid("wallet-balance.ether.shared-component.withdraw.button")).awaitedClick();
+        /*Test Address field validation*/
+        typeWrongAddress();
+        cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.to-address")).type(
+          expectedAddress,
+        );
+        /*Test Address field validation*/
+        typeWrongValue();
+        cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.value")).type(testValue);
+        cy.get(
+          tid("modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"),
+        ).should("be.enabled");
+        cy.get(tid("modals.tx-sender.withdraw-flow.withdraw-component.value")).type("{enter}");
 
-      /*Test flow*/
+        /*Test flow*/
 
-      cy.get(tid("modals.tx-sender.withdraw-flow.summery.withdrawSummery.accept")).awaitedClick();
+        cy.get(tid("modals.tx-sender.withdraw-flow.summery.withdrawSummery.accept")).awaitedClick();
 
-      confirmAccessModal(DEFAULT_PASSWORD);
+        confirmAccessModal(DEFAULT_PASSWORD);
 
-      cy.get(tid("modals.shared.signing-message.modal"));
-      cy.get(tid("modals.tx-sender.withdraw-flow.success"));
+        cy.get(tid("modals.shared.signing-message.modal"));
+        cy.get(tid("modals.tx-sender.withdraw-flow.success"));
 
-      cy.get(tid("modals.tx-sender.withdraw-flow.tx-hash")).then(txHashObject => {
-        getTransactionByHashRpc(NODE_ADDRESS, txHashObject.text()).then(data => {
-          const { from, gas, input, hash, value } = data.body.result;
+        cy.get(tid("modals.tx-sender.withdraw-flow.tx-hash")).then(txHashObject => {
+          getTransactionByHashRpc(NODE_ADDRESS, txHashObject.text()).then(data => {
+            const { from, gas, input, hash, value } = data.body.result;
 
-          const ethValue = new BigNumber(value).toString();
+            const ethValue = new BigNumber(value).toString();
 
-          expect(from).to.equal(accountAddress.text().toLowerCase());
-          expect(txHashObject.text()).to.equal(hash);
-          expect(input).to.equal(expectedInput);
-          expect(gas).to.equal(expectedGasLimit);
-          expect(ethValue).to.equal(Q18.mul(testValue).toString());
+            expect(from).to.equal(accountAddress.text().toLowerCase());
+            expect(txHashObject.text()).to.equal(hash);
+            expect(input).to.equal(expectedInput);
+            expect(gas).to.equal(expectedGasLimit);
+            expect(ethValue).to.equal(Q18.mul(testValue).toString());
 
-          // TODO: Connect artifacts with tests to get deterministic addresses
-          // expect(etherTokenAddress).to.equal(to);
+            // TODO: Connect artifacts with tests to get deterministic addresses
+            // expect(etherTokenAddress).to.equal(to);
 
-          getBalanceRpc(NODE_ADDRESS, expectedAddress).then(balance => {
-            const receivedEtherValue = new BigNumber(balance.body.result).toString();
-            expect(receivedEtherValue).to.equal(Q18.mul(testValue).toString());
+            getBalanceRpc(NODE_ADDRESS, expectedAddress).then(balance => {
+              const receivedEtherValue = new BigNumber(balance.body.result).toString();
+              expect(receivedEtherValue).to.equal(Q18.mul(testValue).toString());
+            });
           });
         });
       });

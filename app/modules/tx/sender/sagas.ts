@@ -12,12 +12,10 @@ import {
   LongTransactionQueError,
   LowNonceError,
   NotEnoughEtherForGasError,
-  NotEnoughFundsError,
   RevertedTransactionError,
   UnknownEthNodeError,
 } from "../../../lib/web3/Web3Adapter";
 import { IAppState } from "../../../store";
-import { multiplyBigNumbers } from "../../../utils/BigNumberUtils";
 import { delay } from "../../../utils/delay";
 import { connectWallet } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
@@ -27,6 +25,7 @@ import { neuCall } from "../../sagas";
 import { neuResetIf } from "../../sagasUtils";
 import { ETxSenderType } from "../interfaces";
 import { updateTxs } from "../monitor/sagas";
+import { validateGas } from "../validator/sagas";
 import { ITxData } from "./../../../lib/web3/types";
 import { OutOfGasError } from "./../../../lib/web3/Web3Adapter";
 import { ETransactionErrorType } from "./reducer";
@@ -75,7 +74,8 @@ export function* txSendProcess(
     yield put(actions.txSender.txSenderWatchPendingTxsDone(transactionType));
 
     yield neuResetIf("TX_SENDER_CHANGE", "TX_SENDER_ACCEPT", transactionFlowGenerator, extraParam);
-
+    const txData = yield select(selectTxDetails);
+    yield validateGas(txData);
     yield call(connectWallet);
     yield put(actions.txSender.txSenderWalletPlugged());
     const txHash = yield neuCall(sendTxSubSaga);
@@ -139,9 +139,7 @@ function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): a
     throw new Error("Tx data is not defined");
   }
   try {
-    const userBalance: BigNumber = yield web3Manager.getBalance(txData.from);
-    if (userBalance.comparedTo(multiplyBigNumbers([txData.gasPrice, txData.gas])) < 0)
-      throw new NotEnoughFundsError();
+    yield validateGas(txData);
 
     const txHash: string = yield web3Manager.sendTransaction(txData);
     yield put(actions.txSender.txSenderSigned(txHash, type));

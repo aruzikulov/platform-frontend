@@ -38,7 +38,7 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
   }
 }
 
-function* validateGas(txDetails: ITxData): any {
+export function* validateGas(txDetails: ITxData): any {
   const etherBalance: string | undefined = yield select(selectEtherBalance);
 
   if (!etherBalance) {
