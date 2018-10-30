@@ -113,10 +113,7 @@ export class Web3Manager {
   }
 
   public async estimateGasWithOverhead(txData: Partial<Web3.TxData>): Promise<string> {
-    const encodedTxData = encodeTransaction({
-      ...txData,
-    });
-    const gas = await this.internalWeb3Adapter.estimateGas(encodedTxData);
+    const gas = await this.estimateGas(txData);
     return calculateGasLimitWithOverhead(gas);
   }
 

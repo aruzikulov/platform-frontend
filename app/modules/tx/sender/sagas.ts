@@ -22,7 +22,7 @@ import { actions } from "../../actions";
 import { IGasState } from "../../gas/reducer";
 import { selectGasPrice } from "../../gas/selectors";
 import { neuCall } from "../../sagas";
-import { neuResetIf } from "../../sagasUtils";
+import { neuRepeatIf } from "../../sagasUtils";
 import { ETxSenderType } from "../interfaces";
 import { updateTxs } from "../monitor/sagas";
 import { validateGas } from "../validator/sagas";
@@ -73,7 +73,7 @@ export function* txSendProcess(
     yield neuCall(ensureNoPendingTx, transactionType);
     yield put(actions.txSender.txSenderWatchPendingTxsDone(transactionType));
 
-    yield neuResetIf("TX_SENDER_CHANGE", "TX_SENDER_ACCEPT", transactionFlowGenerator, extraParam);
+    yield neuRepeatIf("TX_SENDER_CHANGE", "TX_SENDER_ACCEPT", transactionFlowGenerator, extraParam);
     const txData = yield select(selectTxDetails);
 
     yield validateGas(txData);

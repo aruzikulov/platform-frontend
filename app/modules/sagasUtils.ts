@@ -35,20 +35,20 @@ export function* neuTakeOnly(action: TActionType, payload: any): any {
 }
 
 /**
- *  Resets generator is resetAction is given and waits until endAction occurs then
- *  it repeats
+ *  Executes the generator and repeats if repeatAction was dispatched. Exits when endAction
+ *  is dispatched.
  */
-export function* neuResetIf(
-  resetAction: TActionType | TActionType[],
+export function* neuRepeatIf(
+  repeatAction: TActionType | TActionType[],
   endAction: TActionType | TActionType[],
-  transactionFlowGenerator: any,
+  generator: any,
   extraParam?: any,
 ): any {
   while (true) {
-    yield neuCall(transactionFlowGenerator, extraParam);
+    yield neuCall(generator, extraParam);
 
     const { change, accept } = yield race({
-      change: take(resetAction),
+      change: take(repeatAction),
       accept: take(endAction),
     });
     if (change) {

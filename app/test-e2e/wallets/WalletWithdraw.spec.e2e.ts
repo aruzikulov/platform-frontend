@@ -148,7 +148,7 @@ describe("Wallet Withdraw", () => {
             expect(txHashObject.text()).to.equal(hash);
             expect(input).to.equal(expectedInput);
             expect(gas).to.equal(expectedGasLimit);
-            expect(ethValue).to.equal(Q18.mul(testValue).toString());
+            expect(ethValue).to.equal(Q18.mul(0).toString());
 
             // TODO: Connect artifacts with tests to get deterministic addresses
             // expect(etherTokenAddress).to.equal(to);
