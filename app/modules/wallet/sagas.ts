@@ -18,7 +18,7 @@ const WALLET_DATA_FETCHING_INTERVAL = 12000;
 
 function* loadWalletDataSaga({ logger }: TGlobalDependencies): any {
   try {
-    const ethAddress = yield select(selectEthereumAddressWithChecksum);
+    const ethAddress = yield select(selectEthereumAddressWithChecksum); 
     yield put(actions.gas.gasApiEnsureLoading());
     yield take("GAS_API_LOADED");
 
@@ -91,5 +91,5 @@ function* walletBalanceWatcher(): any {
 
 export function* walletSagas(): any {
   yield fork(neuTakeEvery, "WALLET_LOAD_WALLET_DATA", loadWalletDataSaga);
-  yield neuTakeUntil("AUTH_LOAD_USER", "AUTH_LOGOUT", walletBalanceWatcher);
+  yield neuTakeUntil("LOAD_PREVIOUS_WALLET", "AUTH_LOGOUT", walletBalanceWatcher);
 }
