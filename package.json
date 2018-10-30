@@ -102,7 +102,7 @@
     "@types/storybook__addon-actions": "^3.4.1",
     "@types/storybook__react": "^3.0.9",
     "@types/url-join": "^0.8.2",
-    "@types/yup": "^0.24.9",
+    "@types/yup": "^0.26.0",
     "autoprefixer": "^9.1.1",
     "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^7.1.5",
