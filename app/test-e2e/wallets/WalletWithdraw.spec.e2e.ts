@@ -103,7 +103,7 @@ describe("Wallet Withdraw", () => {
       goToDashboard();
 
       const testValue = (5).toString();
-      const expectedGasLimit = "0x15dc0";
+      const expectedGasLimit = "0x12375";
       const account = new web3Accounts().create();
       const expectedInput = `0x64663ea6000000000000000000000000${account.address
         .slice(2)
