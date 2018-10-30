@@ -12,6 +12,7 @@ export const UploadTermSheetWidget = injectIntlHelpers(({ intl: { formatIntlMess
       text={<FormattedMessage id="settings.upload-term-sheet-please-upload-term-sheet" />}
       to={appRoutes.documents}
       buttonText={<FormattedMessage id="settings.upload-term-sheet.title" />}
+      buttonTid="dashboard-upload-termsheet"
     />
   );
 });

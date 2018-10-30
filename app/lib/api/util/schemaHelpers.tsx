@@ -38,10 +38,10 @@ export const personBirthDate = date
   })
   .test(
     "is-young-enough",
-    <FormattedMessage id="form.field.error.younger-than-100" /> as any,
+    <FormattedMessage id="form.field.error.younger-than" values={{ age: 125 }} /> as any,
     s => {
       const d = parse(s);
-      return d.isValid() && d.isAfter(moment().subtract(100, "years"));
+      return d.isValid() && d.isAfter(moment().subtract(125, "years"));
     },
   );
 

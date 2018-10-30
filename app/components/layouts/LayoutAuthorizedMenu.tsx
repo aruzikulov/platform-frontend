@@ -97,7 +97,7 @@ const InvestorMenu: React.SFC<{ actionRequiredSettings: boolean }> = ({
       />
       <MenuEntry
         svgString={iconHelp}
-        to={externalRoutes.freshdesk}
+        to={`${externalRoutes.neufundSupport}/home`}
         menuName={<FormattedMessage id="menu.help" />}
         target="_blank"
       />
@@ -134,6 +134,12 @@ const IssuerMenu: React.SFC<{ actionRequiredSettings: boolean; shouldEtoDataLoad
         to={appRoutes.documents}
         disabled={!shouldEtoDataLoad}
         menuName={<FormattedMessage id="menu.documents-page" />}
+      />
+      <MenuEntry
+        svgString={iconWallet}
+        to={appRoutes.wallet}
+        menuName={<FormattedMessage id="menu.wallet" />}
+        data-test-id="authorized-layout-wallet-button"
       />
       <MenuEntry
         svgString={iconHelp}

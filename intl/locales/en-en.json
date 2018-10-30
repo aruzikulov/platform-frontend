@@ -360,7 +360,7 @@
   "form.field.error.string.uppercase": "Must be an upper case sequence of characters",
   "form.field.error.string.url": "Must be a valid URL",
   "form.field.error.us-citizen": "We are very sorry, at the moment we cannot serve US customers due to regulatory uncertainties",
-  "form.field.error.younger-than-100": "You must be younger than 100 years",
+  "form.field.error.younger-than": "You must be younger than {age} years",
   "form.label.address": "Address",
   "form.label.birth-date": "Date of birth",
   "form.label.city": "City",

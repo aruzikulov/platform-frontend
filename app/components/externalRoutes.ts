@@ -1,3 +1,3 @@
 export const externalRoutes = {
-  freshdesk: "https://support.neufund.org/support/home",
+  neufundSupport: "https://support.neufund.org/support",
 };

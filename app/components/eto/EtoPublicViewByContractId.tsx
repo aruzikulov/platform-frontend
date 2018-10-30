@@ -1,11 +1,10 @@
 import * as React from "react";
-import { branch, renderComponent } from "recompose";
-import { compose } from "redux";
+import { branch, compose, renderComponent } from "recompose";
 
 import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
-import { selectEtoWithCompanyAndContract } from "../../modules/public-etos/selectors";
+import { selectEtoWithCompanyAndContractById } from "../../modules/public-etos/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/public-etos/types";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
@@ -21,27 +20,31 @@ interface IStateProps {
 }
 
 interface IRouterParams {
-  previewCode: string;
+  etoId: string;
+}
+
+interface IDispatchProps {
+  loadEto: () => void;
 }
 
 type TProps = {
   eto: TEtoWithCompanyAndContract;
 };
 
-const EtoPublicViewLayout: React.SFC<TProps> = ({ eto }) => (
+const EtoPublicViewByContractIdLayout: React.SFC<TProps> = ({ eto }) => (
   <EtoPublicComponent companyData={eto.company} etoData={eto} />
 );
 
-export const EtoPublicView = compose<React.SFC<IRouterParams>>(
-  appConnect<IStateProps, {}, IRouterParams>({
+export const EtoPublicViewByContractId = compose<TProps, IRouterParams>(
+  appConnect<IStateProps, IDispatchProps, IRouterParams>({
     stateToProps: (state, props) => ({
       userType: selectUserType(state.auth),
-      eto: selectEtoWithCompanyAndContract(state, props.previewCode),
+      eto: selectEtoWithCompanyAndContractById(state, props.etoId),
     }),
   }),
   onEnterAction({
     actionCreator: (dispatch, props) => {
-      dispatch(actions.publicEtos.loadEtoPreview(props.previewCode));
+      dispatch(actions.publicEtos.loadEto(props.etoId));
     },
   }),
   branch<IStateProps>(
@@ -50,4 +53,4 @@ export const EtoPublicView = compose<React.SFC<IRouterParams>>(
     withContainer(LayoutBase),
   ),
   branch<IStateProps>(props => !props.eto, renderComponent(LoadingIndicator)),
-)(EtoPublicViewLayout);
+)(EtoPublicViewByContractIdLayout);

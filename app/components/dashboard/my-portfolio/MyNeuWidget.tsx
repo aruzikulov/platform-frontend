@@ -35,7 +35,12 @@ export const MyNeuWidget: React.SFC<IProps> = props => {
           </div>
         </Col>
         <Col md={12} className="text-right text-md-center" data-test-id="arrow-neu">
-          <a href={externalRoutes.freshdesk}>
+          <a
+            href={`${
+              externalRoutes.neufundSupport
+            }/solutions/articles/36000060355-what-is-neumark-`}
+            target="_blank"
+          >
             <Button
               layout={EButtonLayout.SECONDARY}
               iconPosition="icon-after"

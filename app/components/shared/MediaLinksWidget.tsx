@@ -16,13 +16,13 @@ interface IProps {
   links: ILink[];
 }
 
-export const normalizedUrl = (url: string) =>
-  url
+export const normalizedUrl = (url: string) => {
+  const cleanUrl = decodeURIComponent(url)
     .trim()
-    .toLowerCase()
-    .startsWith("http")
-    ? url
-    : `http://${url}`;
+    .toLowerCase();
+
+  return cleanUrl.startsWith("http") ? cleanUrl : `http://${cleanUrl}`;
+};
 
 export const MediaLinksWidget: React.SFC<IProps> = ({ links }) => {
   if (!links.length) {

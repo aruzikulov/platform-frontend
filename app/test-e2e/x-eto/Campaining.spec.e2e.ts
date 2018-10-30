@@ -10,7 +10,7 @@ describe("Eto campaining state", () => {
   it("should show Register button when not logged in", () => {
     const ETO_ID = "0x0d69BfC43EB3500A8A747Df979C22e3609B62A20";
 
-    cy.visit(withParams(appRoutes.etoPublicView, { etoId: ETO_ID }));
+    cy.visit(withParams(appRoutes.etoPublicViewById, { etoId: ETO_ID }));
     cy.get(tid("eto.public-view")).should("exist");
 
     cy.get(tid("logged-out-campaigning-register")).click();
@@ -25,7 +25,7 @@ describe("Eto campaining state", () => {
       type: "issuer",
       kyc: "business",
     }).then(() => {
-      cy.visit(withParams(appRoutes.etoPublicView, { etoId: ETO_ID }));
+      cy.visit(withParams(appRoutes.etoPublicViewById, { etoId: ETO_ID }));
       cy.get(tid("eto.public-view")).should("exist");
 
       cy.get(tid("eto-overview-status-founders-quote")).should("exist");
@@ -50,7 +50,7 @@ describe("Eto campaining state", () => {
         type: "investor",
         kyc: "business",
       }).then(() => {
-        cy.visit(withParams(appRoutes.etoPublicView, { etoId: ETO_ID }));
+        cy.visit(withParams(appRoutes.etoPublicViewById, { etoId: ETO_ID }));
 
         fillForm({
           amount: "10000",
@@ -70,7 +70,7 @@ describe("Eto campaining state", () => {
           type: "investor",
           kyc: "business",
         }).then(() => {
-          cy.visit(withParams(appRoutes.etoPublicView, { etoId: ETO_ID }));
+          cy.visit(withParams(appRoutes.etoPublicViewById, { etoId: ETO_ID }));
 
           fillForm({
             amount: "15000",

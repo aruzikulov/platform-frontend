@@ -8,6 +8,7 @@ import * as Yup from "yup";
 
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
+import { externalRoutes } from "../../externalRoutes";
 import { Button } from "../../shared/buttons";
 import { FormField } from "../../shared/forms";
 import { InfoBlock } from "../../shared/InfoBlock";
@@ -105,7 +106,9 @@ export const RegisterWalletComponent: React.SFC<
           <InfoBlock>
             <FormattedHTMLMessage tagName="span" id="wallet-selector.light.icbm-info.message" />{" "}
             <Link
-              to="https://neufund.freshdesk.com/support/solutions/articles/36000060442-icbm-investors-registration"
+              to={`${
+                externalRoutes.neufundSupport
+              }/solutions/articles/36000060442-icbm-investors-registration`}
               target="_blank"
             >
               <FormattedMessage id="wallet-selector.light.icbm-info.read-more-here" />

@@ -104,7 +104,7 @@ export const DocumentsComponent: React.SFC<IProps> = ({
       {loadingData || etoFileLoading || !etoState ? (
         <LoadingIndicator />
       ) : (
-        <Row>
+        <Row data-test-id="eto-documents">
           <EtoFileIpfsModal />
           <Col xs={12} lg={8}>
             <SectionHeader className="my-4">
@@ -150,7 +150,7 @@ export const DocumentsComponent: React.SFC<IProps> = ({
                   uploadedKey => uploadedDocuments[uploadedKey].documentType === key,
                 );
                 return (
-                  <Col xs={6} lg={3} key={index} className="mb-2">
+                  <Col xs={6} lg={3} key={index} className="mb-2" data-test-id={`form.name.${key}`}>
                     <ETOAddDocuments documentType={key} disabled={!canUpload}>
                       <DocumentTile
                         title={typedFileName}
@@ -161,6 +161,7 @@ export const DocumentsComponent: React.SFC<IProps> = ({
                     </ETOAddDocuments>
                     {isFileUploaded && (
                       <button
+                        data-test-id="documents-download-document"
                         onClick={() => downloadDocumentByType(key)}
                         className={cn(styles.subTitleDownload)}
                       >
