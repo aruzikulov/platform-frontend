@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Container, Row } from "reactstrap";
-import { compose } from "recompose";
+import { compose, withHandlers } from "recompose";
 import { NumberSchema } from "yup";
 
 import { ITxData } from "../../../../lib/web3/types";
@@ -34,7 +34,15 @@ interface IFormikProps {
   to: string;
 }
 
-type TProps = IStateProps & ITxInitDispatchProps;
+interface IHandlersProps {
+  onValidateHandler: (value: string, to: string) => void;
+}
+
+interface IInternalDispatchProps {
+  onValidate: (txDraft: IDraftType) => any;
+}
+
+type TProps = IStateProps & ITxInitDispatchProps & IHandlersProps;
 
 const getWithdrawFormSchema = (maxEther: string) =>
   YupTS.object({
@@ -75,7 +83,7 @@ const getWithdrawFormSchema = (maxEther: string) =>
 const WithdrawComponent: React.SFC<TProps> = ({
   onAccept,
   maxEther,
-  onValidate,
+  onValidateHandler,
   validationState,
 }) => (
   <div>
@@ -105,15 +113,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.to-address"
                     onChange={(e: any) => {
                       setFieldValue("to", e.target.value);
-                      if (
-                        doesUserHaveEnoughEther(values.value, maxEther) &&
-                        validateAddress(e.target.value)
-                      )
-                        onValidate({
-                          ...values,
-                          to: e.target.value,
-                          type: ETxSenderType.WITHDRAW,
-                        });
+                      onValidateHandler(e.target.value, values.value);
                     }}
                   />
                 </Col>
@@ -129,15 +129,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     ignoreTouched={true}
                     onChange={(e: any) => {
                       setFieldValue("value", e.target.value);
-                      if (
-                        doesUserHaveEnoughEther(e.target.value, maxEther) &&
-                        validateAddress(values.to)
-                      )
-                        onValidate({
-                          ...values,
-                          value: e.target.value,
-                          type: ETxSenderType.WITHDRAW,
-                        });
+                      onValidateHandler(values.to, e.target.value);
                     }}
                   />
                   {/* @SEE https://github.com/jaredpalmer/formik/issues/288 */}
@@ -178,6 +170,16 @@ const Withdraw = compose<TProps, {}>(
       onAccept: (tx: Partial<ITxData>) => d(actions.txSender.txSenderAcceptDraft(tx)),
       onValidate: (txDraft: IDraftType) => d(actions.txValidator.txSenderValidateDraft(txDraft)),
     }),
+  }),
+  withHandlers<IStateProps & IInternalDispatchProps, {}>({
+    onValidateHandler: ({ onValidate, maxEther }) => (value: string, to: string) => {
+      if (doesUserHaveEnoughEther(value, maxEther) && validateAddress(to))
+        onValidate({
+          to,
+          value,
+          type: ETxSenderType.WITHDRAW,
+        });
+    },
   }),
 )(WithdrawComponent);
 

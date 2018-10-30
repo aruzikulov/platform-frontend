@@ -6,6 +6,6 @@ storiesOf("Withdraw", module).add("default", () => (
   <WithdrawComponent
     onAccept={() => {}}
     maxEther={"100000000000000000000000000000"}
-    onValidate={() => {}}
+    onValidateHandler={() => {}}
   />
 ));

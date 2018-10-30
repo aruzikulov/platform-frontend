@@ -4,7 +4,7 @@ import { Modal } from "reactstrap";
 
 import { ITxData } from "../../../lib/web3/types";
 import { actions } from "../../../modules/actions";
-import { ETxSenderType, IDraftType } from "../../../modules/tx/interfaces";
+import { ETxSenderType } from "../../../modules/tx/interfaces";
 import { ETransactionErrorType, ETxSenderState } from "../../../modules/tx/sender/reducer";
 import { selectTxSenderModalOpened } from "../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../store";
@@ -54,7 +54,6 @@ const TxSenderModalComponent: React.SFC<Props> = props => {
 
 export interface ITxInitDispatchProps {
   onAccept: (tx: Partial<ITxData>) => any;
-  onValidate: (txDraft: IDraftType) => any;
 }
 
 export interface ITxSummaryStateProps {

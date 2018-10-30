@@ -1,5 +1,5 @@
-import { cancel, race, take } from "redux-saga/effects";
 import { isEqual } from "lodash/fp";
+import { cancel, race, take } from "redux-saga/effects";
 import { TGlobalDependencies } from "../di/setupBindings";
 import { TActionType } from "./actions";
 import { neuCall, neuFork } from "./sagas";
