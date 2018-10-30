@@ -55,8 +55,8 @@ describe("Eto campaining state", () => {
         fillForm({
           amount: "10000",
           consentToRevealEmail: {
-            type: "check",
-            value: "",
+            type: "radio",
+            value: "true",
           },
           "eto-bookbuilding-back-now": { type: "submit" },
         });

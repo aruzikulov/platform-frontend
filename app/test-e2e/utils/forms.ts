@@ -1,17 +1,17 @@
 import { findKey, forEach } from "lodash";
 
+import { Dictionary } from "../../types";
 import { acceptWallet } from "./index";
 import { formField, formFieldErrorMessage, tid } from "./selectors";
 
 type TFormFieldFixture =
   | {
       value: string;
-      type: "submit" | "tags" | "single-file" | "date" | "select" | "check" | "range";
+      type: "submit" | "tags" | "single-file" | "date" | "select" | "range" | "radio";
     }
   | {
-      value: string;
-      mustBeChecked: boolean;
-      type: "checkBox";
+      values: Dictionary<boolean>;
+      type: "checkbox";
     }
   | {
       type: "media";
@@ -49,7 +49,8 @@ const isSubmitField = (field: TFormFieldFixture) =>
 /**
  * Fill out a form
  * @param fixture - Which form fixture to load
- * @param submit - wether to submit the form or not, default true
+ * @param submit - whether to submit the form or not, default true
+ * @param methods - custom methods to fill input
  */
 export const fillForm = (
   fixture: TFormFixture,
@@ -79,20 +80,21 @@ export const fillForm = (
         .invoke("val", field.value)
         .trigger("change");
     }
-    // click on a field
-    else if (field.type === "check") {
-      cy.get(formField(key))
-        .first()
-        .check({ force: true });
+    // check or uncheck a radio
+    else if (field.type === "radio") {
+      cy.get(formField(key)).check(field.value, { force: true });
     }
     //check or uncheck a checkbox
-    else if (field.type === "checkBox") {
+    else if (field.type === "checkbox") {
       const element = cy.get(formField(key));
-      if (field.mustBeChecked === true) {
-        element.check(field.value, { force: true });
-      } else {
-        element.uncheck(field.value, { force: true });
-      }
+
+      forEach(field.values, (checked, value) => {
+        if (checked) {
+          element.check(value, { force: true });
+        } else {
+          element.uncheck(value, { force: true });
+        }
+      });
     }
     // tags
     else if (field.type === "tags") {
@@ -136,7 +138,7 @@ export const fillForm = (
     const submitField = findKey(fixture, isSubmitField);
 
     if (!submitField) {
-      throw new Error("Please provide 'submit' fixture");
+      throw new Error("Please provide ' submit' fixture");
     }
 
     cy.get(tid(submitField)).awaitedClick();

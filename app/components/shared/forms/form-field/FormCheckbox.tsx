@@ -20,7 +20,7 @@ interface IInternalProps {
 const CheckboxComponent: React.SFC<IProps & IInternalProps> = ({
   name,
   label,
-  value,
+  value = "true",
   onChange,
   checked,
   disabled,
@@ -49,7 +49,7 @@ const CheckboxComponent: React.SFC<IProps & IInternalProps> = ({
 const RadioButtonComponent: React.SFC<IProps & IInternalProps> = ({
   name,
   label,
-  value,
+  value = "true",
   onChange,
   checked,
   disabled,
@@ -85,8 +85,8 @@ class FormCheckbox extends React.Component<IProps> {
             render={({ field }: FieldProps) => {
               return (
                 <CheckboxComponent
-                  {...this.props}
                   {...field}
+                  {...this.props}
                   checked={checked || values[name]}
                   onChange={() => setFieldValue(name, !values[name])}
                   disabled={disabled}
@@ -110,13 +110,12 @@ class FormRadioButton extends React.Component<IProps> {
           <Field
             name={name}
             render={({ field }: FieldProps) => {
-              const { name } = field;
               const { value } = this.props;
 
               return (
                 <RadioButtonComponent
-                  {...this.props}
                   {...field}
+                  {...this.props}
                   checked={checked || values[name] === value}
                   onChange={() => setFieldValue(name, value)}
                   disabled={disabled}

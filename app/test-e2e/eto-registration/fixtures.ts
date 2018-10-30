@@ -105,8 +105,12 @@ export const etoTermsRequiredForm: TFormFixture = {
     type: "range",
   },
   enableTransferOnSuccess: {
-    value: "",
-    type: "check",
+    value: "false",
+    type: "radio",
+  },
+  notUnderCrowdfundingRegulations: {
+    values: { true: true },
+    type: "checkbox",
   },
   "eto-registration-eto-terms-submit": {
     type: "submit",
@@ -116,19 +120,15 @@ export const etoTermsRequiredForm: TFormFixture = {
 export const etoTermsForm: TFormFixture = {
   ...etoTermsRequiredForm,
   currencies: {
-    value: "eth",
-    mustBeChecked: false,
-    type: "checkBox",
-  },
-  notUnderCrowdfundingRegulations: {
-    value: "",
-    type: "check",
+    values: {
+      eth: false,
+    },
+    type: "checkbox",
   },
   prospectusLanguage: {
-    value: "DE",
-    type: "check",
+    value: "de",
+    type: "radio",
   },
-  minTicketEur: "750",
   maxTicketEur: "10000",
   whitelistDurationDays: {
     value: "5",
@@ -143,13 +143,6 @@ export const etoTermsForm: TFormFixture = {
     type: "range",
   },
   additionalTerms: "There must always be sausage in the fridge!",
-  enableTransferOnSuccess: {
-    value: "",
-    type: "check",
-  },
-  "eto-registration-eto-terms-submit": {
-    type: "submit",
-  },
 };
 
 // key individuals
