@@ -6,6 +6,8 @@ import { LoadingIndicator } from "../../shared/loading-indicator";
 import { IPanelProps, Panel } from "../../shared/Panel";
 import { TotalEuro } from "../TotalEuro";
 
+import * as styles from "./WalletBalance.module.scss";
+
 export interface IWalletValues {
   ethAmount: string;
   ethEuroAmount: string;
@@ -34,7 +36,7 @@ export const WalletBalanceContainer: React.SFC<
       rightComponent={data && <TotalEuro totalEurValue={data.totalEuroAmount} />}
       className={cn(className, "d-flex flex-column")}
     >
-      {children}
+      <div className={styles.wrapper}>{children}</div>
     </Panel>
   );
 };
