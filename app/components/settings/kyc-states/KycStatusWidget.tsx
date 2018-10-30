@@ -54,6 +54,7 @@ export type IKycStatusWidgetProps = IStateProps & IDispatchProps & IOwnProps;
 const statusTextMap: UnionDictionary<TRequestStatus, React.ReactNode> = {
   Accepted: <FormattedMessage id="settings.kyc-status-widget.status.accepted" />,
   Rejected: <FormattedMessage id="settings.kyc-status-widget.status.rejected" />,
+  Ignored: <FormattedMessage id="settings.kyc-status-widget.status.ignored" />,
   Pending: <FormattedMessage id="settings.kyc-status-widget.status.pending" />,
   Draft: <FormattedMessage id="settings.kyc-status-widget.status.draft" />,
   Outsourced: <FormattedMessage id="settings.kyc-status-widget.status.outsourced" />,

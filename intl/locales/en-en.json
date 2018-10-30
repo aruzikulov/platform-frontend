@@ -603,6 +603,7 @@
   "settings.kyc-status-widget.status.accepted": "Congratulations! We have successfully verified your identity.",
   "settings.kyc-status-widget.status.draft": "Please begin the Verification Process by clicking the link below.",
   "settings.kyc-status-widget.status.error-verification-email": "Before continuing with the verification process, you have to first verify your email address. ",
+  "settings.kyc-status-widget.status.ignored": "We regret to inform you that after careful review, your request has been rejected.",
   "settings.kyc-status-widget.status.outsourced": "Your request is being processed. You will be notified via email once we have finalized our review.",
   "settings.kyc-status-widget.status.outsourced.abortedOrCancelled": "The verification process has been stopped or aborted. Please follow the link below to try again. Still not working? Go to our <a href=\"https://neufund.freshdesk.com/support/home\">Helpdesk</a> to get in touch with one of our agents.",
   "settings.kyc-status-widget.status.outsourced.other-info": "We are still reviewing your information. You will be notified via email once we have finalized our review.",

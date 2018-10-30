@@ -28,7 +28,6 @@ export const MediaLinksWidget: React.SFC<IProps> = ({ links }) => {
   if (!links.length) {
     return null;
   }
-
   return (
     <Panel>
       {links.map(({ title, url, publication }, i) => {

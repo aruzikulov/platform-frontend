@@ -189,7 +189,8 @@ export const kycActions = {
       file,
     }),
   // request
-  kycLoadBusinessRequest: () => createSimpleAction("KYC_LOAD_BUSINESS_REQUEST_STATE"),
+  kycLoadBusinessRequest: (inBackground: boolean = false) =>
+    createAction("KYC_LOAD_BUSINESS_REQUEST_STATE", { inBackground }),
 
   kycUpdateBusinessRequestState: (
     businessRequestStateLoading?: boolean,
