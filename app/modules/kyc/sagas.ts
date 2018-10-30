@@ -11,6 +11,7 @@ import {
   IKycIndividualData,
   IKycLegalRepresentative,
   IKycRequestState,
+  TKycRequestType,
   TRequestOutsourcedStatus,
   TRequestStatus,
 } from "../../lib/api/KycApi.interfaces";
@@ -28,6 +29,7 @@ import {
   selectCombinedBeneficialOwnerOwnership,
   selectKycRequestOutsourcedStatus,
   selectKycRequestStatus,
+  selectKycRequestType,
 } from "./selectors";
 import { deserializeClaims } from "./utils";
 
@@ -40,16 +42,17 @@ function* loadClientData(): any {
  * whole watcher feature is just a temporary workaround for a lack of real time communication with backend
  */
 let kycWidgetWatchDelay: number = 1000;
-function* kycRefreshWidgetSaga(): any {
+function* kycRefreshWidgetSaga({ logger }: TGlobalDependencies): any {
   kycWidgetWatchDelay = 1000;
-
   while (true) {
+    const requestType: TKycRequestType = yield select((s: IAppState) =>
+      selectKycRequestType(s.kyc),
+    );
     const status: TRequestStatus | undefined = yield select((s: IAppState) =>
       selectKycRequestStatus(s.kyc),
     );
 
-    // if its accepted we can stop whole mechanism
-    if (status === "Accepted") {
+    if (status === "Accepted" || status === "Rejected" || status === "Ignored") {
       return;
     }
 
@@ -58,12 +61,18 @@ function* kycRefreshWidgetSaga(): any {
     );
 
     if (
-      outsourcedStatus === "started" ||
-      outsourcedStatus === "canceled" ||
-      outsourcedStatus === "aborted" ||
-      outsourcedStatus === "review_pending"
+      status === "Pending" ||
+      (status === "Outsourced" &&
+        outsourcedStatus &&
+        (outsourcedStatus === "started" ||
+          outsourcedStatus === "canceled" ||
+          outsourcedStatus === "aborted" ||
+          outsourcedStatus === "review_pending"))
     ) {
-      yield put(actions.kyc.kycLoadIndividualRequest(true));
+      requestType === "individual"
+        ? yield put(actions.kyc.kycLoadIndividualRequest(true))
+        : yield put(actions.kyc.kycLoadBusinessRequest(true));
+      logger.info("KYC refreshed", status, requestType);
     }
 
     yield delay(kycWidgetWatchDelay);
@@ -85,7 +94,7 @@ let watchTask: any;
 function* kycRefreshWidgetSagaWatcher(): any {
   while (true) {
     yield take("KYC_WATCHER_START");
-    watchTask = yield fork(kycRefreshWidgetSaga);
+    watchTask = yield fork(neuCall, kycRefreshWidgetSaga);
   }
 }
 
@@ -564,7 +573,9 @@ function* loadBusinessRequest(
 ): Iterator<any> {
   if (action.type !== "KYC_LOAD_BUSINESS_REQUEST_STATE") return;
   try {
-    yield put(actions.kyc.kycUpdateBusinessRequestState(true));
+    if (!action.payload.inBackground) {
+      yield put(actions.kyc.kycUpdateBusinessRequestState(true));
+    }
     const result: IHttpResponse<IKycRequestState> = yield apiKycService.getBusinessRequest();
     yield put(actions.kyc.kycUpdateBusinessRequestState(false, result.body));
   } catch (e) {

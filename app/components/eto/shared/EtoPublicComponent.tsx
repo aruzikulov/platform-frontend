@@ -510,7 +510,6 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) 
                   <SectionHeader layoutHasDecorator={false} className="mb-4">
                     <FormattedMessage id="eto.form.media-links.title" />
                   </SectionHeader>
-
                   <MediaLinksWidget links={companyData.companyNews.reverse() as ILink[]} />
                 </>
               )}
