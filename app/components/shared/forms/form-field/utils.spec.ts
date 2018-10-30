@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
-import { isNonValid, isValid } from "./utils";
+import * as Yup from "yup";
+import { isFieldRequired, isNonValid, isValid } from "./utils";
 
 describe("Form utils", () => {
   describe("isValid", () => {
@@ -41,5 +42,17 @@ describe("Form utils", () => {
 
       expect(result).to.be.false;
     });
+  });
+});
+
+describe("isFieldRequired", () => {
+  it("should return true for a required field with yup schema", () => {
+    const schema = Yup.object({ key: Yup.string().required() });
+    expect(isFieldRequired(schema, "key")).to.be.true;
+  });
+  it("should return false for an optional field with yup schema", () => {
+    const schema = Yup.object({ key1: Yup.string(), key2: Yup.string().notRequired() });
+    expect(isFieldRequired(schema, "key1")).to.be.false;
+    expect(isFieldRequired(schema, "key2")).to.be.false;
   });
 });
