@@ -54,6 +54,8 @@ export function* neuResetIf(
     if (change) {
       continue;
     }
-    if (accept) return;
+    if (accept) {
+      return;
+    }
   }
 }

@@ -1,9 +1,9 @@
-interface IWithdrawDraftType {
+export interface IWithdrawDraftType {
   type: ETxSenderType.WITHDRAW;
   to: string;
   value: string;
 }
-interface IInvestmentDraftType {
+export interface IInvestmentDraftType {
   type: ETxSenderType.INVEST;
 }
 

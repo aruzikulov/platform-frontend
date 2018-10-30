@@ -1,6 +1,5 @@
 import BigNumber from "bignumber.js";
 import { put, select, take } from "redux-saga/effects";
-import * as Web3Utils from "web3-utils";
 import { Q18 } from "./../../../../config/constants";
 import { TAction } from "./../../../actions";
 
@@ -11,23 +10,22 @@ import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
 import { neuCall } from "../../../sagas";
 import { selectEtherTokenBalanceAsBigNumber } from "../../../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
-import { ETxSenderType, IDraftType } from "../../interfaces";
-import { calculateGasPriceWithOverhead, EMPTY_DATA } from "../../utils";
+import { IWithdrawDraftType } from "../../interfaces";
+import { calculateGasLimitWithOverhead, EMPTY_DATA } from "../../utils";
 
 const SIMPLE_WITHDRAW_TRANSACTION = "21000";
 
 export function* generateEthWithdrawTransaction(
   { contractsService, web3Manager }: TGlobalDependencies,
-  payload: IDraftType,
+  payload: IWithdrawDraftType,
 ): any {
-  if (payload.type !== ETxSenderType.WITHDRAW) return;
   // Typing purposes
   const { to, value } = payload;
 
   const etherTokenBalance: BigNumber = yield select(selectEtherTokenBalanceAsBigNumber);
   const from: string = yield select(selectEthereumAddressWithChecksum);
   const gasPriceWithOverhead = yield select(selectStandardGasPriceWithOverHead);
-  const weiValue = Web3Utils.toWei(value);
+  const weiValue = Q18.mul(value);
 
   if (etherTokenBalance.isZero()) {
     // transaction can be fully covered ether balance
@@ -37,7 +35,7 @@ export function* generateEthWithdrawTransaction(
       data: EMPTY_DATA,
       value: weiValue.toString(),
       gasPrice: gasPriceWithOverhead,
-      gas: calculateGasPriceWithOverhead(SIMPLE_WITHDRAW_TRANSACTION),
+      gas: calculateGasLimitWithOverhead(SIMPLE_WITHDRAW_TRANSACTION),
     };
     return txDetails;
   } else {

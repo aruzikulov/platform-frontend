@@ -75,6 +75,7 @@ export function* txSendProcess(
 
     yield neuResetIf("TX_SENDER_CHANGE", "TX_SENDER_ACCEPT", transactionFlowGenerator, extraParam);
     const txData = yield select(selectTxDetails);
+
     yield validateGas(txData);
     yield call(connectWallet);
     yield put(actions.txSender.txSenderWalletPlugged());
@@ -133,7 +134,7 @@ function* ensureNoPendingTx({ logger }: TGlobalDependencies, type: ETxSenderType
 }
 
 function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): any {
-  const txData: ITxData = yield select((s: IAppState) => selectTxDetails(s.txSender));
+  const txData: ITxData = yield select(selectTxDetails);
   const type = yield select((s: IAppState) => selectTxType(s.txSender));
   if (!txData) {
     throw new Error("Tx data is not defined");

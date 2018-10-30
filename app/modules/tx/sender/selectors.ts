@@ -4,7 +4,7 @@ import { EValidationState, ITxSenderState } from "./reducer";
 
 export const selectTxSenderModalOpened = (state: ITxSenderState) => state.state !== "UNINITIALIZED";
 
-export const selectTxDetails = (state: ITxSenderState) => state.txDetails;
+export const selectTxDetails = (state: IAppState) => state.txSender.txDetails;
 
 export const selectTxDraftDetails = (state: IAppState) => state.txSender.txDraftDetails;
 

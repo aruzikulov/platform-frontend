@@ -113,7 +113,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.to-address"
                     onChange={(e: any) => {
                       setFieldValue("to", e.target.value);
-                      onValidateHandler(e.target.value, values.value);
+                      onValidateHandler(values.value, e.target.value);
                     }}
                   />
                 </Col>
@@ -129,7 +129,7 @@ const WithdrawComponent: React.SFC<TProps> = ({
                     ignoreTouched={true}
                     onChange={(e: any) => {
                       setFieldValue("value", e.target.value);
-                      onValidateHandler(values.to, e.target.value);
+                      onValidateHandler(e.target.value, values.to);
                     }}
                   />
                   {/* @SEE https://github.com/jaredpalmer/formik/issues/288 */}

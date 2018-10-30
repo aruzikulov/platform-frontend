@@ -40,7 +40,6 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
 
 export function* validateGas(txDetails: ITxData): any {
   const etherBalance: string | undefined = yield select(selectEtherBalance);
-
   if (!etherBalance) {
     throw new Error("Ether Balance is undefined");
   }

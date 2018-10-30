@@ -99,11 +99,11 @@ const checkTransactionWithRPCNode = (
 
 describe("Wallet Withdraw", () => {
   it("should recover existing user with verified email from saved phrases and change email", () => {
-    createAndLoginNewUser({ type: "investor", seed: SEED }).then(() => {
+    createAndLoginNewUser({ type: "investor", seed: SEED, onlyLogin: true }).then(() => {
       goToDashboard();
 
       const testValue = (5).toString();
-      const expectedGasLimit = "0xebac";
+      const expectedGasLimit = "0x15dc0";
       const account = new web3Accounts().create();
       const expectedInput = `0x64663ea6000000000000000000000000${account.address
         .slice(2)
