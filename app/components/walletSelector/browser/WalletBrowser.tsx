@@ -6,7 +6,7 @@ import { compose } from "redux";
 import { walletFlows } from "../../../modules/wallet-selector/flows";
 import { appConnect } from "../../../store";
 import { withActionWatcher } from "../../../utils/withActionWatcher";
-import { Button } from "../../shared/buttons";
+import { ButtonArrowRight } from "../../shared/Buttons";
 import { HiResImage } from "../../shared/HiResImage";
 import { HorizontalLine } from "../../shared/HorizontalLine";
 import { LoadingIndicator } from "../../shared/LoadingIndicator";
@@ -71,9 +71,9 @@ export const WalletBrowserComponent: React.SFC<
               </div>
             </Row>
             <Row className="justify-content-center mb-4">
-              <Button onClick={handleReset}>
+              <ButtonArrowRight onClick={handleReset}>
                 <FormattedMessage id="wallet-selector.browser.approval-resend" />
-              </Button>
+              </ButtonArrowRight>
             </Row>
           </>
         )}
