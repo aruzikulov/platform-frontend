@@ -94,11 +94,7 @@ async function getEtherTokenTransaction(
 export function* generateInvestmentTransaction({ contractsService }: TGlobalDependencies): any {
   const state: IAppState = yield select();
   const investmentState = state.investmentFlow;
-  const eto = selectEtoById(state.publicEtos, investmentState.etoId);
-
-  if (!eto || !selectReadyToInvest(investmentState)) {
-    throw new Error("Investment data is not valid to create an Transaction");
-  }
+  const eto = selectEtoById(state.publicEtos, investmentState.etoId)!;
 
   switch (investmentState.investmentType) {
     case EInvestmentType.InvestmentWallet:
@@ -112,7 +108,5 @@ export function* generateInvestmentTransaction({ contractsService }: TGlobalDepe
 
 export function* investmentFlowGenerator(_: TGlobalDependencies): any {
   yield take("TX_SENDER_ACCEPT_DRAFT");
-  const generatedTxDetails = yield neuCall(generateInvestmentTransaction);
-  yield put(actions.txSender.setSummaryData(generatedTxDetails));
-  yield put(actions.txSender.setTransactionData(generatedTxDetails));
+  yield put(actions.txSender.txSenderContinueToSummary());
 }

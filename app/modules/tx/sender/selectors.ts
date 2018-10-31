@@ -6,8 +6,6 @@ export const selectTxSenderModalOpened = (state: ITxSenderState) => state.state 
 
 export const selectTxDetails = (state: IAppState) => state.txSender.txDetails;
 
-export const selectTxDraftDetails = (state: IAppState) => state.txSender.txDraftDetails;
-
 export const selectTxType = (state: ITxSenderState) => state.type;
 
 export const selectTxSummaryData = (state: ITxSenderState) => state.summaryData || state.txDetails;

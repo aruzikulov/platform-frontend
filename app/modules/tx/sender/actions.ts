@@ -9,7 +9,7 @@ export const txSenderActions = {
   txSenderHideModal: () => createSimpleAction("TX_SENDER_HIDE_MODAL"),
   // User awaiting actions
   txSenderAcceptDraft: (txDraftData?: Partial<ITxData>) =>
-    createAction("TX_SENDER_ACCEPT_DRAFT", txDraftData!),
+    createAction("TX_SENDER_ACCEPT_DRAFT", { txDraftData }),
   txSenderAccept: () => createSimpleAction("TX_SENDER_ACCEPT"),
   txSenderChange: (type: ETxSenderType) => createAction("TX_SENDER_CHANGE", { type }),
   // Signer actions
@@ -25,9 +25,11 @@ export const txSenderActions = {
     createAction("TX_SENDER_WATCH_PENDING_TXS_DONE", { type }),
   // Error Actions
   txSenderError: (error: ETransactionErrorType) => createAction("TX_SENDER_ERROR", { error }),
+  // Flow Actions
+  txSenderContinueToSummary: (summaryData?: Partial<ITxData>) =>
+    createAction("TX_SENDER_CONTINUE_TO_SUMMARY_WITH_DATA", { summaryData }),
 
   // reducer setters
-  setSummaryData: (summaryData: Partial<ITxData>) =>
-    createAction("TX_SENDER_SET_SUMMARY_DATA", summaryData),
-  setTransactionData: (txData: ITxData) => createAction("TX_SENDER_LOAD_TRANSACTION", txData),
+  setTransactionData: (txData?: ITxData) =>
+    createAction("TX_SENDER_SET_TRANSACTION_DATA", { txData }),
 };

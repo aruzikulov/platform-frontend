@@ -4,6 +4,7 @@ import { put, select, takeEvery, takeLatest } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
+import { ITxData } from "../../lib/web3/types";
 import { IAppState } from "../../store";
 import { addBigNumbers, compareBigNumbers } from "../../utils/BigNumberUtils";
 import { isLessThanNDays } from "../../utils/Date.utils";
@@ -20,7 +21,9 @@ import {
 import { EETOStateOnChain } from "../public-etos/types";
 import { neuCall } from "../sagas";
 import { selectEtherPriceEur } from "../shared/tokenPrice/selectors";
+import { ETxSenderType } from "../tx/interfaces";
 import { selectTxGasCostEth } from "../tx/sender/selectors";
+import { txValidateSaga } from "../tx/validator/sagas";
 import {
   selectLiquidEtherBalance,
   selectLockedEtherBalance,
@@ -59,6 +62,7 @@ function* processCurrencyValue(action: TAction): any {
 
   yield put(actions.investmentFlow.setIsInputValidated(false));
   yield computeAndSetCurrencies(value, curr);
+  // dispatch in order to debounce, instead of calling directly
   yield put(actions.investmentFlow.validateInputs());
 }
 
@@ -148,6 +152,16 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
       yield neuCall(loadComputedContributionFromContract, eto, value, isICBM);
       state = yield select();
       yield put(actions.investmentFlow.setErrorState(validateInvestment(state)));
+
+      // validate and set transaction if not on bank transfer
+      if (state.investmentFlow.investmentType !== EInvestmentType.BankTransfer) {
+        const txData: ITxData = yield neuCall(
+          txValidateSaga,
+          actions.txValidator.txSenderValidateDraft({ type: ETxSenderType.INVEST }),
+        );
+        yield put(actions.txSender.setTransactionData(txData));
+      }
+
       yield put(actions.investmentFlow.setIsInputValidated(true));
     }
   } else {
@@ -162,6 +176,7 @@ function* start(action: TAction): any {
   yield put(actions.kyc.kycLoadClientData());
   yield put(actions.txTransactions.startInvestment());
   yield getActiveInvestmentTypes();
+  yield resetTxValidations();
 }
 
 export function* onInvestmentTxModalHide(): any {
@@ -254,6 +269,11 @@ function* bankTransferChange(action: TAction): any {
   yield put(actions.txSender.txSenderChange(action.payload.type));
 }
 
+function* resetTxValidations(): any {
+  yield put(actions.txValidator.setValidationState());
+  yield put(actions.txSender.setTransactionData());
+}
+
 export function* investmentFlowSagas(): any {
   yield takeEvery("INVESTMENT_FLOW_SUBMIT_INVESTMENT_VALUE", processCurrencyValue);
   yield takeLatest("INVESTMENT_FLOW_VALIDATE_INPUTS", neuCall, validateAndCalculateInputs);
@@ -262,4 +282,5 @@ export function* investmentFlowSagas(): any {
   yield takeEvery("INVESTMENT_FLOW_SHOW_BANK_TRANSFER_DETAILS", showBankTransferDetails);
   yield takeEvery("TOKEN_PRICE_SAVE", recalculateCurrencies);
   yield takeEvery("INVESTMENT_FLOW_BANK_TRANSFER_CHANGE", bankTransferChange);
+  yield takeEvery("INVESTMENT_FLOW_SELECT_INVESTMENT_TYPE", resetTxValidations);
 }

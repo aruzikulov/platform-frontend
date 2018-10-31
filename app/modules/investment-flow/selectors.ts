@@ -70,10 +70,3 @@ export const selectBankTransferAmount = (state: IInvestmentFlowState) => {
   const eur = selectEurValueUlps(state);
   return state.bankTransferGasStipend ? addBigNumbers([GAS_STIPEND_PRICE, eur]) : eur;
 };
-
-export const selectInvestmentGasLimit = (state: IAppState): string =>
-  state.investmentFlow.gasAmount;
-
-export const selectInvestmentGasCostEth = (state: IAppState) => {
-  return multiplyBigNumbers([selectStandardGasPrice(state), selectInvestmentGasLimit(state)]);
-};

@@ -18,7 +18,6 @@ import {
   selectErrorState,
   selectEthValueUlps,
   selectEurValueUlps,
-  selectInvestmentGasCostEth,
   selectInvestmentType,
   selectReadyToInvest,
 } from "../../../../modules/investment-flow/selectors";
@@ -28,6 +27,8 @@ import {
 } from "../../../../modules/investor-tickets/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
+import { EValidationState } from "../../../../modules/tx/sender/reducer";
+import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
 import {
   addBigNumbers,
@@ -62,7 +63,7 @@ interface IStateProps {
   etherPriceEur: string;
   investmentType?: EInvestmentType;
   gasCostEth: string;
-  errorState?: EInvestmentErrorState;
+  errorState?: EInvestmentErrorState | EValidationState;
   equityTokenCount?: string;
   neuReward?: string;
   readyToInvest: boolean;
@@ -290,7 +291,7 @@ export const InvestmentSelection: React.SFC = compose<any>(
         euroValue: eur,
         ethValue: selectEthValueUlps(investmentFlow),
         errorState: selectErrorState(investmentFlow),
-        gasCostEth: selectInvestmentGasCostEth(state),
+        gasCostEth: selectTxGasCostEth(state.txSender),
         investmentType: selectInvestmentType(investmentFlow),
         wallets: createWallets(state),
         neuReward: selectNeuRewardUlpsByEtoId(investmentFlow.etoId, state),
