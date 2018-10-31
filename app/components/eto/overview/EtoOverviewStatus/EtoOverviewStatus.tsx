@@ -52,7 +52,9 @@ const PoweredByNeufund = () => {
   return (
     <div className={styles.poweredByNeufund}>
       <div className={styles.powered}>Powered by</div>
-      <div className={styles.neufund}>NEUFUND</div>
+      <Link className={styles.neufund} target={"_blank"} to={"https://neufund.org"}>
+        NEUFUND
+      </Link>
     </div>
   );
 };

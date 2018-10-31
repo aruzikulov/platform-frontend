@@ -17,11 +17,11 @@ interface ILockedWallet extends IPanelProps {
 export const LockedWallet: React.SFC<ILockedWallet> = ({ data, className, headerText }) => {
   return (
     <WalletBalanceContainer {...{ className, headerText }}>
-      <div className={styles.icbmLockedWallet}>
-        <p className={styles.message}>
-          <FormattedMessage id="shared-component.wallet-icbm.already-upgraded-message" />
-        </p>
+      <section className={styles.message}>
+        <FormattedMessage id="shared-component.wallet-icbm.already-upgraded-message" />
+      </section>
 
+      <section>
         <h4 className={styles.title}>
           <FormattedMessage id="shared-component.wallet-balance.title.account-balance" />
         </h4>
@@ -42,7 +42,7 @@ export const LockedWallet: React.SFC<ILockedWallet> = ({ data, className, header
           largeNumber={data.ethAmount}
           value={data.ethEuroAmount}
         />
-      </div>
+      </section>
     </WalletBalanceContainer>
   );
 };
