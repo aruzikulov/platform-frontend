@@ -28,7 +28,7 @@ interface IWalletBrowserProps {
   errorMessage?: string;
   isLoading: boolean;
   isLoginRoute: boolean;
-  approval_rejected: boolean;
+  approvalRejected: boolean;
 }
 
 interface IWalletBrowserDispatchProps {
@@ -41,7 +41,7 @@ export const WalletBrowserComponent: React.SFC<
   errorMessage,
   isLoading,
   isLoginRoute,
-  approval_rejected,
+  approvalRejected,
   handleReset,
   intl: { formatIntlMessage },
 }) => (
@@ -63,7 +63,7 @@ export const WalletBrowserComponent: React.SFC<
             <span data-test-id="browser-wallet-error-msg">{errorMessage}</span>
           </WarningAlert>
         </Row>
-        {approval_rejected && (
+        {approvalRejected && (
           <>
             <Row className="justify-content-center mb-4">
               <div>
@@ -118,7 +118,7 @@ export const WalletBrowser = compose<React.SFC>(
       errorMessage: state.browserWalletWizardState.errorMsg,
       isLoading: state.browserWalletWizardState.isLoading,
       isLoginRoute: selectIsLoginRoute(state.router),
-      approval_rejected: state.browserWalletWizardState.approval_rejected,
+      approvalRejected: state.browserWalletWizardState.approvalRejected,
     }),
     dispatchToProps: dispatch => ({
       handleReset: () => dispatch(walletFlows.resetApprovalRequestBrowserWalletWizard),

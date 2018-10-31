@@ -19,7 +19,7 @@ import { walletFlows } from "../flows";
 const getStateMock: () => IAppState = () =>
   <IAppState>{
     browserWalletWizardState: {
-      approval_rejected: false,
+      approvalRejected: false,
     },
   };
 /* tslint:enable:no-object-literal-type-assertion */

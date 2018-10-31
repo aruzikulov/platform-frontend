@@ -3,12 +3,12 @@ import { AppReducer } from "../../../store";
 export interface IBrowserWalletWizardState {
   errorMsg?: string;
   isLoading: boolean;
-  approval_rejected: boolean;
+  approvalRejected: boolean;
 }
 
 export const browserWalletWizardInitialState: IBrowserWalletWizardState = {
   isLoading: true,
-  approval_rejected: false,
+  approvalRejected: false,
 };
 
 export const browserWalletWizardReducer: AppReducer<IBrowserWalletWizardState> = (
@@ -25,12 +25,12 @@ export const browserWalletWizardReducer: AppReducer<IBrowserWalletWizardState> =
     case "BROWSER_WALLET_APPROVAL_REJECTED":
       return {
         ...state,
-        approval_rejected: true,
+        approvalRejected: true,
       };
     case "BROWSER_WALLET_APPROVAL_REQUEST_RESET":
       return {
         ...state,
-        approval_rejected: false,
+        approvalRejected: false,
       };
   }
 

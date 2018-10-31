@@ -81,10 +81,10 @@ export class BrowserWallet implements IPersonalWallet {
 
 @injectable()
 export class BrowserWalletConnector {
-  data_approval_pending: boolean;
+  dataApprovalPending: boolean;
 
   constructor() {
-    this.data_approval_pending = false;
+    this.dataApprovalPending = false;
   }
 
   public async connect(networkId: EthereumNetworkId): Promise<BrowserWallet> {
@@ -101,27 +101,21 @@ export class BrowserWalletConnector {
     }
 
     if (!(await web3Adapter.getAccountAddress())) {
-      if (this.data_approval_pending) {
+      if (this.dataApprovalPending) {
         throw new BrowserWalletAccountApprovalPendingError();
       } else {
         try {
-          this.data_approval_pending = true;
+          this.dataApprovalPending = true;
           await injectedWeb3Provider.enable();
         } catch (e) {
           throw new BrowserWalletAccountApprovalRejectedError();
         } finally {
-          this.data_approval_pending = false;
+          this.dataApprovalPending = false;
         }
       }
     }
 
-    /*
-    Problem we have here is that there are two behaviours of promise returned from metamask injectedWeb3Provider.enable()
-    New: when promise is resolved it means that you now can obtain accounts so we can continue
-    In old one enable always resolves but metamask can actually still be locked so getAccountAddress will return nothing.
-    That's why there are those two checks. After 2 Nov 2018 we can remove second check.
-    */
-
+    // TODO: remove after 2 Nov 2018 see github issue 1702
     if (!(await web3Adapter.getAccountAddress())) {
       throw new BrowserWalletLockedError();
     }

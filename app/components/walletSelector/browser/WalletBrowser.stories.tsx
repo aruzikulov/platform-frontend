@@ -11,7 +11,7 @@ storiesOf("Wallet selector/Browser", module)
       isLoading={true}
       isLoginRoute
       intl={dummyIntl}
-      approval_rejected={false}
+      approvalRejected={false}
       handleReset={noop}
     />
   ))
@@ -21,7 +21,7 @@ storiesOf("Wallet selector/Browser", module)
       errorMessage={"Error message"}
       isLoginRoute
       intl={dummyIntl}
-      approval_rejected={false}
+      approvalRejected={false}
       handleReset={noop}
     />
   ))
@@ -31,7 +31,7 @@ storiesOf("Wallet selector/Browser", module)
       errorMessage={"Error message"}
       isLoginRoute
       intl={dummyIntl}
-      approval_rejected={true}
+      approvalRejected={true}
       handleReset={noop}
     />
   ));

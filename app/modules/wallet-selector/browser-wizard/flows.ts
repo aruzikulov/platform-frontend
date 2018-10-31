@@ -27,7 +27,7 @@ export const browserWizardFlows = {
       logger: ILogger,
       getState: GetState,
     ) => {
-      if (!getState().browserWalletWizardState.approval_rejected) {
+      if (!getState().browserWalletWizardState.approvalRejected) {
         try {
           const browserWallet = await browserWalletConnector.connect(web3Manager.networkId);
 

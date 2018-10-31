@@ -12,7 +12,7 @@ describe("Wallet selector > Browser wizard > reducer", () => {
     );
 
     expect(actualState).to.be.deep.eq({
-      approval_rejected: false,
+      approvalRejected: false,
       isLoading: false,
       errorMsg: expectedErrorMsg,
     });
@@ -26,14 +26,14 @@ describe("Wallet selector > Browser wizard > reducer", () => {
 
     expect(state).to.be.deep.eq({
       isLoading: true,
-      approval_rejected: true,
+      approvalRejected: true,
     });
   });
 
   it("should act on BROWSER_WALLET_APPROVAL_REQUEST_RESET action", () => {
     const initialState = {
       ...browserWalletWizardInitialState,
-      approval_rejected: true,
+      approvalRejected: true,
     };
 
     const state = browserWalletWizardReducer(
@@ -43,7 +43,7 @@ describe("Wallet selector > Browser wizard > reducer", () => {
 
     expect(state).to.be.deep.eq({
       isLoading: true,
-      approval_rejected: false,
+      approvalRejected: false,
     });
   });
 });
