@@ -1,5 +1,5 @@
 import { createAction, createSimpleAction } from "../actionsUtils";
-import { ETxSenderType } from "../tx/sender/reducer";
+import { ETxSenderType } from "../tx/interfaces";
 import {
   EBankTransferFlowState,
   EInvestmentCurrency,
@@ -26,7 +26,6 @@ export const investmentFlowActions = {
     createAction("INVESTMENT_FLOW_SET_INVESTMENT_ETH_VALUE", { value }),
   setEurValue: (value: string) =>
     createAction("INVESTMENT_FLOW_SET_INVESTMENT_EUR_VALUE", { value }),
-  setGasPrice: (gasPrice?: string) => createAction("INVESTMENT_FLOW_SET_GAS_PRICE", { gasPrice }),
   setErrorState: (errorState?: EInvestmentErrorState) =>
     createAction("INVESTMENT_FLOW_SET_INVESTMENT_ERROR_STATE", { errorState }),
   setIsInputValidated: (isValidated: boolean) =>

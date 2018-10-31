@@ -5,26 +5,26 @@ import { createAndLoginNewUser } from "../utils/userHelpers";
 import { aboutFormRequired } from "./fixtures";
 
 describe("Eto Company Information Field Validation", () => {
-  beforeEach(() => createAndLoginNewUser({ type: "issuer", kyc: "business" }));
-
   it("should correctly validate required fields", () => {
-    cy.visit(etoRegisterRoutes.companyInformation);
-    cy.get(tid("eto.form.company-information")).should("exist");
+    createAndLoginNewUser({ type: "issuer", kyc: "business" }).then(() => {
+      cy.visit(etoRegisterRoutes.companyInformation);
+      cy.get(tid("eto.form.company-information")).should("exist");
 
-    const requiredFields = Object.keys(aboutFormRequired);
+      const requiredFields = Object.keys(aboutFormRequired);
 
-    requiredFields.forEach(key => {
-      getFieldError(tid("eto.form.company-information"), key).then(
-        error => expect(error).to.be.empty,
-      );
-    });
+      requiredFields.forEach(key => {
+        getFieldError(tid("eto.form.company-information"), key).then(
+          error => expect(error).to.be.empty,
+        );
+      });
 
-    cy.get(tid("eto-registration-company-information-submit")).click();
+      cy.get(tid("eto-registration-company-information-submit")).click();
 
-    requiredFields.forEach(key => {
-      getFieldError(tid("eto.form.company-information"), key).then(error =>
-        expect(error).to.equal("This field is required"),
-      );
+      requiredFields.forEach(key => {
+        getFieldError(tid("eto.form.company-information"), key).then(error =>
+          expect(error).to.equal("This field is required"),
+        );
+      });
     });
   });
 });

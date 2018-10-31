@@ -2,7 +2,7 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 import { Container } from "reactstrap";
 
-import { ITxData } from "../../../../lib/web3/Web3Manager";
+import { ITxData } from "../../../../lib/web3/types";
 import { WithdrawSummaryComponent } from "./Summary";
 
 const txData: ITxData = {
@@ -15,6 +15,10 @@ const txData: ITxData = {
 
 storiesOf("Withdraw summary", module).add("default", () => (
   <Container>
-    <WithdrawSummaryComponent txData={txData} onAccept={() => {}} />
+    <WithdrawSummaryComponent
+      txData={txData}
+      txCost={"123123123123123123123123"}
+      onAccept={() => {}}
+    />
   </Container>
 ));

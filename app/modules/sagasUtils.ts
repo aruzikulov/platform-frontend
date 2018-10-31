@@ -1,9 +1,8 @@
 import { isEqual } from "lodash/fp";
-import { cancel, take } from "redux-saga/effects";
-
+import { cancel, race, take } from "redux-saga/effects";
 import { TGlobalDependencies } from "../di/setupBindings";
 import { TActionType } from "./actions";
-import { neuFork } from "./sagas";
+import { neuCall, neuFork } from "./sagas";
 
 /**
  * Starts saga on `startAction`, cancels on `stopAction`, loops...
@@ -32,5 +31,31 @@ export function* neuTakeOnly(action: TActionType, payload: any): any {
   while (true) {
     const takenAction = yield take(action);
     if (isEqual(takenAction.payload, payload)) return;
+  }
+}
+
+/**
+ *  Executes the generator and repeats if repeatAction was dispatched. Exits when endAction
+ *  is dispatched.
+ */
+export function* neuRepeatIf(
+  repeatAction: TActionType | TActionType[],
+  endAction: TActionType | TActionType[],
+  generator: any,
+  extraParam?: any,
+): any {
+  while (true) {
+    yield neuCall(generator, extraParam);
+
+    const { change, accept } = yield race({
+      change: take(repeatAction),
+      accept: take(endAction),
+    });
+    if (change) {
+      continue;
+    }
+    if (accept) {
+      return;
+    }
   }
 }

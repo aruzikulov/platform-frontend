@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 
 import { Q18 } from "../config/constants";
+import { TBigNumberVariant } from "../lib/web3/types";
 import { invariant } from "./invariant";
 
 /**
@@ -20,7 +21,7 @@ export function formatThousands(value?: string): string {
   return formattedBeforeDot;
 }
 
-export function convertToBigInt(value: string, currencyDecimals?: number): string {
+export function convertToBigInt(value: TBigNumberVariant, currencyDecimals?: number): string {
   const q = currencyDecimals ? new BigNumber(10).pow(currencyDecimals) : Q18;
   const moneyInWei = q.mul(value);
   return moneyInWei.toFixed(0, BigNumber.ROUND_UP);

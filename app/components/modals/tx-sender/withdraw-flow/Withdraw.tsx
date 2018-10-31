@@ -1,41 +1,90 @@
 import { Form, Formik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Col, Row } from "reactstrap";
-import * as Web3Utils from "web3-utils";
+import { Col, Container, Row } from "reactstrap";
+import { compose, withHandlers } from "recompose";
+import { NumberSchema } from "yup";
 
+import { ITxData } from "../../../../lib/web3/types";
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
-import { IGasState } from "../../../../modules/gas/reducer";
-import { selectEthereumAddressWithChecksum } from "../../../../modules/web3/selectors";
+import { selectStandardGasPrice } from "../../../../modules/gas/selectors";
+import { ETxSenderType, IDraftType } from "../../../../modules/tx/interfaces";
+import { EValidationState } from "../../../../modules/tx/sender/reducer";
+import { selectValidationState } from "../../../../modules/tx/sender/selectors";
+import { selectMaxAvailableEther } from "../../../../modules/wallet/selectors";
+import { doesUserHaveEnoughEther, validateAddress } from "../../../../modules/web3/utils";
 import { appConnect } from "../../../../store";
 import { SpinningEthereum } from "../../../landing/parts/SpinningEthereum";
 import { Button } from "../../../shared/buttons";
-import { FormFieldImportant } from "../../../shared/forms/form-field/FormFieldImportant";
-import { FormLabelRaw } from "../../../shared/forms/form-field/FormLabel";
-import { LoadingIndicator } from "../../../shared/loading-indicator";
-import { WarningAlert } from "../../../shared/WarningAlert";
+import { FormField } from "../../../shared/forms";
+import { ValidationErrorMessage } from "../../txSender/shared/ValidationErrorMessage";
 import { ITxInitDispatchProps } from "../TxSender";
 
-import { ITxData } from "../../../../lib/web3/Web3Manager";
 import * as styles from "./Withdraw.module.scss";
 
-interface IWithdrawStateProps {
-  gas: IGasState;
-  address: string;
+interface IStateProps {
+  maxEther: string;
+  validationState?: EValidationState;
 }
 
-const withdrawFormSchema = YupTS.object({
-  to: YupTS.string(),
-  value: YupTS.string(),
-  gas: YupTS.string(),
-});
-const withdrawFormValidator = withdrawFormSchema.toYup();
+// tslint:disable-next-line:no-unused-variable
+interface IFormikProps {
+  value: string;
+  to: string;
+}
 
-export const WithdrawComponent: React.SFC<IWithdrawStateProps & ITxInitDispatchProps> = ({
+interface IHandlersProps {
+  onValidateHandler: (value: string, to: string) => void;
+}
+
+interface IInternalDispatchProps {
+  onValidate: (txDraft: IDraftType) => any;
+}
+
+type TProps = IStateProps & ITxInitDispatchProps & IHandlersProps;
+
+const getWithdrawFormSchema = (maxEther: string) =>
+  YupTS.object({
+    to: YupTS.string().enhance(v =>
+      v
+        .test(
+          "isRequiredField",
+          (
+            <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.field-is-required" />
+          ) as any,
+          (value: string | undefined) => !!value,
+        )
+        .test(
+          "isEthereumAddress",
+          (
+            <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.not-ethereum-address" />
+          ) as any,
+          (value: string) => {
+            return validateAddress(value);
+          },
+        ),
+    ),
+    value: YupTS.number().enhance((v: NumberSchema) =>
+      v
+        .moreThan(0)
+        .test(
+          "isEnoughEther",
+          (
+            <FormattedMessage id="modals.tx-sender.withdraw-flow.withdraw-component.errors.value-higher-than-balance" />
+          ) as any,
+          (value: string) => {
+            return doesUserHaveEnoughEther(value, maxEther);
+          },
+        ),
+    ),
+  }).toYup();
+
+const WithdrawComponent: React.SFC<TProps> = ({
   onAccept,
-  gas,
-  address,
+  maxEther,
+  onValidateHandler,
+  validationState,
 }) => (
   <div>
     <SpinningEthereum />
@@ -44,98 +93,94 @@ export const WithdrawComponent: React.SFC<IWithdrawStateProps & ITxInitDispatchP
       <FormattedMessage id="modal.sent-eth.title" />
     </h3>
 
-    <Formik<ITxData>
-      validationSchema={withdrawFormValidator}
+    <Formik<IFormikProps>
+      validationSchema={getWithdrawFormSchema(maxEther)}
       isInitialValid={false}
-      initialValues={{ gas: "100000", from: "", value: "", to: "", gasPrice: "" }}
-      onSubmit={data => {
-        const gasPrice = gas.gasPrice!.standard;
-        const value = Web3Utils.toWei(data.value, "ether");
-        const from = address;
-
-        onAccept({ ...data, gasPrice, value, from });
-      }}
+      initialValues={{ value: "", to: "" }}
+      onSubmit={onAccept}
     >
-      {({ isValid }) => (
-        <Form>
-          <Row>
-            <Col xs={12} className="mb-3">
-              <FormFieldImportant
-                name="to"
-                label={<FormattedMessage id="modal.sent-eth.to-address" />}
-                placeholder="0x0"
-                data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.to-address"
-              />
-            </Col>
-
-            <Col xs={12} className="mb-3">
-              <FormFieldImportant
-                name="value"
-                label={<FormattedMessage id="modal.sent-eth.amount-to-send" />}
-                placeholder="Please enter value in eth"
-                data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.value"
-              />
-            </Col>
-
-            <Col xs={12} className="mb-4">
-              <FormFieldImportant
-                name="gas"
-                label={<FormattedMessage id="modal.sent-eth.gas-limit" />}
-                data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.gas-limit"
-              />
-            </Col>
-
-            <Col xs={12} className="mb-4">
-              <FormLabelRaw>
-                <FormattedMessage id="modal.sent-eth.gas-price" />
-              </FormLabelRaw>
-              <GasComponent {...gas} />
-            </Col>
-
-            <Col xs={12} className="text-center">
-              <Button
-                type="submit"
-                disabled={(gas.loading && !gas.error) || !isValid}
-                data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"
-              >
-                <FormattedMessage id="modal.sent-eth.button" />
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-      )}
+      {({ isValid, values, isValidating, setFieldValue }) => {
+        return (
+          <Form>
+            <Container>
+              <Row>
+                <Col xs={12} className="mb-3">
+                  <FormField
+                    name="to"
+                    label={<FormattedMessage id="modal.sent-eth.to-address" />}
+                    placeholder="0x0"
+                    ignoreTouched={true}
+                    data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.to-address"
+                    onChange={(e: any) => {
+                      setFieldValue("to", e.target.value);
+                      onValidateHandler(values.value, e.target.value);
+                    }}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12} className="mb-3">
+                  <FormField
+                    name="value"
+                    type="number"
+                    label={<FormattedMessage id="modal.sent-eth.amount-to-send" />}
+                    placeholder="Please enter value in eth"
+                    data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.value"
+                    ignoreTouched={true}
+                    onChange={(e: any) => {
+                      setFieldValue("value", e.target.value);
+                      onValidateHandler(e.target.value, values.to);
+                    }}
+                  />
+                  {/* @SEE https://github.com/jaredpalmer/formik/issues/288 */}
+                  {validationState !== EValidationState.VALIDATION_OK &&
+                    isValid &&
+                    !isValidating && <ValidationErrorMessage type={validationState} />}
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12} className="mt-3 text-center">
+                  <Button
+                    type="submit"
+                    disabled={
+                      !isValid || isValidating || validationState !== EValidationState.VALIDATION_OK
+                    }
+                    data-test-id="modals.tx-sender.withdraw-flow.withdraw-component.send-transaction-button"
+                  >
+                    <FormattedMessage id="modal.sent-eth.button" />
+                  </Button>
+                </Col>
+              </Row>
+            </Container>
+          </Form>
+        );
+      }}
     </Formik>
   </div>
 );
 
-export const GasComponent: React.SFC<IGasState> = ({ gasPrice, error }) => {
-  if (error) {
-    return (
-      <WarningAlert>
-        <FormattedMessage id="tx-sender.withdraw.error" />
-      </WarningAlert>
-    );
-  }
-
-  if (gasPrice) {
-    return <GweiFormatter value={gasPrice.standard} />;
-  }
-
-  return <LoadingIndicator light />;
-};
-
-export const Withdraw = appConnect<IWithdrawStateProps, ITxInitDispatchProps>({
-  stateToProps: state => ({
-    gas: state.gas,
-    address: selectEthereumAddressWithChecksum(state.web3),
+const Withdraw = compose<TProps, {}>(
+  appConnect<IStateProps, ITxInitDispatchProps>({
+    stateToProps: state => ({
+      maxEther: selectMaxAvailableEther(state),
+      gasPrice: selectStandardGasPrice(state),
+      validationState: selectValidationState(state.txSender),
+    }),
+    dispatchToProps: d => ({
+      onAccept: (tx: Partial<ITxData>) => d(actions.txSender.txSenderAcceptDraft(tx)),
+      onValidate: (txDraft: IDraftType) => d(actions.txValidator.txSenderValidateDraft(txDraft)),
+    }),
   }),
-  dispatchToProps: d => ({
-    onAccept: (tx: ITxData) => d(actions.txSender.txSenderAcceptDraft(tx)),
+  withHandlers<IStateProps & IInternalDispatchProps, {}>({
+    onValidateHandler: ({ onValidate, maxEther }) => (value: string, to: string) => {
+      if (doesUserHaveEnoughEther(value, maxEther) && validateAddress(to))
+        onValidate({
+          to,
+          value,
+          type: ETxSenderType.WITHDRAW,
+        });
+    },
   }),
-})(WithdrawComponent);
+)(WithdrawComponent);
 
-export const GweiFormatter: React.SFC<{ value: string }> = ({ value }) => (
-  <div data-test-id="modals.tx-sender.withdraw-flow.gwei-formatter-component.gas-price">
-    {Web3Utils.fromWei(value, "gwei")} Gwei
-  </div>
-);
+export { Withdraw, WithdrawComponent };

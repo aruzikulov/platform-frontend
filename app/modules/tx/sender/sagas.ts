@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
 import { END, eventChannel } from "redux-saga";
-import { call, fork, put, race, select, take } from "redux-saga/effects";
+import { call, put, race, select, take } from "redux-saga/effects";
 import * as Web3 from "web3";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
@@ -11,82 +11,47 @@ import {
   InvalidRlpDataError,
   LongTransactionQueError,
   LowNonceError,
-  NotEnoughFundsError,
+  NotEnoughEtherForGasError,
   RevertedTransactionError,
   UnknownEthNodeError,
 } from "../../../lib/web3/Web3Adapter";
 import { IAppState } from "../../../store";
-import { multiplyBigNumbers } from "../../../utils/BigNumberUtils";
 import { delay } from "../../../utils/delay";
 import { connectWallet } from "../../access-wallet/sagas";
-import { actions, TAction } from "../../actions";
-import { onInvestmentTxModalHide } from "../../investment-flow/sagas";
-import { neuCall, neuTakeEvery } from "../../sagas";
+import { actions } from "../../actions";
+import { IGasState } from "../../gas/reducer";
+import { selectGasPrice } from "../../gas/selectors";
+import { neuCall } from "../../sagas";
+import { neuRepeatIf } from "../../sagasUtils";
+import { ETxSenderType } from "../interfaces";
 import { updateTxs } from "../monitor/sagas";
-import { generateInvestmentTransaction } from "../transactionsGenerators/investment/sagas";
-import {
-  generateEtherUpgradeTransaction,
-  generateEuroUpgradeTransaction,
-} from "../transactionsGenerators/upgrade/sagas";
-import { generateEthWithdrawTransaction } from "../transactionsGenerators/withdraw/sagas";
+import { validateGas } from "../validator/sagas";
+import { ITxData } from "./../../../lib/web3/types";
 import { OutOfGasError } from "./../../../lib/web3/Web3Adapter";
-import { ITxData } from "./../../../lib/web3/Web3Manager";
-import { ETokenType, ETxSenderType } from "./reducer";
+import { ETransactionErrorType } from "./reducer";
 import { selectTxDetails, selectTxType } from "./selectors";
 
-export function* withdrawSaga({ logger }: TGlobalDependencies): any {
-  try {
-    yield txSendSaga(ETxSenderType.WITHDRAW, generateEthWithdrawTransaction, true);
-
-    logger.info("Withdrawing successful");
-  } catch (e) {
-    logger.warn("Withdrawing cancelled", e);
-  }
+export interface ITxSendParams {
+  type: ETxSenderType;
+  transactionFlowGenerator: any;
+  extraParam?: any;
+  // Design extraParam to be a tuple that handels any number of params
+  // @see neuCall
 }
 
-export function* upgradeSaga({ logger }: TGlobalDependencies, action: TAction): any {
-  try {
-    if (action.type !== "TX_SENDER_START_UPGRADE") return;
-    if (action.payload === ETokenType.EURO) {
-      yield txSendSaga(ETxSenderType.UPGRADE, generateEuroUpgradeTransaction, false);
-    } else {
-      yield txSendSaga(ETxSenderType.UPGRADE, generateEtherUpgradeTransaction, false);
-    }
+export function* txSendSaga({ type, transactionFlowGenerator, extraParam }: ITxSendParams): any {
+  const gasPrice: IGasState = yield select(selectGasPrice);
 
-    logger.info("Withdrawing successful");
-  } catch (e) {
-    logger.error("Upgrade Saga Error", e);
-    return yield put(actions.txSender.txSenderError("Error while generating Transaction"));
+  if (!gasPrice) {
+    yield take("GAS_API_LOADED");
   }
-}
 
-export function* investSaga({ logger }: TGlobalDependencies): any {
-  try {
-    yield txSendSaga(
-      ETxSenderType.INVEST,
-      generateInvestmentTransaction,
-      true,
-      onInvestmentTxModalHide,
-    );
-    logger.info("Investment successful");
-  } catch (e) {
-    logger.warn("Investment cancelled", e);
-  }
-}
-
-export function* txSendSaga(
-  type: ETxSenderType,
-  transactionGenerationFunction: any,
-  requiresUserInput: boolean,
-  cleanupFunction?: any,
-): any {
   const { result, cancel } = yield race({
-    result: txSendProcess(type, transactionGenerationFunction, requiresUserInput),
+    result: neuCall(txSendProcess, type, transactionFlowGenerator, extraParam),
     cancel: take("TX_SENDER_HIDE_MODAL"),
   });
 
   if (cancel) {
-    if (cleanupFunction) yield cleanupFunction();
     throw new Error("TX_SENDING_CANCELLED");
   }
 
@@ -98,43 +63,44 @@ export function* txSendSaga(
 }
 
 export function* txSendProcess(
-  TransactionType: ETxSenderType,
-  transactionGenerationFunction: any,
-  requiresUserInput: boolean,
+  { logger }: TGlobalDependencies,
+  transactionType: ETxSenderType,
+  transactionFlowGenerator: any,
+  extraParam?: any,
 ): any {
   try {
-    yield put(actions.gas.gasApiEnsureLoading());
-    yield put(actions.txSender.txSenderShowModal(TransactionType));
-    yield neuCall(ensureNoPendingTx, TransactionType);
+    yield put(actions.txSender.txSenderShowModal(transactionType));
+    yield neuCall(ensureNoPendingTx, transactionType);
+    yield put(actions.txSender.txSenderWatchPendingTxsDone(transactionType));
 
-    let txDetails;
-    if (requiresUserInput) {
-      yield put(actions.txSender.txSenderWatchPendingTxsDone(TransactionType));
-      txDetails = yield take("TX_SENDER_ACCEPT_DRAFT");
-    }
+    yield neuRepeatIf("TX_SENDER_CHANGE", "TX_SENDER_ACCEPT", transactionFlowGenerator, extraParam);
+    const txData = yield select(selectTxDetails);
 
-    yield neuCall(transactionGenerationFunction, txDetails);
-
-    yield take("TX_SENDER_ACCEPT");
-
-    yield call(connectWallet, "Send funds!");
+    yield validateGas(txData);
+    yield call(connectWallet);
     yield put(actions.txSender.txSenderWalletPlugged());
     const txHash = yield neuCall(sendTxSubSaga);
-
     yield neuCall(watchTxSubSaga, txHash);
   } catch (error) {
+    logger.error(error);
     if (error instanceof OutOfGasError) {
-      return yield put(actions.txSender.txSenderError("Gas too low"));
+      return yield put(actions.txSender.txSenderError(ETransactionErrorType.GAS_TOO_LOW));
     } else if (error instanceof LowNonceError) {
-      return yield put(actions.txSender.txSenderError("Nonce too low"));
+      return yield put(actions.txSender.txSenderError(ETransactionErrorType.NONCE_TOO_LOW));
     } else if (error instanceof LongTransactionQueError) {
-      return yield put(actions.txSender.txSenderError("Too many transactions in que"));
+      return yield put(actions.txSender.txSenderError(ETransactionErrorType.TOO_MANY_TX_IN_QUEUE));
     } else if (error instanceof InvalidRlpDataError) {
-      return yield put(actions.txSender.txSenderError("Invalid RLP transaction"));
+      return yield put(actions.txSender.txSenderError(ETransactionErrorType.INVALID_RLP_TX));
     } else if (error instanceof InvalidChangeIdError) {
-      return yield put(actions.txSender.txSenderError("Invalid chain id"));
+      return yield put(actions.txSender.txSenderError(ETransactionErrorType.INVALID_CHAIN_ID));
     } else if (error instanceof UnknownEthNodeError) {
-      return yield put(actions.txSender.txSenderError("Tx was rejected"));
+      return yield put(actions.txSender.txSenderError(ETransactionErrorType.TX_WAS_REJECTED));
+    } else if (error instanceof NotEnoughEtherForGasError) {
+      return yield put(
+        actions.txSender.txSenderError(ETransactionErrorType.NOT_ENOUGH_ETHER_FOR_GAS),
+      );
+    } else {
+      return yield put(actions.txSender.txSenderError(ETransactionErrorType.UNKNOWN_ERROR));
     }
   }
 }
@@ -168,18 +134,17 @@ function* ensureNoPendingTx({ logger }: TGlobalDependencies, type: ETxSenderType
 }
 
 function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): any {
-  const txData: ITxData = yield select((s: IAppState) => selectTxDetails(s.txSender));
+  const txData: ITxData = yield select(selectTxDetails);
   const type = yield select((s: IAppState) => selectTxType(s.txSender));
   if (!txData) {
     throw new Error("Tx data is not defined");
   }
   try {
-    const userBalance: BigNumber = yield web3Manager.getBalance(txData.from);
-    if (userBalance.comparedTo(multiplyBigNumbers([txData.gasPrice, txData.gas])) < 0)
-      throw new NotEnoughFundsError();
+    yield validateGas(txData);
 
     const txHash: string = yield web3Manager.sendTransaction(txData);
     yield put(actions.txSender.txSenderSigned(txHash, type));
+
     const txWithMetadata: TxWithMetadata = {
       transaction: {
         from: addHexPrefix(txData.from),
@@ -208,7 +173,7 @@ function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): a
       error.code === -32010 &&
       error.message.startsWith("Insufficient funds. The account you tried to send transaction")
     ) {
-      return yield put(actions.txSender.txSenderError("Not enough funds"));
+      return yield put(actions.txSender.txSenderError(ETransactionErrorType.NOT_ENOUGH_FUNDS));
     }
     if (
       (error.code === -32000 && error.message === "intrinsic gas too low") ||
@@ -251,13 +216,15 @@ function* watchTxSubSaga({ logger }: TGlobalDependencies, txHash: string): any {
           return yield put(actions.txSender.txSenderTxMined());
         case EventEmitterChannelEvents.ERROR:
           logger.error("Error while tx watching: ", result.error);
-          return yield put(actions.txSender.txSenderError("Error while watching tx."));
+          return yield put(
+            actions.txSender.txSenderError(ETransactionErrorType.ERROR_WHILE_WATCHING_TX),
+          );
         case EventEmitterChannelEvents.OUT_OF_GAS:
           logger.error("Error Transaction Reverted: ", result.error);
-          return yield put(actions.txSender.txSenderError("Out of gas"));
+          return yield put(actions.txSender.txSenderError(ETransactionErrorType.OUT_OF_GAS));
         case EventEmitterChannelEvents.REVERTED_TRANSACTION:
           logger.error("Error Transaction Reverted: ", result.error);
-          return yield put(actions.txSender.txSenderError("Reverted Transaction"));
+          return yield put(actions.txSender.txSenderError(ETransactionErrorType.REVERTED_TX));
       }
     }
   } finally {
@@ -319,10 +286,3 @@ const createWatchTxChannel = ({ web3Manager }: TGlobalDependencies, txHash: stri
       // @todo missing unsubscribe
     };
   });
-
-export const txSendingSagasWatcher = function*(): Iterator<any> {
-  yield fork(neuTakeEvery, "TX_SENDER_START_WITHDRAW_ETH", withdrawSaga);
-  yield fork(neuTakeEvery, "TX_SENDER_START_UPGRADE", upgradeSaga);
-  yield fork(neuTakeEvery, "TX_SENDER_START_INVESTMENT", investSaga);
-  // Add new transaction types here...
-};

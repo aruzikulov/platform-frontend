@@ -2,9 +2,10 @@ import * as cn from "classnames";
 import * as React from "react";
 import { Modal } from "reactstrap";
 
-import { ITxData } from "../../../lib/web3/Web3Manager";
+import { ITxData } from "../../../lib/web3/types";
 import { actions } from "../../../modules/actions";
-import { ETxSenderType, TxSenderState } from "../../../modules/tx/sender/reducer";
+import { ETxSenderType } from "../../../modules/tx/interfaces";
+import { ETransactionErrorType, ETxSenderState } from "../../../modules/tx/sender/reducer";
 import { selectTxSenderModalOpened } from "../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../store";
 import { LoadingIndicator } from "../../shared/loading-indicator";
@@ -23,12 +24,12 @@ import { Withdraw } from "./withdraw-flow/Withdraw";
 
 interface IStateProps {
   isOpen: boolean;
-  state: TxSenderState;
+  state: ETxSenderState;
   type?: ETxSenderType;
   details?: ITxData;
   blockId?: number;
   txHash?: string;
-  error?: string;
+  error?: ETransactionErrorType;
 }
 
 interface IDispatchProps {
@@ -38,7 +39,7 @@ interface IDispatchProps {
 type Props = IStateProps & IDispatchProps;
 
 function isBigModal(props: Props): boolean {
-  return props.state === "INIT" && props.type === "INVEST";
+  return props.state === ETxSenderState.INIT && props.type === ETxSenderType.INVEST;
 }
 
 const TxSenderModalComponent: React.SFC<Props> = props => {
@@ -52,12 +53,14 @@ const TxSenderModalComponent: React.SFC<Props> = props => {
 };
 
 export interface ITxInitDispatchProps {
-  onAccept: (tx: ITxData) => any;
+  onAccept: (tx: Partial<ITxData>) => any;
 }
 
 export interface ITxSummaryStateProps {
-  txData: ITxData;
+  txData: Partial<ITxData>;
+  txCost: string;
 }
+
 export interface ITxSummaryDispatchProps {
   onAccept: () => any;
   onChange?: () => any;
@@ -66,9 +69,9 @@ export type TSummaryComponentProps = ITxSummaryStateProps & ITxSummaryDispatchPr
 
 const InitComponent: React.SFC<{ type?: ETxSenderType }> = ({ type }) => {
   switch (type) {
-    case "INVEST":
+    case ETxSenderType.INVEST:
       return <InvestmentSelection />;
-    case "WITHDRAW":
+    case ETxSenderType.WITHDRAW:
       return <Withdraw />;
     default:
       return <LoadingIndicator />;
@@ -77,7 +80,7 @@ const InitComponent: React.SFC<{ type?: ETxSenderType }> = ({ type }) => {
 
 const SummaryComponent: React.SFC<{ type?: ETxSenderType }> = ({ type }) => {
   switch (type) {
-    case "INVEST":
+    case ETxSenderType.INVEST:
       return <InvestmentSummary />;
     default:
       return <WithdrawSummary />;
@@ -89,44 +92,41 @@ const SuccessComponent: React.SFC<{ type?: ETxSenderType; txHash?: string }> = (
   txHash,
 }) => {
   switch (type) {
-    case "INVEST":
+    case ETxSenderType.INVEST:
       return <InvestmentSuccess txHash={txHash!} />;
     default:
       return <WithdrawSuccess txHash={txHash!} />;
   }
 };
 
-function renderBody({ state, blockId, txHash, type }: Props): React.ReactNode {
+function renderBody({ state, blockId, txHash, type, error }: Props): React.ReactNode {
   switch (state) {
-    case "WATCHING_PENDING_TXS":
+    case ETxSenderState.WATCHING_PENDING_TXS:
       return <WatchPendingTxs />;
 
-    case "INIT":
+    case ETxSenderState.INIT:
       if (!type) {
         throw new Error("Transaction type needs to be set at transaction init state");
       }
       return <InitComponent type={type} />;
 
-    case "SUMMARY":
+    case ETxSenderState.SUMMARY:
       return <SummaryComponent type={type!} />;
 
-    case "ACCESSING_WALLET":
+    case ETxSenderState.ACCESSING_WALLET:
       return <AccessWalletContainer />;
 
-    case "SIGNING":
+    case ETxSenderState.SIGNING:
       return <SigningMessage />;
 
-    case "MINING":
+    case ETxSenderState.MINING:
       return <TxPending blockId={blockId!} txHash={txHash!} type={type!} />;
 
-    case "DONE":
+    case ETxSenderState.DONE:
       return <SuccessComponent type={type} txHash={txHash!} />;
 
-    case "ERROR_SIGN":
-      return <ErrorMessage />;
-
-    case "REVERTED":
-      return <div>Error: Tx reverted!</div>;
+    case ETxSenderState.ERROR_SIGN:
+      return <ErrorMessage type={error} />;
   }
 }
 

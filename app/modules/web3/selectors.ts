@@ -3,6 +3,7 @@ import { RouterState } from "react-router-redux";
 import { createSelector } from "reselect";
 import { TWalletMetadata } from "../../lib/persistence/WalletMetadataObjectStorage";
 import { EthereumAddress } from "../../types";
+import { IAppState } from "./../../store";
 import { IConnectedWeb3State, IWeb3State } from "./reducer";
 import { EWalletSubType, EWalletType } from "./types";
 import { makeEthereumAddressChecksummed } from "./utils";
@@ -14,8 +15,8 @@ export const selectConnectedWeb3State = (state: IWeb3State): IConnectedWeb3State
   return state;
 };
 
-const selectEthereumAddress = (state: IWeb3State): EthereumAddress =>
-  state.connected ? state.wallet.address : state.previousConnectedWallet!.address;
+const selectEthereumAddress = (state: IAppState): EthereumAddress =>
+  state.web3.connected ? state.web3.wallet.address : state.web3.previousConnectedWallet!.address;
 
 export const selectEthereumAddressWithChecksum = createSelector(selectEthereumAddress, address => {
   return makeEthereumAddressChecksummed(address);

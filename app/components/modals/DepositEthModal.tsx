@@ -44,7 +44,7 @@ const DepositEthModalComponent: React.SFC<IStateProps & IDispatchProps> = props 
 export const DepositEthModal = appConnect<IStateProps, IDispatchProps>({
   stateToProps: state => ({
     isOpen: state.depositEthModal.isOpen,
-    address: selectEthereumAddressWithChecksum(state.web3),
+    address: selectEthereumAddressWithChecksum(state),
   }),
   dispatchToProps: dispatch => ({
     onCancel: () => dispatch(actions.depositEthModal.hideDepositEthModal()),

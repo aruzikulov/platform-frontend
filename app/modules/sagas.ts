@@ -1,5 +1,5 @@
 import { effects } from "redux-saga";
-import { call, spawn, takeEvery } from "redux-saga/effects";
+import { call, spawn, takeEvery, takeLatest } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../di/setupBindings";
 import { TAction } from "./actions";
@@ -20,7 +20,8 @@ import { formSingleFileUploadSagas } from "./shared/formSingleFileUpload/sagas";
 import { remoteFileSagas } from "./shared/remoteFile/sagas";
 import { tokenPriceSagas } from "./shared/tokenPrice/sagas";
 import { txMonitorSagas } from "./tx/monitor/sagas";
-import { txSendingSagasWatcher } from "./tx/sender/sagas";
+import { txTransactionsSagasWatcher } from "./tx/transactions/sagas";
+import { txValidatorSagasWatcher } from "./tx/validator/sagas";
 import { lightWalletSagas } from "./wallet-selector/light-wizard/sagas";
 import { walletSelectorSagas } from "./wallet-selector/sagas";
 import { walletSagas } from "./wallet/sagas";
@@ -47,7 +48,8 @@ function* allSagas(): Iterator<effects.Effect> {
     effects.fork(bookBuildingFlowSagas),
     effects.fork(formSingleFileUploadSagas),
     effects.fork(remoteFileSagas),
-    effects.fork(txSendingSagasWatcher),
+    effects.fork(txValidatorSagasWatcher),
+    effects.fork(txTransactionsSagasWatcher),
     effects.fork(gasApiSagas),
     effects.fork(etoDocumentsSagas),
     effects.fork(txMonitorSagas),
@@ -71,6 +73,14 @@ export function* rootSaga(): Iterator<effects.Effect> {
  * Helpers
  */
 type TActionType = TAction["type"];
+
+export function* neuTakeLatest(
+  type: TActionType | Array<string>,
+  saga: (deps: TGlobalDependencies, action: TAction) => any,
+): Iterator<effects.Effect> {
+  const deps: TGlobalDependencies = yield effects.getContext("deps");
+  yield takeLatest(type, saga, deps);
+}
 
 export function* neuTakeEvery(
   type: TActionType | Array<string>,

@@ -249,7 +249,7 @@ export async function obtainJwtPromise(
   { getState, web3Manager, signatureAuthApi, cryptoRandomString, logger }: TGlobalDependencies,
   permissions: Array<string> = [],
 ): Promise<string> {
-  const address = selectEthereumAddressWithChecksum(getState().web3);
+  const address = selectEthereumAddressWithChecksum(getState());
 
   const salt = cryptoRandomString(64);
 

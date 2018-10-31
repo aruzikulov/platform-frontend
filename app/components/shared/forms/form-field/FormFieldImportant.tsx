@@ -1,5 +1,5 @@
 import * as cn from "classnames";
-import { Field, FieldAttributes, FieldProps, FormikConsumer } from "formik";
+import { Field, FieldAttributes, FieldProps, FormikConsumer, getIn } from "formik";
 import * as React from "react";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
 
@@ -31,6 +31,7 @@ interface IFieldGroup {
   placeholder?: string;
   errorMessage?: string | React.ReactNode;
   type?: InputType;
+  ignoreTouched?: boolean;
 }
 type FieldGroupProps = IFieldGroup & FieldAttributes<any> & CommonHtmlProps;
 
@@ -44,6 +45,7 @@ export class FormFieldImportant extends React.Component<FieldGroupProps> {
       errorMessage,
       validate,
       label,
+      ignoreTouched,
       ...props
     } = this.props;
 
@@ -69,10 +71,12 @@ export class FormFieldImportant extends React.Component<FieldGroupProps> {
                       {...props as any}
                     />
                     <InputGroupAddon addonType="append" className={formStyles.addon}>
-                      {isNonValid(touched, errors, name) && (
+                      {(isNonValid(touched, errors, name, ignoreTouched) || errorMessage) && (
                         <>
                           <img id={tooltipId} src={icon} />
-                          <CustomTooltip target={tooltipId}>{errorMessage}</CustomTooltip>
+                          <CustomTooltip target={tooltipId}>
+                            {getIn(errors, name) || errorMessage}
+                          </CustomTooltip>
                         </>
                       )}
                     </InputGroupAddon>

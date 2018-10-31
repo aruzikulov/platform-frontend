@@ -144,15 +144,9 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
       </Row>
       <Row>
         <Col>
-          {errorState === EInvestmentErrorState.NotEnoughEtherForGas ? (
-            <p className={styles.error}>
-              <FormattedMessage id="investment-flow.error-message.not-enough-ether-for-gas" />
-            </p>
-          ) : (
-            <p>
-              <FormattedMessage id="investment-flow.amount-to-invest" />
-            </p>
-          )}
+          <p>
+            <FormattedMessage id="investment-flow.amount-to-invest" />
+          </p>
         </Col>
       </Row>
       <Row>
@@ -296,7 +290,7 @@ export const InvestmentSelection: React.SFC = compose<any>(
         euroValue: eur,
         ethValue: selectEthValueUlps(investmentFlow),
         errorState: selectErrorState(investmentFlow),
-        gasCostEth: selectInvestmentGasCostEth(state.investmentFlow),
+        gasCostEth: selectInvestmentGasCostEth(state),
         investmentType: selectInvestmentType(investmentFlow),
         wallets: createWallets(state),
         neuReward: selectNeuRewardUlpsByEtoId(investmentFlow.etoId, state),

@@ -72,7 +72,7 @@ export function* loadComputedContributionFromContract(
     const newInvestorContributionEurUlps =
       amountEuroUlps || convertToBigInt((eto.minTicketEur && eto.minTicketEur.toString()) || "0");
 
-    const from = selectEthereumAddressWithChecksum(state.web3);
+    const from = selectEthereumAddressWithChecksum(state);
 
     // TODO: check whether typechain but still is not fixed
     // sorry no typechain, typechain has a bug with boolean casting
