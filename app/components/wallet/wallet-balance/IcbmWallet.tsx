@@ -31,11 +31,11 @@ export const IcbmWallet: React.SFC<IIcbmWallet> = ({
 }) => {
   return (
     <WalletBalanceContainer {...{ className, headerText }}>
-      <div className={styles.icbmLockedWallet}>
-        <p className={styles.message}>
-          <FormattedMessage id="shared-component.wallet-icbm.upgrade-message" />
-        </p>
+      <section className={styles.message}>
+        <FormattedMessage id="shared-component.wallet-icbm.upgrade-message" />
+      </section>
 
+      <section>
         <h4 className={styles.title}>
           <FormattedMessage id="shared-component.wallet-balance.title.account-balance" />
         </h4>
@@ -60,7 +60,7 @@ export const IcbmWallet: React.SFC<IIcbmWallet> = ({
           onUpgradeClick={data.ethEuroAmount === "0" ? undefined : onUpgradeEtherClick}
           disabled={!data.isEtherUpgradeTargetSet}
         />
-      </div>
+      </section>
     </WalletBalanceContainer>
   );
 };
