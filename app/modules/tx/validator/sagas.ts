@@ -17,9 +17,10 @@ import { generateEthWithdrawTransaction } from "../transactions/withdraw/sagas";
 
 export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction): any {
   if (action.type !== "TX_SENDER_VALIDATE_DRAFT") return;
+  // reset validation
+  yield put(actions.txValidator.setValidationState());
 
   let validationGenerator: any;
-
   switch (action.payload.type) {
     case ETxSenderType.WITHDRAW:
       validationGenerator = generateEthWithdrawTransaction;
@@ -29,14 +30,17 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
       break;
   }
 
-  const generatedTxDetails: ITxData = yield neuCall(validationGenerator, action.payload);
+  let generatedTxDetails: ITxData | undefined;
 
   try {
-    yield validateGas(generatedTxDetails);
+    generatedTxDetails = yield neuCall(validationGenerator, action.payload);
+    yield validateGas(generatedTxDetails as ITxData);
     yield put(actions.txValidator.setValidationState(EValidationState.VALIDATION_OK));
   } catch (error) {
     logger.error(error);
-    yield put(actions.txValidator.setValidationState(EValidationState.NOT_ENOUGH_ETHER_FOR_GAS));
+    if (error instanceof NotEnoughEtherForGasError) {
+      yield put(actions.txValidator.setValidationState(EValidationState.NOT_ENOUGH_ETHER_FOR_GAS));
+    }
   }
 
   return generatedTxDetails;
