@@ -27,10 +27,25 @@ export interface IFormInputExternalProps {
   maxLength?: string;
   charactersLimit?: number;
   size?: InputSize;
+  customValidation?: (value: any) => string | Function | Promise<void> | undefined;
   ignoreTouched?: boolean;
 }
 
 export type FormInputProps = IFormInputExternalProps & FieldAttributes<any> & CommonHtmlProps;
+
+const transform = (value: string, charactersLimit?: number) => {
+  return value === undefined ? "" : computedValue(value, charactersLimit);
+};
+
+const transformBack = (value: number | string) => {
+  if (typeof value === "number") {
+    return value;
+  } else if (typeof value === "string") {
+    return value.trim().length > 0 ? value : undefined;
+  } else {
+    return undefined;
+  }
+};
 
 /**
  * Formik connected form input without FormGroup and FormLabel.
@@ -54,13 +69,14 @@ export class FormInput extends React.Component<FormInputProps> {
       min,
       max,
       size,
+      customValidation,
       validate,
       ignoreTouched,
       ...props
     } = this.props;
     return (
       <FormikConsumer>
-        {({ touched, errors }) => {
+        {({ touched, errors, setFieldTouched, setFieldValue }) => {
           //This is done due to the difference between reactstrap and @typings/reactstrap
           const inputExtraProps = {
             invalid: isNonValid(touched, errors, name, ignoreTouched),
@@ -69,9 +85,9 @@ export class FormInput extends React.Component<FormInputProps> {
           return (
             <Field
               name={name}
-              validate={validate}
+              validate={customValidation}
               render={({ field }: FieldProps) => {
-                const val = computedValue(field.value, charactersLimit);
+                const val = transform(field.value, charactersLimit);
                 return (
                   <>
                     <InputGroup size={size}>
@@ -94,6 +110,15 @@ export class FormInput extends React.Component<FormInputProps> {
                           isValid(touched, errors, name) && "is-invalid",
                         )}
                         {...field}
+                        onChange={e => {
+                          setFieldTouched(name);
+                          setFieldValue(
+                            name,
+                            transformBack(
+                              type === "number" ? e.target.valueAsNumber : e.target.value,
+                            ),
+                          );
+                        }}
                         type={type}
                         value={val}
                         valid={isValid(touched, errors, name)}

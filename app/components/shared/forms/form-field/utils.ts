@@ -37,7 +37,7 @@ export const computedValue = (val: InputProps["value"] = "", limit: number | und
     return val;
   }
 
-  return val.length > limit ? val.slice(0, limit - 1) : val;
+  return limit && val.length > limit ? val.slice(0, limit - 1) : val;
 };
 
 export const countedCharacters = (val: InputProps["value"] = "", limit: number) => {

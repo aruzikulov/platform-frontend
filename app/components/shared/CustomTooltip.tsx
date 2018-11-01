@@ -3,9 +3,7 @@ import { Tooltip, TooltipProps } from "reactstrap";
 
 import * as styles from "./CustomTooltip.module.scss";
 
-interface IProps {}
-
-export class CustomTooltip extends React.Component<TooltipProps & IProps> {
+export class CustomTooltip extends React.Component<TooltipProps> {
   state = {
     tooltipOpen: false,
   };

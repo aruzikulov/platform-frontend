@@ -10,7 +10,9 @@ import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
-import { FormCategoryDistribution, FormTextArea } from "../../../shared/forms";
+import { ArrayOfKeyValueFields, FormTextArea } from "../../../shared/forms";
+import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
+import { ICompoundField, sanitizeKeyValueCompoundField } from "../../utils";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
 
@@ -97,19 +99,18 @@ const EtoRegistrationPitchComponent = (props: IProps) => {
           placeholder="Describe"
           name="keyBenefitsForInvestors"
         />
-
-        <FormCategoryDistribution
-          label={<FormattedMessage id="eto.form.product-vision.use-of-capital" />}
-          name="useOfCapitalList"
-          paragraphName="useOfCapital"
-          suggestions={distributionSuggestions}
-          prefix="%"
-          transformRatio={100}
-          blankField={{
-            description: "",
-            percent: 0,
-          }}
-        />
+        <FormHighlightGroup
+          title={<FormattedMessage id="eto.form.product-vision.use-of-capital" />}
+        >
+          <FormTextArea name="useOfCapital" placeholder="Detail" disabled={false} />
+          <ArrayOfKeyValueFields
+            name="useOfCapitalList"
+            suggestions={distributionSuggestions}
+            prefix="%"
+            transformRatio={100}
+            fieldNames={["description", "percent"]}
+          />
+        </FormHighlightGroup>
 
         <FormTextArea
           className="my-2"
@@ -166,9 +167,15 @@ export const EtoRegistrationPitch = compose<React.SFC>(
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialCompanyEtoData) => {
+        const sanitizedData = {
+          ...data,
+          useOfCapitalList: sanitizeKeyValueCompoundField(
+            data.useOfCapitalList as ICompoundField[],
+          ),
+        };
         dispatch(
           actions.etoFlow.saveDataStart({
-            companyData: data,
+            companyData: sanitizedData,
             etoData: {},
           }),
         );

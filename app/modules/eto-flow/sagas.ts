@@ -62,7 +62,7 @@ export function* changeBookBuildingStatus(
 function stripEtoDataOptionalFields(data: TPartialEtoSpecData): TPartialEtoSpecData {
   // formik will pass empty strings into numeric fields that are optional, see
   // https://github.com/jaredpalmer/formik/pull/827
-  // todo: we should probably enumerate yup schema and clean up all optional numbers
+  // todo: we should probably enumerate Yup schema and clean up all optional numbers
   if (!data.maxTicketEur) {
     data.maxTicketEur = undefined;
   }

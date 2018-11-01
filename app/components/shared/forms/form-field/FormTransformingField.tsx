@@ -1,5 +1,6 @@
 import * as cn from "classnames";
 import { Field, FieldAttributes, FieldProps, FormikConsumer } from "formik";
+import { get } from "lodash";
 import * as React from "react";
 import { FormGroup, Input, InputGroup, InputGroupAddon } from "reactstrap";
 
@@ -17,15 +18,27 @@ interface IFieldGroup {
   suffix?: string;
   addonStyle?: string;
   maxLength?: string;
-  ratio: number;
+  ratio?: number;
+  customValidation?: (value: any) => string | Function | Promise<void> | undefined;
 }
-type FieldGroupProps = IFieldGroup & FieldAttributes<any> & CommonHtmlProps;
 
-const transform = (value: number, ratio: number) => {
-  return value && !isNaN(value) && value * ratio;
+type FieldGroupProps = IFieldGroup & FieldAttributes<{}> & CommonHtmlProps;
+
+const transform = (value: number, ratio?: number) => {
+  if (value && !Number.isNaN(value)) {
+    // if user types in more than 100 percent (=> internal value is larger than 1),
+    // value*ratio returns a weird number due to JS number rounding behavior
+    // example: 1.11 * 100 === 111.00000000000001
+    // here we manually check for this condition and round down the result
+    const result = ratio !== undefined ? value * ratio : value;
+    return value > 1 ? Math.floor(result) : result;
+  } else {
+    return "";
+  }
 };
-const transformBack = (value: number, ratio: number) => {
-  return value && !isNaN(value) && value / ratio;
+const transformBack = (value: number, ratio?: number) => {
+  const result = ratio !== undefined ? value / ratio : value;
+  return value && !Number.isNaN(value) ? result : undefined;
 };
 
 export class FormTransformingField extends React.Component<FieldGroupProps> {
@@ -40,12 +53,13 @@ export class FormTransformingField extends React.Component<FieldGroupProps> {
       className,
       addonStyle,
       ratio,
+      customValidation,
       ...props
     } = this.props;
 
     return (
       <FormikConsumer>
-        {({ touched, errors, setFieldValue }) => {
+        {({ touched, errors, setFieldValue, setFieldTouched }) => {
           //This is done due to the difference between reactstrap and @typings/reactstrap
           const inputExtraProps = {
             invalid: isNonValid(touched, errors, name),
@@ -56,6 +70,7 @@ export class FormTransformingField extends React.Component<FieldGroupProps> {
               {label && <FormLabel name={name}>{label}</FormLabel>}
               <Field
                 name={name}
+                validate={customValidation}
                 render={({ field }: FieldProps) => (
                   <InputGroup>
                     {prefix && (
@@ -68,6 +83,7 @@ export class FormTransformingField extends React.Component<FieldGroupProps> {
                       {...field}
                       value={transform(field.value, ratio) || ""}
                       onChange={e => {
+                        setFieldTouched(name);
                         setFieldValue(name, transformBack(e.target.valueAsNumber, ratio));
                       }}
                       type="number"
@@ -85,7 +101,7 @@ export class FormTransformingField extends React.Component<FieldGroupProps> {
                 )}
               />
               {isNonValid(touched, errors, name) && (
-                <div className={styles.errorLabel}>{errors[name]}</div>
+                <div className={styles.errorLabel}>{get(errors, name)}</div>
               )}
             </FormGroup>
           );

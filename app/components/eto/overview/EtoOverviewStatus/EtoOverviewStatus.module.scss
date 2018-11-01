@@ -75,12 +75,17 @@
   .group {
     display: table-row;
 
+    .label,
+    .value {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
     .label {
       @include font-label;
       font-size: px-to-rem(8.8px);
-      display: block;
-      padding-top: px-to-rem(8px);
-      padding-bottom: px-to-rem(13.6px);
+      padding-top: px-to-rem(10px);
+      padding-bottom: px-to-rem(10px);
       padding-right: px-to-rem(13.6px);
 
       &-no-uppercase {
@@ -91,7 +96,6 @@
     .value {
       @include font-label;
 
-      display: table-cell;
       text-transform: none;
     }
   }

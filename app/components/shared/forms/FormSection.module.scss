@@ -1,35 +1,22 @@
 .form-section {
   @include make-row;
-
-  padding-bottom: $spacing-vertical-lg-3;
-  position: relative;
 }
 
 .title {
   @include make-col-offset(1);
   @include make-col(2);
-  @include font-label;
+  @include font-default;
 
   @include media-breakpoint-down(md) {
     @include make-col-offset(0);
     @include make-col(12);
-
-    position: static;
-    margin-bottom: $spacing-vertical-lg-3;
   }
 
-  align-self: flex-start;
-  color: $color-graphite;
-  margin-bottom: $spacing-vertical-lg-3;
-  margin-top: 4px;
-  padding-right: px-to-rem(60px);
-  position: sticky;
   text-transform: uppercase;
-  top: $spacing-vertical-lg-2;
 }
 
 .content {
-  @include make-col(7);
+  @include make-col(8);
 
   @include media-breakpoint-down(md) {
     @include make-col(12);

@@ -1,16 +1,17 @@
 import { connect, FieldArray } from "formik";
+import { get } from "lodash";
 import * as React from "react";
+import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
+import * as Yup from "yup";
 
 import { CommonHtmlProps, TFormikConnect, TTranslatedString } from "../../../../types";
 import { ButtonIcon } from "../../buttons";
-import { FormHighlightGroup } from "../FormHighlightGroup";
-import { FormField } from "./FormField";
-import { FormTextArea } from "./FormTextArea";
+import { FormInput } from "./FormInput";
+import { FormTransformingField } from "./FormTransformingField";
 
 import * as closeIcon from "../../../../assets/img/inline_icons/round_close.svg";
 import * as plusIcon from "../../../../assets/img/inline_icons/round_plus.svg";
-import { FormTransformingField } from "./FormTransformingField";
 
 interface IProps {
   disabled?: boolean;
@@ -20,158 +21,194 @@ interface IProps {
   selectedCategory?: { name: string; percentage: number };
   transformRatio?: number;
 }
+
 interface IInternalProps {
-  addField: () => void;
-  removeField: () => void;
+  addField: (e: Event) => void;
+  removeField: (e: Event) => void;
   isLastElement: boolean;
-  placeholder: string;
+  keyPlaceholder?: string;
+  valuePlaceholder?: string;
   isFirstElement: boolean;
   formFieldKeys: string[];
+  validationSchema: { fields: { [key: string]: Yup.Schema<any> } };
 }
 
 interface IExternalProps {
   suggestions: string[];
   paragraphName?: string;
-  blankField: object;
+  fieldNames: string[];
+  valuePlaceholder?: string;
 }
 
-const SingleCategoryDistributionComponent: React.SFC<IProps & IInternalProps> = ({
-  disabled,
-  isFirstElement,
-  removeField,
-  isLastElement,
-  placeholder,
-  addField,
-  formFieldKeys,
-  prefix,
-  transformRatio,
-  name,
-}) => (
-  <Row>
-    <Col xs={8}>
-      <Row className="justify-content-center">
-        <Col xs={1} className="pt-2">
-          {isLastElement && !disabled && <ButtonIcon svgIcon={plusIcon} onClick={addField} />}
-        </Col>
-        <Col>
-          <FormField
-            disabled={disabled}
-            name={`${name}.${formFieldKeys[0]}`}
-            placeholder={placeholder}
-          />
-        </Col>
-      </Row>
-    </Col>
-    <Col>
-      <Row>
-        <Col xs={9}>
-          {transformRatio ? (
-            <FormTransformingField
-              disabled={disabled}
-              min="0"
-              prefix={prefix}
-              name={`${name}.${formFieldKeys[1]}`}
-              ratio={transformRatio}
-            />
-          ) : (
-            <FormField
-              disabled={disabled}
-              min="0"
-              prefix={prefix}
-              name={`${name}.${formFieldKeys[1]}`}
-              type="number"
-            />
-          )}
-        </Col>
-        {!isFirstElement && (
-          <span className="pt-2">
-            {!disabled && <ButtonIcon svgIcon={closeIcon} onClick={removeField} />}
-          </span>
-        )}
-      </Row>
-    </Col>
-  </Row>
-);
+class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps & TFormikConnect> {
+  name = this.props.name;
 
-class FormCategoryDistributionLayout extends React.Component<
+  setAllFieldsTouched = (event: any, isTouched?: boolean) => {
+    if (event.target.value !== undefined) {
+      return Object.keys(get(this.props.formik.values, this.name)).map(key => {
+        this.props.formik.setFieldTouched(`${this.name}.${key}`, isTouched);
+      });
+    }
+  };
+
+  compoundFieldValidation = (fieldName: string, neighborName: string) => {
+    const schema = this.props.validationSchema && this.props.validationSchema.fields[fieldName];
+    return (value: any) => {
+      const neighborValue = get(this.props.formik.values, neighborName);
+      if (neighborValue !== undefined && value === undefined) {
+        return <FormattedMessage id="form.field.error.both-fields-required" />;
+      } else {
+        try {
+          if (schema) {
+            schema.validateSync(value);
+          }
+        } catch (e) {
+          return e.errors;
+        }
+      }
+    };
+  };
+
+  render = () => {
+    const {
+      disabled,
+      isFirstElement,
+      removeField,
+      isLastElement,
+      keyPlaceholder,
+      valuePlaceholder,
+      addField,
+      formFieldKeys,
+      prefix,
+      transformRatio,
+      name,
+    } = this.props;
+    return (
+      <>
+        <Row>
+          <Col xs={8}>
+            <Row className="justify-content-center">
+              <Col xs={1} className="pt-2">
+                {isLastElement && !disabled && <ButtonIcon svgIcon={plusIcon} onClick={addField} />}
+              </Col>
+              <Col>
+                <FormInput
+                  disabled={disabled}
+                  name={`${name}.${formFieldKeys[0]}`}
+                  placeholder={keyPlaceholder}
+                  onBlur={this.setAllFieldsTouched}
+                  customValidation={this.compoundFieldValidation(
+                    formFieldKeys[0],
+                    `${name}.${formFieldKeys[1]}`,
+                  )}
+                />
+              </Col>
+            </Row>
+          </Col>
+          <Col>
+            <Row>
+              <Col xs={9}>
+                {
+                  <FormTransformingField
+                    disabled={disabled}
+                    min="0"
+                    prefix={prefix}
+                    name={`${name}.${formFieldKeys[1]}`}
+                    ratio={transformRatio}
+                    onBlur={this.setAllFieldsTouched}
+                    placeholder={valuePlaceholder}
+                    customValidation={this.compoundFieldValidation(
+                      formFieldKeys[1],
+                      `${name}.${formFieldKeys[0]}`,
+                    )}
+                  />
+                }
+              </Col>
+              {!isFirstElement && (
+                <span className="pt-2">
+                  {!disabled && <ButtonIcon svgIcon={closeIcon} onClick={removeField} />}
+                </span>
+              )}
+            </Row>
+          </Col>
+        </Row>
+        <Row />
+      </>
+    );
+  };
+}
+
+class ArrayOfKeyValueFieldsBase extends React.Component<
   IProps & IExternalProps & CommonHtmlProps & TFormikConnect
 > {
-  private blankField = { ...this.props.blankField };
+  private blankField = this.props.fieldNames.reduce((acc: any, key: string) => {
+    acc[key] = undefined;
+    return acc;
+  }, {});
   private suggestions = [...this.props.suggestions];
+  private setFieldValue = this.props.formik.setFieldValue;
+  private validationSchema =
+    this.props.formik.validationSchema &&
+    this.props.formik.validationSchema().fields[this.props.name]._subType;
 
   componentWillMount(): void {
-    const { name, formik } = this.props;
-    const { setFieldValue, values } = formik;
-
-    if (!values[name]) {
-      this.suggestions.forEach((_, index) => setFieldValue(`${name}.${index}`, this.blankField));
+    if (!get(this.props.formik.values, this.props.name)) {
+      this.suggestions.forEach((_, index) =>
+        this.setFieldValue(`${this.props.name}.${index}`, this.blankField),
+      );
     }
   }
 
   render(): React.ReactNode {
-    const {
-      name,
-      label,
-      className,
-      paragraphName,
-      prefix,
-      transformRatio,
-      disabled,
-      formik,
-    } = this.props;
-    const { setFieldValue, values } = formik;
+    const { prefix, transformRatio, disabled, formik, name, valuePlaceholder } = this.props;
 
-    const categoryDistribution = values[name] || [];
-    const formFieldKeys = Object.keys(this.blankField);
+    const categoryDistribution = get(formik.values, name) || [];
+    const formFieldKeys = this.props.fieldNames;
 
     return (
-      <FormHighlightGroup>
-        <div className={className}>
-          <div className="mb-4 text-uppercase">{label}</div>
-          {paragraphName && (
-            <FormTextArea name={paragraphName} placeholder="Detail" disabled={disabled} />
-          )}
+      <FieldArray
+        name={name}
+        render={arrayHelpers => (
+          <>
+            {categoryDistribution.map(
+              (_: { description: string; percent: number }, index: number) => {
+                const isLastElement = index === categoryDistribution.length - 1;
+                const isFirstElement = index === 0;
 
-          <FieldArray
-            name={name}
-            render={arrayHelpers => (
-              <>
-                {categoryDistribution.map(
-                  (_: { description: string; percent: number }, index: number) => {
-                    const isLastElement = index === categoryDistribution.length - 1;
-                    const isFirstElement = index === 0;
-
-                    return (
-                      <SingleCategoryDistributionComponent
-                        disabled={disabled}
-                        key={index}
-                        formFieldKeys={formFieldKeys}
-                        prefix={prefix}
-                        name={`${name}.${index}`}
-                        removeField={() => {
-                          arrayHelpers.remove(index);
-                          this.suggestions.splice(index, 1);
-                        }}
-                        placeholder={this.suggestions[index] || "Other"}
-                        addField={() => {
-                          setFieldValue(`${name}.${index + 1}`, this.blankField);
-                        }}
-                        isFirstElement={isFirstElement}
-                        isLastElement={isLastElement}
-                        transformRatio={transformRatio}
-                      />
-                    );
-                  },
-                )}
-              </>
+                return (
+                  <KeyValueCompoundField
+                    disabled={disabled}
+                    key={index}
+                    formFieldKeys={formFieldKeys}
+                    prefix={prefix}
+                    name={`${name}.${index}`}
+                    removeField={(e: Event) => {
+                      e.preventDefault();
+                      arrayHelpers.remove(index);
+                      this.suggestions.splice(index, 1);
+                    }}
+                    valuePlaceholder={valuePlaceholder}
+                    keyPlaceholder={this.suggestions[index] || "Other"}
+                    addField={() => {
+                      this.setFieldValue(`${name}.${index + 1}`, this.blankField);
+                    }}
+                    isFirstElement={isFirstElement}
+                    isLastElement={isLastElement}
+                    transformRatio={transformRatio}
+                    validationSchema={this.validationSchema}
+                  />
+                );
+              },
             )}
-          />
-        </div>
-      </FormHighlightGroup>
+          </>
+        )}
+      />
     );
   }
 }
 
-export const FormCategoryDistribution = connect<IProps & IExternalProps & CommonHtmlProps, any>(
-  FormCategoryDistributionLayout,
+const KeyValueCompoundField = connect<IProps & IInternalProps>(KeyValueCompoundFieldBase);
+
+export const ArrayOfKeyValueFields = connect<IProps & IExternalProps & CommonHtmlProps, any>(
+  ArrayOfKeyValueFieldsBase,
 );

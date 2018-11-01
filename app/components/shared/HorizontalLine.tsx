@@ -1,20 +1,23 @@
 import * as cn from "classnames";
 import * as React from "react";
 
+import { CommonHtmlProps } from "../../types";
+
 import * as styles from "./HorizontalLine.module.scss";
 
 type Size = "narrow" | "wide";
 type TTheme = "yellow";
 
 interface IHorizontalLineProps {
-  className?: string;
   size?: Size;
   theme?: TTheme;
 }
 
-export const HorizontalLine: React.SFC<IHorizontalLineProps> = ({ className, size, theme }) => (
-  <div className={cn(styles.horizontalLine, className, size, theme)} />
-);
+export const HorizontalLine: React.SFC<IHorizontalLineProps & CommonHtmlProps> = ({
+  className,
+  size,
+  theme,
+}) => <div className={cn(styles.horizontalLine, className, size, theme)} />;
 
 HorizontalLine.defaultProps = {
   size: "wide",

@@ -49,10 +49,7 @@ const EtoRegistrationMediaComponent = ({ savingData }: IProps) => (
 
       <div className="offset-1 mb-2 font-weight-bold">
         <FormattedMessage id="eto.form.eto-media.slideshare" />
-        <Tooltip
-          className="ml-2 d-inline-block"
-          content={<FormattedMessage id="eto.form.eto-media.slide-share.tooltip" />}
-        />
+        <Tooltip content={<FormattedMessage id="eto.form.eto-media.slide-share.tooltip" />} />
       </div>
 
       <Row>
