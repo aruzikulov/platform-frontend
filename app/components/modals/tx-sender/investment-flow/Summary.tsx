@@ -7,8 +7,9 @@ import { MONEY_DECIMALS } from "../../../../config/constants";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import {
-  selectEthValueUlps,
-  selectEurValueUlps,
+  selectInvestmentEthValueUlps,
+  selectInvestmentEtoId,
+  selectInvestmentEurValueUlps,
 } from "../../../../modules/investment-flow/selectors";
 import {
   selectEquityTokenCountByEtoId,
@@ -169,19 +170,18 @@ const InvestmentSummary = compose<IProps, {}>(
   setDisplayName("InvestmentSummary"),
   appConnect<IStateProps, ITxSummaryDispatchProps>({
     stateToProps: state => {
-      const i = state.investmentFlow;
-
+      const etoId = selectInvestmentEtoId(state);
       // eto and computed values are guaranteed to be present at investment summary state
-      const eto = selectEtoWithCompanyAndContractById(state, i.etoId)!;
+      const eto = selectEtoWithCompanyAndContractById(state, etoId)!;
 
       return {
         companyName: eto.company.name,
         etoAddress: eto.etoId,
-        investmentEth: selectEthValueUlps(i),
-        investmentEur: selectEurValueUlps(i),
-        gasCostEth: selectTxGasCostEth(state.txSender),
-        equityTokens: selectEquityTokenCountByEtoId(i.etoId, state) as string,
-        estimatedReward: selectNeuRewardUlpsByEtoId(i.etoId, state) as string,
+        investmentEth: selectInvestmentEthValueUlps(state),
+        investmentEur: selectInvestmentEurValueUlps(state),
+        gasCostEth: selectTxGasCostEth(state),
+        equityTokens: selectEquityTokenCountByEtoId(etoId, state) as string,
+        estimatedReward: selectNeuRewardUlpsByEtoId(etoId, state) as string,
         etherPriceEur: selectEtherPriceEur(state.tokenPrice),
       };
     },

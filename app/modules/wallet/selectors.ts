@@ -169,4 +169,4 @@ export const selectIsEuroUpgradeTargetSet = (state: IAppState): boolean =>
 
 /**General State Selectors */
 export const selectMaxAvailableEther = (state: IAppState): string =>
-  subtractBigNumbers([selectLiquidEtherBalance(state.wallet), selectTxGasCostEth(state.txSender)]);
+  subtractBigNumbers([selectLiquidEtherBalance(state.wallet), selectTxGasCostEth(state)]);

@@ -1,4 +1,4 @@
-import { createAction, createSimpleAction } from "../../actionsUtils";
+import { createAction } from "../../actionsUtils";
 import { IDraftType } from "../interfaces";
 import { EValidationState } from "../sender/reducer";
 

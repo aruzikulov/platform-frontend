@@ -60,7 +60,7 @@ export function createWallets(state: IAppState): WalletSelectionData[] {
     },
   };
 
-  return selectInvestmentActiveTypes(state.investmentFlow).map(t => wallets[t]);
+  return selectInvestmentActiveTypes(state).map(t => wallets[t]);
 }
 
 export function getInputErrorMessage(

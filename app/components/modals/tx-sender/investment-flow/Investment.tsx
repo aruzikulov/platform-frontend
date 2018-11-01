@@ -15,11 +15,13 @@ import {
   EInvestmentType,
 } from "../../../../modules/investment-flow/reducer";
 import {
-  selectErrorState,
-  selectEthValueUlps,
-  selectEurValueUlps,
+  selectInvestmentErrorState,
+  selectInvestmentEthValueUlps,
+  selectInvestmentEtoId,
+  selectInvestmentEurValueUlps,
   selectInvestmentType,
-  selectReadyToInvest,
+  selectIsInvestmentInputValidated,
+  selectIsReadyToInvest,
 } from "../../../../modules/investment-flow/selectors";
 import {
   selectEquityTokenCountByEtoId,
@@ -281,23 +283,22 @@ export const InvestmentSelection: React.SFC = compose<any>(
   injectIntlHelpers,
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => {
-      const investmentFlow = state.investmentFlow;
-
-      const eto = selectEtoWithCompanyAndContractById(state, investmentFlow.etoId)!;
-      const eur = selectEurValueUlps(investmentFlow);
+      const etoId = selectInvestmentEtoId(state);
+      const eto = selectEtoWithCompanyAndContractById(state, etoId)!;
+      const eur = selectInvestmentEurValueUlps(state);
       return {
         eto,
         etherPriceEur: selectEtherPriceEur(state.tokenPrice),
         euroValue: eur,
-        ethValue: selectEthValueUlps(investmentFlow),
-        errorState: selectErrorState(investmentFlow),
-        gasCostEth: selectTxGasCostEth(state.txSender),
-        investmentType: selectInvestmentType(investmentFlow),
+        ethValue: selectInvestmentEthValueUlps(state),
+        errorState: selectInvestmentErrorState(state),
+        gasCostEth: selectTxGasCostEth(state),
+        investmentType: selectInvestmentType(state),
         wallets: createWallets(state),
-        neuReward: selectNeuRewardUlpsByEtoId(investmentFlow.etoId, state),
-        equityTokenCount: selectEquityTokenCountByEtoId(investmentFlow.etoId, state),
-        showTokens: !!(eur && investmentFlow.isValidatedInput),
-        readyToInvest: selectReadyToInvest(state.investmentFlow),
+        neuReward: selectNeuRewardUlpsByEtoId(etoId, state),
+        equityTokenCount: selectEquityTokenCountByEtoId(etoId, state),
+        showTokens: !!(eur && selectIsInvestmentInputValidated(state)),
+        readyToInvest: selectIsReadyToInvest(state),
       };
     },
     dispatchToProps: dispatch => ({

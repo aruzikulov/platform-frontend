@@ -6,7 +6,10 @@ import { compose, setDisplayName } from "recompose";
 import { MONEY_DECIMALS } from "../../../../config/constants";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../../modules/actions";
-import { selectEurValueUlps } from "../../../../modules/investment-flow/selectors";
+import {
+  selectInvestmentEtoId,
+  selectInvestmentEurValueUlps,
+} from "../../../../modules/investment-flow/selectors";
 import {
   selectEquityTokenCountByEtoId,
   selectNeuRewardUlpsByEtoId,
@@ -122,15 +125,15 @@ const BankTransferSummary = compose<IProps, {}>(
   setDisplayName("BankTransferSummary"),
   appConnect<IStateProps>({
     stateToProps: state => {
-      const i = state.investmentFlow;
+      const etoId = selectInvestmentEtoId(state);
       // eto and computed values are guaranteed to be present at investment summary state
-      const eto = selectEtoWithCompanyAndContractById(state, i.etoId)!;
+      const eto = selectEtoWithCompanyAndContractById(state, etoId)!;
       return {
         etoAddress: eto.etoId,
         companyName: eto.company.name,
-        investmentEur: selectEurValueUlps(i),
-        equityTokens: selectEquityTokenCountByEtoId(i.etoId, state) as string,
-        estimatedReward: selectNeuRewardUlpsByEtoId(i.etoId, state) as string,
+        investmentEur: selectInvestmentEurValueUlps(state),
+        equityTokens: selectEquityTokenCountByEtoId(etoId, state) as string,
+        estimatedReward: selectNeuRewardUlpsByEtoId(etoId, state) as string,
       };
     },
     dispatchToProps: d => ({
