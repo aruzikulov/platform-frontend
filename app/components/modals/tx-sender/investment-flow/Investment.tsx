@@ -288,7 +288,7 @@ export const InvestmentSelection: React.SFC = compose<any>(
       const eur = selectInvestmentEurValueUlps(state);
       return {
         eto,
-        etherPriceEur: selectEtherPriceEur(state.tokenPrice),
+        etherPriceEur: selectEtherPriceEur(state),
         euroValue: eur,
         ethValue: selectInvestmentEthValueUlps(state),
         errorState: selectInvestmentErrorState(state),

@@ -20,7 +20,7 @@ import {
 } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/types";
 import { neuCall } from "../sagas";
-import { selectEtherPriceEur } from "../shared/tokenPrice/selectors";
+import { selectEtherPriceEur, selectEurPriceEther } from "../shared/tokenPrice/selectors";
 import { ETxSenderType } from "../tx/interfaces";
 import { selectTxGasCostEth } from "../tx/sender/selectors";
 import { txValidateSaga } from "../tx/validator/sagas";
@@ -68,7 +68,8 @@ function* processCurrencyValue(action: TAction): any {
 
 function* computeAndSetCurrencies(value: string, currency: EInvestmentCurrency): any {
   const state: IAppState = yield select();
-  const etherPriceEur = selectEtherPriceEur(state.tokenPrice);
+  const etherPriceEur = selectEtherPriceEur(state);
+  const eurPriceEther = selectEurPriceEther(state);
   if (!value) {
     yield put(actions.investmentFlow.setEthValue(""));
     yield put(actions.investmentFlow.setEurValue(""));
@@ -81,7 +82,7 @@ function* computeAndSetCurrencies(value: string, currency: EInvestmentCurrency):
         yield put(actions.investmentFlow.setEurValue(eurVal.toFixed(0, BigNumber.ROUND_UP)));
         return;
       case EInvestmentCurrency.Euro:
-        const ethVal = bignumber.div(etherPriceEur);
+        const ethVal = bignumber.mul(eurPriceEther);
         yield put(actions.investmentFlow.setEthValue(ethVal.toFixed(0, BigNumber.ROUND_UP)));
         yield put(actions.investmentFlow.setEurValue(bignumber.toFixed(0, BigNumber.ROUND_UP)));
         return;

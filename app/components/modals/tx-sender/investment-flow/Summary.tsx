@@ -191,7 +191,7 @@ const InvestmentSummary = compose<IProps, {}>(
         gasCostEth: selectTxGasCostEth(state),
         equityTokens: selectEquityTokenCountByEtoId(etoId, state) as string,
         estimatedReward: selectNeuRewardUlpsByEtoId(etoId, state) as string,
-        etherPriceEur: selectEtherPriceEur(state.tokenPrice),
+        etherPriceEur: selectEtherPriceEur(state),
         isIcbm: selectIsICBMInvestment(state),
       };
     },
