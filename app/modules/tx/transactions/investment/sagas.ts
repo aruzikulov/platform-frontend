@@ -16,55 +16,54 @@ import { selectEtherTokenBalance } from "./../../../wallet/selectors";
 
 export const INVESTMENT_GAS_AMOUNT = "600000";
 
-async function createInvestmentTxData(
+const createInvestmentTxData = (
   state: IAppState,
   txData: string,
   contractAddress: string,
   value = "0",
-): Promise<ITxData> {
-  return {
-    to: contractAddress,
-    from: selectEthereumAddressWithChecksum(state),
-    data: txData,
-    value: value,
-    gasPrice: selectStandardGasPriceWithOverHead(state),
-    gas: calculateGasLimitWithOverhead(INVESTMENT_GAS_AMOUNT),
-  };
-}
+) => ({
+  to: contractAddress,
+  from: selectEthereumAddressWithChecksum(state),
+  data: txData,
+  value: value,
+  gasPrice: selectStandardGasPriceWithOverHead(state),
+  gas: calculateGasLimitWithOverhead(INVESTMENT_GAS_AMOUNT),
+});
 
-function getEtherLockTransaction(
+const getEtherLockTransaction = (
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): Promise<ITxData> {
+) => {
   const txData = contractsService.etherLock
     .transferTx(etoId, new BigNumber(state.investmentFlow.ethValueUlps), [""])
     .getData();
   return createInvestmentTxData(state, txData, contractsService.etherLock.address);
-}
+};
 
-function getEuroLockTransaction(
+const getEuroLockTransaction = (
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): Promise<ITxData> {
+) => {
   const txData = contractsService.euroLock
     .transferTx(etoId, new BigNumber(state.investmentFlow.euroValueUlps), [""])
     .getData();
   return createInvestmentTxData(state, txData, contractsService.euroLock.address);
-}
+};
 
-async function getEtherTokenTransaction(
+function getEtherTokenTransaction(
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): Promise<ITxData> {
+): ITxData {
   const etherTokenBalance = selectEtherTokenBalance(state);
   const etherValue = state.investmentFlow.ethValueUlps;
 
   if (!etherTokenBalance) {
     throw new Error("No ether Token Balance");
   }
+
   if (compareBigNumbers(etherTokenBalance, etherValue) >= 0) {
     // transaction can be fully covered by etherTokens
 
