@@ -28,13 +28,15 @@ import {
   selectNeuRewardUlpsByEtoId,
 } from "../../../../modules/investor-tickets/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
-import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
+import {
+  selectEtherPriceEur,
+  selectEurPriceEther,
+} from "../../../../modules/shared/tokenPrice/selectors";
 import { EValidationState } from "../../../../modules/tx/sender/reducer";
 import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
 import {
   addBigNumbers,
-  divideBigNumbers,
   multiplyBigNumbers,
   subtractBigNumbers,
 } from "../../../../utils/BigNumberUtils";
@@ -63,6 +65,7 @@ interface IStateProps {
   euroValue: string;
   ethValue: string;
   etherPriceEur: string;
+  eurPriceEther: string;
   investmentType?: EInvestmentType;
   gasCostEth: string;
   errorState?: EInvestmentErrorState | EValidationState;
@@ -289,6 +292,7 @@ export const InvestmentSelection: React.SFC = compose<any>(
       return {
         eto,
         etherPriceEur: selectEtherPriceEur(state),
+        eurPriceEther: selectEurPriceEther(state),
         euroValue: eur,
         ethValue: selectInvestmentEthValueUlps(state),
         errorState: selectInvestmentErrorState(state),
@@ -313,14 +317,14 @@ export const InvestmentSelection: React.SFC = compose<any>(
     }),
   }),
   withProps<IWithProps, IStateProps>(
-    ({ eto, ethValue, investmentType, gasCostEth, euroValue, etherPriceEur }) => {
+    ({ eto, ethValue, investmentType, gasCostEth, euroValue, etherPriceEur, eurPriceEther }) => {
       const gasCostEuro = multiplyBigNumbers([gasCostEth, etherPriceEur]);
       const minTicketEur = eto.minTicketEur || 0;
 
       return {
         gasCostEuro,
         minTicketEur,
-        minTicketEth: divideBigNumbers(minTicketEur, etherPriceEur),
+        minTicketEth: multiplyBigNumbers([minTicketEur, eurPriceEther]),
         totalCostEth: addBigNumbers([gasCostEth, ethValue || "0"]),
         totalCostEur: addBigNumbers([gasCostEuro, euroValue || "0"]),
         isWalletBalanceKnown: investmentType !== EInvestmentType.BankTransfer,

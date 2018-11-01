@@ -4,10 +4,10 @@ import { IHttpResponse } from "../../lib/api/client/IHttpClient";
 import { GasModelShape } from "../../lib/api/GasApi";
 import { actions } from "../actions";
 import { neuTakeEvery } from "../sagas";
-import { selectGasPrice, selectIsAlreadyLoaded } from "./selectors";
+import { selectGasPrice, selectIsGasPriceAlreadyLoaded } from "./selectors";
 
 function* ensureGasApiDataSaga({ gasApi, logger }: TGlobalDependencies): any {
-  const isAlreadyLoaded: boolean = yield select(selectIsAlreadyLoaded);
+  const isAlreadyLoaded: boolean = yield select(selectIsGasPriceAlreadyLoaded);
 
   if (isAlreadyLoaded) {
     const gasPrice: GasModelShape = yield select(selectGasPrice);

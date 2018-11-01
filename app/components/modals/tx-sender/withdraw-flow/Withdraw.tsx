@@ -8,7 +8,6 @@ import { NumberSchema } from "yup";
 import { ITxData } from "../../../../lib/web3/types";
 import * as YupTS from "../../../../lib/yup-ts";
 import { actions } from "../../../../modules/actions";
-import { selectStandardGasPrice } from "../../../../modules/gas/selectors";
 import { ETxSenderType, IDraftType } from "../../../../modules/tx/interfaces";
 import { EValidationState } from "../../../../modules/tx/sender/reducer";
 import { selectTxValidationState } from "../../../../modules/tx/sender/selectors";
@@ -163,7 +162,6 @@ const Withdraw = compose<TProps, {}>(
   appConnect<IStateProps, ITxInitDispatchProps>({
     stateToProps: state => ({
       maxEther: selectMaxAvailableEther(state),
-      gasPrice: selectStandardGasPrice(state),
       validationState: selectTxValidationState(state),
     }),
     dispatchToProps: d => ({

@@ -28,6 +28,7 @@ storiesOf("Investment/Form", module).add("default with error", () => (
       gasCostEth={"123412323412341234"}
       gasCostEuro={"12341234123412341234"}
       etherPriceEur={"123412341234123412341234"}
+      eurPriceEther={"0.123412341234123412341234"}
       investEntireBalance={() => {}}
       investmentType={EInvestmentType.InvestmentWallet}
       isWalletBalanceKnown={true}
