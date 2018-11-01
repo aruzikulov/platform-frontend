@@ -3,16 +3,19 @@ import { Tooltip, TooltipProps } from "reactstrap";
 
 import * as styles from "./CustomTooltip.module.scss";
 
-export class CustomTooltip extends React.Component<TooltipProps> {
-  state = {
+interface IProps {}
+interface IState {
+  tooltipOpen: boolean;
+}
+
+export class CustomTooltip extends React.Component<TooltipProps & IProps> {
+  state: IState = {
     tooltipOpen: false,
   };
 
   toggle = () => {
     if (!this.props.isOpen) {
-      this.setState({
-        tooltipOpen: !this.state.tooltipOpen,
-      });
+      this.setState((s: IState) => ({ tooltipOpen: !s.tooltipOpen }));
     }
   };
 

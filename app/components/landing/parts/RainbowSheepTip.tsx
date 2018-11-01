@@ -32,15 +32,15 @@ export class RainbowSheepTip extends React.Component<IProps> {
   timerTask: any;
 
   onClick = () => {
-    this.setState({
+    this.setState((s: IState) => ({
       open: true,
-      tipIndex: this.state.tipIndex + 1,
-    });
+      tipIndex: s.tipIndex + 1,
+    }));
 
     if (this.timerTask) {
       clearTimeout(this.timerTask);
     }
-    this.timerTask = setTimeout(() => this.setState({ ...this.state, open: false }), TIP_TIMEOUT);
+    this.timerTask = setTimeout(() => this.setState({ open: false }), TIP_TIMEOUT);
   };
 
   private reset = () => {

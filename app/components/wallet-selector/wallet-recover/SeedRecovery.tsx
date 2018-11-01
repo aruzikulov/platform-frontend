@@ -31,14 +31,10 @@ export class WalletLightSeedRecoveryComponent extends React.Component<
   ISeedRecoveryProps,
   ISeedRecoveryState
 > {
-  constructor(props: ISeedRecoveryProps) {
-    super(props);
-
-    this.state = {
-      words: Array(SEED_LENGTH).fill(null),
-      page: 0,
-    };
-  }
+  state = {
+    words: Array(SEED_LENGTH).fill(null),
+    page: 0,
+  };
 
   updateValueFactory = (wordNumber: number) => (newValue: any): void => {
     const words = this.state.words;
@@ -65,16 +61,16 @@ export class WalletLightSeedRecoveryComponent extends React.Component<
   );
 
   handleNextView = () => {
-    this.setState({
-      page: this.state.page + 1,
-    });
+    this.setState(s => ({
+      page: s.page + 1,
+    }));
   };
 
   handlePreviousView = () => {
     if (this.state.page > 0) {
-      this.setState({
-        page: this.state.page - 1,
-      });
+      this.setState(s => ({
+        page: s.page - 1,
+      }));
     }
   };
 

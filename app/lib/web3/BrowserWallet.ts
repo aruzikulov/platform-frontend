@@ -21,6 +21,8 @@ export class BrowserWalletMismatchedNetworkError extends BrowserWalletError {
   }
 }
 export class BrowserWalletLockedError extends BrowserWalletError {}
+export class BrowserWalletAccountApprovalRejectedError extends BrowserWalletError {}
+export class BrowserWalletAccountApprovalPendingError extends BrowserWalletError {}
 export class BrowserWalletConfirmationRejectedError extends BrowserWalletError {}
 export class BrowserWalletUnknownError extends BrowserWalletError {}
 
@@ -84,13 +86,28 @@ export class BrowserWallet implements IPersonalWallet {
 
 @injectable()
 export class BrowserWalletConnector {
-  public async connect(networkId: EthereumNetworkId): Promise<BrowserWallet> {
-    const newInjectedWeb3 = (window as any).web3;
-    if (typeof newInjectedWeb3 === "undefined") {
-      throw new BrowserWalletMissingError();
-    }
-    const newWeb3 = new Web3(newInjectedWeb3.currentProvider);
+  dataApprovalPending: boolean;
 
+  constructor() {
+    this.dataApprovalPending = false;
+  }
+
+  public async connect(networkId: EthereumNetworkId): Promise<BrowserWallet> {
+    let newMetamask = true;
+    let injectedWeb3Provider;
+
+    if (typeof (window as any).ethereum !== "undefined") {
+      injectedWeb3Provider = (window as any).ethereum;
+    } else {
+      newMetamask = false;
+      const injectedWeb3 = (window as any).web3;
+      if (typeof injectedWeb3 === "undefined") {
+        throw new BrowserWalletMissingError();
+      }
+      injectedWeb3Provider = injectedWeb3.currentProvider;
+    }
+
+    const newWeb3 = new Web3(injectedWeb3Provider);
     const web3Adapter = new Web3Adapter(newWeb3);
     // check for mismatched networkIds
     const personalWeb3NetworkId = await web3Adapter.getNetworkId();
@@ -98,9 +115,30 @@ export class BrowserWalletConnector {
       throw new BrowserWalletMismatchedNetworkError(networkId, personalWeb3NetworkId);
     }
 
-    // check for locked wallet
+    // TODO: this ugly code will be straighten when we drop suport for outdated Metamask versions - see github issue 1702
     if (!(await web3Adapter.getAccountAddress())) {
-      throw new BrowserWalletLockedError();
+      if (newMetamask) {
+        if (this.dataApprovalPending) {
+          throw new BrowserWalletAccountApprovalPendingError();
+        } else {
+          try {
+            this.dataApprovalPending = true;
+            await injectedWeb3Provider.enable();
+          } catch (e) {
+            throw new BrowserWalletAccountApprovalRejectedError();
+          } finally {
+            this.dataApprovalPending = false;
+          }
+        }
+        // Metamask ver that only partly implements EIP will resolve promise obtained from .enable() call but it still
+        // can be in locked mode so no accounts will be returned. That's why we need second check.
+        if (!(await web3Adapter.getAccountAddress())) {
+          throw new BrowserWalletLockedError();
+        }
+        // For old Metamask versions is there are no accounts returned it means plugin is locked.
+      } else {
+        throw new BrowserWalletLockedError();
+      }
     }
 
     const walletType = await this.getBrowserWalletType(web3Adapter.web3);

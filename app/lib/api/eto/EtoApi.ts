@@ -1,6 +1,7 @@
 import { inject, injectable } from "inversify";
 
 import { symbols } from "../../../di/symbols";
+import { withParams } from "../../../utils/withParams";
 import { IHttpClient, IHttpResponse } from "../client/IHttpClient";
 import { TGeneralEtoData, TPartialCompanyEtoData, TPartialEtoSpecData } from "./EtoApi.interfaces";
 
@@ -11,7 +12,7 @@ const ETOS_PATH = "/etos";
 const ETO_DATA_PATH = "/etos/me";
 const ETO_SUBMISSION_PATH = "/etos/me/submission";
 const ETO_BOOK_BUILDING_PATH = "/etos/me/bookbuilding";
-const ETO_PREVIEW_PATH = "/eto-previews/";
+const ETO_PREVIEW_PATH = "/eto/view/:previewCode";
 
 @injectable()
 export class EtoApi {
@@ -45,7 +46,7 @@ export class EtoApi {
   public async getEtoPreview(previewCode: string): Promise<IHttpResponse<TPartialCompanyEtoData>> {
     return await this.httpClient.get<TPartialCompanyEtoData>({
       baseUrl: BASE_PATH,
-      url: ETO_PREVIEW_PATH + previewCode,
+      url: withParams(ETO_PREVIEW_PATH, { previewCode }),
     });
   }
 

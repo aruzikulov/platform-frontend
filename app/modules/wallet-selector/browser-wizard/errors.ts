@@ -1,4 +1,6 @@
 import {
+  BrowserWalletAccountApprovalPendingError,
+  BrowserWalletAccountApprovalRejectedError,
   BrowserWalletLockedError,
   BrowserWalletMismatchedNetworkError,
   BrowserWalletMissingError,
@@ -16,6 +18,12 @@ export function mapBrowserWalletErrorToErrorMessage(e: Error): string {
   }
   if (e instanceof BrowserWalletMissingError) {
     return "We did not detect any Web3 wallet";
+  }
+  if (e instanceof BrowserWalletAccountApprovalRejectedError) {
+    return "Data approval rejected";
+  }
+  if (e instanceof BrowserWalletAccountApprovalPendingError) {
+    return "Data approval pending";
   }
   return "Web3 wallet not available";
 }

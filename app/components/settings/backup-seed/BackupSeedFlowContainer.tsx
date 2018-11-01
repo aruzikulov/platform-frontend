@@ -27,15 +27,15 @@ export class BackupSeedFlowContainer extends React.Component<IProps, IState> {
   };
 
   private onBack = () => {
-    this.setState({
-      backupStep: this.state.backupStep - 1,
-    });
+    this.setState(s => ({
+      backupStep: s.backupStep - 1,
+    }));
   };
 
   private onNext = () => {
-    this.setState({
-      backupStep: this.state.backupStep + 1,
-    });
+    this.setState(s => ({
+      backupStep: s.backupStep + 1,
+    }));
   };
 
   renderBackupPage(): React.ReactNode {

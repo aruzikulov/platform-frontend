@@ -68,14 +68,10 @@ export class EtoOfferingCardComponent extends React.Component<
 
   private onClick = () => {
     const { isMobile, teaser } = this.props;
-    const { isClicked } = this.state;
 
     if (!isMobile || teaser) return;
 
-    this.setState({
-      ...this.state,
-      isClicked: !isClicked,
-    });
+    this.setState(s => ({ isClicked: !s.isClicked }));
   };
 
   render(): React.ReactNode {
