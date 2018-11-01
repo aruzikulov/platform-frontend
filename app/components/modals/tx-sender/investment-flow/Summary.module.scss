@@ -3,10 +3,13 @@
     margin: 2rem 0;
   }
 
-  p > strong {
+  p>strong {
     // orange inside FormattedHTMLMessage
     color: $neu-bright-orange;
   }
+
+  .info-icon {
+    height: 1rem;
+    margin: 0 .5rem;
+  }
 }
-
-

@@ -42,12 +42,12 @@ interface IStateProps {
 
 type IProps = IStateProps & IDispatchProps;
 
-const BankTransferSummaryComponent = ({
+const BankTransferSummaryComponent: React.SFC<IProps> = ({
   investmentEur,
   companyName,
   downloadAgreement,
   ...data
-}: IStateProps & IDispatchProps) => {
+}) => {
   const equityTokens = (
     <span>
       {/* TODO: Change to actual custom token icon */}
