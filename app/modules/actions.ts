@@ -1,3 +1,5 @@
+import { LocationChangeAction } from "react-router-redux";
+
 import { TDictionaryValues } from "../types";
 import { accessWalletActions } from "./access-wallet/actions";
 import { authActions } from "./auth/actions";
@@ -76,5 +78,5 @@ type TActions = typeof actions;
 type TAllActions = TActions[keyof TActions];
 type TActionCreatorsUnionType = TDictionaryValues<TAllActions>;
 
-export type TAction = ReturnType<TActionCreatorsUnionType>;
+export type TAction = ReturnType<TActionCreatorsUnionType> | LocationChangeAction;
 export type TActionType = TAction["type"];

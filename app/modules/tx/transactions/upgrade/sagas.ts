@@ -6,7 +6,7 @@ import { ITxData } from "../../../../lib/web3/types";
 import { EthereumAddress } from "../../../../types";
 import { actions } from "../../../actions";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
-import { neuCall } from "../../../sagas";
+import { neuCall } from "../../../sagasUtils";
 import {
   selectIsEtherUpgradeTargetSet,
   selectIsEuroUpgradeTargetSet,

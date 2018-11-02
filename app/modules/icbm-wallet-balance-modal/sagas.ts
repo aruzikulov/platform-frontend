@@ -5,13 +5,11 @@ import { fork, put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IAppState } from "../../store";
-import { actions } from "../actions";
-import { neuCall, neuTakeEvery } from "../sagas";
-import { neuTakeUntil } from "../sagasUtils";
+import { actions, TAction } from "../actions";
+import { neuCall, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
 import { ILockedWallet, IWalletStateData } from "../wallet/reducer";
 import { loadWalletDataAsync } from "../wallet/sagas";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
-import { TAction } from "./../actions";
 import { IWalletMigrationData } from "./reducer";
 import { selectIcbmWalletEthAddress } from "./selectors";
 

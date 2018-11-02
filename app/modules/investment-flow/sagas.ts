@@ -19,7 +19,7 @@ import {
   selectEtoWithCompanyAndContractById,
 } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/types";
-import { neuCall } from "../sagas";
+import { neuCall } from "../sagasUtils";
 import { selectEtherPriceEur } from "../shared/tokenPrice/selectors";
 import { ETxSenderType } from "../tx/interfaces";
 import { selectTxGasCostEth } from "../tx/sender/selectors";

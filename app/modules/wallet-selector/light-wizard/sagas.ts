@@ -30,7 +30,7 @@ import {
   updateUserPromise,
 } from "../../auth/sagas";
 import { displayInfoModalSaga } from "../../generic-modal/sagas";
-import { neuCall, neuTakeEvery } from "../../sagas";
+import { neuCall, neuTakeEvery } from "../../sagasUtils";
 import {
   selectIsUnlocked,
   selectLightWalletFromQueryString,

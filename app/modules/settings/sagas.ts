@@ -9,7 +9,7 @@ import { accessWalletAndRunEffect } from "../access-wallet/sagas";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent, loadUser, updateUser } from "../auth/sagas";
 import { selectDoesEmailExist, selectUser } from "../auth/selectors";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 import {
   selectLightWalletSalt,
   selectPreviousLightWalletSalt,

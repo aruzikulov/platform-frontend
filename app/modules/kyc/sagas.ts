@@ -23,8 +23,7 @@ import { ensurePermissionsArePresent } from "../auth/sagas";
 import { selectUser } from "../auth/selectors";
 import { displayErrorModalSaga } from "../generic-modal/sagas";
 import { selectIsSmartContractInitDone } from "../init/selectors";
-import { neuCall, neuTakeEvery } from "../sagas";
-import { neuTakeOnly } from "../sagasUtils";
+import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
 import {
   selectCombinedBeneficialOwnerOwnership,
   selectKycRequestOutsourcedStatus,

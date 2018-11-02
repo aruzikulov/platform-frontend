@@ -3,7 +3,7 @@ import { TGlobalDependencies } from "../../../di/setupBindings";
 import { IHttpResponse } from "../../../lib/api/client/IHttpClient";
 import { TFileDescription } from "../../../lib/api/FileStorage.interfaces";
 import { TAction } from "../../actions";
-import { neuTakeEvery } from "../../sagas";
+import { neuTakeEvery } from "../../sagasUtils";
 
 function* singleFileUpload(
   { fileStorageApi, notificationCenter }: TGlobalDependencies,

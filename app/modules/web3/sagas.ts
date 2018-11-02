@@ -5,7 +5,7 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { EUserType } from "../../lib/api/users/interfaces";
 import { LightWallet, LightWalletWrongPassword } from "../../lib/web3/LightWallet";
 import { actions, TAction } from "../actions";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { EWalletType } from "./types";
 
 let lockWalletTask: Task | undefined;
