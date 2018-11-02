@@ -57,14 +57,14 @@ describe("Wallet > selectors", () => {
     const fullStateMock = (state as any) as IAppState;
 
     const totalEther = Q18.mul(10 + 23.11 + 50 + 100);
-    expect(selectTotalEtherBalance(state.wallet)).to.be.eq(totalEther.toString());
+    expect(selectTotalEtherBalance(fullStateMock)).to.be.eq(totalEther.toString());
 
     expect(selectTotalEtherBalanceEuroAmount(fullStateMock)).to.be.eq(
       totalEther.mul(10).toString(),
     );
 
     const totalEuro = Q18.mul(10.12 + 5 + 18.11);
-    expect(selectTotalEuroTokenBalance(state.wallet)).to.be.eq(totalEuro.toString());
+    expect(selectTotalEuroTokenBalance(fullStateMock)).to.be.eq(totalEuro.toString());
 
     expect(selectLiquidEuroTotalAmount(fullStateMock)).to.be.eq(
       Q18.mul(10.12)

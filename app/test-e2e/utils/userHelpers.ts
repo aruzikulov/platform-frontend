@@ -18,6 +18,7 @@ export const createAndLoginNewUser = (
     kyc?: "business" | "individual";
     seed?: string;
     clearPendingTransactions?: boolean;
+    onlyLogin?: boolean;
   } = {},
 ) => {
   return cy.clearLocalStorage().then(async ls => {
@@ -49,8 +50,9 @@ export const createAndLoginNewUser = (
     const jwt = await getJWT(address, lightWalletInstance, walletKey);
     ls.setItem(JWT_KEY, `"${jwt}"`);
 
-    // create a user object on the backend
-    await createUser(privateKey, userType, params.kyc);
+    if (!params.onlyLogin)
+      // create a user object on the backend
+      await createUser(privateKey, userType, params.kyc);
 
     // mark backup codes verified
     await markBackupCodesVerified(jwt);

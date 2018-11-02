@@ -12,12 +12,9 @@ import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { ILedgerWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import { IPersonalWallet, SignerType } from "./PersonalWeb3";
+import { IEthereumNetworkConfig } from "./types";
 import { Web3Adapter } from "./Web3Adapter";
-import {
-  IEthereumNetworkConfig,
-  SignerRejectConfirmationError,
-  SignerTimeoutError,
-} from "./Web3Manager";
+import { SignerRejectConfirmationError, SignerTimeoutError } from "./Web3Manager";
 
 const CHECK_INTERVAL = 1000;
 

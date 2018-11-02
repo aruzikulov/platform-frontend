@@ -2,7 +2,7 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 import { Container } from "reactstrap";
 
-import { ETxSenderType } from "../../../../modules/tx/sender/reducer";
+import { ETxSenderType } from "../../../../modules/tx/interfaces";
 import { ITxPendingProps, TxPending } from "./TxPending";
 
 const txData: ITxPendingProps = {

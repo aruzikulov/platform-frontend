@@ -6,7 +6,7 @@ import { Col, Container, Row } from "reactstrap";
 import { injectIntlHelpers } from "../../utils/injectIntlHelpers";
 import { appRoutes } from "../appRoutes";
 import { LayoutUnauthorized } from "../layouts/LayoutUnauthorized";
-import { CenteredListWithTitle } from "../shared/CenterdListWithTitle";
+import { CenteredListWithTitle } from "../shared/CenteredListWithTitle";
 import { OffToOnCompany } from "./shared/OffToOnChainCompany";
 import { RegisterCta } from "./shared/RegisterCta";
 

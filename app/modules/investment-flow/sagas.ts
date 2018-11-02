@@ -6,15 +6,21 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { IAppState } from "../../store";
 import { addBigNumbers, compareBigNumbers } from "../../utils/BigNumberUtils";
+import { isLessThanNDays } from "../../utils/Date.utils";
 import { convertToBigInt } from "../../utils/Number.utils";
 import { extractNumber } from "../../utils/StringUtils";
 import { actions, TAction } from "../actions";
-import { IGasState } from "../gas/reducer";
 import { loadComputedContributionFromContract } from "../investor-tickets/sagas";
-import { selectCalculatedContribution } from "../investor-tickets/selectors";
-import { selectEtoById } from "../public-etos/selectors";
+import { selectCalculatedContribution, selectIsWhitelisted } from "../investor-tickets/selectors";
+import {
+  selectEtoById,
+  selectEtoOnChainStateById,
+  selectEtoWithCompanyAndContractById,
+} from "../public-etos/selectors";
+import { EETOStateOnChain } from "../public-etos/types";
 import { neuCall } from "../sagas";
 import { selectEtherPriceEur } from "../shared/tokenPrice/selectors";
+import { selectTxGasCostEth } from "../tx/sender/selectors";
 import {
   selectLiquidEtherBalance,
   selectLockedEtherBalance,
@@ -31,7 +37,8 @@ import {
   selectCurrencyByInvestmentType,
   selectEthValueUlps,
   selectEurValueUlps,
-  selectInvestmentGasCostEth,
+  selectInvestmentEtoId,
+  selectInvestmentType,
   selectIsBankTransferModalOpened,
   selectIsICBMInvestment,
 } from "./selectors";
@@ -87,14 +94,7 @@ function validateInvestment(state: IAppState): EInvestmentErrorState | undefined
 
   if (!contribs || !euroValue || !wallet) return;
 
-  const gasPrice = selectInvestmentGasCostEth(investmentFlow);
-
-  if (
-    investmentFlow.investmentType !== EInvestmentType.BankTransfer &&
-    compareBigNumbers(gasPrice, wallet.etherBalance) > 0
-  ) {
-    return EInvestmentErrorState.NotEnoughEtherForGas;
-  }
+  const gasPrice = selectTxGasCostEth(state.txSender);
 
   if (investmentFlow.investmentType === EInvestmentType.InvestmentWallet) {
     if (
@@ -160,9 +160,8 @@ function* start(action: TAction): any {
   yield put(actions.investmentFlow.resetInvestment());
   yield put(actions.investmentFlow.setEtoId(action.payload.etoId));
   yield put(actions.kyc.kycLoadClientData());
-  yield put(actions.gas.gasApiEnsureLoading());
-  yield put(actions.txSender.startInvestment());
-  yield setGasPrice();
+  yield put(actions.txTransactions.startInvestment());
+  yield getActiveInvestmentTypes();
 }
 
 export function* onInvestmentTxModalHide(): any {
@@ -172,10 +171,58 @@ export function* onInvestmentTxModalHide(): any {
   }
 }
 
-function* setGasPrice(): any {
-  const gas: IGasState = yield select((s: IAppState) => s.gas);
-  yield put(actions.investmentFlow.setGasPrice(gas.gasPrice && gas.gasPrice.standard));
-  yield put(actions.investmentFlow.validateInputs());
+function* getActiveInvestmentTypes(): any {
+  const state: IAppState = yield select();
+  const etoId = selectInvestmentEtoId(state.investmentFlow);
+  const eto = selectEtoWithCompanyAndContractById(state, etoId);
+  const etoState = selectEtoOnChainStateById(state.publicEtos, etoId);
+
+  let activeTypes: EInvestmentType[] = [
+    EInvestmentType.InvestmentWallet,
+    EInvestmentType.BankTransfer,
+  ];
+
+  // no public bank transfer 3 days before eto end
+  const etoEndDate = eto && eto.contract && eto.contract.startOfStates[EETOStateOnChain.Signing];
+  if (
+    etoState === EETOStateOnChain.Public &&
+    etoEndDate &&
+    isLessThanNDays(new Date(), etoEndDate, 3)
+  ) {
+    activeTypes.splice(1); // remove bank transfer
+  }
+
+  // no whitelist bank transfer 3 days before public eto
+  const etoEndWhitelistDate =
+    eto && eto.contract && eto.contract.startOfStates[EETOStateOnChain.Public];
+  if (
+    etoState === EETOStateOnChain.Whitelist &&
+    etoEndWhitelistDate &&
+    isLessThanNDays(new Date(), etoEndWhitelistDate, 3)
+  ) {
+    activeTypes.splice(1); // remove bank transfer
+  }
+
+  // no regular investment if not whitelisted in pre eto
+  if (etoState === EETOStateOnChain.Whitelist && !selectIsWhitelisted(etoId, state)) {
+    activeTypes = [];
+  }
+
+  // only ICBM investment if balance available
+  if (compareBigNumbers(selectLockedEuroTokenBalance(state.wallet), 0) > 0) {
+    activeTypes.unshift(EInvestmentType.ICBMnEuro);
+  }
+  if (compareBigNumbers(selectLockedEtherBalance(state.wallet), 0) > 0) {
+    activeTypes.unshift(EInvestmentType.ICBMEth);
+  }
+
+  yield put(actions.investmentFlow.setActiveInvestmentTypes(activeTypes));
+
+  // guarantee that current type is inside active types.
+  const currentType = selectInvestmentType(state.investmentFlow);
+  if (currentType && !activeTypes.includes(currentType)) {
+    yield put(actions.investmentFlow.selectInvestmentType(activeTypes[0]));
+  }
 }
 
 function* recalculateCurrencies(): any {
@@ -213,7 +260,6 @@ export function* investmentFlowSagas(): any {
   yield takeEvery("INVESTMENT_FLOW_START", start);
   yield takeEvery("INVESTMENT_FLOW_SHOW_BANK_TRANSFER_SUMMARY", showBankTransferSummary);
   yield takeEvery("INVESTMENT_FLOW_SHOW_BANK_TRANSFER_DETAILS", showBankTransferDetails);
-  yield takeEvery("GAS_API_LOADED", setGasPrice);
   yield takeEvery("TOKEN_PRICE_SAVE", recalculateCurrencies);
   yield takeEvery("INVESTMENT_FLOW_BANK_TRANSFER_CHANGE", bankTransferChange);
 }

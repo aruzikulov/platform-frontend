@@ -1,40 +1,54 @@
-import { ITxData } from "../../../lib/web3/Web3Manager";
+import { ITxData } from "../../../lib/web3/types";
 import { AppReducer } from "../../../store";
+import { ETxSenderType } from "./../interfaces";
 
-export enum ETxSenderType {
-  WITHDRAW = "WITHDRAW",
-  INVEST = "INVEST",
-  UPGRADE = "UPGRADE",
+export enum ETransactionErrorType {
+  NOT_ENOUGH_ETHER_FOR_GAS = "not_enough_ether_for_gas",
+  FAILED_TO_GENERATE_TX = "failed_to_generate_tx",
+  GAS_TOO_LOW = "gas_too_low",
+  TOO_MANY_TX_IN_QUEUE = "too_many_tx_in_queue",
+  INVALID_RLP_TX = "invalid_rlp_tx",
+  INVALID_CHAIN_ID = "invalid_chain_id",
+  TX_WAS_REJECTED = "tx_was_rejected",
+  NOT_ENOUGH_FUNDS = "not_enough_funds",
+  ERROR_WHILE_WATCHING_TX = "error_while_watching_tx",
+  OUT_OF_GAS = "out_of_gas",
+  REVERTED_TX = "reverted_tx",
+  NONCE_TOO_LOW = "nonce_too_low",
+  UNKNOWN_ERROR = "unknown_error",
 }
 
-export enum ETokenType {
-  ETHER = "ETHER",
-  EURO = "EURO",
+export enum EValidationState {
+  NOT_ENOUGH_ETHER_FOR_GAS = "not_enough_ether_for_gas",
+  VALIDATION_OK = "validation_ok",
 }
 
-export type TxSenderState =
-  | "UNINITIALIZED"
-  | "WATCHING_PENDING_TXS"
-  | "INIT"
-  | "SUMMARY"
-  | "ACCESSING_WALLET"
-  | "SIGNING"
-  | "MINING"
-  | "DONE"
-  | "ERROR_SIGN"
-  | "REVERTED";
+export enum ETxSenderState {
+  UNINITIALIZED = "UNINITIALIZED",
+  WATCHING_PENDING_TXS = "WATCHING_PENDING_TXS",
+  INIT = "INIT",
+  SUMMARY = "SUMMARY",
+  ACCESSING_WALLET = "ACCESSING_WALLET",
+  SIGNING = "SIGNING",
+  MINING = "MINING",
+  DONE = "DONE",
+  ERROR_SIGN = "ERROR_SIGN",
+}
 
 export interface ITxSenderState {
-  state: TxSenderState;
+  state: ETxSenderState;
   type?: ETxSenderType;
   txDetails?: ITxData;
+  txDraftDetails?: Partial<ITxData>;
+  summaryData?: Partial<ITxData>;
   blockId?: number;
   txHash?: string;
-  error?: string;
+  error?: ETransactionErrorType;
+  validationState?: EValidationState;
 }
 
 const initialState: ITxSenderState = {
-  state: "UNINITIALIZED",
+  state: ETxSenderState.UNINITIALIZED,
 };
 
 export const txSenderReducer: AppReducer<ITxSenderState> = (
@@ -44,12 +58,6 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
   switch (action.type) {
     // Modal related Actions
     case "TX_SENDER_SHOW_MODAL":
-      return {
-        ...initialState,
-        state: "WATCHING_PENDING_TXS",
-        type: action.payload.type,
-      };
-
     case "TX_SENDER_HIDE_MODAL":
       return {
         ...initialState,
@@ -59,39 +67,43 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
     case "TX_SENDER_WATCH_PENDING_TXS":
       return {
         ...initialState,
-        state: "WATCHING_PENDING_TXS",
+        state: ETxSenderState.WATCHING_PENDING_TXS,
       };
 
     case "TX_SENDER_WATCH_PENDING_TXS_DONE":
       return {
         ...initialState,
-        state: "INIT",
+        state: ETxSenderState.INIT,
         type: action.payload.type,
       };
     case "TX_SENDER_ACCEPT":
       return {
         ...state,
-        state: "ACCESSING_WALLET",
+        state: ETxSenderState.ACCESSING_WALLET,
       };
-
+    case "TX_SENDER_LOAD_TRANSACTION":
+      return {
+        ...state,
+        txDetails: {
+          ...action.payload,
+        },
+      };
     case "TX_SENDER_WALLET_PLUGGED":
       return {
         ...state,
-        state: "SIGNING",
+        state: ETxSenderState.SIGNING,
       };
     case "TX_SENDER_ACCEPT_DRAFT":
       return {
         ...state,
-        state: "SUMMARY",
-        txDetails: {
-          ...state.txDetails,
+        txDraftDetails: {
           ...action.payload,
         },
       };
     case "TX_SENDER_SIGNED":
       return {
         ...state,
-        state: "MINING",
+        state: ETxSenderState.MINING,
         txHash: action.payload.txHash,
         type: action.payload.type,
       };
@@ -105,20 +117,38 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
     case "TX_SENDER_TX_MINED":
       return {
         ...state,
-        state: "DONE",
+        state: ETxSenderState.DONE,
       };
-    //Error Actions
+
     case "TX_SENDER_ERROR":
       return {
         ...initialState,
-        state: "ERROR_SIGN",
+        state: ETxSenderState.ERROR_SIGN,
         error: action.payload.error,
+      };
+    case "TX_SENDER_SET_VALIDATION_STATE":
+      return {
+        ...state,
+        validationState: action.payload,
+      };
+    case "TX_SENDER_VALIDATE_DRAFT":
+      return {
+        ...state,
+        validationState: undefined,
+      };
+    case "TX_SENDER_SET_SUMMARY_DATA":
+      return {
+        ...state,
+        state: ETxSenderState.SUMMARY,
+        summaryData: {
+          ...action.payload,
+        },
       };
     //Change Actions
     case "TX_SENDER_CHANGE":
       return {
         ...state,
-        state: "INIT",
+        state: ETxSenderState.INIT,
         type: action.payload.type,
       };
   }

@@ -8,6 +8,7 @@ import * as Yup from "yup";
 
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
+import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { externalRoutes } from "../../externalRoutes";
 import { Button } from "../../shared/buttons";
 import { FormField } from "../../shared/forms";
@@ -43,58 +44,75 @@ const validationSchema = Yup.object().shape({
     .required()
     .oneOf([Yup.ref(PASSWORD)], "Passwords are not equal"),
 });
+class RegisterLightWalletForm extends React.Component<
+  FormikProps<IFormValues> & IStateProps & IIntlProps & { restore: boolean }
+> {
+  componentDidUpdate = (
+    nextProps: FormikProps<IFormValues> & IStateProps & { restore: boolean },
+  ) => {
+    if (
+      this.props.isLoading === true &&
+      this.props.isSubmitting === true &&
+      nextProps.isLoading === false &&
+      nextProps.isSubmitting === true
+    ) {
+      this.props.setSubmitting(false);
+    }
+  };
 
-const RegisterLightWalletForm = (
-  formikBag: FormikProps<IFormValues> & IStateProps & { restore: boolean },
-) => (
-  <Form>
-    {/* TODO: ADD TRANSLATIONS */}
-    <FormField
-      placeholder="Email Address"
-      type="email"
-      name={EMAIL}
-      data-test-id="wallet-selector-register-email"
-    />
-    <FormField
-      type="password"
-      placeholder="Password"
-      name={PASSWORD}
-      data-test-id="wallet-selector-register-password"
-    />
-    <FormField
-      type="password"
-      placeholder="Confirm Password"
-      name={REPEAT_PASSWORD}
-      data-test-id="wallet-selector-register-confirm-password"
-    />
-    <div className="text-center">
-      <Button
-        type="submit"
-        disabled={formikBag.isSubmitting || !formikBag.isValid || formikBag.isLoading}
-        data-test-id="wallet-selector-register-button"
-      >
-        {formikBag.restore ? (
-          <FormattedMessage id="wallet-selector.neuwallet.restore" />
-        ) : (
-          <FormattedMessage id="wallet-selector.neuwallet.register" />
-        )}
-      </Button>
-    </div>
-  </Form>
-);
+  render = () => (
+    <Form>
+      <FormField
+        placeholder={`${this.props.intl.formatIntlMessage("wallet-selector.register.email")}`}
+        type="email"
+        name={EMAIL}
+        data-test-id="wallet-selector-register-email"
+      />
+      <FormField
+        type="password"
+        placeholder={`${this.props.intl.formatIntlMessage("wallet-selector.register.password")}`}
+        name={PASSWORD}
+        data-test-id="wallet-selector-register-password"
+      />
+      <FormField
+        type="password"
+        placeholder={`${this.props.intl.formatIntlMessage(
+          "wallet-selector.register.confirm-password",
+        )}`}
+        name={REPEAT_PASSWORD}
+        data-test-id="wallet-selector-register-confirm-password"
+      />
+      <div className="text-center">
+        <Button
+          type="submit"
+          disabled={this.props.isSubmitting || !this.props.isValid || this.props.isLoading}
+          data-test-id="wallet-selector-register-button"
+        >
+          {this.props.restore ? (
+            <FormattedMessage id="wallet-selector.neuwallet.restore" />
+          ) : (
+            <FormattedMessage id="wallet-selector.neuwallet.register" />
+          )}
+        </Button>
+      </div>
+    </Form>
+  );
+}
 
-const RegisterEnhancedLightWalletForm = withFormik<
-  IDispatchProps & IStateProps & { restore: boolean },
-  IFormValues
->({
-  validationSchema: validationSchema,
-  mapPropsToValues: () => ({
-    email: "",
-    password: "",
-    repeatPassword: "",
+const RegisterEnhancedLightWalletForm: React.SFC = compose<any>(
+  injectIntlHelpers,
+  withFormik<IDispatchProps & IStateProps & { restore: boolean }, IFormValues>({
+    validationSchema: validationSchema,
+    mapPropsToValues: () => ({
+      email: "",
+      password: "",
+      repeatPassword: "",
+    }),
+    handleSubmit: (values, props) => {
+      return props.props.submitForm(values);
+    },
   }),
-  handleSubmit: (values, props) => props.props.submitForm(values),
-})(RegisterLightWalletForm);
+)(RegisterLightWalletForm);
 
 export const RegisterWalletComponent: React.SFC<
   IDispatchProps & IStateProps & { restore: boolean }

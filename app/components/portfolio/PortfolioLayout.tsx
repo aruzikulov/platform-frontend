@@ -9,7 +9,7 @@ import { Col, Row } from "reactstrap";
 import { Q18 } from "../../config/constants";
 import { IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { TETOWithInvestorTicket } from "../../modules/investor-tickets/types";
-import { ETOStateOnChain } from "../../modules/public-etos/types";
+import { EETOStateOnChain } from "../../modules/public-etos/types";
 import { documentTitles } from "../Documents";
 import { AssetPortfolio } from "../shared/AssetPortfolio";
 import { Button, EButtonLayout } from "../shared/buttons";
@@ -139,7 +139,7 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({ myAssets, pendingAs
             }) => {
               const timedState = contract!.timedState;
               const isWhitelistedOrPublic =
-                timedState === ETOStateOnChain.Whitelist || timedState === ETOStateOnChain.Public;
+                timedState === EETOStateOnChain.Whitelist || timedState === EETOStateOnChain.Public;
 
               return (
                 <NewTableRow key={etoId}>
@@ -164,7 +164,7 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({ myAssets, pendingAs
                       <>
                         Ends{" "}
                         <FormattedRelative
-                          value={contract!.startOfStates[ETOStateOnChain.Signing]!}
+                          value={contract!.startOfStates[EETOStateOnChain.Signing]!}
                         />
                       </>
                     ) : (

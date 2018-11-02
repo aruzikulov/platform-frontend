@@ -6,6 +6,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { generateCampaigningValidation } from "../../../../../lib/api/eto/EtoPledgeApi.interfaces";
 import { Button, ButtonSize, ButtonWidth } from "../../../../shared/buttons";
 import { CheckboxComponent, FormInput, InputSize } from "../../../../shared/forms";
+import { Tooltip } from "../../../../shared/Tooltip";
 
 import * as styles from "../EtoOverviewStatus.module.scss";
 
@@ -43,7 +44,12 @@ const CampaigningActivatedInvestorWidgetLayout: React.SFC<
     <>
       <div className={styles.group}>
         <label htmlFor="consentToRevealEmail" className={styles.label}>
-          <FormattedMessage id="shared-component.eto-overview.show-my-email" />
+          <FormattedMessage id="shared-component.eto-overview.reveal-my-email" />
+          <Tooltip
+            content={
+              <FormattedMessage id="shared-component.eto-overview.reveal-my-email.tooltip" />
+            }
+          />
         </label>
         <div className={styles.value}>
           <CheckboxComponent

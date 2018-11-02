@@ -11,6 +11,7 @@ import { EtoDashboard } from "./eto/EtoDashboard";
 import { Kyc } from "./kyc/Kyc";
 import { Portfolio } from "./portfolio";
 
+import { SwitchConnected } from "../utils/connectedRouting";
 import { appRoutes } from "./appRoutes";
 import { EmailVerify } from "./EmailVerify";
 import { EtoIssuerView } from "./eto/EtoIssuerView";
@@ -23,7 +24,6 @@ import { LandingEto } from "./landing/LandingEto";
 import { BackupSeed } from "./settings/backup-seed/BackupSeed";
 import { settingsRoutes } from "./settings/routes";
 import { Settings } from "./settings/Settings";
-import { SwitchConnected } from "./shared/connectedRouting";
 import { WalletRecoverMain } from "./wallet-selector/wallet-recover/WalletRecoverMain";
 import { WalletSelector } from "./wallet-selector/WalletSelector";
 import { Wallet } from "./wallet/Wallet";

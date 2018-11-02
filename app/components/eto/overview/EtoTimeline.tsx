@@ -3,7 +3,7 @@ import * as React from "react";
 import { FormattedDate } from "react-intl";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ETOStateOnChain, TEtoStartOfStates } from "../../../modules/public-etos/types";
+import { EETOStateOnChain, TEtoStartOfStates } from "../../../modules/public-etos/types";
 import { TTranslatedString } from "../../../types";
 
 import * as styles from "./EtoTimeline.module.scss";
@@ -194,7 +194,7 @@ const Pointer: React.SFC<IPointerProps> = ({ position }) => {
   );
 };
 
-const getStartOfState = (state: ETOStateOnChain, startOfStates: TEtoStartOfStates | undefined) => {
+const getStartOfState = (state: EETOStateOnChain, startOfStates: TEtoStartOfStates | undefined) => {
   const startDate = startOfStates && startOfStates[state];
 
   return startDate ? startDate.getTime() : NaN;
@@ -202,11 +202,11 @@ const getStartOfState = (state: ETOStateOnChain, startOfStates: TEtoStartOfState
 
 export const EtoTimeline: React.SFC<IProps> = ({ startOfStates }) => {
   // start/end dates of phases
-  const preEtoStartDate = getStartOfState(ETOStateOnChain.Whitelist, startOfStates);
-  const publicEtoStartDate = getStartOfState(ETOStateOnChain.Public, startOfStates);
-  const inSigningStartDate = getStartOfState(ETOStateOnChain.Signing, startOfStates);
-  const inClaimStartDate = getStartOfState(ETOStateOnChain.Claim, startOfStates);
-  const inPayoutStartDate = getStartOfState(ETOStateOnChain.Payout, startOfStates);
+  const preEtoStartDate = getStartOfState(EETOStateOnChain.Whitelist, startOfStates);
+  const publicEtoStartDate = getStartOfState(EETOStateOnChain.Public, startOfStates);
+  const inSigningStartDate = getStartOfState(EETOStateOnChain.Signing, startOfStates);
+  const inClaimStartDate = getStartOfState(EETOStateOnChain.Claim, startOfStates);
+  const inPayoutStartDate = getStartOfState(EETOStateOnChain.Payout, startOfStates);
 
   // blocks sizes
   const totalTimeScope = inPayoutStartDate - preEtoStartDate;

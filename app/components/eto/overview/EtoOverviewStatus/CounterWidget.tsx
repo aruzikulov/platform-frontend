@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ETOStateOnChain } from "../../../../modules/public-etos/types";
+import { EETOStateOnChain } from "../../../../modules/public-etos/types";
 import { Counter } from "../../../shared/Counter";
 import { statusToName } from "../../../shared/ETOState";
 
@@ -9,7 +9,7 @@ import * as styles from "./CounterWidget.module.scss";
 
 export interface ICounterWidgetProps {
   endDate: Date;
-  state: ETOStateOnChain;
+  state: EETOStateOnChain;
 }
 
 const CounterWidget: React.SFC<ICounterWidgetProps> = ({ endDate, state }) => {

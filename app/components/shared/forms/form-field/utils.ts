@@ -10,7 +10,10 @@ export const isValid = (
   touched: FormikTouched<any>,
   errors: FormikErrors<any>,
   key: string,
+  ignoreTouched?: boolean,
 ): boolean | undefined => {
+  if (ignoreTouched) return !get(errors, key);
+
   if (get(touched, key)) {
     return !(errors && get(errors, key));
   }
@@ -22,8 +25,9 @@ export const isNonValid = (
   touched: FormikTouched<any>,
   errors: FormikErrors<any>,
   name: string,
+  ignoreTouched?: boolean,
 ): boolean => {
-  const valid = isValid(touched, errors, name);
+  const valid = isValid(touched, errors, name, ignoreTouched);
 
   return !(valid === undefined || valid === true);
 };
@@ -33,7 +37,7 @@ export const computedValue = (val: InputProps["value"] = "", limit: number | und
     return val;
   }
 
-  return val.length > limit ? val.slice(0, limit - 1) : val;
+  return limit && val.length > limit ? val.slice(0, limit - 1) : val;
 };
 
 export const countedCharacters = (val: InputProps["value"] = "", limit: number) => {

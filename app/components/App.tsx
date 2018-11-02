@@ -10,12 +10,12 @@ import {
 } from "../modules/init/selectors";
 import { appConnect } from "../store";
 import { onEnterAction } from "../utils/OnEnterAction";
+import { ScrollToTop } from "../utils/ScrollToTop";
 import { AppRouter } from "./AppRouter";
 import { GenericModal } from "./modals/GenericModal";
 import { VideoModal } from "./modals/VideoModal";
 import { AccessWalletModal } from "./modals/walletAccess/AccessWalletModal";
 import { LoadingIndicator } from "./shared/loading-indicator";
-import { ScrollToTop } from "./shared/ScrollToTop";
 
 interface IStateProps {
   inProgress: boolean;

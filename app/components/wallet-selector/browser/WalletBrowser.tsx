@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { walletFlows } from "../../../modules/wallet-selector/flows";
 import { appConnect } from "../../../store";
 import { withActionWatcher } from "../../../utils/withActionWatcher";
+import { Button } from "../../shared/buttons";
 import { HiResImage } from "../../shared/HiResImage";
 import { HorizontalLine } from "../../shared/HorizontalLine";
 import { LoadingIndicator } from "../../shared/loading-indicator";
@@ -27,12 +28,21 @@ interface IWalletBrowserProps {
   errorMessage?: string;
   isLoading: boolean;
   isLoginRoute: boolean;
+  approvalRejected: boolean;
 }
 
-export const WalletBrowserComponent: React.SFC<IWalletBrowserProps & IIntlProps> = ({
+interface IWalletBrowserDispatchProps {
+  handleReset: () => void;
+}
+
+export const WalletBrowserComponent: React.SFC<
+  IWalletBrowserProps & IWalletBrowserDispatchProps & IIntlProps
+> = ({
   errorMessage,
   isLoading,
   isLoginRoute,
+  approvalRejected,
+  handleReset,
   intl: { formatIntlMessage },
 }) => (
   <div>
@@ -53,7 +63,20 @@ export const WalletBrowserComponent: React.SFC<IWalletBrowserProps & IIntlProps>
             <span data-test-id="browser-wallet-error-msg">{errorMessage}</span>
           </WarningAlert>
         </Row>
-
+        {approvalRejected && (
+          <>
+            <Row className="justify-content-center mb-4">
+              <div>
+                <FormattedMessage id="wallet-selector.browser.approval-rejected" />
+              </div>
+            </Row>
+            <Row className="justify-content-center mb-4">
+              <Button onClick={handleReset}>
+                <FormattedMessage id="wallet-selector.browser.approval-resend" />
+              </Button>
+            </Row>
+          </>
+        )}
         <Row className="mb-4 text-center">
           <StepCard img={walletIcon} text={formatIntlMessage("wallet-selector.browser.steps.1")} />
           <StepCard img={browserIcon} text={formatIntlMessage("wallet-selector.browser.steps.2")} />
@@ -90,11 +113,15 @@ export const WalletBrowserComponent: React.SFC<IWalletBrowserProps & IIntlProps>
 );
 
 export const WalletBrowser = compose<React.SFC>(
-  appConnect<IWalletBrowserProps>({
+  appConnect<IWalletBrowserProps, IWalletBrowserDispatchProps>({
     stateToProps: state => ({
       errorMessage: state.browserWalletWizardState.errorMsg,
       isLoading: state.browserWalletWizardState.isLoading,
       isLoginRoute: selectIsLoginRoute(state.router),
+      approvalRejected: state.browserWalletWizardState.approvalRejected,
+    }),
+    dispatchToProps: dispatch => ({
+      handleReset: () => dispatch(walletFlows.resetApprovalRequestBrowserWalletWizard),
     }),
   }),
   withActionWatcher({

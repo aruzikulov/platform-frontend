@@ -13,7 +13,7 @@ import * as styles from "./TagsEditor.module.scss";
 interface IPropsWrapper {
   selectedTagsLimit: number;
   selectedTags: string[];
-  availiableTags: string[];
+  availableTags: string[];
 }
 
 interface IProps {
@@ -22,7 +22,7 @@ interface IProps {
   handleSelectedTagClick: any;
   handleDeselectedTagClick: any;
   selectedTags: string[];
-  availiableTags: string[];
+  availableTags: string[];
   inputValue: string;
 }
 
@@ -57,9 +57,9 @@ const TagsEditor: React.SFC<IProps> = props => {
           ))}
         </div>
       )}
-      {!!props.availiableTags.length && (
+      {!!props.availableTags.length && (
         <div>
-          {props.availiableTags.map(tag => (
+          {props.availableTags.map(tag => (
             <Tag
               onClick={() => props.handleDeselectedTagClick(tag)}
               size="small"
@@ -77,7 +77,7 @@ const TagsEditor: React.SFC<IProps> = props => {
 export class TagsEditorWidget extends React.Component<IPropsWrapper, IStateWrapper> {
   state = {
     selectedTags: [...this.props.selectedTags],
-    tags: [...this.props.availiableTags],
+    tags: [...this.props.availableTags],
     inputValue: "",
   };
 
@@ -128,13 +128,13 @@ export class TagsEditorWidget extends React.Component<IPropsWrapper, IStateWrapp
   };
 
   componentDidMount(): void {
-    const { selectedTags, availiableTags } = this.props;
+    const { selectedTags, availableTags } = this.props;
 
     if (!selectedTags.length) {
       return;
     }
 
-    const tags = availiableTags.filter(availiableTag => !includes(selectedTags, availiableTag));
+    const tags = availableTags.filter(availableTag => !includes(selectedTags, availableTag));
     this.setState({ tags });
   }
 
@@ -142,7 +142,7 @@ export class TagsEditorWidget extends React.Component<IPropsWrapper, IStateWrapp
     return (
       <TagsEditor
         selectedTags={this.state.selectedTags}
-        availiableTags={this.state.tags}
+        availableTags={this.state.tags}
         handleSubmit={this.handleSubmit}
         handleInput={this.handleInput}
         handleSelectedTagClick={this.handleTagDeselection}

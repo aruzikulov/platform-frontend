@@ -29,13 +29,11 @@ export const MessageSignerComponent: React.SFC<IStateProps & IDispatchProps> = (
   errorMsg,
   cancelSigning,
   isLightWallet,
-}) => {
+}) =>
   // short circuit process for light wallet since it will be automatic
-  if (!errorMsg && isLightWallet) {
-    return <LoadingIndicator className={styles.spinner} />;
-  }
-
-  return (
+  !errorMsg && isLightWallet ? (
+    <LoadingIndicator className={styles.spinner} />
+  ) : (
     <>
       <MessageSignPrompt />
       {errorMsg ? (
@@ -56,7 +54,7 @@ export const MessageSignerComponent: React.SFC<IStateProps & IDispatchProps> = (
       </Row>
     </>
   );
-};
+
 MessageSignerComponent.displayName = "MessageSignerComponent";
 
 export const WalletMessageSigner = compose(

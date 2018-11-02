@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { ETOStateOnChain, IEtoTotalInvestment, TEtoStartOfStates } from "./types";
+import { EETOStateOnChain, IEtoTotalInvestment, TEtoStartOfStates } from "./types";
 
 export const convertToEtoTotalInvestment = ([totalEquivEurUlps, totalTokensInt, totalInvestors]: [
   BigNumber,
@@ -33,12 +33,12 @@ export const convertToStateStartDate = (
   ] = startOfStates.map(convertToDate);
 
   return {
-    [ETOStateOnChain.Setup]: startOfSetup,
-    [ETOStateOnChain.Whitelist]: startOfWhitelist,
-    [ETOStateOnChain.Public]: startOfPublic,
-    [ETOStateOnChain.Signing]: startOfSigning,
-    [ETOStateOnChain.Claim]: startOfClaim,
-    [ETOStateOnChain.Payout]: startOfPayout,
-    [ETOStateOnChain.Refund]: startOfRefund,
+    [EETOStateOnChain.Setup]: startOfSetup,
+    [EETOStateOnChain.Whitelist]: startOfWhitelist,
+    [EETOStateOnChain.Public]: startOfPublic,
+    [EETOStateOnChain.Signing]: startOfSigning,
+    [EETOStateOnChain.Claim]: startOfClaim,
+    [EETOStateOnChain.Payout]: startOfPayout,
+    [EETOStateOnChain.Refund]: startOfRefund,
   };
 };

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ETOStateOnChain } from "../../modules/public-etos/types";
+import { EETOStateOnChain } from "../../modules/public-etos/types";
 import { Button, EButtonLayout } from "../shared/buttons";
 
 type TExternalProps = {
-  state: ETOStateOnChain;
+  state: EETOStateOnChain;
   etoId: string;
 };
 
@@ -25,7 +25,7 @@ const PortfolioAssetAction: React.SFC<TExternalProps> = ({ state }) => {
     //       <FormattedMessage id="portfolio.section.reserved-assets.refund" />
     //     </Button>
     //   );
-    case ETOStateOnChain.Signing:
+    case EETOStateOnChain.Signing:
       return (
         <Button layout={EButtonLayout.SECONDARY} disabled>
           <FormattedMessage id="portfolio.section.reserved-assets.wait-for-update" />

@@ -54,9 +54,9 @@ export class WalletLedgerInitComponent extends React.Component<
   };
 
   handleShowSupport = () => {
-    this.setState({
-      showLedgerBrowserSupport: !this.state.showLedgerBrowserSupport,
-    });
+    this.setState(s => ({
+      showLedgerBrowserSupport: !s.showLedgerBrowserSupport,
+    }));
   };
 
   render(): React.ReactNode {

@@ -15,11 +15,13 @@ import { appConnect } from "../../../../store";
 import { TTranslatedString } from "../../../../types";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import {
-  FormCategoryDistribution,
+  ArrayOfKeyValueFields,
   FormField,
   FormFieldDate,
   FormSelectField,
 } from "../../../shared/forms";
+import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
+import { ICompoundField, sanitizeKeyValueCompoundField } from "../../utils";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
 
@@ -134,14 +136,17 @@ const EtoRegistrationLegalInformationComponent = ({ readonly, savingData }: IPro
           name="companyShares"
           disabled={readonly}
         />
-        <FormCategoryDistribution
-          name="shareholders"
-          prefix="No."
-          label={<FormattedMessage id="eto.form.legal-information.shareholder-structure" />}
-          suggestions={["Full Name"]}
-          blankField={{ fullName: "", shares: "" }}
-          disabled={readonly}
-        />
+        <FormHighlightGroup
+          title={<FormattedMessage id="eto.form.legal-information.shareholder-structure" />}
+        >
+          <ArrayOfKeyValueFields
+            name="shareholders"
+            valuePlaceholder={"Amount"}
+            suggestions={["Full Name"]}
+            fieldNames={["fullName", "shares"]}
+            disabled={readonly}
+          />
+        </FormHighlightGroup>
       </Section>
       {!readonly && (
         <Col>
@@ -172,7 +177,11 @@ export const EtoRegistrationLegalInformation = compose<React.SFC<IExternalProps>
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialCompanyEtoData) => {
-        dispatch(actions.etoFlow.saveDataStart({ companyData: data, etoData: {} }));
+        const sanitizedData = {
+          ...data,
+          shareholders: sanitizeKeyValueCompoundField(data.shareholders as ICompoundField[]),
+        };
+        dispatch(actions.etoFlow.saveDataStart({ companyData: sanitizedData, etoData: {} }));
       },
     }),
   }),

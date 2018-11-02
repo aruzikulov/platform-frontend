@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { NumberSchema } from "yup";
 import * as YupTS from "./yup-ts";
 
-describe("yup-ts", () => {
+describe("Yup-ts", () => {
   const animalValidator = YupTS.object({
     name: YupTS.string().optional(),
   });
@@ -19,7 +19,7 @@ describe("yup-ts", () => {
   type TValidatorType = YupTS.TypeOf<typeof personValidatorTemplate>;
   const validator = personValidatorTemplate.toYup();
 
-  it("should work as yup", () => {
+  it("should work as Yup", () => {
     const validValue1: TValidatorType = {
       fullName: "Typical Millennial Dev",
       middleName: undefined,

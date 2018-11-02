@@ -11,6 +11,7 @@ import {
   typeEmailPassword,
   verifyLatestUserEmail,
   tid,
+  assertButtonIsActive,
 } from "../utils";
 
 describe("Light wallet login / register", () => {
@@ -82,6 +83,10 @@ describe("Light wallet login / register", () => {
     cy.visit("/register");
     typeEmailPassword(email, password);
     assertErrorModal();
+
+    //dismiss warning, register button must be enabled
+    cy.get(tid("generic-modal-dismiss-button")).awaitedClick();
+    assertButtonIsActive("wallet-selector-register-button");
   });
 
   // This test case is commented due to cypressjs bugs which occurs while reusing cy.visit

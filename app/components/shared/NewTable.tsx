@@ -29,7 +29,7 @@ interface INewTable {
 
 type TProps = INewTable & INewTableHeader;
 
-export class NewTableRow extends React.Component<INewTableRow> {
+class NewTableRow extends React.Component<INewTableRow> {
   render(): React.ReactNode {
     const { children } = this.props;
 
@@ -61,13 +61,7 @@ class PlaceholderTableRow extends React.Component<IPlaceholderTableRow> {
   }
 }
 
-export const NewTable: React.SFC<TProps> = ({
-  titles,
-  children,
-  className,
-  placeholder,
-  keepRhythm,
-}) => {
+const NewTable: React.SFC<TProps> = ({ titles, children, className, placeholder, keepRhythm }) => {
   const isEmpty = React.Children.count(children) === 0;
 
   return (
@@ -95,3 +89,5 @@ export const NewTable: React.SFC<TProps> = ({
     </Panel>
   );
 };
+
+export { NewTable, NewTableRow };

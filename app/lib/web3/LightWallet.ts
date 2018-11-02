@@ -13,7 +13,7 @@ import * as HookedWalletSubprovider from "web3-provider-engine/subproviders/hook
 // tslint:disable-next-line
 import * as RpcSubprovider from "web3-provider-engine/subproviders/rpc";
 import { IPersonalWallet, SignerType } from "./PersonalWeb3";
-import { IEthereumNetworkConfig, IRawTxData } from "./Web3Manager";
+import { IEthereumNetworkConfig, IRawTxData } from "./types";
 
 import { symbols } from "../../di/symbols";
 import { EWalletSubType, EWalletType } from "../../modules/web3/types";

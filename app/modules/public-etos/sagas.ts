@@ -182,6 +182,7 @@ function* download(document: IEtoDocument): any {
 
 function* downloadDocument(_: TGlobalDependencies, action: TAction): any {
   if (action.type !== "PUBLIC_ETOS_DOWNLOAD_DOCUMENT") return;
+
   yield download(action.payload.document);
 }
 

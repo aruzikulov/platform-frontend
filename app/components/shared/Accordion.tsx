@@ -26,7 +26,7 @@ export class AccordionElement extends React.Component<
   };
 
   toggleClose = () => {
-    this.setState({ isOpened: !this.state.isOpened });
+    this.setState(s => ({ isOpened: !s.isOpened }));
   };
 
   render(): React.ReactChild {

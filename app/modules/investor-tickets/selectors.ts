@@ -1,7 +1,7 @@
 import { EtoState } from "../../lib/api/eto/EtoApi.interfaces";
 import { IAppState } from "../../store";
 import { selectPublicEtos } from "../public-etos/selectors";
-import { ETOStateOnChain } from "../public-etos/types";
+import { EETOStateOnChain } from "../public-etos/types";
 import { TETOWithInvestorTicket } from "./types";
 
 const selectInvestorTicketsState = (state: IAppState) => state.investorTickets;
@@ -33,7 +33,7 @@ export const selectEtoWithInvestorTickets = (
   if (etos) {
     return etos
       .filter(eto => eto.state === EtoState.ON_CHAIN)
-      .filter(eto => eto.contract!.timedState !== ETOStateOnChain.Setup)
+      .filter(eto => eto.contract!.timedState !== EETOStateOnChain.Setup)
       .filter(eto => selectHasInvestorTicket(state, eto.etoId))
       .map(eto => ({
         ...eto,

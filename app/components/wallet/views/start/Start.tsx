@@ -4,8 +4,7 @@ import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
 import { actions } from "../../../../modules/actions";
-
-import { ETokenType } from "../../../../modules/tx/sender/reducer";
+import { ETokenType } from "../../../../modules/tx/interfaces";
 import {
   selectICBMLockedEtherBalance,
   selectICBMLockedEtherBalanceEuroAmount,
@@ -120,7 +119,7 @@ export const WalletStart = compose<React.SFC>(
   }),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => ({
-      userAddress: selectEthereumAddressWithChecksum(state.web3),
+      userAddress: selectEthereumAddressWithChecksum(state),
       // Wallet Related State
       isLoading: selectIsLoading(state.wallet),
       error: selectWalletError(state.wallet),
@@ -140,21 +139,22 @@ export const WalletStart = compose<React.SFC>(
         totalEuroAmount: selectLockedEuroTotalAmount(state),
       },
       icbmWalletData: {
-        hasFunds: selectICBMLockedWalletHasFunds(state.wallet),
-        ethAmount: selectICBMLockedEtherBalance(state.wallet),
+        hasFunds: selectICBMLockedWalletHasFunds(state),
+        ethAmount: selectICBMLockedEtherBalance(state),
         ethEuroAmount: selectICBMLockedEtherBalanceEuroAmount(state),
-        neuroAmount: selectICBMLockedEuroTokenBalance(state.wallet),
-        neuroEuroAmount: selectICBMLockedEuroTokenBalance(state.wallet),
+        neuroAmount: selectICBMLockedEuroTokenBalance(state),
+        neuroEuroAmount: selectICBMLockedEuroTokenBalance(state),
         totalEuroAmount: selectICBMLockedEuroTotalAmount(state),
-        isEtherUpgradeTargetSet: selectIsEtherUpgradeTargetSet(state.wallet),
-        isEuroUpgradeTargetSet: selectIsEuroUpgradeTargetSet(state.wallet),
+        isEtherUpgradeTargetSet: selectIsEtherUpgradeTargetSet(state),
+        isEuroUpgradeTargetSet: selectIsEuroUpgradeTargetSet(state),
       },
     }),
     dispatchToProps: dispatch => ({
-      upgradeWalletEtherToken: () => dispatch(actions.txSender.startUpgrade(ETokenType.ETHER)),
-      upgradeWalletEuroToken: () => dispatch(actions.txSender.startUpgrade(ETokenType.EURO)),
       depositEthUnlockedWallet: () => dispatch(actions.depositEthModal.showDepositEthModal()),
-      withdrawEthUnlockedWallet: () => dispatch(actions.txSender.startWithdrawEth()),
+      withdrawEthUnlockedWallet: () => dispatch(actions.txTransactions.startWithdrawEth()),
+      upgradeWalletEuroToken: () => dispatch(actions.txTransactions.startUpgrade(ETokenType.EURO)),
+      upgradeWalletEtherToken: () =>
+        dispatch(actions.txTransactions.startUpgrade(ETokenType.ETHER)),
     }),
   }),
 )(WalletStartComponent);

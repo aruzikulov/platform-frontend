@@ -93,6 +93,10 @@ export const assertErrorModal = () => {
   cy.get(tid("components.modals.generic-modal.title")).should("exist");
 };
 
+export const assertButtonIsActive = (id: string) => {
+  return cy.get(tid(id)).should("be.not.disabled");
+};
+
 export const typeEmailPassword = (email: string, password: string) => {
   cy.get(tid("wallet-selector-register-email")).type(email);
   cy.get(tid("wallet-selector-register-password")).type(password);

@@ -47,7 +47,7 @@
     "intl:extract": "./scripts/extract-intl-messages.sh",
     "intl:extract:check": "./scripts/extract-intl-messages.sh --check",
     "storybook": "start-storybook -p 9001 -c .storybook -s ./app/assets",
-    "storybook:screenshots": "storybook-chrome-screenshot --inject-files ./.storybook/disable-animations.js -p 9001 -c .storybook --browser-timeout 999999 -s ./app/assets"
+    "storybook:screenshots": "storybook-chrome-screenshot --debug --inject-files ./.storybook/disable-animations.js -p 9001 -c .storybook --browser-timeout 999999 -s ./app/assets"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-rc.1",
@@ -102,7 +102,7 @@
     "@types/storybook__addon-actions": "^3.4.1",
     "@types/storybook__react": "^3.0.9",
     "@types/url-join": "^0.8.2",
-    "@types/yup": "^0.24.9",
+    "@types/yup": "^0.26.0",
     "autoprefixer": "^9.1.1",
     "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^7.1.5",

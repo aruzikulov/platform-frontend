@@ -1,7 +1,7 @@
 import { find } from "lodash/fp";
 import { IAppState } from "../../store";
 import { IPublicEtoState } from "./reducer";
-import { TEtoWithCompanyAndContract } from "./types";
+import { EETOStateOnChain, TEtoWithCompanyAndContract } from "./types";
 
 const selectPublicEtosState = (state: IAppState) => state.publicEtos;
 
@@ -64,4 +64,22 @@ export const selectPublicEtos = (state: IAppState): TEtoWithCompanyAndContract[]
   }
 
   return undefined;
+};
+
+export const selectEtoOnChainState = (
+  state: IPublicEtoState,
+  previewCode: string,
+): EETOStateOnChain | undefined => {
+  const contracts = state.contracts[previewCode];
+  return contracts && contracts.timedState;
+};
+
+export const selectEtoOnChainStateById = (
+  state: IPublicEtoState,
+  etoId: string,
+): EETOStateOnChain | undefined => {
+  const code = selectEtoPreviewCode(state, etoId);
+  if (code) {
+    return state.contracts[code] && state.contracts[code].timedState;
+  }
 };

@@ -33,7 +33,7 @@ export type WalletSelectionData = IEthWallet | InEuroWallet | IBankTransfer;
 
 interface IProps {
   wallets: WalletSelectionData[];
-  currentType: EInvestmentType;
+  currentType?: EInvestmentType;
   onSelect: (type: EInvestmentType) => void;
 }
 

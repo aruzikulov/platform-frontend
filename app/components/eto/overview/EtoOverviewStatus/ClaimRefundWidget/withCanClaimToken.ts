@@ -3,13 +3,13 @@ import { compose, withProps } from "recompose";
 import { EUserType } from "../../../../../lib/api/users/interfaces";
 import { selectUserType } from "../../../../../modules/auth/selectors";
 import { selectHasInvestorTicket } from "../../../../../modules/investor-tickets/selectors";
-import { ETOStateOnChain } from "../../../../../modules/public-etos/types";
+import { EETOStateOnChain } from "../../../../../modules/public-etos/types";
 import { appConnect } from "../../../../../store";
 import { Omit } from "../../../../../types";
 
 interface IExternalProps {
   etoId: string;
-  timedState: ETOStateOnChain;
+  timedState: EETOStateOnChain;
 }
 
 interface IStateProps {
@@ -31,7 +31,7 @@ export const withCanClaimToken = <T extends IWithProps>(wrapper: React.Component
     }),
     withProps<IWithProps, IExternalProps & IStateProps>(props => ({
       canClaimToken:
-        [ETOStateOnChain.Claim, ETOStateOnChain.Refund].includes(props.timedState) &&
+        [EETOStateOnChain.Claim, EETOStateOnChain.Refund].includes(props.timedState) &&
         props.userType === EUserType.INVESTOR &&
         props.doesInvestorInvest,
     })),

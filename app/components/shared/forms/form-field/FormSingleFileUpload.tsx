@@ -32,13 +32,13 @@ export class FormSingleFileUploadComponent extends React.Component<
   };
 
   private onDropFile = (file: File) => {
-    this.setState({ ...this.state, isUploading: true });
+    this.setState({ isUploading: true });
 
     this.props.uploadFile(file, this.onUploadingDone);
   };
 
   private onUploadingDone = (error: any, url?: string) => {
-    this.setState({ ...this.state, isUploading: false });
+    this.setState({ isUploading: false });
 
     if (!error && url) {
       this.setValue(url);

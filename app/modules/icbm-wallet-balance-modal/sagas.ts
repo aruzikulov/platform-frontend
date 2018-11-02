@@ -41,9 +41,7 @@ function* loadIcbmWalletMigrationTransactionSaga({
   contractsService,
 }: TGlobalDependencies): any {
   try {
-    const currentEthAddress: string = yield select((s: IAppState) =>
-      selectEthereumAddressWithChecksum(s.web3),
-    );
+    const currentEthAddress: string = yield select(selectEthereumAddressWithChecksum);
     const icbmEthAddress: string = yield select((s: IAppState) =>
       selectIcbmWalletEthAddress(s.icbmWalletBalanceModal),
     );
@@ -92,7 +90,7 @@ function* loadIcbmWalletMigrationSaga(
   );
   if (action.type !== "ICBM_WALLET_BALANCE_MODAL_GET_WALLET_DATA") return;
   try {
-    const userAddress = yield select((s: IAppState) => selectEthereumAddressWithChecksum(s.web3));
+    const userAddress = yield select(selectEthereumAddressWithChecksum);
     if (userAddress === ethAddress) throw new SameUserError();
 
     const migrationWalletData: IWalletStateData = yield neuCall(loadWalletDataAsync, ethAddress);
@@ -118,9 +116,7 @@ function* loadIcbmWalletMigrationSaga(
 }
 
 function* icbmWalletMigrationTransactionWatcher({ contractsService }: TGlobalDependencies): any {
-  const currentEthAddress = yield select((s: IAppState) =>
-    selectEthereumAddressWithChecksum(s.web3),
-  );
+  const currentEthAddress = yield select(selectEthereumAddressWithChecksum);
   const icbmEthAddress = yield select((s: IAppState) =>
     selectIcbmWalletEthAddress(s.icbmWalletBalanceModal),
   );

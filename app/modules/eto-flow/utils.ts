@@ -29,7 +29,7 @@ export interface IProgressOptions {
 export type ProgressCalculator = (formState: any, initialData?: any) => number;
 
 // recursivly clones a YUP Schema and makes number and string properties required
-function updateValidator(objectSchema: any, ignore: any): any {
+export function updateValidator(objectSchema: any, ignore: any): any {
   const type = objectSchema._type;
   if (ignore !== true) {
     switch (type) {
