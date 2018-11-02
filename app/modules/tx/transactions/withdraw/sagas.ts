@@ -58,14 +58,14 @@ export function* generateEthWithdrawTransaction(
 
 export function* ethWithdrawFlow(_: TGlobalDependencies): any {
   const action: TAction = yield take("TX_SENDER_ACCEPT_DRAFT");
-  if (action.type !== "TX_SENDER_ACCEPT_DRAFT") return;
-  const txDataFromUser = action.payload;
+  if (action.type !== "TX_SENDER_ACCEPT_DRAFT" || !action.payload.txDraftData) return;
+  const txDataFromUser = action.payload.txDraftData;
+  const generatedTxDetails = yield neuCall(generateEthWithdrawTransaction, txDataFromUser);
+  yield put(actions.txSender.setTransactionData(generatedTxDetails));
   yield put(
-    actions.txSender.setSummaryData({
+    actions.txSender.txSenderContinueToSummary({
       ...txDataFromUser,
       value: Q18.mul(txDataFromUser.value!).toString(),
     }),
   );
-  const generatedTxDetails = yield neuCall(generateEthWithdrawTransaction, txDataFromUser);
-  yield put(actions.txSender.setTransactionData(generatedTxDetails));
 }

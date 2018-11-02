@@ -11,7 +11,7 @@ import { actions } from "../../../../modules/actions";
 import { selectStandardGasPrice } from "../../../../modules/gas/selectors";
 import { ETxSenderType, IDraftType } from "../../../../modules/tx/interfaces";
 import { EValidationState } from "../../../../modules/tx/sender/reducer";
-import { selectValidationState } from "../../../../modules/tx/sender/selectors";
+import { selectTxValidationState } from "../../../../modules/tx/sender/selectors";
 import { selectMaxAvailableEther } from "../../../../modules/wallet/selectors";
 import { doesUserHaveEnoughEther, validateAddress } from "../../../../modules/web3/utils";
 import { appConnect } from "../../../../store";
@@ -164,7 +164,7 @@ const Withdraw = compose<TProps, {}>(
     stateToProps: state => ({
       maxEther: selectMaxAvailableEther(state),
       gasPrice: selectStandardGasPrice(state),
-      validationState: selectValidationState(state.txSender),
+      validationState: selectTxValidationState(state),
     }),
     dispatchToProps: d => ({
       onAccept: (tx: Partial<ITxData>) => d(actions.txSender.txSenderAcceptDraft(tx)),

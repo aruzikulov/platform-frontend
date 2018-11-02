@@ -135,7 +135,7 @@ function* ensureNoPendingTx({ logger }: TGlobalDependencies, type: ETxSenderType
 
 function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): any {
   const txData: ITxData = yield select(selectTxDetails);
-  const type = yield select((s: IAppState) => selectTxType(s.txSender));
+  const type = yield select(selectTxType);
   if (!txData) {
     throw new Error("Tx data is not defined");
   }

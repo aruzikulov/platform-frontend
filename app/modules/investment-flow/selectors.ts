@@ -1,49 +1,68 @@
 import { IAppState } from "../../store";
-import { addBigNumbers, compareBigNumbers, multiplyBigNumbers } from "../../utils/BigNumberUtils";
+import { addBigNumbers, compareBigNumbers } from "../../utils/BigNumberUtils";
 import { convertToBigInt } from "../../utils/Number.utils";
+import { EValidationState } from "../tx/sender/reducer";
+import { selectTxValidationState } from "../tx/sender/selectors";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
-import { selectStandardGasPrice } from "./../gas/selectors";
-import { EInvestmentCurrency, EInvestmentType, IInvestmentFlowState } from "./reducer";
+import { EInvestmentCurrency, EInvestmentType } from "./reducer";
 
 // State Selectors
 
-export const selectEthValueUlps = (state: IInvestmentFlowState) => state.ethValueUlps;
+export const selectInvestmentEthValueUlps = (state: IAppState) => state.investmentFlow.ethValueUlps;
 
-export const selectEurValueUlps = (state: IInvestmentFlowState) => state.euroValueUlps;
+export const selectInvestmentEurValueUlps = (state: IAppState) =>
+  state.investmentFlow.euroValueUlps;
 
-export const selectErrorState = (state: IInvestmentFlowState) => state.errorState;
+export const selectInvestmentErrorState = (state: IAppState) => state.investmentFlow.errorState;
 
-export const selectInvestmentType = (state: IInvestmentFlowState) => state.investmentType;
+export const selectInvestmentType = (state: IAppState) => state.investmentFlow.investmentType;
 
-export const selectInvestmentEtoId = (state: IInvestmentFlowState) => state.etoId;
+export const selectInvestmentEtoId = (state: IAppState) => state.investmentFlow.etoId;
 
-export const selectInvestmentActiveTypes = (state: IInvestmentFlowState) =>
-  state.activeInvestmentTypes;
+export const selectIsInvestmentInputValidated = (state: IAppState) =>
+  state.investmentFlow.isValidatedInput;
+
+export const selectInvestmentActiveTypes = (state: IAppState) =>
+  state.investmentFlow.activeInvestmentTypes;
+
+export const selectBankTransferFlowState = (state: IAppState) =>
+  state.investmentFlow.bankTransferFlowState;
+
+export const selectIsBankTransferGasStipend = (state: IAppState) =>
+  state.investmentFlow.bankTransferGasStipend;
 
 // Derived Values
 
-export const selectIsICBMInvestment = (state: IInvestmentFlowState) =>
-  state.investmentType === EInvestmentType.ICBMEth ||
-  state.investmentType === EInvestmentType.ICBMnEuro;
+export const selectIsICBMInvestment = (state: IAppState) => {
+  const type = selectInvestmentType(state);
+  return type === EInvestmentType.ICBMEth || type === EInvestmentType.ICBMnEuro;
+};
 
-export const selectReadyToInvest = (state: IInvestmentFlowState) =>
-  !!(
-    state.euroValueUlps &&
-    state.isValidatedInput &&
-    !state.errorState &&
-    compareBigNumbers(state.euroValueUlps, 0) > 0
+export const selectIsReadyToInvest = (state: IAppState) => {
+  const ethValue = selectInvestmentEthValueUlps(state);
+  const type = selectInvestmentType(state);
+  return !!(
+    ethValue &&
+    !selectInvestmentErrorState(state) &&
+    selectIsInvestmentInputValidated(state) &&
+    compareBigNumbers(ethValue, 0) > 0 &&
+    (type !== EInvestmentType.BankTransfer
+      ? selectTxValidationState(state) === EValidationState.VALIDATION_OK
+      : true)
   );
+};
 
-export const selectCurrencyByInvestmentType = (state: IInvestmentFlowState) =>
-  state.investmentType === EInvestmentType.InvestmentWallet ||
-  state.investmentType === EInvestmentType.ICBMEth
+export const selectCurrencyByInvestmentType = (state: IAppState) => {
+  const type = selectInvestmentType(state);
+  return type === EInvestmentType.InvestmentWallet || type === EInvestmentType.ICBMEth
     ? EInvestmentCurrency.Ether
     : EInvestmentCurrency.Euro;
+};
 
-export const selectIsBankTransferModalOpened = (state: IInvestmentFlowState) =>
-  state.investmentType === EInvestmentType.BankTransfer &&
-  !!state.bankTransferFlowState &&
-  selectReadyToInvest(state);
+export const selectIsBankTransferModalOpened = (state: IAppState) =>
+  selectInvestmentType(state) === EInvestmentType.BankTransfer &&
+  !!selectBankTransferFlowState(state) &&
+  selectIsReadyToInvest(state);
 
 export const selectBankTransferReferenceCode = (state: IAppState) => {
   const addressHex = selectEthereumAddressWithChecksum(state).slice(2);
@@ -66,14 +85,7 @@ export const selectBankTransferReferenceCode = (state: IAppState) => {
 
 export const GAS_STIPEND_PRICE = convertToBigInt("10");
 
-export const selectBankTransferAmount = (state: IInvestmentFlowState) => {
-  const eur = selectEurValueUlps(state);
-  return state.bankTransferGasStipend ? addBigNumbers([GAS_STIPEND_PRICE, eur]) : eur;
-};
-
-export const selectInvestmentGasLimit = (state: IAppState): string =>
-  state.investmentFlow.gasAmount;
-
-export const selectInvestmentGasCostEth = (state: IAppState) => {
-  return multiplyBigNumbers([selectStandardGasPrice(state), selectInvestmentGasLimit(state)]);
+export const selectBankTransferAmount = (state: IAppState) => {
+  const eur = selectInvestmentEurValueUlps(state);
+  return selectIsBankTransferGasStipend(state) ? addBigNumbers([GAS_STIPEND_PRICE, eur]) : eur;
 };

@@ -132,7 +132,7 @@ function renderBody({ state, blockId, txHash, type, error }: Props): React.React
 
 const TxSenderModal = appConnect<IStateProps, IDispatchProps>({
   stateToProps: state => ({
-    isOpen: selectTxSenderModalOpened(state.txSender),
+    isOpen: selectTxSenderModalOpened(state),
     state: state.txSender.state,
     type: state.txSender.type,
     txHash: state.txSender.txHash,

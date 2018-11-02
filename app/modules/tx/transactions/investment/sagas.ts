@@ -6,9 +6,7 @@ import { ContractsService } from "../../../../lib/web3/ContractsService";
 import { ITxData } from "../../../../lib/web3/types";
 import { IAppState } from "../../../../store";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
-import { selectReadyToInvest } from "../../../investment-flow/selectors";
 import { selectEtoById } from "../../../public-etos/selectors";
-import { neuCall } from "../../../sagas";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { calculateGasLimitWithOverhead } from "../../utils";
 import { compareBigNumbers } from "./../../../../utils/BigNumberUtils";
@@ -18,55 +16,54 @@ import { selectEtherTokenBalance } from "./../../../wallet/selectors";
 
 export const INVESTMENT_GAS_AMOUNT = "600000";
 
-async function createInvestmentTxData(
+const createInvestmentTxData = (
   state: IAppState,
   txData: string,
   contractAddress: string,
   value = "0",
-): Promise<ITxData> {
-  return {
-    to: contractAddress,
-    from: selectEthereumAddressWithChecksum(state),
-    data: txData,
-    value: value,
-    gasPrice: selectStandardGasPriceWithOverHead(state),
-    gas: calculateGasLimitWithOverhead(INVESTMENT_GAS_AMOUNT),
-  };
-}
+) => ({
+  to: contractAddress,
+  from: selectEthereumAddressWithChecksum(state),
+  data: txData,
+  value: value,
+  gasPrice: selectStandardGasPriceWithOverHead(state),
+  gas: calculateGasLimitWithOverhead(INVESTMENT_GAS_AMOUNT),
+});
 
-function getEtherLockTransaction(
+const getEtherLockTransaction = (
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): Promise<ITxData> {
+) => {
   const txData = contractsService.etherLock
     .transferTx(etoId, new BigNumber(state.investmentFlow.ethValueUlps), [""])
     .getData();
   return createInvestmentTxData(state, txData, contractsService.etherLock.address);
-}
+};
 
-function getEuroLockTransaction(
+const getEuroLockTransaction = (
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): Promise<ITxData> {
+) => {
   const txData = contractsService.euroLock
     .transferTx(etoId, new BigNumber(state.investmentFlow.euroValueUlps), [""])
     .getData();
   return createInvestmentTxData(state, txData, contractsService.euroLock.address);
-}
+};
 
-async function getEtherTokenTransaction(
+function getEtherTokenTransaction(
   state: IAppState,
   contractsService: ContractsService,
   etoId: string,
-): Promise<ITxData> {
+): ITxData {
   const etherTokenBalance = selectEtherTokenBalance(state);
   const etherValue = state.investmentFlow.ethValueUlps;
 
   if (!etherTokenBalance) {
     throw new Error("No ether Token Balance");
   }
+
   if (compareBigNumbers(etherTokenBalance, etherValue) >= 0) {
     // transaction can be fully covered by etherTokens
 
@@ -94,11 +91,7 @@ async function getEtherTokenTransaction(
 export function* generateInvestmentTransaction({ contractsService }: TGlobalDependencies): any {
   const state: IAppState = yield select();
   const investmentState = state.investmentFlow;
-  const eto = selectEtoById(state.publicEtos, investmentState.etoId);
-
-  if (!eto || !selectReadyToInvest(investmentState)) {
-    throw new Error("Investment data is not valid to create an Transaction");
-  }
+  const eto = selectEtoById(state.publicEtos, investmentState.etoId)!;
 
   switch (investmentState.investmentType) {
     case EInvestmentType.InvestmentWallet:
@@ -112,7 +105,5 @@ export function* generateInvestmentTransaction({ contractsService }: TGlobalDepe
 
 export function* investmentFlowGenerator(_: TGlobalDependencies): any {
   yield take("TX_SENDER_ACCEPT_DRAFT");
-  const generatedTxDetails = yield neuCall(generateInvestmentTransaction);
-  yield put(actions.txSender.setSummaryData(generatedTxDetails));
-  yield put(actions.txSender.setTransactionData(generatedTxDetails));
+  yield put(actions.txSender.txSenderContinueToSummary());
 }

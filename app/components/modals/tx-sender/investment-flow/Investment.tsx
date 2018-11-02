@@ -15,12 +15,13 @@ import {
   EInvestmentType,
 } from "../../../../modules/investment-flow/reducer";
 import {
-  selectErrorState,
-  selectEthValueUlps,
-  selectEurValueUlps,
-  selectInvestmentGasCostEth,
+  selectInvestmentErrorState,
+  selectInvestmentEthValueUlps,
+  selectInvestmentEtoId,
+  selectInvestmentEurValueUlps,
   selectInvestmentType,
-  selectReadyToInvest,
+  selectIsInvestmentInputValidated,
+  selectIsReadyToInvest,
 } from "../../../../modules/investment-flow/selectors";
 import {
   selectEquityTokenCountByEtoId,
@@ -28,6 +29,8 @@ import {
 } from "../../../../modules/investor-tickets/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
 import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
+import { EValidationState } from "../../../../modules/tx/sender/reducer";
+import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
 import {
   addBigNumbers,
@@ -62,7 +65,7 @@ interface IStateProps {
   etherPriceEur: string;
   investmentType?: EInvestmentType;
   gasCostEth: string;
-  errorState?: EInvestmentErrorState;
+  errorState?: EInvestmentErrorState | EValidationState;
   equityTokenCount?: string;
   neuReward?: string;
   readyToInvest: boolean;
@@ -280,23 +283,22 @@ export const InvestmentSelection: React.SFC = compose<any>(
   injectIntlHelpers,
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => {
-      const investmentFlow = state.investmentFlow;
-
-      const eto = selectEtoWithCompanyAndContractById(state, investmentFlow.etoId)!;
-      const eur = selectEurValueUlps(investmentFlow);
+      const etoId = selectInvestmentEtoId(state);
+      const eto = selectEtoWithCompanyAndContractById(state, etoId)!;
+      const eur = selectInvestmentEurValueUlps(state);
       return {
         eto,
         etherPriceEur: selectEtherPriceEur(state.tokenPrice),
         euroValue: eur,
-        ethValue: selectEthValueUlps(investmentFlow),
-        errorState: selectErrorState(investmentFlow),
-        gasCostEth: selectInvestmentGasCostEth(state),
-        investmentType: selectInvestmentType(investmentFlow),
+        ethValue: selectInvestmentEthValueUlps(state),
+        errorState: selectInvestmentErrorState(state),
+        gasCostEth: selectTxGasCostEth(state),
+        investmentType: selectInvestmentType(state),
         wallets: createWallets(state),
-        neuReward: selectNeuRewardUlpsByEtoId(investmentFlow.etoId, state),
-        equityTokenCount: selectEquityTokenCountByEtoId(investmentFlow.etoId, state),
-        showTokens: !!(eur && investmentFlow.isValidatedInput),
-        readyToInvest: selectReadyToInvest(state.investmentFlow),
+        neuReward: selectNeuRewardUlpsByEtoId(etoId, state),
+        equityTokenCount: selectEquityTokenCountByEtoId(etoId, state),
+        showTokens: !!(eur && selectIsInvestmentInputValidated(state)),
+        readyToInvest: selectIsReadyToInvest(state),
       };
     },
     dispatchToProps: dispatch => ({

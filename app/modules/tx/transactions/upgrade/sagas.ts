@@ -84,6 +84,6 @@ export function* upgradeTransactionFlow(_: TGlobalDependencies, tokenType: EToke
       ? generateEtherUpgradeTransaction
       : generateEuroUpgradeTransaction;
   const generatedTxDetails = yield neuCall(transactionGenerator);
-  yield put(actions.txSender.setSummaryData(generatedTxDetails));
   yield put(actions.txSender.setTransactionData(generatedTxDetails));
+  yield put(actions.txSender.txSenderContinueToSummary(generatedTxDetails));
 }

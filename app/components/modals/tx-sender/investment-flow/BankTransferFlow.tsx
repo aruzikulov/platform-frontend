@@ -41,7 +41,7 @@ function renderBody({ state }: Props): React.ReactNode {
 
 const BankTransferFlowModal = appConnect<IStateProps, IDispatchProps>({
   stateToProps: state => ({
-    isOpen: selectIsBankTransferModalOpened(state.investmentFlow),
+    isOpen: selectIsBankTransferModalOpened(state),
     state: state.investmentFlow.bankTransferFlowState,
   }),
   dispatchToProps: d => ({

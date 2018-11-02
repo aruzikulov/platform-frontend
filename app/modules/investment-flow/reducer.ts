@@ -1,6 +1,5 @@
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
-import { INVESTMENT_GAS_AMOUNT } from "./../tx/transactions/investment/sagas";
 
 export enum EInvestmentType {
   InvestmentWallet = "INVESTMENT_WALLET",
@@ -36,7 +35,6 @@ export interface IInvestmentFlowState {
   isValidatedInput: boolean;
   bankTransferFlowState?: EBankTransferFlowState;
   bankTransferGasStipend?: boolean;
-  gasAmount: string;
 }
 
 export const investmentFlowInitialState: IInvestmentFlowState = {
@@ -46,7 +44,6 @@ export const investmentFlowInitialState: IInvestmentFlowState = {
   investmentType: EInvestmentType.InvestmentWallet,
   activeInvestmentTypes: [],
   isValidatedInput: false,
-  gasAmount: INVESTMENT_GAS_AMOUNT,
 };
 
 export const investmentFlowReducer: AppReducer<IInvestmentFlowState> = (

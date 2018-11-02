@@ -7,6 +7,7 @@ import { actions } from "../../../../modules/actions";
 import {
   selectBankTransferAmount,
   selectBankTransferReferenceCode,
+  selectIsBankTransferGasStipend,
 } from "../../../../modules/investment-flow/selectors";
 import { selectClientCountry, selectClientName } from "../../../../modules/kyc/selectors";
 import { ETxSenderType } from "../../../../modules/tx/interfaces";
@@ -156,8 +157,8 @@ const BankTransferDetails = appConnect<IStateProps, IDispatchProps>({
       iban: "DE1250094039446384529400565",
       bic: "TLXXXXXXXXX",
       referenceCode: selectBankTransferReferenceCode(state),
-      amount: selectBankTransferAmount(state.investmentFlow),
-      gasStipend: state.investmentFlow.bankTransferGasStipend,
+      amount: selectBankTransferAmount(state),
+      gasStipend: selectIsBankTransferGasStipend(state),
     };
   },
   dispatchToProps: d => ({

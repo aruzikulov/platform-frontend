@@ -24,6 +24,7 @@ import { WalletSelectionData } from "./InvestmentTypeSelector";
 import * as ethIcon from "../../../../assets/img/eth_icon2.svg";
 import * as euroIcon from "../../../../assets/img/euro_icon.svg";
 import * as neuroIcon from "../../../../assets/img/neuro_icon.svg";
+import { EValidationState } from "../../../../modules/tx/sender/reducer";
 
 export function createWallets(state: IAppState): WalletSelectionData[] {
   const w = state.wallet;
@@ -59,11 +60,11 @@ export function createWallets(state: IAppState): WalletSelectionData[] {
     },
   };
 
-  return selectInvestmentActiveTypes(state.investmentFlow).map(t => wallets[t]);
+  return selectInvestmentActiveTypes(state).map(t => wallets[t]);
 }
 
 export function getInputErrorMessage(
-  type: EInvestmentErrorState | undefined,
+  type: EInvestmentErrorState | EValidationState | undefined,
   eto: TPublicEtoData,
 ): React.ReactNode | undefined {
   switch (type) {
@@ -90,6 +91,8 @@ export function getInputErrorMessage(
       );
     case EInvestmentErrorState.ExceedsWalletBalance:
       return <FormattedMessage id="investment-flow.error-message.exceeds-wallet-balance" />;
+    case EValidationState.NOT_ENOUGH_ETHER_FOR_GAS:
+      return <FormattedMessage id="modal.txsender.error-message.not-enough-ether-for-gas" />;
   }
 }
 

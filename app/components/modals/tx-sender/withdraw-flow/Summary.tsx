@@ -60,8 +60,8 @@ export const WithdrawSummaryComponent: React.SFC<TSummaryComponentProps> = ({
 
 export const WithdrawSummary = appConnect<ITxSummaryStateProps, ITxSummaryDispatchProps>({
   stateToProps: state => ({
-    txData: selectTxSummaryData(state.txSender)!,
-    txCost: selectTxGasCostEth(state.txSender),
+    txData: selectTxSummaryData(state)!,
+    txCost: selectTxGasCostEth(state),
   }),
   dispatchToProps: d => ({
     onAccept: () => d(actions.txSender.txSenderAccept()),

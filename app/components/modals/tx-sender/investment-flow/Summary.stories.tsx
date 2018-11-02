@@ -12,8 +12,10 @@ const data = {
   equityTokens: "500",
   estimatedReward: "40000000000000000000",
   etherPriceEur: "200",
+  onAccept: () => {},
+  downloadAgreement: () => {},
 };
 
-storiesOf("Investment/InvestmentSummary", module).add("default", () => (
-  <InvestmentSummaryComponent {...data} onAccept={() => {}} downloadAgreement={() => {}} />
-));
+storiesOf("Investment/InvestmentSummary", module)
+  .add("default", () => <InvestmentSummaryComponent {...data} />)
+  .add("isIcbm", () => <InvestmentSummaryComponent {...data} isIcbm={true} estimatedReward="0" />);

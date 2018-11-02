@@ -39,7 +39,6 @@ export interface ITxSenderState {
   state: ETxSenderState;
   type?: ETxSenderType;
   txDetails?: ITxData;
-  txDraftDetails?: Partial<ITxData>;
   summaryData?: Partial<ITxData>;
   blockId?: number;
   txHash?: string;
@@ -81,24 +80,15 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
         ...state,
         state: ETxSenderState.ACCESSING_WALLET,
       };
-    case "TX_SENDER_LOAD_TRANSACTION":
+    case "TX_SENDER_SET_TRANSACTION_DATA":
       return {
         ...state,
-        txDetails: {
-          ...action.payload,
-        },
+        txDetails: action.payload.txData,
       };
     case "TX_SENDER_WALLET_PLUGGED":
       return {
         ...state,
         state: ETxSenderState.SIGNING,
-      };
-    case "TX_SENDER_ACCEPT_DRAFT":
-      return {
-        ...state,
-        txDraftDetails: {
-          ...action.payload,
-        },
       };
     case "TX_SENDER_SIGNED":
       return {
@@ -129,19 +119,19 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
     case "TX_SENDER_SET_VALIDATION_STATE":
       return {
         ...state,
-        validationState: action.payload,
+        ...action.payload,
       };
     case "TX_SENDER_VALIDATE_DRAFT":
       return {
         ...state,
         validationState: undefined,
       };
-    case "TX_SENDER_SET_SUMMARY_DATA":
+    case "TX_SENDER_CONTINUE_TO_SUMMARY_WITH_DATA":
       return {
         ...state,
         state: ETxSenderState.SUMMARY,
         summaryData: {
-          ...action.payload,
+          ...action.payload.summaryData,
         },
       };
     //Change Actions
