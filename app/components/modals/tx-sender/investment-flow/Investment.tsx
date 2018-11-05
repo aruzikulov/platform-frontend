@@ -242,7 +242,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
                 <FormattedMessage id="investment-flow.estimated-neu-tokens" />
               </Label>
               <InfoAlert>
-                {(showTokens && neuReward && formatThousands(formatEth(neuReward))) || "\xA0"}
+                {(showTokens && neuReward && formatThousands(formatEur(neuReward))) || "\xA0"}
               </InfoAlert>
             </FormGroup>
           </Col>
