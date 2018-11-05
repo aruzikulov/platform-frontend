@@ -51,7 +51,9 @@ import { InvestmentTypeSelector, WalletSelectionData } from "./InvestmentTypeSel
 import {
   createWallets,
   formatEth,
+  formatEthTsd,
   formatEur,
+  formatEurTsd,
   formatVaryingDecimals,
   getInputErrorMessage,
   getInvestmentTypeMessages,
@@ -164,7 +166,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
             placeholder={`${intl.formatIntlMessage(
               "investment-flow.min-ticket-size",
             )} ${minTicketEur} €`}
-            value={formatEur(euroValue)}
+            value={formatVaryingDecimals(euroValue)}
             className="form-control"
             renderInput={props => (
               <MaskedInput
@@ -172,7 +174,8 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
                 mask={createNumberMask({
                   prefix: "",
                   thousandsSeparatorSymbol: " ",
-                  allowDecimal: false,
+                  allowDecimal: true,
+                  decimalLimit: 2,
                   integerLimit: 20,
                 })}
                 onChange={e => changeEuroValue(e.target.value)}
@@ -242,7 +245,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
                 <FormattedMessage id="investment-flow.estimated-neu-tokens" />
               </Label>
               <InfoAlert>
-                {(showTokens && neuReward && formatThousands(formatEur(neuReward))) || "\xA0"}
+                {(showTokens && neuReward && formatEurTsd(neuReward)) || "\xA0"}
               </InfoAlert>
             </FormGroup>
           </Col>
@@ -261,8 +264,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
           <div>
             <FormattedMessage id="investment-flow.total" />:{" "}
             <span className={styles.orange}>
-              {formatThousands(formatEur(totalCostEur))} € ≈ ETH{" "}
-              {formatThousands(formatEth(totalCostEth))}
+              {formatEurTsd(totalCostEur)} € ≈ ETH {formatEthTsd(totalCostEth)}
             </span>
           </div>
         </Col>

@@ -2,7 +2,6 @@ import * as React from "react";
 import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Col, Container, Row } from "reactstrap";
 
-import { MONEY_DECIMALS } from "../../../../config/constants";
 import { actions } from "../../../../modules/actions";
 import {
   selectBankTransferAmount,
@@ -13,13 +12,13 @@ import { selectClientCountry, selectClientName } from "../../../../modules/kyc/s
 import { ETxSenderType } from "../../../../modules/tx/interfaces";
 import { appConnect } from "../../../../store";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
-import { formatMoney } from "../../../../utils/Money.utils";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { CheckboxComponent } from "../../../shared/forms";
 import { Heading } from "../../../shared/modals/Heading";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 import { ITxSummaryDispatchProps } from "../TxSender";
+import { formatEur } from "./utils";
 
 import * as styles from "./Summary.module.scss";
 
@@ -124,7 +123,7 @@ const BankTransferDetailsComponent = injectIntlHelpers(
               />
               <InfoRow
                 caption={<FormattedMessage id="investment-flow.bank-transfer.amount" />}
-                value={`€ ${formatMoney(data.amount, MONEY_DECIMALS, 2)}`}
+                value={`€ ${formatEur(data.amount)}`}
               />
             </InfoList>
           </Col>
