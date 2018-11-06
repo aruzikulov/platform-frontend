@@ -6,7 +6,7 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { ITxData } from "../../lib/web3/types";
 import { IAppState } from "../../store";
-import { addBigNumbers, compareBigNumbers } from "../../utils/BigNumberUtils";
+import { addBigNumbers, compareBigNumbers, subtractBigNumbers } from "../../utils/BigNumberUtils";
 import { isLessThanNDays } from "../../utils/Date.utils";
 import { convertToBigInt } from "../../utils/Number.utils";
 import { extractNumber } from "../../utils/StringUtils";
@@ -87,6 +87,36 @@ function* computeAndSetCurrencies(value: string, currency: EInvestmentCurrency):
         yield put(actions.investmentFlow.setEurValue(bignumber.toFixed(0, BigNumber.ROUND_UP)));
         return;
     }
+  }
+}
+
+function* investEntireBalance(): any {
+  const state: IAppState = yield select();
+
+  const type = selectInvestmentType(state);
+
+  let balance = "";
+  switch (type) {
+    case EInvestmentType.ICBMEth:
+      balance = selectLockedEtherBalance(state.wallet);
+      yield computeAndSetCurrencies(balance, EInvestmentCurrency.Ether);
+      break;
+
+    case EInvestmentType.ICBMnEuro:
+      balance = selectLockedEuroTokenBalance(state.wallet);
+      yield computeAndSetCurrencies(balance, EInvestmentCurrency.Euro);
+      break;
+
+    case EInvestmentType.InvestmentWallet:
+      const gasCostEth = selectTxGasCostEth(state);
+      balance = selectLiquidEtherBalance(state.wallet);
+      balance = subtractBigNumbers([balance, gasCostEth]);
+      yield computeAndSetCurrencies(balance, EInvestmentCurrency.Ether);
+      break;
+  }
+
+  if (balance) {
+    yield put(actions.investmentFlow.validateInputs());
   }
 }
 
@@ -286,4 +316,5 @@ export function* investmentFlowSagas(): any {
   yield takeEvery("TOKEN_PRICE_SAVE", recalculateCurrencies);
   yield takeEvery("INVESTMENT_FLOW_BANK_TRANSFER_CHANGE", bankTransferChange);
   yield takeEvery("INVESTMENT_FLOW_SELECT_INVESTMENT_TYPE", resetTxValidations);
+  yield takeEvery("INVESTMENT_FLOW_INVEST_ENTIRE_BALANCE", investEntireBalance);
 }

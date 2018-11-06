@@ -49,7 +49,7 @@ export function createWallets(state: IAppState): WalletSelectionData[] {
       type: EInvestmentType.ICBMnEuro,
       name: "ICBM Wallet",
       balanceNEuro: icbmNeuro,
-      balanceEur: selectLockedEuroTokenBalance(w),
+      balanceEur: icbmNeuro,
       icon: neuroIcon,
     },
     [EInvestmentType.ICBMEth]: {

@@ -6,7 +6,6 @@ import { withHandlers, withProps } from "recompose";
 import { compose } from "redux";
 import { createNumberMask } from "text-mask-addons";
 
-import { MONEY_DECIMALS } from "../../../../config/constants";
 import { TPublicEtoData } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import {
@@ -35,11 +34,7 @@ import {
 import { EValidationState } from "../../../../modules/tx/sender/reducer";
 import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
-import {
-  addBigNumbers,
-  multiplyBigNumbers,
-  subtractBigNumbers,
-} from "../../../../utils/BigNumberUtils";
+import { addBigNumbers, multiplyBigNumbers } from "../../../../utils/BigNumberUtils";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
 import { formatMoney } from "../../../../utils/Money.utils";
 import { formatThousands } from "../../../../utils/Number.utils";
@@ -83,6 +78,7 @@ interface IDispatchProps {
   changeEthValue: (value: string) => void;
   changeInvestmentType: (type: EInvestmentType) => void;
   showBankTransferDetails: () => void;
+  investEntireBalance: () => void;
 }
 
 interface IWithProps {
@@ -95,7 +91,6 @@ interface IWithProps {
 }
 
 interface IHandlersProps {
-  investEntireBalance: () => void;
   investNow: () => void;
 }
 
@@ -316,6 +311,7 @@ export const InvestmentSelection: React.SFC = compose<any>(
         dispatch(actions.investmentFlow.submitCurrencyValue(value, EInvestmentCurrency.Euro)),
       changeInvestmentType: (type: EInvestmentType) =>
         dispatch(actions.investmentFlow.selectInvestmentType(type)),
+      investEntireBalance: () => dispatch(actions.investmentFlow.investEntireBalance()),
     }),
   }),
   withProps<IWithProps, IStateProps>(
@@ -334,18 +330,6 @@ export const InvestmentSelection: React.SFC = compose<any>(
     },
   ),
   withHandlers<IStateProps & IDispatchProps & IWithProps, IHandlersProps>({
-    investEntireBalance: ({ investmentType, wallets, changeEuroValue, gasCostEuro }) => () => {
-      const wallet = wallets.find(w => w.type === investmentType);
-
-      if (wallet === undefined || wallet.type === EInvestmentType.BankTransfer) {
-        throw new Error("Can't invest wallet entire balance. Wallet not found.");
-      }
-
-      const availableEurBalance = subtractBigNumbers([wallet.balanceEur, gasCostEuro]);
-      const balanceEurFormatted = formatMoney(availableEurBalance, MONEY_DECIMALS);
-
-      changeEuroValue(balanceEurFormatted);
-    },
     investNow: ({ investmentType, sendTransaction, showBankTransferDetails }) => () => {
       if (investmentType !== EInvestmentType.BankTransfer) {
         sendTransaction();
