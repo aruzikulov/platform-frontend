@@ -3,7 +3,7 @@ import { tid } from "../utils";
 import { createAndLoginNewUser } from "../utils/userHelpers";
 import { waitUntilEtoIsInState } from "./utils";
 
-const PUBLIC_ETO_ID = "0x560687Db44b19Ce8347A2D35873Dd95269dDF6bC";
+const PUBLIC_ETO_ID = "0xef2260A8e516393F313e0E659b1A3571e98D73eE";
 
 describe("Try and invest without money", () => {
   it("do", () => {
@@ -18,7 +18,7 @@ describe("Try and invest without money", () => {
       cy.get(tid("eto-invest-now-button-" + PUBLIC_ETO_ID)).click();
       cy.get(tid("invest-modal-eth-field"))
         .clear()
-        .type("200");
+        .type("10");
       cy.wait(1000);
       cy.get(tid("invest-modal-invest-now-button")).should("be.disabled");
     });
