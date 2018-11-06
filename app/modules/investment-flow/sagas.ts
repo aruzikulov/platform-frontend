@@ -295,6 +295,7 @@ function* showBankTransferSummary(): any {
   const state: IInvestmentFlowState = yield select((s: IAppState) => s.investmentFlow);
   if (state.investmentType !== EInvestmentType.BankTransfer) return;
   yield put(actions.investmentFlow.setBankTransferFlowState(EBankTransferFlowState.Summary));
+  yield put(actions.txSender.txSenderHideModal());
 }
 
 function* bankTransferChange(action: TAction): any {

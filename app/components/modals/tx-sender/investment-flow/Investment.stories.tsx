@@ -40,7 +40,7 @@ storiesOf("Investment/Form", module).add("default with error", () => (
       totalCostEth={"1234141234123412341234"}
       totalCostEur={"123412341234123412341234"}
       sendTransaction={() => {}}
-      showBankTransferDetails={() => {}}
+      showBankTransferSummary={() => {}}
     />
   </Container>
 ));
