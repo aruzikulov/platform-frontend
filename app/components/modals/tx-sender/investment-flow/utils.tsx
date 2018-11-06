@@ -109,7 +109,7 @@ export function formatEur(val?: string | BigNumber): string | undefined {
 }
 
 export function formatEurTsd(val?: string | BigNumber): string | undefined {
-  return val && formatThousands(formatMoney(val, MONEY_DECIMALS, 2));
+  return formatThousands(formatEur(val));
 }
 
 export function formatEth(val?: string | BigNumber): string | undefined {
@@ -117,7 +117,7 @@ export function formatEth(val?: string | BigNumber): string | undefined {
 }
 
 export function formatEthTsd(val?: string | BigNumber): string | undefined {
-  return val && formatThousands(formatMoney(val, MONEY_DECIMALS, 4));
+  return formatThousands(formatEth(val));
 }
 
 export function formatVaryingDecimals(val?: string | BigNumber): string | undefined {
