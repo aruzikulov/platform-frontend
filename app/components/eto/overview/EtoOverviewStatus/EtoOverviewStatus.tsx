@@ -20,12 +20,14 @@ import { appRoutes } from "../../../appRoutes";
 import { ButtonLink } from "../../../shared/buttons";
 import { ETOState } from "../../../shared/ETOState";
 import { ECurrencySymbol, EMoneyFormat, Money } from "../../../shared/Money";
+import { EtoWidgetContext } from "../../EtoWidgetView";
 import { InvestmentAmount } from "../../shared/InvestmentAmount";
-import { LoggedInCampaigning, LoggedOutCampaigning } from "./CampaigningWidget";
+import { CampaigningActivatedWidget } from "./CampaigningWidget";
 import { ClaimWidget, RefundWidget } from "./ClaimRefundWidget";
 import { IWithIsEligibleToPreEto, withIsEligibleToPreEto } from "./withIsEligibleToPreEto";
 
 import * as styles from "./EtoOverviewStatus.module.scss";
+import { RegisterNowWidget } from "./RegisterNowWidget";
 
 interface IExternalProps {
   eto: TEtoWithCompanyAndContract;
@@ -71,100 +73,98 @@ const EtoStatusManager = ({
   // It's possible for contract to be undefined if eto is not on chain yet
   const timedState = eto.contract ? eto.contract.timedState : EETOStateOnChain.Setup;
 
-  switch (timedState) {
-    case EETOStateOnChain.Setup: {
-      if (isAuthorized) {
-        const isWaitingForWhitelistToStart =
-          eto.contract && eto.contract.startOfStates[EETOStateOnChain.Whitelist]! > new Date();
+  return (
+    <EtoWidgetContext.Consumer>
+      {context => {
+        switch (timedState) {
+          case EETOStateOnChain.Setup: {
+            if (isAuthorized) {
+              const nextState = isEligibleToPreEto
+                ? EETOStateOnChain.Whitelist
+                : EETOStateOnChain.Public;
+              const nextStateStartDate = eto.contract
+                ? eto.contract.startOfStates[nextState]
+                : undefined;
 
-        if (eto.isBookbuilding) {
-          return (
-            <LoggedInCampaigning
-              maxPledge={eto.maxTicketEur || 0}
-              minPledge={eto.minTicketEur || 0}
-              etoId={eto.etoId}
-              investorsLimit={eto.maxPledges || 0}
-            />
-          );
-        } else if (isWaitingForWhitelistToStart) {
-          const nextState = isEligibleToPreEto
-            ? EETOStateOnChain.Whitelist
-            : EETOStateOnChain.Public;
+              return (
+                <CampaigningActivatedWidget
+                  maxPledge={eto.maxTicketEur}
+                  minPledge={eto.minTicketEur}
+                  etoId={eto.etoId}
+                  investorsLimit={eto.maxPledges}
+                  nextState={nextState}
+                  nextStateStartDate={nextStateStartDate}
+                  isActive={eto.isBookbuilding}
+                  keyQuoteFounder={eto.company.keyQuoteFounder}
+                />
+              );
+            } else {
+              return <RegisterNowWidget />;
+            }
+          }
+          case EETOStateOnChain.Whitelist: {
+            if (isEligibleToPreEto) {
+              return (
+                <InvestWidget
+                  raisedTokens={eto.contract!.totalInvestment.totalTokensInt.toNumber()}
+                  investorsBacked={eto.contract!.totalInvestment.totalInvestors.toNumber()}
+                  tokensGoal={(eto.newSharesToIssue || 1) * (eto.equityTokensPerShare || 1)}
+                  etoId={eto.etoId}
+                />
+              );
+            } else {
+              return (
+                <CounterWidget
+                  endDate={eto.contract!.startOfStates[EETOStateOnChain.Public]!}
+                  state={EETOStateOnChain.Public}
+                />
+              );
+            }
+          }
 
-          return (
-            <CounterWidget endDate={eto.contract!.startOfStates[nextState]!} state={nextState} />
-          );
-        } else {
-          return (
-            <div data-test-id="eto-overview-status-founders-quote" className={styles.quote}>
-              {eto.company.keyQuoteFounder}
-            </div>
-          );
+          case EETOStateOnChain.Public: {
+            if (settingsUpdateRequired && !context) {
+              return (
+                <ButtonLink to={appRoutes.settings}>
+                  <FormattedMessage id="shared-component.eto-overview.settings-update-required" />
+                </ButtonLink>
+              );
+            } else {
+              return (
+                <InvestWidget
+                  raisedTokens={eto.contract!.totalInvestment.totalTokensInt.toNumber()}
+                  investorsBacked={eto.contract!.totalInvestment.totalInvestors.toNumber()}
+                  tokensGoal={(eto.newSharesToIssue || 1) * (eto.equityTokensPerShare || 1)}
+                  etoId={eto.etoId}
+                />
+              );
+            }
+          }
+
+          case EETOStateOnChain.Claim:
+          case EETOStateOnChain.Signing:
+          case EETOStateOnChain.Payout: {
+            return (
+              <ClaimWidget
+                etoId={eto.etoId}
+                tokenName={eto.equityTokenName || ""}
+                totalInvestors={eto.contract!.totalInvestment.totalInvestors.toNumber()}
+                totalEquivEurUlps={eto.contract!.totalInvestment.totalEquivEurUlps}
+                timedState={timedState}
+              />
+            );
+          }
+
+          case EETOStateOnChain.Refund: {
+            return <RefundWidget etoId={eto.etoId} timedState={timedState} />;
+          }
+
+          default:
+            throw new Error(`State (${timedState}) is not known. Please provide implementation.`);
         }
-      } else {
-        return <LoggedOutCampaigning />;
-      }
-    }
-    case EETOStateOnChain.Whitelist: {
-      if (isEligibleToPreEto) {
-        return (
-          <InvestWidget
-            raisedTokens={eto.contract!.totalInvestment.totalTokensInt.toNumber()}
-            investorsBacked={eto.contract!.totalInvestment.totalInvestors.toNumber()}
-            tokensGoal={(eto.newSharesToIssue || 1) * (eto.equityTokensPerShare || 1)}
-            etoId={eto.etoId}
-          />
-        );
-      } else {
-        return (
-          <CounterWidget
-            endDate={eto.contract!.startOfStates[EETOStateOnChain.Public]!}
-            state={EETOStateOnChain.Public}
-          />
-        );
-      }
-    }
-
-    case EETOStateOnChain.Public: {
-      if (settingsUpdateRequired) {
-        return (
-          <ButtonLink to={appRoutes.settings}>
-            <FormattedMessage id="shared-component.eto-overview.settings-update-required" />
-          </ButtonLink>
-        );
-      } else {
-        return (
-          <InvestWidget
-            raisedTokens={eto.contract!.totalInvestment.totalTokensInt.toNumber()}
-            investorsBacked={eto.contract!.totalInvestment.totalInvestors.toNumber()}
-            tokensGoal={(eto.newSharesToIssue || 1) * (eto.equityTokensPerShare || 1)}
-            etoId={eto.etoId}
-          />
-        );
-      }
-    }
-
-    case EETOStateOnChain.Claim:
-    case EETOStateOnChain.Signing:
-    case EETOStateOnChain.Payout: {
-      return (
-        <ClaimWidget
-          etoId={eto.etoId}
-          tokenName={eto.equityTokenName || ""}
-          totalInvestors={eto.contract!.totalInvestment.totalInvestors.toNumber()}
-          totalEquivEurUlps={eto.contract!.totalInvestment.totalEquivEurUlps}
-          timedState={timedState}
-        />
-      );
-    }
-
-    case EETOStateOnChain.Refund: {
-      return <RefundWidget etoId={eto.etoId} timedState={timedState} />;
-    }
-
-    default:
-      throw new Error(`State (${timedState}) is not known. Please provide implementation.`);
-  }
+      }}
+    </EtoWidgetContext.Consumer>
+  );
 };
 
 const EtoOverviewStatusLayout: React.SFC<
@@ -175,104 +175,122 @@ const EtoOverviewStatusLayout: React.SFC<
   const documentsByType = keyBy(eto.documents, document => document.documentType);
 
   return (
-    <div
-      className={cn(styles.etoOverviewStatus, className)}
-      data-test-id={`eto-overview-${eto.etoId}`}
-    >
-      <div className={styles.overviewWrapper}>
-        <div className={styles.statusWrapper}>
+    <EtoWidgetContext.Consumer>
+      {previewCode => (
+        <div
+          className={cn(styles.etoOverviewStatus, className)}
+          data-test-id={`eto-overview-${eto.etoId}`}
+        >
           <StatusOfEto previewCode={eto.previewCode} />
-          <Link to={withParams(appRoutes.etoPublicView, { previewCode: eto.previewCode })}>
-            <TokenSymbolWidget
-              tokenImage={{
-                alt: eto.equityTokenName || "",
-                srcSet: { "1x": eto.equityTokenImage || "" },
-              }}
-              tokenName={eto.equityTokenName}
-              tokenSymbol={eto.equityTokenSymbol || ""}
-            />
-          </Link>
+          <div className={styles.overviewWrapper}>
+            <div className={styles.statusWrapper}>
+              <Link
+                to={withParams(appRoutes.etoPublicView, { previewCode: eto.previewCode })}
+                target={previewCode ? "_blank" : ""}
+              >
+                <TokenSymbolWidget
+                  tokenImage={{
+                    alt: eto.equityTokenName || "",
+                    srcSet: { "1x": eto.equityTokenImage || "" },
+                  }}
+                  tokenName={eto.equityTokenName}
+                  tokenSymbol={eto.equityTokenSymbol || ""}
+                />
+              </Link>
+            </div>
 
+            <div className={cn(styles.divider, "d-none", "d-lg-block")} />
+
+            <div className={styles.tagsWrapper}>
+              <TagsWidget
+                etoId={eto.etoId}
+                termSheet={documentsByType[EEtoDocumentType.TERMSHEET_TEMPLATE]}
+                prospectusApproved={documentsByType[EEtoDocumentType.APPROVED_PROSPECTUS]}
+                smartContractOnchain={smartContractOnChain}
+              />
+            </div>
+
+            <div
+              className={cn(
+                styles.divider,
+                "d-md-none",
+                "d-lg-block",
+                "d-xl-block",
+                styles.breakSm,
+              )}
+            />
+
+            <div className={cn(styles.groupWrapper, styles.breakSm)}>
+              <div className={styles.group}>
+                <span className={styles.label}>
+                  <FormattedMessage id="shared-component.eto-overview-status.pre-money-valuation" />
+                </span>
+                <span className={styles.value}>
+                  <Money
+                    value={eto.preMoneyValuationEur}
+                    currency="eur"
+                    format={EMoneyFormat.FLOAT}
+                    currencySymbol={ECurrencySymbol.SYMBOL}
+                  />
+                </span>
+              </div>
+              <div className={styles.group}>
+                <span className={styles.label}>
+                  <FormattedMessage id="shared-component.eto-overview-status.investment-amount" />
+                </span>
+                <span className={styles.value}>
+                  <InvestmentAmount
+                    newSharesToIssue={eto.newSharesToIssue}
+                    newSharesToIssueInFixedSlots={eto.newSharesToIssueInFixedSlots}
+                    newSharesToIssueInWhitelist={eto.newSharesToIssueInWhitelist}
+                    fixedSlotsMaximumDiscountFraction={eto.fixedSlotsMaximumDiscountFraction}
+                    whitelistDiscountFraction={eto.whitelistDiscountFraction}
+                    existingCompanyShares={eto.existingCompanyShares}
+                    preMoneyValuationEur={eto.preMoneyValuationEur}
+                    minimumNewSharesToIssue={eto.minimumNewSharesToIssue}
+                  />
+                </span>
+              </div>
+              <div className={styles.group}>
+                <span className={styles.label}>
+                  <FormattedMessage id="shared-component.eto-overview-status.new-shares-generated" />
+                </span>
+                <span className={styles.value}>{eto.newSharesToIssue}</span>
+              </div>
+              <div className={styles.group}>
+                <span className={styles.label}>
+                  <FormattedMessage id="shared-component.eto-overview-status.equity-token-price" />
+                </span>
+                <span className={styles.value}>
+                  <Money
+                    value={
+                      (eto.preMoneyValuationEur || 0) /
+                      (eto.existingCompanyShares || 1) /
+                      (eto.equityTokensPerShare || 1)
+                    }
+                    currency="eur"
+                    format={EMoneyFormat.FLOAT}
+                    currencySymbol={ECurrencySymbol.SYMBOL}
+                  />
+                </span>
+              </div>
+            </div>
+
+            <div className={cn(styles.divider, styles.breakMd)} />
+
+            <div className={cn(styles.stageContentWrapper, styles.breakMd)}>
+              <EtoStatusManager
+                eto={eto}
+                isAuthorized={isAuthorized}
+                isEligibleToPreEto={isEligibleToPreEto}
+                settingsUpdateRequired={settingsUpdateRequired}
+              />
+            </div>
+          </div>
           <PoweredByNeufund />
         </div>
-
-        <div className={styles.divider} />
-
-        <div className={styles.tagsWrapper}>
-          <TagsWidget
-            etoId={eto.etoId}
-            termSheet={documentsByType[EEtoDocumentType.TERMSHEET_TEMPLATE]}
-            prospectusApproved={documentsByType[EEtoDocumentType.APPROVED_PROSPECTUS]}
-            smartContractOnchain={smartContractOnChain}
-          />
-        </div>
-
-        <div className={styles.divider} />
-
-        <div className={styles.groupWrapper}>
-          <div className={styles.group}>
-            <span className={styles.label}>
-              <FormattedMessage id="shared-component.eto-overview-status.pre-money-valuation" />
-            </span>
-            <span className={styles.value}>
-              <Money
-                value={eto.preMoneyValuationEur}
-                currency="eur"
-                format={EMoneyFormat.FLOAT}
-                currencySymbol={ECurrencySymbol.SYMBOL}
-              />
-            </span>
-          </div>
-          <div className={styles.group}>
-            <span className={styles.label}>
-              <FormattedMessage id="shared-component.eto-overview-status.investment-amount" />
-            </span>
-            <span className={styles.value}>
-              <InvestmentAmount
-                newSharesToIssue={eto.newSharesToIssue}
-                newSharesToIssueInFixedSlots={eto.newSharesToIssueInFixedSlots}
-                newSharesToIssueInWhitelist={eto.newSharesToIssueInWhitelist}
-                fixedSlotsMaximumDiscountFraction={eto.fixedSlotsMaximumDiscountFraction}
-                whitelistDiscountFraction={eto.whitelistDiscountFraction}
-                existingCompanyShares={eto.existingCompanyShares}
-                preMoneyValuationEur={eto.preMoneyValuationEur}
-                minimumNewSharesToIssue={eto.minimumNewSharesToIssue}
-              />
-            </span>
-          </div>
-          <div className={styles.group}>
-            <span className={styles.label}>
-              <FormattedMessage id="shared-component.eto-overview-status.new-shares-generated" />
-            </span>
-            <span className={styles.value}>{eto.newSharesToIssue}</span>
-          </div>
-          <div className={styles.group}>
-            <span className={styles.label}>
-              <FormattedMessage id="shared-component.eto-overview-status.equity-token-price" />
-            </span>
-            <span className={styles.value}>
-              €{" "}
-              {(
-                (eto.preMoneyValuationEur || 0) /
-                (eto.existingCompanyShares || 1) /
-                (eto.equityTokensPerShare || 1)
-              ).toFixed(4)}
-            </span>
-          </div>
-        </div>
-
-        <div className={styles.divider} />
-
-        <div className={styles.stageContentWrapper}>
-          <EtoStatusManager
-            eto={eto}
-            isAuthorized={isAuthorized}
-            isEligibleToPreEto={isEligibleToPreEto}
-            settingsUpdateRequired={settingsUpdateRequired}
-          />
-        </div>
-      </div>
-    </div>
+      )}
+    </EtoWidgetContext.Consumer>
   );
 };
 

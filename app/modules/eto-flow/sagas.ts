@@ -13,7 +13,7 @@ import {
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/sagas";
 import { loadEtoContact } from "../public-etos/sagas";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectIssuerCompany, selectIssuerEto } from "./selectors";
 
 export function* loadIssuerEto({ apiEtoService, notificationCenter }: TGlobalDependencies): any {

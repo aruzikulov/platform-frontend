@@ -1,3 +1,4 @@
+import * as cn from "classnames";
 import { connect, Field, FieldProps } from "formik";
 import * as React from "react";
 
@@ -42,7 +43,7 @@ export const ToggleComponent: React.SFC<IProps & IInternalProps> = ({
           disabled={disabled}
           data-test-id={dataTestId}
         />
-        <div className={styles.track}>
+        <div className={cn(styles.track)}>
           <div className={styles.indicator} />
         </div>
       </label>

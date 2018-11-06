@@ -1,10 +1,11 @@
+import * as cn from "classnames";
 import { Field, FieldAttributes, FieldProps, FormikConsumer } from "formik";
 import { map, mapValues } from "lodash";
 import * as React from "react";
 import { FormGroup, Input } from "reactstrap";
 
 import { FormLabel } from "./FormLabel";
-import { isNonValid, isValid } from "./utils";
+import { isFieldRequired, isNonValid, isValid } from "./utils";
 
 import * as styles from "./FormStyles.module.scss";
 
@@ -67,7 +68,7 @@ export class FormSelectField extends React.Component<FieldGroupProps & IOwnProps
 
     return (
       <FormikConsumer>
-        {({ touched, errors, setFieldTouched }) => {
+        {({ touched, errors, setFieldTouched, validationSchema }) => {
           //This is done due to the difference between reactstrap and @typings/reactstrap
           const inputExtraProps = {
             invalid: isNonValid(touched, errors, name),
@@ -76,13 +77,13 @@ export class FormSelectField extends React.Component<FieldGroupProps & IOwnProps
           return (
             <FormGroup>
               {label && <FormLabel name={name}>{label}</FormLabel>}
-              <div className={styles.customSelect}>
+              <div className={cn(styles.customSelect, disabled && styles.disabled)}>
                 <Field
                   name={name}
                   render={({ field }: FieldProps) => (
                     <Input
                       {...field}
-                      disabled={disabled}
+                      disabled={disabled && isFieldRequired(validationSchema, name)}
                       onFocus={() => setFieldTouched(name, true)}
                       type="select"
                       value={field.value}

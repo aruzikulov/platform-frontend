@@ -10,7 +10,7 @@ import { IAppState } from "../../store";
 import { convertToBigInt } from "../../utils/Number.utils";
 import { actions, TAction } from "../actions";
 import { selectUser } from "../auth/selectors";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { convertToCalculatedContribution, convertToInvestorTicket } from "./utils";
 

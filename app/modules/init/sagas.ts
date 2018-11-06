@@ -10,7 +10,7 @@ import { actions, TAction } from "../actions";
 import { loadJwt, loadUser } from "../auth/sagas";
 import { selectUserType } from "../auth/selectors";
 import { initializeContracts } from "../contracts/sagas";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { detectUserAgent } from "../user-agent/sagas";
 import { loadPreviousWallet } from "../web3/sagas";
 

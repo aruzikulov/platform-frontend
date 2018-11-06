@@ -708,6 +708,8 @@
   "shared-component.eto-overview.success": "Successful ETO",
   "shared-component.eto-overview.success.summary": "Equivalent to {totalAmount} raised by {totalInvestors} investors",
   "shared-component.eto-overview.term-sheet": "Term sheet",
+  "shared-component.eto-overview.whitelist.success": "Successful Whitelist",
+  "shared-component.eto-overview.whitelist.success.summary": "{totalInvestors, plural, one {# investor} other {# investors}} have backed {totalAmount}",
   "shared-component.eto-overview.your-pledge": "your pledge",
   "shared-component.eto-status.prospectus-approved": "Prospectus Approved",
   "shared-component.eto-timeline.now": "Now",

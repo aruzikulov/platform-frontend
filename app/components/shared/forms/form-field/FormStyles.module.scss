@@ -42,12 +42,24 @@
     -moz-appearance: none;
     appearance: none;
   }
+
+  &.disabled {
+    &::after {
+      @include triangle-down(14px, 9px, $color-silver);
+    }
+
+    & select {
+      color: $color-silver;
+    }
+  }
 }
 
 .input-field {
   &:disabled {
-    &::placeholder {
-      color: $color-black;
-    }
+    color: $color-silver;
+  }
+
+  &::placeholder {
+    color: $color-black;
   }
 }

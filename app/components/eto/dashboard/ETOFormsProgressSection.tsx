@@ -3,6 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Col } from "reactstrap";
 
 import { EtoState } from "../../../lib/api/eto/EtoApi.interfaces";
+import { etoFormIsReadonly } from "../../../lib/api/eto/EtoApiUtils";
 import {
   selectIsGeneralEtoLoading,
   selectIssuerCompany,
@@ -10,6 +11,7 @@ import {
   selectIssuerEtoState,
   selectShouldEtoDataLoad,
 } from "../../../modules/eto-flow/selectors";
+import { EEtoFormTypes } from "../../../modules/eto-flow/types";
 import {
   calculateCompanyInformationProgress,
   calculateEtoEquityTokenInfoProgress,
@@ -17,7 +19,7 @@ import {
   calculateEtoMediaProgress,
   calculateEtoRiskAssessmentProgress,
   calculateEtoTermsProgress,
-  calculateEtoVotingRightProgress,
+  calculateEtoVotingRightsProgress,
   calculateInvestmentTermsProgress,
   calculateLegalInformationProgress,
   calculateProductVisionProgress,
@@ -25,6 +27,10 @@ import {
 import { appConnect } from "../../../store";
 import { EtoFormProgressWidget } from "../../shared/EtoFormProgressWidget";
 import { etoRegisterRoutes } from "../registration/routes";
+
+interface IEtoRegisteredRoutes {
+  [id: string]: EEtoFormTypes;
+}
 
 export interface IStateProps {
   etoStatus?: EtoState;
@@ -38,7 +44,7 @@ export interface IStateProps {
   etoMediaProgress: number;
   etoRiskAssessmentProgress: number;
   etoEquityTokenInfoProgress: number;
-  etoVotingRightProgress: number;
+  etoVotingRightsProgress: number;
   etoInvestmentTermsProgress: number;
 }
 
@@ -54,79 +60,70 @@ const ETOFormsProgressSectionComponent: React.SFC<IStateProps> = ({
   etoMediaProgress,
   etoRiskAssessmentProgress,
   etoEquityTokenInfoProgress,
-  etoVotingRightProgress,
+  etoVotingRightsProgress,
   etoInvestmentTermsProgress,
 }) => {
   const sections = [
     {
-      redirectTo: etoRegisterRoutes.companyInformation,
+      id: EEtoFormTypes.CompanyInformation,
       progress: companyInformationProgress,
       name: <FormattedMessage id="eto.form-progress-widget.about" />,
       testingId: "eto-progress-widget-about",
       readonly: false,
     },
     {
-      redirectTo: etoRegisterRoutes.legalInformation,
+      id: EEtoFormTypes.LegalInformation,
       progress: legalInformationProgress,
       name: <FormattedMessage id="eto.form-progress-widget.legal-info" />,
       testingId: "eto-progress-widget-legal-info",
-      readonly: etoStatus !== EtoState.PREVIEW,
     },
     {
-      redirectTo: etoRegisterRoutes.etoInvestmentTerms,
+      id: EEtoFormTypes.EtoInvestmentTerms,
       progress: etoInvestmentTermsProgress,
       name: <FormattedMessage id="eto.form-progress-widget.investment-terms" />,
       testingId: "eto-progress-widget-investment-terms",
-      readonly: etoStatus !== EtoState.PREVIEW,
     },
     {
-      redirectTo: etoRegisterRoutes.etoTerms,
+      id: EEtoFormTypes.EtoTerms,
       progress: etoTermsProgress,
       name: <FormattedMessage id="eto.form-progress-widget.eto-terms" />,
       testingId: "eto-progress-widget-eto-terms",
-      readonly: etoStatus !== EtoState.PREVIEW,
     },
     {
-      redirectTo: etoRegisterRoutes.keyIndividuals,
+      id: EEtoFormTypes.KeyIndividuals,
       progress: etoKeyIndividualsProgress,
       name: <FormattedMessage id="eto.form-progress-widget.key-individuals" />,
       testingId: "eto-progress-widget-key-individuals",
-      readonly: false,
     },
     {
-      redirectTo: etoRegisterRoutes.productVision,
+      id: EEtoFormTypes.ProductVision,
       progress: productVisionProgress,
       name: <FormattedMessage id="eto.form-progress-widget.product-vision" />,
       testingId: "eto-progress-widget-product-vision",
-      readonly: false,
     },
     {
-      redirectTo: etoRegisterRoutes.etoMedia,
+      id: EEtoFormTypes.EtoMedia,
       progress: etoMediaProgress,
       name: <FormattedMessage id="eto.form-progress-widget.media" />,
       testingId: "eto-progress-widget-media",
-      readonly: false,
     },
     {
-      redirectTo: etoRegisterRoutes.etoRiskAssessment,
+      id: EEtoFormTypes.EtoRiskAssessment,
       progress: etoRiskAssessmentProgress,
       name: <FormattedMessage id="eto.form-progress-widget.risk-assessment" />,
       testingId: "eto-progress-widget-risk-assessment",
-      readonly: false,
     },
     {
-      redirectTo: etoRegisterRoutes.etoEquityTokenInfo,
+      id: EEtoFormTypes.EtoEquityTokenInfo,
       progress: etoEquityTokenInfoProgress,
       name: <FormattedMessage id="eto.form-progress-widget.equity-token-info" />,
       testingId: "eto-progress-widget-equity-token-info",
-      readonly: etoStatus !== EtoState.PREVIEW,
     },
     {
-      redirectTo: etoRegisterRoutes.etoVotingRight,
-      progress: etoVotingRightProgress,
+      id: EEtoFormTypes.EtoVotingRights,
+      progress: etoVotingRightsProgress,
       name: <FormattedMessage id="eto.form-progress-widget.voting-right" />,
       testingId: "eto-progress-widget-voting-right",
-      readonly: etoStatus !== EtoState.PREVIEW,
     },
   ];
 
@@ -136,11 +133,11 @@ const ETOFormsProgressSectionComponent: React.SFC<IStateProps> = ({
         <Col key={index} lg={4} xs={12} md={6} className="mb-4" data-test-id={section.testingId}>
           <EtoFormProgressWidget
             isLoading={loadingData}
-            to={section.redirectTo}
+            to={(etoRegisterRoutes as IEtoRegisteredRoutes)[section.id]}
             progress={shouldEtoDataLoad ? section.progress : 0}
             disabled={!shouldEtoDataLoad}
-            readonly={section.readonly}
             name={section.name}
+            readonly={etoFormIsReadonly(section.id, etoStatus)}
           />
         </Col>
       ))}
@@ -159,7 +156,7 @@ export const ETOFormsProgressSection = appConnect<IStateProps, {}>({
     legalInformationProgress: calculateLegalInformationProgress(selectIssuerCompany(state)),
     productVisionProgress: calculateProductVisionProgress(selectIssuerCompany(state)),
     etoMediaProgress: calculateEtoMediaProgress(selectIssuerCompany(state)),
-    etoVotingRightProgress: calculateEtoVotingRightProgress(selectIssuerEto(state)),
+    etoVotingRightsProgress: calculateEtoVotingRightsProgress(selectIssuerEto(state)),
     etoEquityTokenInfoProgress: calculateEtoEquityTokenInfoProgress(selectIssuerEto(state)),
     etoRiskAssessmentProgress: calculateEtoRiskAssessmentProgress(selectIssuerCompany(state)),
     etoInvestmentTermsProgress: calculateInvestmentTermsProgress(selectIssuerEto(state)),

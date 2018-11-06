@@ -15,7 +15,7 @@ import { accessWalletAndRunEffect } from "../access-wallet/sagas";
 import { actions } from "../actions";
 import { loadKycRequestData } from "../kyc/sagas";
 import { selectRedirectURLFromQueryString } from "../routing/selectors";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectUrlUserType } from "../wallet-selector/selectors";
 import {
   selectActivationCodeFromQueryString,

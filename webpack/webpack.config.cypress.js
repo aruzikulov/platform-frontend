@@ -1,6 +1,5 @@
 const webpack = require("webpack");
 
-const paths = require("./paths");
 const loadAppEnv = require("./loadAppEnv");
 
 const applicationEnv = loadAppEnv(process.env);

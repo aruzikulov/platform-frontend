@@ -4,9 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 
 import { Button } from "../../../../shared/buttons";
 import { ECurrencySymbol, Money } from "../../../../shared/Money";
-import { SuccessTick } from "../../../../shared/SuccessTick";
-
-import * as styles from "./Layout.module.scss";
+import { Message } from "../Message";
 import { withCanClaimToken } from "./withCanClaimToken";
 
 interface IExternalProps {
@@ -22,11 +20,10 @@ const ClaimWidgetLayout: React.SFC<IExternalProps> = ({
   totalEquivEurUlps,
   canClaimToken,
 }) => (
-  <div className={styles.widget}>
-    <SuccessTick />
-    <div className={styles.message}>
-      <FormattedMessage id="shared-component.eto-overview.success" />
-      <p>
+  <>
+    <Message
+      title={<FormattedMessage id="shared-component.eto-overview.success" />}
+      summary={
         <FormattedMessage
           id="shared-component.eto-overview.success.summary"
           values={{
@@ -40,8 +37,8 @@ const ClaimWidgetLayout: React.SFC<IExternalProps> = ({
             totalInvestors,
           }}
         />
-      </p>
-    </div>
+      }
+    />
     {canClaimToken && (
       <Button>
         <FormattedMessage
@@ -50,7 +47,7 @@ const ClaimWidgetLayout: React.SFC<IExternalProps> = ({
         />
       </Button>
     )}
-  </div>
+  </>
 );
 
 export const ClaimWidget = withCanClaimToken(ClaimWidgetLayout);

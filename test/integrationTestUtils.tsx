@@ -1,3 +1,4 @@
+import { delay } from "bluebird";
 import { ReactWrapper } from "enzyme";
 import { createMemoryHistory, History } from "history";
 import { Container } from "inversify";
@@ -9,7 +10,6 @@ import { applyMiddleware, createStore, Store } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { SinonSpy } from "sinon";
 
-import { delay } from "bluebird";
 import {
   createGlobalDependencies,
   customizerContainerWithMiddlewareApi,
@@ -109,6 +109,7 @@ export function createIntegrationTestsSetup(
 
   const store = createStore(reducers, options.initialState as any, middleware);
   context.deps = createGlobalDependencies(container);
+
   sagaMiddleware.run(rootSaga);
 
   return {

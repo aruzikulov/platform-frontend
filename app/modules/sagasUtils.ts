@@ -1,8 +1,50 @@
 import { isEqual } from "lodash/fp";
-import { cancel, race, take } from "redux-saga/effects";
+import {
+  call,
+  Effect,
+  fork,
+  GenericRaceEffect,
+  getContext,
+  race,
+  spawn,
+  take,
+  takeEvery,
+  takeLatest,
+} from "redux-saga/effects";
 import { TGlobalDependencies } from "../di/setupBindings";
-import { TActionType } from "./actions";
-import { neuCall, neuFork } from "./sagas";
+import { TAction, TActionType } from "./actions";
+
+export function* neuTakeLatest(
+  type: TActionType | Array<string>,
+  saga: (deps: TGlobalDependencies, action: TAction) => any,
+): Iterator<Effect> {
+  const deps: TGlobalDependencies = yield getContext("deps");
+  yield takeLatest(type, saga, deps);
+}
+
+export function* neuTakeEvery(
+  type: TActionType | Array<string>,
+  saga: (deps: TGlobalDependencies, action: TAction) => any,
+): Iterator<Effect> {
+  const deps: TGlobalDependencies = yield getContext("deps");
+  yield takeEvery(type, saga, deps);
+}
+
+export function* neuFork(
+  saga: (deps: TGlobalDependencies, ...args: any[]) => any,
+  ...args: any[]
+): Iterator<Effect> {
+  const deps: TGlobalDependencies = yield getContext("deps");
+  return yield spawn(saga, deps, args[0], args[1], args[2], args[3], args[4]);
+}
+
+export function* neuCall(
+  saga: (deps: TGlobalDependencies, ...args: any[]) => any,
+  ...args: any[]
+): Iterator<Effect> {
+  const deps: TGlobalDependencies = yield getContext("deps");
+  return yield call(saga, deps, args[0], args[1], args[2], args[3], args[4]);
+}
 
 /**
  * Starts saga on `startAction`, cancels on `stopAction`, loops...
@@ -10,16 +52,17 @@ import { neuCall, neuFork } from "./sagas";
 export function* neuTakeUntil(
   startAction: TActionType | TActionType[],
   stopAction: TActionType | TActionType[],
-  saga: (deps: TGlobalDependencies) => any,
+  saga: (deps: TGlobalDependencies, ...args: any[]) => any,
 ): any {
-  const startActionArray = Array.isArray(startAction) ? startAction : [startAction];
-  const stopActionArray = Array.isArray(stopAction) ? stopAction : [stopAction];
+  while (true) {
+    const action = yield take(startAction);
 
-  while (yield take(startActionArray)) {
-    const cancelForkToken = yield neuFork(saga);
-
-    yield yield take(stopActionArray);
-    yield cancel(cancelForkToken);
+    yield fork(function*(): IterableIterator<GenericRaceEffect<any>> {
+      yield race({
+        task: neuCall(saga, action),
+        cancel: take(stopAction),
+      });
+    });
   }
 }
 
@@ -47,14 +90,14 @@ export function* neuRepeatIf(
   while (true) {
     yield neuCall(generator, extraParam);
 
-    const { change, accept } = yield race({
-      change: take(repeatAction),
-      accept: take(endAction),
+    const { repeat, end } = yield race({
+      repeat: take(repeatAction),
+      end: take(endAction),
     });
-    if (change) {
+    if (repeat) {
       continue;
     }
-    if (accept) {
+    if (end) {
       return;
     }
   }

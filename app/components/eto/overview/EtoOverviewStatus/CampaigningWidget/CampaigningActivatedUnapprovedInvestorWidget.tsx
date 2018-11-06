@@ -4,9 +4,9 @@ import { actions } from "../../../../../modules/actions";
 import { routingActions } from "../../../../../modules/routing/actions";
 import { appConnect } from "../../../../../store";
 import {
-  CampaigningActivatedInvestorWidgetLayout,
+  CampaigningActivatedInvestorApprovedWidgetLayout,
   ICampaigningActivatedInvestorWidgetLayoutProps,
-} from "./CampaigningActivatedInvestorWidgetLayout";
+} from "./CampaigningActivatedInvestorApprovedWidgetLayout";
 
 interface IExternalProps {
   maxPledge?: number;
@@ -53,4 +53,4 @@ export const CampaigningActivatedUnapprovedInvestorWidget = compose<
     consentToRevealEmail: false,
     pledgedAmount: "",
   }),
-)(CampaigningActivatedInvestorWidgetLayout);
+)(CampaigningActivatedInvestorApprovedWidgetLayout);

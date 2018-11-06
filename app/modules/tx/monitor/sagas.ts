@@ -3,8 +3,7 @@ import { put } from "redux-saga/effects";
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { TPendingTxs } from "../../../lib/api/users/interfaces";
 import { actions } from "../../actions";
-import { neuCall } from "../../sagas";
-import { neuTakeUntil } from "../../sagasUtils";
+import { neuCall, neuTakeUntil } from "../../sagasUtils";
 
 const TX_MONITOR_DELAY = 60000;
 

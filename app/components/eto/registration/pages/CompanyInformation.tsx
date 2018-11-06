@@ -11,6 +11,7 @@ import {
 } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField, FormTextArea } from "../../../shared/forms";
@@ -121,7 +122,7 @@ const EtoRegistrationTeamAndInvestorsComponent = (
 );
 
 export const EtoRegistrationCompanyInformation = compose<React.SFC>(
-  setDisplayName("EtoRegistrationCompanyInformation"),
+  setDisplayName(EEtoFormTypes.CompanyInformation),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,

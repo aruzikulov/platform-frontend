@@ -2,8 +2,7 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
 import { Button } from "../../../../shared/buttons";
-
-import * as styles from "./Layout.module.scss";
+import { Message } from "../Message";
 import { withCanClaimToken } from "./withCanClaimToken";
 
 interface IExternalProps {
@@ -12,16 +11,17 @@ interface IExternalProps {
 
 const RefundWidgetLayout: React.SFC<IExternalProps> = ({ canClaimToken }) => {
   return (
-    <div className={styles.widget}>
-      <div className={styles.message}>
-        <FormattedMessage id="shared-component.eto-overview.refund" />
-      </div>
+    <>
+      <Message
+        showTick={false}
+        summary={<FormattedMessage id="shared-component.eto-overview.refund" />}
+      />
       {canClaimToken && (
         <Button>
           <FormattedMessage id="shared-component.eto-overview.claim-your-eth-neur" />
         </Button>
       )}
-    </div>
+    </>
   );
 };
 

@@ -1,5 +1,7 @@
 import { camelCase } from "lodash";
 import { compose, keyBy, map, omit } from "lodash/fp";
+import { LOCATION_CHANGE } from "react-router-redux";
+import { delay } from "redux-saga";
 import { all, fork, put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
@@ -16,9 +18,11 @@ import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { IAppState } from "../../store";
 import { actions, TAction } from "../actions";
 import { selectUserType } from "../auth/selectors";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
+import { etoInProgressPoolingDelay, etoNormalPoolingDelay } from "./constants";
 import { InvalidETOStateError } from "./errors";
-import { selectEtoById } from "./selectors";
+import { selectEtoById, selectEtoWithCompanyAndContract } from "./selectors";
+import { EETOStateOnChain, TEtoWithCompanyAndContract } from "./types";
 import { convertToEtoTotalInvestment, convertToStateStartDate } from "./utils";
 
 export function* loadEtoPreview(
@@ -124,6 +128,37 @@ export function* loadEtoContact(
   }
 }
 
+function* watchEtoSetAction(_: TGlobalDependencies, action: TAction): any {
+  if (action.type !== "PUBLIC_ETOS_SET_PUBLIC_ETO") return;
+
+  const previewCode = action.payload.eto.previewCode;
+
+  yield neuCall(watchEto, previewCode);
+}
+
+function* watchEtosSetAction(_: TGlobalDependencies, action: TAction): any {
+  if (action.type !== "PUBLIC_ETOS_SET_PUBLIC_ETOS") return;
+
+  yield all(map(eto => neuCall(watchEto, eto.previewCode), action.payload.etos));
+}
+
+function* watchEto(_: TGlobalDependencies, previewCode: string): any {
+  const eto: TEtoWithCompanyAndContract = yield select((state: IAppState) =>
+    selectEtoWithCompanyAndContract(state, previewCode),
+  );
+
+  if (
+    eto.state === EtoState.ON_CHAIN &&
+    [EETOStateOnChain.Whitelist, EETOStateOnChain.Public].includes(eto.contract!.timedState)
+  ) {
+    yield delay(etoInProgressPoolingDelay);
+  } else {
+    yield delay(etoNormalPoolingDelay);
+  }
+
+  yield put(actions.publicEtos.loadEtoPreview(previewCode));
+}
+
 function* loadEtos({ apiEtoService, logger }: TGlobalDependencies): any {
   try {
     const etosResponse: IHttpResponse<TPublicEtoData[]> = yield apiEtoService.getEtos();
@@ -201,4 +236,6 @@ export function* etoSagas(): any {
   yield fork(neuTakeEvery, "PUBLIC_ETOS_LOAD_ETOS", loadEtos);
   yield fork(neuTakeEvery, "PUBLIC_ETOS_DOWNLOAD_DOCUMENT", downloadDocument);
   yield fork(neuTakeEvery, "PUBLIC_ETOS_DOWNLOAD_TEMPLATE_BY_TYPE", downloadTemplateByType);
+  yield fork(neuTakeUntil, "PUBLIC_ETOS_SET_PUBLIC_ETO", LOCATION_CHANGE, watchEtoSetAction);
+  yield fork(neuTakeUntil, "PUBLIC_ETOS_SET_PUBLIC_ETOS", LOCATION_CHANGE, watchEtosSetAction);
 }

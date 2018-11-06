@@ -1,5 +1,6 @@
 import { BigNumber } from "bignumber.js";
 import { expect } from "chai";
+
 import { createMount } from "../../../test/createMount";
 import { dummyEthereumAddress, dummyNetworkId } from "../../../test/fixtures";
 import {
@@ -14,6 +15,7 @@ import { symbols } from "../../di/symbols";
 import { SignatureAuthApi } from "../../lib/api/SignatureAuthApi";
 import { getDummyUser } from "../../lib/api/users/fixtures";
 import { UsersApi } from "../../lib/api/users/UsersApi";
+import { IdentityRegistry } from "../../lib/contracts/IdentityRegistry";
 import { Neumark } from "../../lib/contracts/Neumark";
 import {
   IBrowserWalletMetadata,
@@ -32,6 +34,7 @@ import { Web3Adapter } from "../../lib/web3/Web3Adapter";
 import { Web3ManagerMock } from "../../lib/web3/Web3Manager.mock";
 import { actions } from "../../modules/actions";
 import { EWalletSubType, EWalletType } from "../../modules/web3/types";
+import { appRoutes } from "../appRoutes";
 import { BROWSER_WALLET_RECONNECT_INTERVAL } from "./browser/WalletBrowser";
 import { LEDGER_RECONNECT_INTERVAL } from "./ledger/WalletLedgerInitComponent";
 import { walletRegisterRoutes } from "./walletRoutes";
@@ -83,6 +86,9 @@ describe("Wallet selector integration", () => {
       neumark: createMock(Neumark, {
         balanceOf: (_address: string) => Promise.resolve(new BigNumber(1)),
       }),
+      identityRegistry: createMock(IdentityRegistry, {
+        getClaims: (_userId: string) => Promise.resolve("01001110"),
+      }),
     });
 
     const { store, container, dispatchSpy, history } = createIntegrationTestsSetup({
@@ -108,6 +114,7 @@ describe("Wallet selector integration", () => {
       },
       initialRoute: walletRegisterRoutes.light,
     });
+
     container
       .get<Web3ManagerMock>(symbols.web3Manager)
       .initializeMock(internalWeb3AdapterMock, dummyNetworkId);
@@ -228,13 +235,18 @@ describe("Wallet selector integration", () => {
       createAccount: async () => getDummyUser(browserWalletMock.getMetadata()),
     });
 
-    const initialRoute = "/register";
+    const contractsMock = createMock(ContractsService, {
+      identityRegistry: createMock(IdentityRegistry, {
+        getClaims: (_userId: string) => Promise.resolve("01001110"),
+      }),
+    });
 
     const { store, container, dispatchSpy, history } = createIntegrationTestsSetup({
       browserWalletConnectorMock,
       signatureAuthApiMock,
       usersApiMock,
-      initialRoute,
+      contractsMock,
+      initialRoute: appRoutes.register,
       initialState: {
         init: {
           smartcontractsInit: {

@@ -3,7 +3,7 @@ import { fork } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { TAction } from "../actions";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 
 export function* downloadFile(
   { apiImmutableStorage, notificationCenter, logger }: TGlobalDependencies,

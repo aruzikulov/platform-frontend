@@ -1,1 +1,1 @@
-export * from "./CampaigningWidget";
+export * from "./CampaigningActivatedWidget";

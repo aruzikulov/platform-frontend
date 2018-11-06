@@ -2,13 +2,13 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import {
-  CampaigningActivatedInvestorWidgetLayout,
+  CampaigningActivatedInvestorApprovedWidgetLayout,
   CampaigningFormState,
-} from "./CampaigningActivatedInvestorWidgetLayout";
+} from "./CampaigningActivatedInvestorApprovedWidgetLayout";
 
-storiesOf("CampaigningActivatedInvestorWidgetLayout", module).add("default", () => (
+storiesOf("CampaigningActivatedInvestorApprovedWidgetLayout", module).add("default", () => (
   <>
-    <CampaigningActivatedInvestorWidgetLayout
+    <CampaigningActivatedInvestorApprovedWidgetLayout
       pledgedAmount={10}
       consentToRevealEmail={true}
       backNow={() => "back now"}

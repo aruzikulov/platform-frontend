@@ -1,3 +1,4 @@
+import * as cn from "classnames";
 import { Field, FieldProps, FormikConsumer } from "formik";
 import * as React from "react";
 
@@ -40,7 +41,7 @@ const CheckboxComponent: React.SFC<IProps & IInternalProps> = ({
         data-test-id={dataTestId}
         disabled={disabled}
       />
-      <div className={styles.indicator} />
+      <div className={cn(styles.indicator, disabled && styles.disabled)} />
       {label && <div className={styles.label}>{label}</div>}
     </label>
   );
@@ -67,7 +68,7 @@ const RadioButtonComponent: React.SFC<IProps & IInternalProps> = ({
         defaultChecked={checked}
         data-test-id={dataTestId}
       />
-      <div className={styles.indicator} />
+      <div className={cn(styles.indicator, disabled && styles.disabled)} />
       {label && <div className={styles.label}>{label}</div>}
     </label>
   );

@@ -6,12 +6,14 @@ import * as Web3 from "web3";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { TPendingTxs, TxWithMetadata } from "../../../lib/api/users/interfaces";
+import { ITxData } from "../../../lib/web3/types";
 import {
   InvalidChangeIdError,
   InvalidRlpDataError,
   LongTransactionQueError,
   LowNonceError,
   NotEnoughEtherForGasError,
+  OutOfGasError,
   RevertedTransactionError,
   UnknownEthNodeError,
 } from "../../../lib/web3/Web3Adapter";
@@ -21,13 +23,10 @@ import { connectWallet } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
 import { IGasState } from "../../gas/reducer";
 import { selectGasPrice } from "../../gas/selectors";
-import { neuCall } from "../../sagas";
-import { neuRepeatIf } from "../../sagasUtils";
+import { neuCall, neuRepeatIf } from "../../sagasUtils";
 import { ETxSenderType } from "../interfaces";
 import { updateTxs } from "../monitor/sagas";
 import { validateGas } from "../validator/sagas";
-import { ITxData } from "./../../../lib/web3/types";
-import { OutOfGasError } from "./../../../lib/web3/Web3Adapter";
 import { ETransactionErrorType } from "./reducer";
 import { selectTxDetails, selectTxType } from "./selectors";
 

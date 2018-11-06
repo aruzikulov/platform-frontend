@@ -71,6 +71,10 @@ export type CommonHtmlProps = {
 
 export type TTranslatedString = string | React.ReactElement<FormattedMessage>;
 
+export type TDataTestId = {
+  "data-test-id"?: string;
+};
+
 export type TAcceptedFileType =
   | string
   | "application/pdf"

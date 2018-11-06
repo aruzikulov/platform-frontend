@@ -101,7 +101,7 @@ export const calculateEtoMediaProgress = getFormFractionDoneCalculator(
 export const calculateEtoRiskAssessmentProgress = getFormFractionDoneCalculator(
   EtoRiskAssessmentType.toYup(),
 );
-export const calculateEtoVotingRightProgress = getFormFractionDoneCalculator(
+export const calculateEtoVotingRightsProgress = getFormFractionDoneCalculator(
   EtoVotingRightsType.toYup(),
 );
 export const calculateEtoEquityTokenInfoProgress = getFormFractionDoneCalculator(

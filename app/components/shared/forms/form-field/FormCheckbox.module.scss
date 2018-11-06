@@ -54,6 +54,12 @@ $indicator-size: 16px;
     transition: 200ms $ease-out-expo;
     transition-property: width, height;
   }
+
+  &.disabled {
+    &::after {
+      background-color: $color-silver;
+    }
+  }
 }
 
 .label {
@@ -71,3 +77,4 @@ $indicator-size: 16px;
     vertical-align: super;
   }
 }
+

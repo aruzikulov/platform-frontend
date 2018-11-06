@@ -8,6 +8,7 @@ import { compose } from "redux";
 import { EtoMediaType, TPartialCompanyEtoData } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { etoMediaProgressOptions } from "../../../../modules/eto-flow/utils";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
@@ -119,7 +120,7 @@ const EtoRegistrationMediaComponent = ({ savingData }: IProps) => (
 );
 
 export const EtoRegistrationMedia = compose<React.SFC>(
-  setDisplayName("EtoRegistrationMedia"),
+  setDisplayName(EEtoFormTypes.EtoMedia),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,

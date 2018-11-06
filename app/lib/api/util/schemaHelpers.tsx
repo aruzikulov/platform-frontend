@@ -75,6 +75,9 @@ export const RESTRICTED_COUNTRIES = [
   "TN",
   "YE",
   "US",
+  "BS",
+  "GH",
+  "BW",
 ];
 
 export const restrictedCountry = countryCode.test(

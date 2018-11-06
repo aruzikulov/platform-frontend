@@ -34,7 +34,12 @@ export class JoinCta extends React.Component<CommonHtmlProps, IState> {
 
     const response = await fetch("api/newsletter/subscription", {
       method: "POST",
-      body: JSON.stringify({ email, name: "", return_url: "https://platform.neufund.org" }),
+      body: JSON.stringify({
+        email,
+        name: "",
+        list: "newsletter",
+        return_url: "https://platform.neufund.org",
+      }),
       headers: {
         "content-type": "application/json",
       },

@@ -69,8 +69,8 @@ export class FormInput extends React.Component<FormInputProps> {
       min,
       max,
       size,
+      disabled,
       customValidation,
-      validate,
       ignoreTouched,
       ...props
     } = this.props;
@@ -81,7 +81,6 @@ export class FormInput extends React.Component<FormInputProps> {
           const inputExtraProps = {
             invalid: isNonValid(touched, errors, name, ignoreTouched),
           } as any;
-
           return (
             <Field
               name={name}
@@ -123,6 +122,7 @@ export class FormInput extends React.Component<FormInputProps> {
                         value={val}
                         valid={isValid(touched, errors, name)}
                         placeholder={placeholder}
+                        disabled={disabled}
                         {...inputExtraProps}
                         {...props}
                       />

@@ -45,7 +45,11 @@ export const UnlockedWallet: React.SFC<IUnlockedWallet> = ({
           currencyTotal="eur"
           largeNumber={data.neuroAmount}
           value={data.neuroEuroAmount}
-          onWithdrawClick={withdrawEth}
+          withdrawDisabled={
+            process.env.NEURO_WITHDRAW_ENABLED !== "1" || parseFloat(data.ethAmount) === 0
+          }
+          transferDisabled={process.env.NEURO_WITHDRAW_ENABLED !== "1"}
+          //TODO: add nEuro withdraw
           // TODO: add on depositClick when euro token flow exists
         />
 
@@ -60,6 +64,10 @@ export const UnlockedWallet: React.SFC<IUnlockedWallet> = ({
           onWithdrawClick={withdrawEth}
           dataTestId="wallet-balance.ether"
           onDepositClick={depositEth}
+          withdrawDisabled={
+            process.env.NF_WITHDRAW_ENABLED !== "1" || parseFloat(data.ethAmount) === 0
+          }
+          transferDisabled={process.env.NF_WITHDRAW_ENABLED !== "1"}
         />
       </section>
     </WalletBalanceContainer>

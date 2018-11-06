@@ -8,6 +8,7 @@ import { compose } from "redux";
 import { EtoPitchType, TPartialCompanyEtoData } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { ArrayOfKeyValueFields, FormTextArea } from "../../../shared/forms";
@@ -158,7 +159,7 @@ const EtoRegistrationPitchComponent = (props: IProps) => {
 };
 
 export const EtoRegistrationPitch = compose<React.SFC>(
-  setDisplayName("EtoRegistrationPitch"),
+  setDisplayName(EEtoFormTypes.ProductVision),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,

@@ -1,5 +1,4 @@
 import { inject, injectable } from "inversify";
-import * as promiseAll from "promise-all";
 
 import { IConfig } from "../../config/getConfig";
 import { symbols } from "../../di/symbols";
@@ -14,7 +13,6 @@ import { Neumark } from "../contracts/Neumark";
 import { PlatformTerms } from "../contracts/PlatformTerms";
 import { Universe } from "../contracts/Universe";
 import { ILogger } from "../dependencies/Logger";
-import { Commitment } from "./CommitmentDeprecated";
 import { Web3Manager } from "./Web3Manager";
 
 import * as knownInterfaces from "../contracts/knownInterfaces.json";
@@ -45,10 +43,6 @@ export class ContractsService {
   public async init(): Promise<void> {
     this.logger.info("Initializing contracts...");
     const web3 = this.web3Manager.internalWeb3Adapter.web3;
-
-    if (process.env.NF_CONTRACTS_NEW !== "1") {
-      return this.initDeprecated();
-    }
 
     this.universeContract = await create(
       Universe,
@@ -92,35 +86,6 @@ export class ContractsService {
     this.etherToken = await create(EtherToken, web3, etherTokenAddress);
 
     this.logger.info("Initializing contracts via UNIVERSE is DONE.");
-  }
-
-  public async initDeprecated(): Promise<void> {
-    const web3 = this.web3Manager.internalWeb3Adapter.web3;
-
-    const commitmentContract = await create(
-      Commitment,
-      web3,
-      this.config.contractsAddresses.universeContractAddress,
-    );
-
-    const { neumarkAddress, euroLockAddress, etherLockAddress } = await promiseAll({
-      neumarkAddress: commitmentContract.neumark,
-      euroLockAddress: commitmentContract.euroLock,
-      etherLockAddress: commitmentContract.etherLock,
-    });
-
-    this.neumark = await create(Neumark, web3, neumarkAddress);
-    this.icbmEuroLock = await create(ICBMLockedAccount, web3, euroLockAddress);
-    this.icbmEtherLock = await create(ICBMLockedAccount, web3, etherLockAddress);
-
-    const { euroTokenAddress, etherTokenAddress } = await promiseAll({
-      euroTokenAddress: this.icbmEuroLock.assetToken,
-      etherTokenAddress: this.icbmEtherLock.assetToken,
-    });
-
-    this.euroToken = await create(EuroToken, web3, euroTokenAddress);
-    this.etherToken = await create(EtherToken, web3, etherTokenAddress);
-    this.logger.info("Initializing contracts via ICBM COMMITMENT is DONE.");
   }
 
   async getETOCommitmentContract(etoId: string): Promise<ETOCommitment> {

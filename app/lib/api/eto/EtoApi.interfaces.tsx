@@ -129,7 +129,7 @@ export const EtoLegalInformationType = YupTS.object({
         .optional()
         .enhance(v => v.moreThan(0)),
     }).optional(),
-  ),
+  ).optional(),
 });
 
 type TEtoLegalData = YupTS.TypeOf<typeof EtoLegalInformationType>;

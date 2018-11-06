@@ -6,6 +6,7 @@ import { IEtoDocument } from "../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
 import { appConnect } from "../../../store";
+import { TDataTestId, TTranslatedString } from "../../../types";
 import { DocumentTemplateButton } from "../../shared/DocumentLink";
 import { ECurrencySymbol, EMoneyFormat, Money, selectCurrencyCode } from "../../shared/Money";
 import { NumberFormat } from "../../shared/NumberFormat";
@@ -23,6 +24,24 @@ type TDispatchProps = {
   downloadDocument: (document: IEtoDocument) => void;
 };
 
+type TEntryExternalProps = {
+  label: TTranslatedString;
+  value: React.ReactNode;
+};
+
+const Entry: React.SFC<TEntryExternalProps & TDataTestId> = ({
+  label,
+  value,
+  "data-test-id": dataTestId,
+}) => (
+  <div className={styles.entry}>
+    <span className={styles.label}>{label}</span>
+    <span className={styles.value} data-test-id={dataTestId}>
+      {value}
+    </span>
+  </div>
+);
+
 const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps> = ({
   etoData,
   downloadDocument,
@@ -38,86 +57,75 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
           </div>
           <div className={styles.groupContent}>
             {etoData.preMoneyValuationEur && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.pre-money-valuation" />
-                </span>
-                <span className={styles.value}>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.pre-money-valuation" />}
+                value={
                   <Money
                     value={etoData.preMoneyValuationEur}
                     currency="eur"
                     format={EMoneyFormat.FLOAT}
                     currencySymbol={ECurrencySymbol.SYMBOL}
                   />
-                </span>
-              </div>
+                }
+                data-test-id="eto-public-view-pre-money-valuation"
+              />
             )}
             {etoData.existingCompanyShares && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.existing-shares" />
-                </span>
-                <span className={styles.value}>
-                  <NumberFormat value={etoData.existingCompanyShares} />
-                </span>
-              </div>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.existing-shares" />}
+                value={<NumberFormat value={etoData.existingCompanyShares} />}
+                data-test-id="eto-public-view-existing-shares"
+              />
             )}
             {etoData.authorizedCapitalShares && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.authorized-capital" />
-                </span>
-                <span className={styles.value}>
-                  <NumberFormat value={etoData.authorizedCapitalShares} />
-                </span>
-              </div>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.authorized-capital" />}
+                value={<NumberFormat value={etoData.authorizedCapitalShares} />}
+                data-test-id="eto-public-view-authorized-capital"
+              />
             )}
-            <div className={styles.entry}>
-              <span className={styles.label}>
-                <FormattedMessage id="eto.public-view.token-terms.new-shares-to-issue" />
-              </span>
-              <span className={styles.value}>
-                {etoData.minimumNewSharesToIssue}
-                {" - "}
-                {etoData.newSharesToIssue}
-              </span>
-            </div>
+            <Entry
+              label={<FormattedMessage id="eto.public-view.token-terms.new-shares-to-issue" />}
+              value={
+                <>
+                  {etoData.minimumNewSharesToIssue}
+                  {" - "}
+                  {etoData.newSharesToIssue}
+                </>
+              }
+              data-test-id="eto-public-view-new-shares-to-issue"
+            />
             {etoData.newSharesToIssueInWhitelist && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
+              <Entry
+                label={
                   <FormattedMessage id="eto.public-view.token-terms.new-shares-to-issue-in-whitelist" />
-                </span>
-                <span className={styles.value}>{etoData.newSharesToIssueInWhitelist}</span>
-              </div>
+                }
+                value={etoData.newSharesToIssueInWhitelist}
+                data-test-id="eto-public-view-new-shares-to-issue-in-whitelist"
+              />
             )}
-            <div className={styles.entry}>
-              <span className={styles.label}>
-                <FormattedMessage id="eto.public-view.token-terms.new-share-price" />
-              </span>
-              <span className={styles.value}>
+            <Entry
+              label={<FormattedMessage id="eto.public-view.token-terms.new-share-price" />}
+              value={
                 <Money
                   value={computedNewSharePrice}
                   currency="eur"
                   format={EMoneyFormat.FLOAT}
                   currencySymbol={ECurrencySymbol.SYMBOL}
                 />
-              </span>
-            </div>
+              }
+              data-test-id="eto-public-view-new-share-price"
+            />
             {etoData.whitelistDiscountFraction && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.whitelist-discount" />
-                </span>
-                <span className={styles.value}>
-                  <Percentage>{etoData.whitelistDiscountFraction}</Percentage>
-                </span>
-              </div>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.whitelist-discount" />}
+                value={<Percentage>{etoData.whitelistDiscountFraction}</Percentage>}
+                data-test-id="eto-public-view-whitelist-discount"
+              />
             )}
-            <div className={styles.entry}>
-              <span className={styles.label}>
-                <FormattedMessage id="eto.public-view.token-terms.investment-amount" />
-              </span>
-              <span className={styles.value}>
+            <Entry
+              label={<FormattedMessage id="eto.public-view.token-terms.investment-amount" />}
+              value={
                 <InvestmentAmount
                   newSharesToIssue={etoData.newSharesToIssue}
                   newSharesToIssueInFixedSlots={etoData.newSharesToIssueInFixedSlots}
@@ -128,8 +136,9 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
                   preMoneyValuationEur={etoData.preMoneyValuationEur}
                   minimumNewSharesToIssue={etoData.minimumNewSharesToIssue}
                 />
-              </span>
-            </div>
+              }
+              data-test-id="eto-public-view-investment-amount"
+            />
             {etoData.templates.investmentAndShareholderAgreement && (
               <DocumentTemplateButton
                 title={<FormattedMessage id="eto.documents.investment-and-shareholder-agreement" />}
@@ -149,36 +158,30 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
           </div>
           <div className={styles.groupContent}>
             {!!etoData.equityTokensPerShare && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.tokens-per-share" />
-                </span>
-                <span className={styles.value}>
-                  <NumberFormat value={etoData.equityTokensPerShare} />
-                </span>
-              </div>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.tokens-per-share" />}
+                value={<NumberFormat value={etoData.equityTokensPerShare} />}
+                data-test-id="eto-public-view-tokens-per-share"
+              />
             )}
             {!!(computedNewSharePrice && etoData.equityTokensPerShare) && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.token-price" />
-                </span>
-                <span className={styles.value}>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.token-price" />}
+                value={
                   <Money
                     value={computedNewSharePrice / etoData.equityTokensPerShare}
                     currency="eur"
                     format={EMoneyFormat.FLOAT}
                     currencySymbol={ECurrencySymbol.SYMBOL}
                   />
-                </span>
-              </div>
+                }
+                data-test-id="eto-public-view-token-price"
+              />
             )}
             {!!etoData.minTicketEur && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.ticket-size" />
-                </span>
-                <span className={styles.value}>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.ticket-size" />}
+                value={
                   <Money
                     currency="eur"
                     currencySymbol={ECurrencySymbol.SYMBOL}
@@ -194,14 +197,13 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
                       </>
                     }
                   />
-                </span>
-              </div>
+                }
+                data-test-id="eto-public-view-ticket-size"
+              />
             )}
-            <div className={styles.entry}>
-              <span className={styles.label}>
-                <FormattedMessage id="eto.public-view.token-terms.currencies.label" />
-              </span>
-              <span className={styles.value}>
+            <Entry
+              label={<FormattedMessage id="eto.public-view.token-terms.currencies.label" />}
+              value={
                 <FormattedMessage
                   id="eto.public-view.token-terms.currencies.value"
                   values={{
@@ -209,29 +211,34 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
                     nEur: selectCurrencyCode("eur_token"),
                   }}
                 />
-              </span>
-            </div>
+              }
+              data-test-id="eto-public-view-currencies"
+            />
             {!!etoData.whitelistDurationDays && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.pre-eto-duration" />
-                </span>
-                <span className={styles.value}>
-                  {etoData.whitelistDurationDays}{" "}
-                  <FormattedMessage id="eto.public-view.token-terms.days" />
-                </span>
-              </div>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.pre-eto-duration" />}
+                value={
+                  <>
+                    {" "}
+                    {etoData.whitelistDurationDays}{" "}
+                    <FormattedMessage id="eto.public-view.token-terms.days" />
+                  </>
+                }
+                data-test-id="eto-public-view-pre-eto-duration"
+              />
             )}
             {!!etoData.publicDurationDays && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.public-eto-duration" />
-                </span>
-                <span className={styles.value}>
-                  {etoData.publicDurationDays}{" "}
-                  <FormattedMessage id="eto.public-view.token-terms.days" />
-                </span>
-              </div>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.public-eto-duration" />}
+                value={
+                  <>
+                    {" "}
+                    {etoData.publicDurationDays}{" "}
+                    <FormattedMessage id="eto.public-view.token-terms.days" />
+                  </>
+                }
+                data-test-id="eto-public-view-public-eto-duration"
+              />
             )}
             {!!etoData.templates.reservationAndAcquisitionAgreement && (
               <DocumentTemplateButton
@@ -253,59 +260,61 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
             <FormattedMessage id="eto.public-view.token-terms.group-title.token-holder-rights" />
           </div>
           <div className={styles.groupContent}>
+            {/* TODO: change to {etoData.nominee} when endpoint is avaliable */}
             {!!etoData.nominee && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.nominee" />
-                </span>
-                {/* TODO: change to {etoData.nominee} when endpoint is avaliable */}
-                <span className={styles.value}>Neumini UG</span>
-              </div>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.nominee" />}
+                value={"Neumini UG"}
+                data-test-id="eto-public-view-nominee"
+              />
             )}
             {!!etoData.signingDurationDays && (
-              <div className={styles.entry}>
-                <span className={styles.label}>
-                  <FormattedMessage id="eto.public-view.token-terms.public-offer-duration" />
-                </span>
-                <span className={styles.value}>
-                  {etoData.signingDurationDays}{" "}
-                  <FormattedMessage id="eto.public-view.token-terms.days" />
-                </span>
-              </div>
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.public-offer-duration" />}
+                value={
+                  <>
+                    {" "}
+                    {etoData.signingDurationDays}{" "}
+                    <FormattedMessage id="eto.public-view.token-terms.days" />
+                  </>
+                }
+                data-test-id="eto-public-view-public-offer-duration"
+              />
             )}
-            <div className={styles.entry}>
-              <span className={styles.label}>
-                <FormattedMessage id="eto.public-view.token-terms.token-tradability" />
-              </span>
-              <span className={styles.value}>
-                {etoData.enableTransferOnSuccess ? (
-                  <FormattedMessage id="eto.public-view.token-terms.enabled" />
-                ) : (
-                  <FormattedMessage id="eto.public-view.token-terms.disabled" />
-                )}
-              </span>
-            </div>
+            <Entry
+              label={<FormattedMessage id="eto.public-view.token-terms.token-tradability" />}
+              value={
+                <>
+                  {etoData.enableTransferOnSuccess ? (
+                    <FormattedMessage id="eto.public-view.token-terms.enabled" />
+                  ) : (
+                    <FormattedMessage id="eto.public-view.token-terms.disabled" />
+                  )}
+                </>
+              }
+              data-test-id="eto-public-view-token-tradability"
+            />
 
-            <div className={styles.entry}>
-              <span className={styles.label}>
-                <FormattedMessage id="eto.public-view.token-terms.voting-rights" />
-              </span>
-              <span className={styles.value}>
-                {etoData.generalVotingRule === "no_voting_rights" ||
-                etoData.generalVotingRule === "negative" ? (
-                  <FormattedMessage id="eto.public-view.token-terms.no" />
-                ) : (
-                  <FormattedMessage id="eto.public-view.token-terms.yes" />
-                )}
-              </span>
-            </div>
+            <Entry
+              label={<FormattedMessage id="eto.public-view.token-terms.voting-rights" />}
+              value={
+                <>
+                  {etoData.generalVotingRule === "no_voting_rights" ||
+                  etoData.generalVotingRule === "negative" ? (
+                    <FormattedMessage id="eto.public-view.token-terms.no" />
+                  ) : (
+                    <FormattedMessage id="eto.public-view.token-terms.yes" />
+                  )}
+                </>
+              }
+              data-test-id="eto-public-view-voting-rights"
+            />
 
-            <div className={styles.entry}>
-              <span className={styles.label}>
-                <FormattedMessage id="eto.public-view.token-terms.liquidation-preference" />
-              </span>
-              <span className={styles.value}>{etoData.liquidationPreferenceMultiplier}x</span>
-            </div>
+            <Entry
+              label={<FormattedMessage id="eto.public-view.token-terms.liquidation-preference" />}
+              value={<>{etoData.liquidationPreferenceMultiplier}x</>}
+              data-test-id="eto-public-view-liquidation-preference"
+            />
 
             {!!etoData.templates.companyTokenHolderAgreement && (
               <DocumentTemplateButton

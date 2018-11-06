@@ -3,7 +3,7 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
 import { GasModelShape } from "../../lib/api/GasApi";
 import { actions } from "../actions";
-import { neuTakeEvery } from "../sagas";
+import { neuTakeEvery } from "../sagasUtils";
 import { selectGasPrice, selectIsGasPriceAlreadyLoaded } from "./selectors";
 
 function* ensureGasApiDataSaga({ gasApi, logger }: TGlobalDependencies): any {

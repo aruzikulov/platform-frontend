@@ -23,7 +23,7 @@ module.exports = function loadAppEnv(processEnv) {
 
   // extract universe address from contract artifacts repo meta.json
   // overrides .env value, if meta.json exists, but not process.env
-  if (!universeAddressExists && allEnvs.NF_CONTRACTS_NEW === "1") {
+  if (!universeAddressExists) {
     try {
       const meta = require(`../git_modules/platform-contracts-artifacts/${
         allEnvs.NF_CONTRACT_ARTIFACTS_VERSION

@@ -26,6 +26,7 @@ import { EtoFormBase } from "../EtoFormBase";
 
 import * as closeIcon from "../../../../assets/img/inline_icons/round_close.svg";
 import * as plusIcon from "../../../../assets/img/inline_icons/round_plus.svg";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import * as styles from "./KeyIndividuals.module.scss";
 
 interface IStateProps {
@@ -230,7 +231,7 @@ const EtoRegistrationKeyIndividualsComponent = (props: IProps) => {
 };
 
 export const EtoRegistrationKeyIndividuals = compose<React.SFC>(
-  setDisplayName("EtoRegistrationKeyIndividuals"),
+  setDisplayName(EEtoFormTypes.KeyIndividuals),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,

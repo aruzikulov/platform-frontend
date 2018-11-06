@@ -23,8 +23,7 @@ import { ensurePermissionsArePresent } from "../auth/sagas";
 import { selectUser } from "../auth/selectors";
 import { displayErrorModalSaga } from "../generic-modal/sagas";
 import { selectIsSmartContractInitDone } from "../init/selectors";
-import { neuCall, neuTakeEvery } from "../sagas";
-import { neuTakeOnly } from "../sagasUtils";
+import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
 import {
   selectCombinedBeneficialOwnerOwnership,
   selectKycRequestOutsourcedStatus,
@@ -108,18 +107,14 @@ function* kycRefreshWidgetSagaWatcherStop(): any {
 /**
  * Individual Request
  */
-function* loadIdentityClaim({ contractsService, logger }: TGlobalDependencies): Iterator<any> {
-  const identityRegistry: IdentityRegistry | undefined = contractsService.identityRegistry;
+function* loadIdentityClaim({ contractsService }: TGlobalDependencies): Iterator<any> {
+  const identityRegistry: IdentityRegistry = contractsService.identityRegistry;
 
-  if (identityRegistry) {
-    const loggedInUser: IUser = yield select<IAppState>(state => selectUser(state.auth));
+  const loggedInUser: IUser = yield select<IAppState>(state => selectUser(state.auth));
 
-    const claims: string = yield identityRegistry.getClaims(loggedInUser.userId);
+  const claims: string = yield identityRegistry.getClaims(loggedInUser.userId);
 
-    yield put(actions.kyc.kycSetClaims(deserializeClaims(claims)));
-  } else {
-    logger.warn("IdentityRegistry contract is not available. It may affect functionality.");
-  }
+  yield put(actions.kyc.kycSetClaims(deserializeClaims(claims)));
 }
 
 /**

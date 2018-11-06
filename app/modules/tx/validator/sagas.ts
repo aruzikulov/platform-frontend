@@ -8,7 +8,7 @@ import {
   subtractBigNumbers,
 } from "../../../utils/BigNumberUtils";
 import { actions, TAction } from "../../actions";
-import { neuCall, neuTakeEvery } from "../../sagas";
+import { neuCall, neuTakeEvery } from "../../sagasUtils";
 import { selectEtherBalance } from "../../wallet/selectors";
 import { ETxSenderType } from "../interfaces";
 import { EValidationState } from "../sender/reducer";

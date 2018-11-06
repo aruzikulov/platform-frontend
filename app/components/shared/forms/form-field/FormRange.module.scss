@@ -1,6 +1,8 @@
 // sass-lint:disable no-vendor-prefixes
 $track-color: $color-silver !default;
+$track-color-disabled: lighten($color-silver, 10%) !default;
 $thumb-color: $color-green !default;
+$thumb-color-disabled: $color-silver !default
 
 $thumb-radius: 8px !default;
 $thumb-height: 16px !default;
@@ -82,6 +84,7 @@ $contrast: 5% !default;
     border-radius: $track-radius;
   }
 
+
   &::-webkit-slider-thumb {
     @include thumb;
     appearance: none;
@@ -98,4 +101,23 @@ $contrast: 5% !default;
   &::-moz-range-thumb {
     @include thumb;
   }
+
+  &:disabled {
+    &::-webkit-slider-runnable-track {
+      background: $track-color-disabled;
+    }
+
+    &::-webkit-slider-thumb {
+      background-color: $thumb-color-disabled;
+    }
+
+    &::-moz-range-track {
+      background: $track-color-disabled;
+    }
+
+    &::-moz-range-thumb {
+      background-color: $thumb-color-disabled;
+    }
+  }
 }
+

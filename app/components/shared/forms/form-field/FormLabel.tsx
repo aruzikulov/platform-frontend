@@ -1,10 +1,9 @@
 import * as cn from "classnames";
 import { FormikConsumer } from "formik";
-import { isFunction } from "lodash";
 import * as React from "react";
 
 import { CommonHtmlProps } from "../../../../types";
-import { getFieldSchema, isRequired } from "../../../../utils/yupUtils";
+import { isFieldRequired } from "./utils";
 
 import * as styles from "./FormLabel.module.scss";
 
@@ -25,15 +24,10 @@ const FormLabel: React.SFC<CommonHtmlProps & FormLabelExternalProps> = ({
     <FormikConsumer>
       {({ validationSchema }) => {
         if (validationSchema) {
-          const schema = isFunction(validationSchema) ? validationSchema() : validationSchema;
-
-          const fieldSchema = getFieldSchema(name, schema);
-          const required = isRequired(fieldSchema);
-
           return (
             <FormLabelRaw {...rawProps}>
               {children}
-              {required && " *"}
+              {isFieldRequired(validationSchema, name) && " *"}
             </FormLabelRaw>
           );
         }

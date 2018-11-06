@@ -20,17 +20,22 @@ interface IRouterParams {
 
 type TProps = {
   eto: TEtoWithCompanyAndContract;
+  previewCode: string;
 };
+
+const EtoWidgetContext = React.createContext<string | undefined>(undefined);
 
 const EtoWidgetComponent: React.SFC<TProps> = ({ eto }) => (
   <Col xs={12}>
     <div className="mb-3">
-      <EtoOverviewStatus eto={eto} />
+      <EtoWidgetContext.Provider value={eto.previewCode}>
+        <EtoOverviewStatus eto={eto} />
+      </EtoWidgetContext.Provider>
     </div>
   </Col>
 );
 
-export const EtoWidgetView = compose<TProps, IRouterParams>(
+const EtoWidgetView = compose<TProps, IRouterParams>(
   appConnect<IStateProps, {}, IRouterParams>({
     stateToProps: (state, props) => ({
       eto: selectEtoWithCompanyAndContract(state, props.previewCode),
@@ -43,3 +48,5 @@ export const EtoWidgetView = compose<TProps, IRouterParams>(
   }),
   branch<IStateProps>(props => !props.eto, renderComponent(LoadingIndicator)),
 )(EtoWidgetComponent);
+
+export { EtoWidgetView, EtoWidgetContext };

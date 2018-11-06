@@ -9,8 +9,10 @@ import {
   EtoEquityTokenInfoType,
   TPartialEtoSpecData,
 } from "../../../../lib/api/eto/EtoApi.interfaces";
+import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
 import { actions } from "../../../../modules/actions";
-import { selectIssuerEto } from "../../../../modules/eto-flow/selectors";
+import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-flow/selectors";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField } from "../../../shared/forms";
@@ -83,12 +85,13 @@ const EtoEquityTokenInfoComponent: React.SFC<IProps> = ({ readonly, savingData }
 );
 
 export const EtoEquityTokenInfo = compose<React.SFC<IExternalProps>>(
-  setDisplayName("EtoEquityTokenInfo"),
+  setDisplayName(EEtoFormTypes.EtoEquityTokenInfo),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
       stateValues: selectIssuerEto(s) as TPartialEtoSpecData,
+      readonly: etoFormIsReadonly(EEtoFormTypes.EtoEquityTokenInfo, selectIssuerEtoState(s)),
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialEtoSpecData) => {

@@ -55,7 +55,6 @@ export const EtoFormProgressWidget: React.SFC<IProps & IChartCircleProps> = ({
               <ButtonLink
                 to={{
                   pathname: to,
-                  state: { readonly },
                 }}
                 theme="silver"
                 layout={EButtonLayout.SECONDARY}

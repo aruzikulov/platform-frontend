@@ -53,6 +53,7 @@ export class FormTransformingField extends React.Component<FieldGroupProps> {
       className,
       addonStyle,
       ratio,
+      disabled,
       customValidation,
       ...props
     } = this.props;
@@ -89,6 +90,7 @@ export class FormTransformingField extends React.Component<FieldGroupProps> {
                       type="number"
                       valid={isValid(touched, errors, name)}
                       placeholder={placeholder || label}
+                      disabled={disabled}
                       {...inputExtraProps}
                       {...props}
                     />

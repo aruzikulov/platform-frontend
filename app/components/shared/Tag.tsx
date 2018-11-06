@@ -24,6 +24,7 @@ export interface ITag {
   placeSvgInEnd?: boolean;
   component?: React.ComponentType<any>;
   componentProps?: any;
+  target?: string;
 }
 
 export const Tag: React.SFC<ITag> = ({
@@ -38,6 +39,7 @@ export const Tag: React.SFC<ITag> = ({
   placeSvgInEnd,
   component: Component,
   componentProps = {},
+  target,
 }) => {
   const classes = cn(styles.tag, layout, size, theme, className);
   const tagContent = (
@@ -50,7 +52,7 @@ export const Tag: React.SFC<ITag> = ({
 
   if (to) {
     return (
-      <Link to={to} className={classes}>
+      <Link to={to} className={classes} target={target}>
         {tagContent}
       </Link>
     );

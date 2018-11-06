@@ -11,6 +11,7 @@ import {
 } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
 import { TTranslatedString } from "../../../../types";
 import { Button, EButtonLayout } from "../../../shared/buttons";
@@ -66,75 +67,69 @@ const NUMBER_OF_EMPLOYEES = {
 
 type IProps = IExternalProps & IStateProps & IDispatchProps & FormikProps<TPartialCompanyEtoData>;
 
-const EtoRegistrationLegalInformationComponent = ({ readonly, savingData }: IProps) => {
+//Some fields in LegalInformation are always readonly because this data ist set during KYC process
+const EtoRegistrationLegalInformationComponent = ({ savingData }: IProps) => {
   return (
     <EtoFormBase title="Legal Information" validator={EtoLegalInformationType.toYup()}>
       <Section>
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.legal-company-name" />}
           name="name"
-          disabled
+          disabled={true}
         />
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.legal-form" />}
           name="legalForm"
-          disabled
+          disabled={true}
         />
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.company-state-address" />}
           name="street"
-          disabled
+          disabled={true}
         />
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.city-country" />}
           name="country"
-          disabled
+          disabled={true}
         />
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.registration-number" />}
           name="registrationNumber"
-          disabled={readonly}
+          disabled={true}
         />
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.vat-number" />}
           name="vatNumber"
-          disabled={readonly}
         />
         <FormFieldDate
           label={<FormattedMessage id="eto.form.legal-information.company-founding-date" />}
           name="foundingDate"
-          disabled={readonly}
         />
         <FormSelectField
           label={<FormattedMessage id="eto.form.legal-information.number-of-employees" />}
           values={NUMBER_OF_EMPLOYEES}
           name="numberOfEmployees"
-          disabled={readonly}
         />
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.number-of-founders" />}
           type="number"
           name="numberOfFounders"
-          disabled={readonly}
         />
         <FormSelectField
           label={<FormattedMessage id="eto.form.legal-information.last-funding-round" />}
           values={FUNDING_ROUNDS}
           name="companyStage"
-          disabled={readonly}
         />
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.last-funding-amount" />}
           type="number"
           name="lastFundingSizeEur"
-          disabled={readonly}
         />
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.number-of-existing-shares" />}
           type="number"
           min="0"
           name="companyShares"
-          disabled={readonly}
         />
         <FormHighlightGroup
           title={<FormattedMessage id="eto.form.legal-information.shareholder-structure" />}
@@ -144,31 +139,28 @@ const EtoRegistrationLegalInformationComponent = ({ readonly, savingData }: IPro
             valuePlaceholder={"Amount"}
             suggestions={["Full Name"]}
             fieldNames={["fullName", "shares"]}
-            disabled={readonly}
           />
         </FormHighlightGroup>
       </Section>
-      {!readonly && (
-        <Col>
-          <Row className="justify-content-end">
-            <Button
-              type="submit"
-              layout={EButtonLayout.PRIMARY}
-              className="mr-4"
-              isLoading={savingData}
-              data-test-id="eto-registration-legal-information-submit"
-            >
-              <FormattedMessage id="form.button.save" />
-            </Button>
-          </Row>
-        </Col>
-      )}
+      <Col>
+        <Row className="justify-content-end">
+          <Button
+            type="submit"
+            layout={EButtonLayout.PRIMARY}
+            className="mr-4"
+            isLoading={savingData}
+            data-test-id="eto-registration-legal-information-submit"
+          >
+            <FormattedMessage id="form.button.save" />
+          </Button>
+        </Row>
+      </Col>
     </EtoFormBase>
   );
 };
 
 export const EtoRegistrationLegalInformation = compose<React.SFC<IExternalProps>>(
-  setDisplayName("EtoRegistrationLegalInformation"),
+  setDisplayName(EEtoFormTypes.LegalInformation),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => ({
       loadingData: state.etoFlow.loading,

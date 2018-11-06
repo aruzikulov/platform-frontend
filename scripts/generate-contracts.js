@@ -1,10 +1,11 @@
-const loadAppEnv = require("../webpack/loadAppEnv");
 const tc = require("typechain");
 const path = require("path");
 const fs = require("fs");
+const loadAppEnv = require("../webpack/loadAppEnv");
 
 loadAppEnv(process.env);
-let artifactsVersion = process.env.NF_CONTRACT_ARTIFACTS_VERSION || "localhost";
+
+const artifactsVersion = process.env.NF_CONTRACT_ARTIFACTS_VERSION || "localhost";
 
 const contractsPath = `git_modules/platform-contracts-artifacts/${artifactsVersion}`;
 const outDir = "app/lib/contracts";

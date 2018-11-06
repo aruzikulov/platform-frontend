@@ -1,7 +1,7 @@
 import * as promiseAll from "promise-all";
 import { delay } from "redux-saga";
 import { fork, put, select, take } from "redux-saga/effects";
-import { selectIsSmartContractInitDone } from "./../init/selectors";
+import { selectIsSmartContractInitDone } from "../init/selectors";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { ICBMLockedAccount } from "../../lib/contracts/ICBMLockedAccount";
@@ -9,8 +9,7 @@ import { LockedAccount } from "../../lib/contracts/LockedAccount";
 import { EthereumAddress } from "../../types";
 import { actions } from "../actions";
 import { numericValuesToString } from "../contracts/utils";
-import { neuCall, neuTakeEvery } from "../sagas";
-import { neuTakeOnly, neuTakeUntil } from "../sagasUtils";
+import { neuCall, neuTakeEvery, neuTakeOnly, neuTakeUntil } from "../sagasUtils";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { ILockedWallet, IWalletStateData } from "./reducer";
 

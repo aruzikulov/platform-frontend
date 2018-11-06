@@ -53,5 +53,7 @@ export const isFieldRequired = (validationSchema: any, name: string) => {
     const schema = isFunction(validationSchema) ? validationSchema() : validationSchema;
     const fieldSchema = getFieldSchema(name, schema);
     return isRequired(fieldSchema);
+  } else {
+    return false;
   }
 };
