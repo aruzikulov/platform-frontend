@@ -47,7 +47,7 @@ export const walletReducer: AppReducer<IWalletState> = (
       return {
         loading: false,
         error: action.payload.errorMsg,
-        data: undefined,
+        data: state.data,
       };
   }
 
