@@ -20,6 +20,7 @@ import { CheckboxComponent } from "../../../shared/forms";
 import { Heading } from "../../../shared/modals/Heading";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
+import { formatEurTsd } from "./utils";
 
 import * as styles from "./Summary.module.scss";
 
@@ -61,7 +62,7 @@ const BankTransferDetailsComponent = injectIntlHelpers(
           <Container className={styles.container}>
             <Row className="mt-0">
               <Col>
-                <Heading>
+                <Heading data-test-id="invest-modal-bank-transfer-details-title">
                   <FormattedMessage id="investment-flow.bank-transfer.direct-bank-transfer" />
                 </Heading>
               </Col>
@@ -139,7 +140,8 @@ const BankTransferDetailsComponent = injectIntlHelpers(
                   />
                   <InfoRow
                     caption={<FormattedMessage id="investment-flow.bank-transfer.amount" />}
-                    value={<CopyToClipboardLabel label={data.amount} />}
+                    value={<CopyToClipboardLabel label={formatEurTsd(data.amount)!} />}
+                    dataTestId="invest-modal-bank-transfer-details-amount"
                   />
                 </InfoList>
               </Col>
@@ -152,6 +154,7 @@ const BankTransferDetailsComponent = injectIntlHelpers(
                     layout={EButtonLayout.PRIMARY}
                     type="button"
                     className={styles.nonPrintable}
+                    data-test-id="invest-modal-bank-transfer-print-button"
                   >
                     <FormattedMessage id="investment-flow.bank-transfer.print" />
                   </Button>
