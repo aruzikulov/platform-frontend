@@ -3,7 +3,7 @@ import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
 import * as logo from "../../assets/img/logo_small_black.svg";
-import { Button } from "../shared/buttons";
+import { Button, EButtonLayout } from "../shared/buttons";
 import { ChartBars, IChartBarsData } from "../shared/charts/ChartBars";
 import { ChartPie, IChartPieData } from "../shared/charts/ChartPie";
 import { Money, TCurrency } from "../shared/Money";
@@ -103,7 +103,7 @@ export const NeufundKpiWidget: React.SFC<IProps> = ({
               <FormattedMessage id="dashboard.neufund-kpi-widget.chart.title" />
             </h4>
             <ChartPie data={chartPieData} />
-            <Button layout="secondary">
+            <Button layout={EButtonLayout.SECONDARY}>
               <FormattedMessage id="dashboard.neufund-kpi-widget.chart.button" />
             </Button>
           </div>
@@ -118,7 +118,7 @@ export const NeufundKpiWidget: React.SFC<IProps> = ({
               <Money value={platformPortfolioValue} currency={currency} theme="t-green" />
             </h5>
             <ChartBars data={chartBarData} />
-            <Button layout="secondary">
+            <Button layout={EButtonLayout.SECONDARY}>
               <FormattedMessage id="dashboard.neufund-kpi-widget.chart2.button" />
             </Button>
           </div>

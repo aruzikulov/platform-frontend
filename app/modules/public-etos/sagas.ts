@@ -1,6 +1,7 @@
-import BigNumber from "bignumber.js";
 import { camelCase } from "lodash";
 import { compose, keyBy, map, omit } from "lodash/fp";
+import { LOCATION_CHANGE } from "react-router-redux";
+import { delay } from "redux-saga";
 import { all, fork, put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
@@ -11,22 +12,18 @@ import {
   TEtoSpecsData,
   TPublicEtoData,
 } from "../../lib/api/eto/EtoApi.interfaces";
-import { immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
+import { IEtoDocument, immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
-import { promisify } from "../../lib/contracts/typechain-runtime";
 import { IAppState } from "../../store";
-import { convertToBigInt } from "../../utils/Money.utils";
 import { actions, TAction } from "../actions";
-import { neuCall, neuTakeEvery } from "../sagas";
-import { selectEthereumAddressWithChecksum } from "../web3/selectors";
+import { selectUserType } from "../auth/selectors";
+import { neuCall, neuFork, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
+import { etoInProgressPoolingDelay, etoNormalPoolingDelay } from "./constants";
 import { InvalidETOStateError } from "./errors";
-import { IPublicEtoState } from "./reducer";
-import { selectCalculatedContributionByEtoId, selectEtoById } from "./selectors";
-import {
-  convertToCalculatedContribution,
-  convertToEtoTotalInvestment,
-  convertToStateStartDate,
-} from "./utils";
+import { selectEtoById, selectEtoWithCompanyAndContract } from "./selectors";
+import { EETOStateOnChain, TEtoWithCompanyAndContract } from "./types";
+import { convertToEtoTotalInvestment, convertToStateStartDate } from "./utils";
 
 export function* loadEtoPreview(
   { apiEtoService, notificationCenter }: TGlobalDependencies,
@@ -44,6 +41,19 @@ export function* loadEtoPreview(
       eto.companyId,
     );
     const company = companyResponse.body;
+
+    // Load contract data if eto is already on blockchain
+    if (eto.state === EtoState.ON_CHAIN) {
+      // load investor tickets
+      const userType: EUserType | undefined = yield select((state: IAppState) =>
+        selectUserType(state.auth),
+      );
+      if (userType === EUserType.INVESTOR) {
+        yield put(actions.investorEtoTicket.loadEtoInvestorTicket(eto));
+      }
+
+      yield neuCall(loadEtoContact, eto);
+    }
 
     yield put(actions.publicEtos.setPublicEto({ eto, company }));
   } catch (e) {
@@ -69,12 +79,20 @@ export function* loadEto(
     );
     const company = companyResponse.body;
 
-    yield put(actions.publicEtos.setPublicEto({ eto, company }));
-
     // Load contract data if eto is already on blockchain
     if (eto.state === EtoState.ON_CHAIN) {
+      // load investor tickets
+      const userType: EUserType | undefined = yield select((state: IAppState) =>
+        selectUserType(state.auth),
+      );
+      if (userType === EUserType.INVESTOR) {
+        yield put(actions.investorEtoTicket.loadEtoInvestorTicket(eto));
+      }
+
       yield neuCall(loadEtoContact, eto);
     }
+
+    yield put(actions.publicEtos.setPublicEto({ eto, company }));
   } catch (e) {
     notificationCenter.error("Could not load ETO. Is the link correct?");
 
@@ -110,6 +128,37 @@ export function* loadEtoContact(
   }
 }
 
+function* watchEtoSetAction(_: TGlobalDependencies, action: TAction): any {
+  if (action.type !== "PUBLIC_ETOS_SET_PUBLIC_ETO") return;
+
+  const previewCode = action.payload.eto.previewCode;
+
+  yield neuCall(watchEto, previewCode);
+}
+
+function* watchEtosSetAction(_: TGlobalDependencies, action: TAction): any {
+  if (action.type !== "PUBLIC_ETOS_SET_PUBLIC_ETOS") return;
+
+  yield all(map(eto => neuFork(watchEto, eto.previewCode), action.payload.etos));
+}
+
+function* watchEto(_: TGlobalDependencies, previewCode: string): any {
+  const eto: TEtoWithCompanyAndContract = yield select((state: IAppState) =>
+    selectEtoWithCompanyAndContract(state, previewCode),
+  );
+
+  if (
+    eto.state === EtoState.ON_CHAIN &&
+    [EETOStateOnChain.Whitelist, EETOStateOnChain.Public].includes(eto.contract!.timedState)
+  ) {
+    yield delay(etoInProgressPoolingDelay);
+  } else {
+    yield delay(etoNormalPoolingDelay);
+  }
+
+  yield put(actions.publicEtos.loadEtoPreview(previewCode));
+}
+
 function* loadEtos({ apiEtoService, logger }: TGlobalDependencies): any {
   try {
     const etosResponse: IHttpResponse<TPublicEtoData[]> = yield apiEtoService.getEtos();
@@ -136,6 +185,14 @@ function* loadEtos({ apiEtoService, logger }: TGlobalDependencies): any {
         .map(eto => neuCall(loadEtoContact, eto)),
     );
 
+    // load investor tickets
+    const userType: EUserType | undefined = yield select((state: IAppState) =>
+      selectUserType(state.auth),
+    );
+    if (userType === EUserType.INVESTOR) {
+      yield put(actions.investorEtoTicket.loadInvestorTickets(etosByPreviewCode));
+    }
+
     yield put(actions.publicEtos.setPublicEtos({ etos: etosByPreviewCode, companies }));
     yield put(actions.publicEtos.setEtosDisplayOrder(order));
   } catch (e) {
@@ -143,66 +200,33 @@ function* loadEtos({ apiEtoService, logger }: TGlobalDependencies): any {
   }
 }
 
-export function* loadComputedContributionFromContract(
-  { contractsService }: TGlobalDependencies,
-  eto: TPublicEtoData,
-  amountEuroUlps?: string,
-  isICBM = false,
-): any {
-  if (eto.state !== "on_chain") return;
-
-  const state: IAppState = yield select();
-  const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
-
-  if (etoContract) {
-    amountEuroUlps =
-      amountEuroUlps || convertToBigInt((eto.minTicketEur && eto.minTicketEur.toString()) || "0");
-
-    const from = selectEthereumAddressWithChecksum(state.web3);
-    // sorry no typechain, typechain has a bug with boolean casting
-    const calculation = yield promisify(etoContract.rawWeb3Contract.calculateContribution, [
-      from,
-      isICBM,
-      new BigNumber(amountEuroUlps),
-    ]);
+function* download(document: IEtoDocument): any {
+  if (document) {
     yield put(
-      actions.publicEtos.setCalculatedContribution(
-        eto.previewCode,
-        convertToCalculatedContribution(calculation),
+      actions.immutableStorage.downloadImmutableFile(
+        {
+          ipfsHash: document.ipfsHash,
+          mimeType: document.mimeType,
+          asPdf: true,
+        },
+        immutableDocumentName[document.documentType],
       ),
     );
   }
 }
 
-function* loadCalculatedContribution(_: TGlobalDependencies, action: TAction): any {
-  if (action.type !== "PUBLIC_ETOS_LOAD_CALCULATED_CONTRIBUTION") return;
-  const state: IPublicEtoState = yield select((s: IAppState) => s.publicEtos);
-  const eto = selectEtoById(state, action.payload.etoId);
-  if (!eto) return;
-  const contribution = selectCalculatedContributionByEtoId(eto.etoId, state);
-  if (!contribution || action.payload.investmentEurUlps) {
-    yield neuCall(loadComputedContributionFromContract, eto, action.payload.investmentEurUlps);
-  }
+function* downloadDocument(_: TGlobalDependencies, action: TAction): any {
+  if (action.type !== "PUBLIC_ETOS_DOWNLOAD_DOCUMENT") return;
+
+  yield download(action.payload.document);
 }
 
-function* downloadDocumentByType(_: TGlobalDependencies, action: TAction): any {
-  if (action.type !== "PUBLIC_ETOS_DOWNLOAD_DOCUMENT_BY_TYPE") return;
+function* downloadTemplateByType(_: TGlobalDependencies, action: TAction): any {
+  if (action.type !== "PUBLIC_ETOS_DOWNLOAD_TEMPLATE_BY_TYPE") return;
   const state: IAppState = yield select();
   const eto = selectEtoById(state.publicEtos, action.payload.etoId);
   if (eto) {
-    const document = eto.templates[camelCase(action.payload.documentType)];
-    if (document) {
-      yield put(
-        actions.immutableStorage.downloadImmutableFile(
-          {
-            ipfsHash: document.ipfsHash,
-            mimeType: document.mimeType,
-            asPdf: true,
-          },
-          immutableDocumentName[document.documentType],
-        ),
-      );
-    }
+    yield download(eto.templates[camelCase(action.payload.documentType)]);
   }
 }
 
@@ -210,6 +234,8 @@ export function* etoSagas(): any {
   yield fork(neuTakeEvery, "PUBLIC_ETOS_LOAD_ETO_PREVIEW", loadEtoPreview);
   yield fork(neuTakeEvery, "PUBLIC_ETOS_LOAD_ETO", loadEto);
   yield fork(neuTakeEvery, "PUBLIC_ETOS_LOAD_ETOS", loadEtos);
-  yield fork(neuTakeEvery, "PUBLIC_ETOS_LOAD_CALCULATED_CONTRIBUTION", loadCalculatedContribution);
-  yield fork(neuTakeEvery, "PUBLIC_ETOS_DOWNLOAD_DOCUMENT_BY_TYPE", downloadDocumentByType);
+  yield fork(neuTakeEvery, "PUBLIC_ETOS_DOWNLOAD_DOCUMENT", downloadDocument);
+  yield fork(neuTakeEvery, "PUBLIC_ETOS_DOWNLOAD_TEMPLATE_BY_TYPE", downloadTemplateByType);
+  yield fork(neuTakeUntil, "PUBLIC_ETOS_SET_PUBLIC_ETO", LOCATION_CHANGE, watchEtoSetAction);
+  yield fork(neuTakeUntil, "PUBLIC_ETOS_SET_PUBLIC_ETOS", LOCATION_CHANGE, watchEtosSetAction);
 }

@@ -1,12 +1,12 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { Money } from "./Money";
+import { ECurrencySymbol, Money } from "./Money";
 
 const value = "1234567" + "0".repeat(18);
 
 storiesOf("Money", module)
-  .add("default", () => (
+  .add("default (with currency code)", () => (
     <>
       <Money currency="eur" value={value} />
       <br />
@@ -17,6 +17,9 @@ storiesOf("Money", module)
       <Money currency="eth" value={value} />
     </>
   ))
+  .add("with currency symbol", () => (
+    <Money currency="eur" value={value} currencySymbol={ECurrencySymbol.SYMBOL} />
+  ))
   .add("transfer", () => (
     <>
       <Money currency="eur" value={value} transfer="income" />
@@ -24,7 +27,9 @@ storiesOf("Money", module)
       <Money currency="eur" value={value} transfer="outcome" />
     </>
   ))
-  .add("no currency symbol", () => <Money currency="eur" value={value} noCurrencySymbol={true} />)
+  .add("no currency symbol", () => (
+    <Money currency="eur" value={value} currencySymbol={ECurrencySymbol.NONE} />
+  ))
   .add("themed", () => (
     <>
       <p>t-green</p>

@@ -5,17 +5,17 @@ import { CHANGE_EMAIL_PERMISSION } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { EmailAlreadyExists } from "../../lib/api/users/UsersApi";
 import { IAppState } from "../../store";
-import { accessWalletAndRunEffect } from "../accessWallet/sagas";
+import { accessWalletAndRunEffect } from "../access-wallet/sagas";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent, loadUser, updateUser } from "../auth/sagas";
 import { selectDoesEmailExist, selectUser } from "../auth/selectors";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 import {
   selectLightWalletSalt,
   selectPreviousLightWalletSalt,
   selectWalletType,
 } from "../web3/selectors";
-import { WalletType } from "../web3/types";
+import { EWalletType } from "../web3/types";
 
 export function* addNewEmail(
   {
@@ -42,17 +42,17 @@ export function* addNewEmail(
 
   try {
     switch (walletType) {
-      case WalletType.BROWSER:
+      case EWalletType.BROWSER:
         addEmailMessage = formatIntlMessage(
           "modules.settings.sagas.add-new-email.confirm-browser-wallet",
         );
         break;
-      case WalletType.LEDGER:
+      case EWalletType.LEDGER:
         addEmailMessage = formatIntlMessage(
           "modules.settings.sagas.add-new-email.confirm-ledger-wallet",
         );
         break;
-      case WalletType.LIGHT:
+      case EWalletType.LIGHT:
         addEmailMessage = formatIntlMessage(
           "modules.settings.sagas.add-new-email.confirm-light-wallet",
         );

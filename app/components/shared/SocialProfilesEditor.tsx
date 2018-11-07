@@ -121,13 +121,15 @@ const SocialMediaTags: React.SFC<{
     <div className={cn(styles.socialProfilesEditor, className)}>
       <div className={styles.tabs}>
         {profiles.map(({ name, svgIcon }, index) => (
-          <div
+          <button
+            data-test-id={`social-profiles.profile-button.${name}`}
             onClick={() => onClick(index)}
             className={cn(Boolean(selectedFields[index]) && "is-selected", styles.tab)}
             key={name}
+            type="button"
           >
             <InlineIcon svgIcon={svgIcon} />
-          </div>
+          </button>
         ))}
       </div>
     </div>
@@ -147,7 +149,11 @@ const SingleMediaLinkField: React.SFC<
   return (
     <Row className="my-4 justify-content-center">
       <Col>
-        <FormField name={`${name}.url`} placeholder={profile.placeholder || profile.name} />
+        <FormField
+          name={`${name}.url`}
+          placeholder={profile.placeholder || profile.name}
+          data-test-id={`social-profiles.profile-input.${profile.name}`}
+        />
       </Col>
     </Row>
   );
@@ -205,7 +211,7 @@ class SocialProfilesEditorLayout extends React.Component<IProps & TFormikConnect
     const { selectedFields } = this.state;
 
     return (
-      <div className={className}>
+      <section data-test-id={name} className={className}>
         <SocialMediaTags
           profiles={profiles}
           onClick={this.toggleProfileVisibility}
@@ -226,7 +232,7 @@ class SocialProfilesEditorLayout extends React.Component<IProps & TFormikConnect
             )
           }
         />
-      </div>
+      </section>
     );
   }
 }

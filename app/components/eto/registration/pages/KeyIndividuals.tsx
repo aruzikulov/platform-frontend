@@ -4,7 +4,6 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
-import { Schema } from "yup";
 
 import {
   EtoKeyIndividualsType,
@@ -15,11 +14,11 @@ import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
 import { appConnect } from "../../../../store";
 import { TFormikConnect, TTranslatedString } from "../../../../types";
-import { getField, isRequired } from "../../../../utils/yupUtils";
-import { Button, ButtonIcon } from "../../../shared/buttons";
+import { getFieldSchema, isRequired } from "../../../../utils/yupUtils";
+import { Button, ButtonIcon, EButtonLayout } from "../../../shared/buttons";
 import { FormField, FormTextArea } from "../../../shared/forms";
-import { FormLabel } from "../../../shared/forms/formField/FormLabel";
-import { FormSingleFileUpload } from "../../../shared/forms/formField/FormSingleFileUpload";
+import { FormLabelRaw } from "../../../shared/forms/form-field/FormLabel";
+import { FormSingleFileUpload } from "../../../shared/forms/form-field/FormSingleFileUpload";
 import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
 import { FormSection } from "../../../shared/forms/FormSection";
 import { SOCIAL_PROFILES_PERSON, SocialProfilesEditor } from "../../../shared/SocialProfilesEditor";
@@ -27,6 +26,7 @@ import { EtoFormBase } from "../EtoFormBase";
 
 import * as closeIcon from "../../../../assets/img/inline_icons/round_close.svg";
 import * as plusIcon from "../../../../assets/img/inline_icons/round_plus.svg";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import * as styles from "./KeyIndividuals.module.scss";
 
 interface IStateProps {
@@ -51,7 +51,6 @@ interface IIndividual {
 interface IKeyIndividualsGroup {
   name: string;
   title: TTranslatedString;
-  validationSchema: Schema<TEtoKeyIndividualType>;
 }
 
 const getBlankMember = () => ({
@@ -66,47 +65,45 @@ const Individual: React.SFC<IIndividual> = ({
   canRemove,
   index,
   groupFieldName,
-}) => (
-  <FormHighlightGroup>
-    {canRemove && (
-      <ButtonIcon svgIcon={closeIcon} onClick={onRemoveClick} className={styles.removeButton} />
-    )}
-    <FormField
-      name={`${groupFieldName}.members.${index}.name`}
-      label={<FormattedMessage id="eto.form.key-individuals.name" />}
-      placeholder="name"
-    />
-    <FormField
-      name={`${groupFieldName}.members.${index}.role`}
-      label={<FormattedMessage id="eto.form.key-individuals.role" />}
-      placeholder="role"
-    />
-    <FormTextArea
-      name={`${groupFieldName}.members.${index}.description`}
-      label={<FormattedMessage id="eto.form.key-individuals.short-bio" />}
-      placeholder=" "
-      charactersLimit={1200}
-    />
-    <FormSingleFileUpload
-      label={<FormattedMessage id="eto.form.key-individuals.image" />}
-      name={`${groupFieldName}.members.${index}.image`}
-      acceptedFiles="image/*"
-      fileFormatInformation="*150 x 150px png"
-    />
-    <FormField
-      className="mt-4"
-      name={`${groupFieldName}.members.${index}.website`}
-      placeholder="website"
-    />
-    <FormLabel className="mt-4 mb-2">
-      <FormattedMessage id="eto.form.key-individuals.add-social-channels" />
-    </FormLabel>
-    <SocialProfilesEditor
-      profiles={SOCIAL_PROFILES_PERSON}
-      name={`${groupFieldName}.members.${index}.socialChannels`}
-    />
-  </FormHighlightGroup>
-);
+}) => {
+  const group = `${groupFieldName}.members.${index}`;
+
+  return (
+    <FormHighlightGroup>
+      {canRemove && (
+        <ButtonIcon svgIcon={closeIcon} onClick={onRemoveClick} className={styles.removeButton} />
+      )}
+      <FormField
+        name={`${group}.name`}
+        label={<FormattedMessage id="eto.form.key-individuals.name" />}
+        placeholder="name"
+      />
+      <FormField
+        name={`${group}.role`}
+        label={<FormattedMessage id="eto.form.key-individuals.role" />}
+        placeholder="role"
+      />
+      <FormTextArea
+        name={`${group}.description`}
+        label={<FormattedMessage id="eto.form.key-individuals.short-bio" />}
+        placeholder=" "
+        charactersLimit={1200}
+      />
+      <FormSingleFileUpload
+        label={<FormattedMessage id="eto.form.key-individuals.image" />}
+        name={`${group}.image`}
+        acceptedFiles="image/*"
+        fileFormatInformation="*150 x 150px png"
+        data-test-id={`${group}.image`}
+      />
+      <FormField className="mt-4" name={`${group}.website`} placeholder="website" />
+      <FormLabelRaw className="mt-4 mb-2">
+        <FormattedMessage id="eto.form.key-individuals.add-social-channels" />
+      </FormLabelRaw>
+      <SocialProfilesEditor profiles={SOCIAL_PROFILES_PERSON} name={`${group}.socialChannels`} />
+    </FormHighlightGroup>
+  );
+};
 
 class KeyIndividualsGroupLayout extends React.Component<IKeyIndividualsGroup & TFormikConnect> {
   isEmpty(): boolean {
@@ -119,7 +116,11 @@ class KeyIndividualsGroupLayout extends React.Component<IKeyIndividualsGroup & T
   }
 
   isRequired(): boolean {
-    return isRequired(this.props.validationSchema);
+    const { formik, name } = this.props;
+    const { validationSchema } = formik;
+
+    const fieldSchema = getFieldSchema(name, validationSchema());
+    return isRequired(fieldSchema);
   }
 
   componentDidMount(): void {
@@ -158,7 +159,7 @@ class KeyIndividualsGroupLayout extends React.Component<IKeyIndividualsGroup & T
               <Button
                 data-test-id={`key-individuals-group-button-${name}`}
                 iconPosition="icon-before"
-                layout="secondary"
+                layout={EButtonLayout.SECONDARY}
                 svgIcon={plusIcon}
                 onClick={() => arrayHelpers.push(getBlankMember())}
               >
@@ -187,42 +188,35 @@ const EtoRegistrationKeyIndividualsComponent = (props: IProps) => {
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.team.title" />}
         name="team"
-        validationSchema={getField("team", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.advisors.title" />}
         name="advisors"
-        validationSchema={getField("advisors", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.key-alliances.title" />}
         name="keyAlliances"
-        validationSchema={getField("keyAlliances", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.board-members.title" />}
         name="boardMembers"
-        validationSchema={getField("boardMembers", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.notable-investors.title" />}
         name="notableInvestors"
-        validationSchema={getField("notableInvestors", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.key-customers.title" />}
         name="keyCustomers"
-        validationSchema={getField("keyCustomers", validator)}
       />
       <KeyIndividualsGroup
         title={<FormattedMessage id="eto.form.key-individuals.section.partners.title" />}
         name="partners"
-        validationSchema={getField("partners", validator)}
       />
       <Col>
         <Row className="justify-content-end">
           <Button
-            layout="primary"
+            layout={EButtonLayout.PRIMARY}
             className="mr-4"
             type="submit"
             isLoading={props.savingData}
@@ -237,7 +231,7 @@ const EtoRegistrationKeyIndividualsComponent = (props: IProps) => {
 };
 
 export const EtoRegistrationKeyIndividuals = compose<React.SFC>(
-  setDisplayName("EtoRegistrationKeyIndividuals"),
+  setDisplayName(EEtoFormTypes.KeyIndividuals),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,

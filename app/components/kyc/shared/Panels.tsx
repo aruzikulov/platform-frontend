@@ -18,10 +18,8 @@ export const Panels: React.SFC<IProps> = ({ panels }) => (
     {panels.map(({ content, id, onClick, "data-test-id": dataTestId }) => (
       <div key={id} className={styles.panel}>
         <div className={styles.tile}>
-          <Proportion>
-            <div className={styles.cta} onClick={onClick} data-test-id={dataTestId}>
-              {content}
-            </div>
+          <Proportion onClick={onClick} dataTestId={dataTestId}>
+            <div className={styles.cta}>{content}</div>
           </Proportion>
         </div>
       </div>

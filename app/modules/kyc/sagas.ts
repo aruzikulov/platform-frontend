@@ -1,10 +1,6 @@
+import { delay } from "redux-saga";
 import { cancel, fork, put, select, take } from "redux-saga/effects";
 
-import { actions, TAction } from "../actions";
-
-import { neuCall, neuTakeEvery } from "../sagas";
-
-import { delay } from "redux-saga";
 import { SUBMIT_KYC_PERMISSION } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IHttpResponse } from "../../lib/api/client/IHttpClient";
@@ -15,17 +11,26 @@ import {
   IKycIndividualData,
   IKycLegalRepresentative,
   IKycRequestState,
+  TKycRequestType,
   TRequestOutsourcedStatus,
   TRequestStatus,
 } from "../../lib/api/KycApi.interfaces";
+import { IUser } from "../../lib/api/users/interfaces";
+import { IdentityRegistry } from "../../lib/contracts/IdentityRegistry";
 import { IAppAction, IAppState } from "../../store";
+import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/sagas";
-import { displayErrorModalSaga } from "../genericModal/sagas";
+import { selectUser } from "../auth/selectors";
+import { displayErrorModalSaga } from "../generic-modal/sagas";
+import { selectIsSmartContractInitDone } from "../init/selectors";
+import { neuCall, neuTakeEvery, neuTakeOnly } from "../sagasUtils";
 import {
   selectCombinedBeneficialOwnerOwnership,
   selectKycRequestOutsourcedStatus,
   selectKycRequestStatus,
+  selectKycRequestType,
 } from "./selectors";
+import { deserializeClaims } from "./utils";
 
 function* loadClientData(): any {
   yield put(actions.kyc.kycLoadIndividualData());
@@ -36,16 +41,17 @@ function* loadClientData(): any {
  * whole watcher feature is just a temporary workaround for a lack of real time communication with backend
  */
 let kycWidgetWatchDelay: number = 1000;
-function* kycRefreshWidgetSaga(): any {
+function* kycRefreshWidgetSaga({ logger }: TGlobalDependencies): any {
   kycWidgetWatchDelay = 1000;
-
   while (true) {
+    const requestType: TKycRequestType = yield select((s: IAppState) =>
+      selectKycRequestType(s.kyc),
+    );
     const status: TRequestStatus | undefined = yield select((s: IAppState) =>
       selectKycRequestStatus(s.kyc),
     );
 
-    // if its accepted we can stop whole mechanism
-    if (status === "Accepted") {
+    if (status === "Accepted" || status === "Rejected" || status === "Ignored") {
       return;
     }
 
@@ -54,12 +60,18 @@ function* kycRefreshWidgetSaga(): any {
     );
 
     if (
-      outsourcedStatus === "started" ||
-      outsourcedStatus === "canceled" ||
-      outsourcedStatus === "aborted" ||
-      outsourcedStatus === "review_pending"
+      status === "Pending" ||
+      (status === "Outsourced" &&
+        outsourcedStatus &&
+        (outsourcedStatus === "started" ||
+          outsourcedStatus === "canceled" ||
+          outsourcedStatus === "aborted" ||
+          outsourcedStatus === "review_pending"))
     ) {
-      yield put(actions.kyc.kycLoadIndividualRequest(true));
+      requestType === "individual"
+        ? yield put(actions.kyc.kycLoadIndividualRequest(true))
+        : yield put(actions.kyc.kycLoadBusinessRequest(true));
+      logger.info("KYC refreshed", status, requestType);
     }
 
     yield delay(kycWidgetWatchDelay);
@@ -81,7 +93,7 @@ let watchTask: any;
 function* kycRefreshWidgetSagaWatcher(): any {
   while (true) {
     yield take("KYC_WATCHER_START");
-    watchTask = yield fork(kycRefreshWidgetSaga);
+    watchTask = yield fork(neuCall, kycRefreshWidgetSaga);
   }
 }
 
@@ -90,6 +102,19 @@ function* kycRefreshWidgetSagaWatcherStop(): any {
     yield take("KYC_WATCHER_STOP");
     yield cancel(watchTask);
   }
+}
+
+/**
+ * Individual Request
+ */
+function* loadIdentityClaim({ contractsService }: TGlobalDependencies): Iterator<any> {
+  const identityRegistry: IdentityRegistry = contractsService.identityRegistry;
+
+  const loggedInUser: IUser = yield select<IAppState>(state => selectUser(state.auth));
+
+  const claims: string = yield identityRegistry.getClaims(loggedInUser.userId);
+
+  yield put(actions.kyc.kycSetClaims(deserializeClaims(claims)));
 }
 
 /**
@@ -543,7 +568,9 @@ function* loadBusinessRequest(
 ): Iterator<any> {
   if (action.type !== "KYC_LOAD_BUSINESS_REQUEST_STATE") return;
   try {
-    yield put(actions.kyc.kycUpdateBusinessRequestState(true));
+    if (!action.payload.inBackground) {
+      yield put(actions.kyc.kycUpdateBusinessRequestState(true));
+    }
     const result: IHttpResponse<IKycRequestState> = yield apiKycService.getBusinessRequest();
     yield put(actions.kyc.kycUpdateBusinessRequestState(false, result.body));
   } catch (e) {
@@ -589,10 +616,18 @@ function* submitBusinessRequest(
 }
 
 export function* loadKycRequestData(): any {
+  // Wait for contracts to init
+  const isSmartContractsInitialized = yield select(selectIsSmartContractInitDone);
+  if (!isSmartContractsInitialized) {
+    yield neuTakeOnly("INIT_DONE", { initType: "smartcontractsInit" });
+  }
+
   yield put(actions.kyc.kycLoadIndividualRequest());
   yield put(actions.kyc.kycLoadBusinessRequest());
 
-  // we block init untill both requests are done. This avoids flickering of various elements in the app.
+  yield put(actions.kyc.kycLoadClaims());
+
+  // we block init until all requests are done. This avoids flickering of various elements in the app.
   yield loadForOneOfTheKYCRequestsToLoad();
   yield loadForOneOfTheKYCRequestsToLoad();
 }
@@ -642,6 +677,8 @@ export function* kycSagas(): any {
 
   yield fork(neuTakeEvery, "KYC_LOAD_BUSINESS_REQUEST_STATE", loadBusinessRequest);
   yield fork(neuTakeEvery, "KYC_SUBMIT_BUSINESS_REQUEST", submitBusinessRequest);
+
+  yield fork(neuTakeEvery, "KYC_LOAD_CLAIMS", loadIdentityClaim);
 
   yield fork(kycRefreshWidgetSagaWatcher);
   yield fork(kycRefreshWidgetSagaWatcherStop);

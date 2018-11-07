@@ -1,27 +1,28 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
+import { EETOStateOnChain } from "../../../../modules/public-etos/types";
 import { Counter } from "../../../shared/Counter";
+import { statusToName } from "../../../shared/ETOState";
 
 import * as styles from "./CounterWidget.module.scss";
 
 export interface ICounterWidgetProps {
-  endDate?: number;
-  stage?: string;
+  endDate: Date;
+  state: EETOStateOnChain;
 }
 
-const CounterWidget: React.SFC<ICounterWidgetProps> = ({ endDate, stage }) => {
+const CounterWidget: React.SFC<ICounterWidgetProps> = ({ endDate, state }) => {
   return (
     <div className={styles.counterWidget}>
       <div className={styles.title}>
-        <FormattedMessage id="shared-component.eto-overview.count-down-to" values={{ stage }} />
+        <FormattedMessage
+          id="shared-component.eto-overview.count-down-to"
+          values={{ state: statusToName[state] }}
+        />
       </div>
-      {endDate && (
-        <>
-          <div className={styles.zone}>{new Date(endDate).toUTCString()}</div>
-          <Counter endDate={endDate} />
-        </>
-      )}
+      <div className={styles.zone}>{endDate.toUTCString()}</div>
+      <Counter endDate={endDate} />
     </div>
   );
 };

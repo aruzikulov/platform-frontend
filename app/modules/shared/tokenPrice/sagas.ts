@@ -9,11 +9,11 @@ import { IAppState } from "../../../store";
 import { actions } from "../../actions";
 import { numericValuesToString } from "../../contracts/utils";
 import { selectIsSmartContractInitDone } from "../../init/selectors";
-import { neuCall } from "../../sagas";
+import { neuCall } from "../../sagasUtils";
 import { ITokenPriceStateData } from "./reducer";
 
 const TOKEN_PRICE_MONITOR_DELAY = 120000;
-const TOKEN_PRICE_MONITOR_SHORT_DELAY = 60000;
+const TOKEN_PRICE_MONITOR_SHORT_DELAY = 1000;
 
 export async function loadTokenPriceDataAsync({
   contractsService,

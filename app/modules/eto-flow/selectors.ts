@@ -11,9 +11,9 @@ import { selectIsUserEmailVerified } from "../auth/selectors";
 import { selectEtoDocumentLoading } from "../eto-documents/selectors";
 import { selectKycRequestStatus } from "../kyc/selectors";
 import { selectEto, selectEtoWithCompanyAndContract } from "../public-etos/selectors";
-import { IEtoFlowState } from "./reducer";
+import { IEtoFlowState } from "./types";
 
-const selectIssuerEtoPreviewCode = (state: IEtoFlowState) => state.etoPreviewCode;
+export const selectIssuerEtoPreviewCode = (state: IEtoFlowState) => state.etoPreviewCode;
 
 export const selectIssuerEto = (state: IAppState) => {
   const issuerEtoPreviewCode = selectIssuerEtoPreviewCode(state.etoFlow);

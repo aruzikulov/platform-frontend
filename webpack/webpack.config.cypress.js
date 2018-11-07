@@ -1,6 +1,5 @@
 const webpack = require("webpack");
 
-const paths = require("./paths");
 const loadAppEnv = require("./loadAppEnv");
 
 const applicationEnv = loadAppEnv(process.env);
@@ -19,6 +18,7 @@ module.exports = {
             loader: "ts-loader",
             options: {
               configFile: "tsconfig.cypress.json",
+              transpileOnly: true,
             },
           },
         ],

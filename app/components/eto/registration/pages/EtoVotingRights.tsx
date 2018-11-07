@@ -7,15 +7,19 @@ import { compose } from "redux";
 
 import {
   EtoVotingRightsType,
+  TEtoVotingRightsType,
   TPartialEtoSpecData,
 } from "../../../../lib/api/eto/EtoApi.interfaces";
+import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
 import { actions } from "../../../../modules/actions";
-import { selectIssuerEto } from "../../../../modules/eto-flow/selectors";
+import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-flow/selectors";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { BOOL_TRUE_KEY, FormSelectField } from "../../../shared/forms";
-import { FormLabel } from "../../../shared/forms/formField/FormLabel";
-import { FormToggle } from "../../../shared/forms/formField/FormToggle";
+import { FormLabel } from "../../../shared/forms/form-field/FormLabel";
+import { FormToggle } from "../../../shared/forms/form-field/FormToggle";
+import { applyDefaults } from "../../utils";
 import { EtoFormBase } from "../EtoFormBase";
 
 // TODO: this keys will be replaced dynamically by addresses from an API endpoint, once there are more than one
@@ -24,6 +28,11 @@ const TOKEN_HOLDERS_RIGHTS = {
 };
 
 const LIQUIDATION_PREFERENCE_VALUES = [0, 1, 1.5, 2];
+
+const defaults = {
+  liquidationPreferenceMultiplier: 0,
+  generalVotingRule: "positive",
+};
 
 interface IExternalProps {
   readonly: boolean;
@@ -65,7 +74,7 @@ const EtoVotingRightsComponent: React.SFC<IProps> = ({ readonly, savingData }) =
     />
 
     <div className="form-group">
-      <FormLabel>
+      <FormLabel name="generalVotingRule">
         <FormattedMessage id="eto.form.section.token-holders-rights.voting-rights-enabled" />
       </FormLabel>
       <FormToggle
@@ -82,7 +91,7 @@ const EtoVotingRightsComponent: React.SFC<IProps> = ({ readonly, savingData }) =
       <Col>
         <Row className="justify-content-center">
           <Button
-            layout="primary"
+            layout={EButtonLayout.PRIMARY}
             type="submit"
             isLoading={savingData}
             data-test-id="eto-registration-voting-rights-submit"
@@ -94,20 +103,18 @@ const EtoVotingRightsComponent: React.SFC<IProps> = ({ readonly, savingData }) =
     )}
   </EtoFormBase>
 );
+
 export const EtoVotingRights = compose<React.SFC<IExternalProps>>(
-  setDisplayName("EtoVotingRights"),
+  setDisplayName(EEtoFormTypes.EtoVotingRights),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
       stateValues: selectIssuerEto(s) as TPartialEtoSpecData,
+      readonly: etoFormIsReadonly(EEtoFormTypes.EtoVotingRights, selectIssuerEtoState(s)),
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialEtoSpecData) => {
-        data.liquidationPreferenceMultiplier = parseFloat(
-          `${data.liquidationPreferenceMultiplier}`,
-        ); // Changes option's string value to number so it meets swagger requirements
-
         dispatch(
           actions.etoFlow.saveDataStart({
             companyData: {},
@@ -121,7 +128,14 @@ export const EtoVotingRights = compose<React.SFC<IExternalProps>>(
   }),
   withFormik<IProps, TPartialEtoSpecData>({
     validationSchema: EtoVotingRightsType.toYup(),
-    mapPropsToValues: props => props.stateValues,
-    handleSubmit: (values, props) => props.props.saveData(values),
+    mapPropsToValues: props => applyDefaults(props.stateValues, defaults),
+    handleSubmit: (values, props) => {
+      return props.props.saveData(dataToCanonicalForm(values));
+    },
   }),
 )(EtoVotingRightsComponent);
+
+const dataToCanonicalForm = (values: Partial<TEtoVotingRightsType>) => {
+  values.liquidationPreferenceMultiplier = parseFloat(`${values.liquidationPreferenceMultiplier}`);
+  return values;
+};

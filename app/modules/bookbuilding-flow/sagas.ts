@@ -7,7 +7,7 @@ import { EtoPledgeNotFound } from "../../lib/api/eto/EtoPledgeApi";
 import { IPledge } from "../../lib/api/eto/EtoPledgeApi.interfaces";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/sagas";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { DELETE_PLEDGE, LOAD_BOOKBUILDING_FLOW_STATS, LOAD_PLEDGE, SAVE_PLEDGE } from "./actions";
 
 export function* saveMyPledge(
@@ -82,7 +82,7 @@ export function* loadBookBuildingStats(
   } catch (e) {
     notificationCenter.error(
       intlWrapper.intl.formatIntlMessage(
-        "eto.overview.error-notification.failed-to-bookbuilding-stats-pledge",
+        "eto.overview.error-notification.failed-to-bookbuilding-stats",
       ),
     );
 

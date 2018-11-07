@@ -6,7 +6,7 @@ import { compose } from "redux";
 import { KycRouter } from "./Router";
 
 import { TKycRequestType, TRequestStatus } from "../../lib/api/KycApi.interfaces";
-import { TUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
 import {
@@ -17,7 +17,7 @@ import {
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
-import { Button } from "../shared/buttons";
+import { Button, EButtonLayout } from "../shared/buttons";
 import { KycPanel } from "./KycPanel";
 import { KYCAddDocuments } from "./shared/AddDocuments";
 
@@ -63,7 +63,7 @@ export const businessSteps = [
 
 interface IStateProps {
   requestLoading?: boolean;
-  userType: TUserType;
+  userType: EUserType;
   requestStatus?: TRequestStatus;
   redirectUrl: string;
   pendingRequestType: TKycRequestType | undefined;
@@ -93,14 +93,16 @@ class RequestStateInfo extends React.Component<IProps> {
     const settingsButton = (
       <div className="p-4 text-center">
         <Button
-          layout="secondary"
+          layout={EButtonLayout.SECONDARY}
           iconPosition="icon-before"
           svgIcon={arrowLeft}
           onClick={
-            this.props.userType === "investor" ? this.props.goToWallet : this.props.goToDashboard
+            this.props.userType === EUserType.INVESTOR
+              ? this.props.goToWallet
+              : this.props.goToDashboard
           }
         >
-          {this.props.userType === "investor" ? (
+          {this.props.userType === EUserType.INVESTOR ? (
             <FormattedMessage id="kyc.request-state.go-to-wallet" />
           ) : (
             <FormattedMessage id="kyc.request-state.go-to-dashboard" />

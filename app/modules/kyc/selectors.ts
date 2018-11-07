@@ -3,17 +3,19 @@ import {
   TRequestOutsourcedStatus,
   TRequestStatus,
 } from "../../lib/api/KycApi.interfaces";
+import { IAppState } from "../../store";
 import { IKycState } from "./reducer";
 
 export const selectKycRequestStatus = (state: IKycState): TRequestStatus | undefined => {
-  const requestState =
-    state.individualRequestState && state.individualRequestState.status === "Draft"
-      ? state.businessRequestState
-      : state.individualRequestState;
-  if (requestState) {
-    return requestState.status;
+  const userKycType = selectKycRequestType(state);
+  switch (userKycType) {
+    case "business":
+      return state.businessRequestState!.status;
+    case "individual":
+      return state.individualRequestState!.status;
+    default:
+      return "Draft";
   }
-  return undefined;
 };
 
 export const selectKycRequestOutsourcedStatus = (
@@ -85,3 +87,5 @@ export const selectClientName = (state: IKycState) =>
 export const selectClientCountry = (state: IKycState) =>
   (state.businessData && state.businessData.country) ||
   (state.individualData && state.individualData.country);
+
+export const selectClaims = (state: IAppState) => state.kyc.claims;

@@ -5,7 +5,6 @@
   $color-tag-bg: rgba($color-tag-base, .14);
 
   color: $neu-black;
-  cursor: pointer;
   background-color: $color-tag-bg;
   border-radius: px-to-rem(3px);
   display: inline-flex;
@@ -14,7 +13,14 @@
   font-weight: $font-weight-bold;
   padding: px-to-rem(6px) px-to-rem(10px);
   transition: 150ms ease-out background-color;
-  user-select: none;
+
+  &--as-button {
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 
   &:global(.ghost-bold) {
     @include media-breakpoint-down(xs) {

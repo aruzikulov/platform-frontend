@@ -1,9 +1,15 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
+import { compose } from "recompose";
 
 import { IEtoDocument } from "../../../../lib/api/eto/EtoFileApi.interfaces";
-import { TTranslatedString } from "../../../../types";
+import { actions } from "../../../../modules/actions";
+import { appConnect } from "../../../../store";
+import { withParams } from "../../../../utils/withParams";
+import { appRoutes } from "../../../appRoutes";
+import { EtherscanAddressLink } from "../../../shared/EtherscanLink";
 import { Tag } from "../../../shared/Tag";
+import { EtoWidgetContext } from "../../EtoWidgetView";
 
 export interface ITagsWidget {
   termSheet: IEtoDocument;
@@ -12,73 +18,94 @@ export interface ITagsWidget {
   etoId: string;
 }
 
-const LinkedTag: React.SFC<{ href: string; text: TTranslatedString; download?: boolean }> = ({
-  href,
-  text,
-  download,
-}) => {
-  return (
-    <a href={href} download={download} target="_blank">
-      <Tag size="small" theme="green" layout="ghost" text={text} />
-    </a>
-  );
+type TDispatchProps = {
+  downloadDocument: (document: IEtoDocument) => void;
 };
 
-const TagsWidget: React.SFC<ITagsWidget> = ({
+type TLayoutProps = ITagsWidget & TDispatchProps;
+
+const hasDocument = (document: IEtoDocument): boolean =>
+  !!document && !!document.name && !!document.name.length;
+
+const TagsWidgetLayout: React.SFC<TLayoutProps> = ({
   termSheet,
   prospectusApproved,
   smartContractOnchain,
   etoId,
+  downloadDocument,
 }) => {
-  const hasTermSheet = termSheet && termSheet.name && termSheet.name.length;
-  const hasProspectusApproved =
-    prospectusApproved && prospectusApproved.name && prospectusApproved.name.length;
-
   return (
-    <>
-      {hasTermSheet ? (
-        <LinkedTag
-          href={termSheet.name}
-          download
-          text={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
-        />
-      ) : (
-        <Tag
-          size="small"
-          theme="silver"
-          layout="ghost"
-          text={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
-        />
+    <EtoWidgetContext.Consumer>
+      {previewCode => (
+        <>
+          {hasDocument(termSheet) ? (
+            <Tag
+              onClick={() => downloadDocument(termSheet)}
+              to={previewCode ? withParams(appRoutes.etoPublicView, { previewCode }) : undefined}
+              target={previewCode ? "_blank" : undefined}
+              size="small"
+              theme="green"
+              layout="ghost"
+              text={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
+            />
+          ) : (
+            <Tag
+              size="small"
+              theme="silver"
+              layout="ghost"
+              text={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
+            />
+          )}
+          {hasDocument(prospectusApproved) ? (
+            <Tag
+              onClick={() => downloadDocument(prospectusApproved)}
+              to={previewCode ? withParams(appRoutes.etoPublicView, { previewCode }) : undefined}
+              target={previewCode ? "_blank" : undefined}
+              size="small"
+              theme="green"
+              layout="ghost"
+              text={<FormattedMessage id="shared-component.eto-overview.prospectus-approved" />}
+            />
+          ) : (
+            <Tag
+              size="small"
+              theme="silver"
+              layout="ghost"
+              text={<FormattedMessage id="shared-component.eto-overview.prospectus-approved" />}
+            />
+          )}
+          {smartContractOnchain ? (
+            <Tag
+              component={EtherscanAddressLink}
+              componentProps={{ address: etoId }}
+              to={previewCode ? withParams(appRoutes.etoPublicView, { previewCode }) : undefined}
+              target={previewCode ? "_blank" : undefined}
+              size="small"
+              theme="green"
+              layout="ghost"
+              text={<FormattedMessage id="shared-component.eto-overview.smart-contract-on-chain" />}
+            />
+          ) : (
+            <Tag
+              size="small"
+              theme="silver"
+              layout="ghost"
+              text={<FormattedMessage id="shared-component.eto-overview.smart-contract-on-chain" />}
+            />
+          )}
+        </>
       )}
-      {hasProspectusApproved ? (
-        <LinkedTag
-          href={prospectusApproved.name}
-          download
-          text={<FormattedMessage id="shared-component.eto-overview.prospectus-approved" />}
-        />
-      ) : (
-        <Tag
-          size="small"
-          theme="silver"
-          layout="ghost"
-          text={<FormattedMessage id="shared-component.eto-overview.prospectus-approved" />}
-        />
-      )}
-      {smartContractOnchain ? (
-        <LinkedTag
-          href={`https://etherscan.io/address/${etoId}`}
-          text={<FormattedMessage id="shared-component.eto-overview.smart-contract-on-chain" />}
-        />
-      ) : (
-        <Tag
-          size="small"
-          theme="silver"
-          layout="ghost"
-          text={<FormattedMessage id="shared-component.eto-overview.smart-contract-on-chain" />}
-        />
-      )}
-    </>
+    </EtoWidgetContext.Consumer>
   );
 };
+
+const TagsWidget = compose<TLayoutProps, ITagsWidget>(
+  appConnect<{}, TDispatchProps>({
+    dispatchToProps: dispatch => ({
+      downloadDocument: (document: IEtoDocument) =>
+        dispatch(actions.publicEtos.downloadPublicEtoDocument(document)),
+    }),
+  }),
+)(TagsWidgetLayout);
 
 export { TagsWidget };

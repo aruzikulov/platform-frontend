@@ -39,7 +39,6 @@ export const kycInvidualForm: TFormFixture = {
     type: "select",
   },
   "kyc-personal-start-submit-form": {
-    value: "",
     type: "submit",
   },
 };
@@ -47,18 +46,16 @@ export const kycInvidualForm: TFormFixture = {
 export const kycLegalRepForm: TFormFixture = {
   ...kycPersonBaseForm,
   "kyc-company-legal-representative-save": {
-    value: "",
     type: "submit",
   },
 };
 
 export const kycLegalRepDocsForm: TFormFixture = {
   "kyc-company-legal-representative-documents": {
-    value: "example.jpg",
-    type: "file",
+    values: ["example.jpg"],
+    type: "multiple-files",
   },
   "kyc-company-legal-representative-upload-and-submit": {
-    value: "",
     type: "submit",
   },
 };
@@ -75,7 +72,6 @@ export const kycCompanyForm: TFormFixture = {
     type: "select",
   },
   "kyc-company-business-data-save": {
-    value: "",
     type: "submit",
   },
 };
@@ -90,11 +86,10 @@ export const kycCorporateCompanyForm: TFormFixture = {
 
 export const kycCompanyDocsForm: TFormFixture = {
   "kyc-company-business-supporting-documents": {
-    value: "example.jpg",
-    type: "file",
+    values: ["example.jpg"],
+    type: "multiple-files",
   },
   "kyc-company-business-supporting-continue": {
-    value: "",
     type: "submit",
   },
 };

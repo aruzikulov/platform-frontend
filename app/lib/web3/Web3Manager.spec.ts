@@ -5,7 +5,7 @@ import { globalFakeClock } from "../../../test/setupTestsHooks";
 import { createMock, expectToBeRejected } from "../../../test/testUtils";
 import { web3Actions } from "../../modules/web3/actions";
 import { web3Flows } from "../../modules/web3/flows";
-import { WalletSubType, WalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import {
   AsyncIntervalScheduler,
   AsyncIntervalSchedulerFactoryType,
@@ -29,12 +29,12 @@ describe("Web3Manager", () => {
     const ledgerWalletMock = createMock(LedgerWallet, {
       ethereumAddress: dummyEthereumAddress,
       testConnection: async () => true,
-      walletType: WalletType.LEDGER,
-      walletSubType: WalletSubType.UNKNOWN,
+      walletType: EWalletType.LEDGER,
+      walletSubType: EWalletSubType.UNKNOWN,
       derivationPath: expectedDerivationPath,
       getMetadata: (): ILedgerWalletMetadata => ({
-        walletType: WalletType.LEDGER,
-        walletSubType: WalletSubType.UNKNOWN,
+        walletType: EWalletType.LEDGER,
+        walletSubType: EWalletSubType.UNKNOWN,
         derivationPath: expectedDerivationPath,
         address: dummyEthereumAddress,
       }),
@@ -60,8 +60,8 @@ describe("Web3Manager", () => {
       web3Actions.newPersonalWalletPlugged(
         {
           address: dummyEthereumAddress,
-          walletType: WalletType.LEDGER,
-          walletSubType: WalletSubType.UNKNOWN,
+          walletType: EWalletType.LEDGER,
+          walletSubType: EWalletSubType.UNKNOWN,
           derivationPath: expectedDerivationPath,
         },
         true,
@@ -76,7 +76,7 @@ describe("Web3Manager", () => {
       testConnection: async () => false,
       getMetadata: () =>
         ({
-          walletType: WalletType.LEDGER,
+          walletType: EWalletType.LEDGER,
         } as any),
     });
     const asyncIntervalSchedulerMock = createMock(AsyncIntervalScheduler, {
@@ -107,7 +107,7 @@ describe("Web3Manager", () => {
       testConnection: async () => true,
       getMetadata: () =>
         ({
-          walletType: WalletType.LEDGER,
+          walletType: EWalletType.LEDGER,
         } as any),
     });
     const asyncIntervalSchedulerFactory: AsyncIntervalSchedulerFactoryType = (cb, interval) =>
@@ -142,7 +142,7 @@ describe("Web3Manager", () => {
       testConnection: async () => true,
       getMetadata: () =>
         ({
-          walletType: WalletType.LEDGER,
+          walletType: EWalletType.LEDGER,
         } as any),
     });
     const asyncIntervalSchedulerFactory: AsyncIntervalSchedulerFactoryType = (cb, interval) =>

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Redirect, Route } from "react-router-dom";
 
-import { SwitchConnected } from "../../shared/connectedRouting";
+import { SwitchConnected } from "../../../utils/connectedRouting";
 import { EtoRegistrationCompanyInformation } from "./pages/CompanyInformation";
 import { EtoEquityTokenInfo } from "./pages/EtoEquityTokenInfo";
 import { EtoRegistrationMedia } from "./pages/EtoMedia";
@@ -23,9 +23,7 @@ export const EtoRegisterRouter: React.SFC = () => (
     />
     <Route
       path={etoRegisterRoutes.legalInformation}
-      render={({ location }) => (
-        <EtoRegistrationLegalInformation readonly={location.state.readonly} />
-      )}
+      component={EtoRegistrationLegalInformation}
       exact
     />
     <Route
@@ -39,26 +37,10 @@ export const EtoRegisterRouter: React.SFC = () => (
       component={EtoRegistrationRiskAssessment}
       exact
     />
-    <Route
-      path={etoRegisterRoutes.etoTerms}
-      render={({ location }) => <EtoRegistrationTerms readonly={location.state.readonly} />}
-      exact
-    />
-    <Route
-      path={etoRegisterRoutes.etoEquityTokenInfo}
-      render={({ location }) => <EtoEquityTokenInfo readonly={location.state.readonly} />}
-      exact
-    />
-    <Route
-      path={etoRegisterRoutes.etoVotingRight}
-      render={({ location }) => <EtoVotingRights readonly={location.state.readonly} />}
-      exact
-    />
-    <Route
-      path={etoRegisterRoutes.etoInvestmentTerms}
-      render={({ location }) => <EtoInvestmentTerms readonly={location.state.readonly} />}
-      exact
-    />
+    <Route path={etoRegisterRoutes.etoTerms} component={EtoRegistrationTerms} exact />
+    <Route path={etoRegisterRoutes.etoEquityTokenInfo} component={EtoEquityTokenInfo} exact />
+    <Route path={etoRegisterRoutes.etoVotingRights} component={EtoVotingRights} exact />
+    <Route path={etoRegisterRoutes.etoInvestmentTerms} component={EtoInvestmentTerms} exact />
     <Route path={etoRegisterRoutes.etoMedia} component={EtoRegistrationMedia} exact />
     <Redirect to={etoRegisterRoutes.companyInformation} />
   </SwitchConnected>

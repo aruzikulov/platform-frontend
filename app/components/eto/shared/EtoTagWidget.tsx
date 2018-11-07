@@ -5,6 +5,7 @@ import { Creatable as ReactSelectCreatable } from "react-select";
 import Select from "react-virtualized-select";
 
 import { CommonHtmlProps } from "../../../types";
+import { FormError } from "../../shared/forms";
 import { Tag } from "../../shared/Tag";
 
 import * as checkIcon from "../../../assets/img/inline_icons/close_no_border.svg";
@@ -16,7 +17,6 @@ interface IProps {
   name: string;
   selectedTagsLimit: number;
   options: { value: string; label: string }[];
-  testId?: string;
 }
 
 interface IInternalProps {
@@ -41,26 +41,34 @@ export const generateTagOptions = (tags: string[]): { value: string; label: stri
     label: word,
   }));
 
-const TagsFormEditor: React.SFC<ICombinedProps & IInternalProps> = props => (
-  <div className={cn(styles.tagWidget, props.className)} data-test-id={props.testId}>
+const TagsFormEditor: React.SFC<ICombinedProps & IInternalProps> = ({
+  name,
+  className,
+  disabled,
+  options,
+  values,
+  handleSelectedTagClick,
+  onChange,
+}) => (
+  <div className={cn(styles.tagWidget, className)} data-test-id={`form.name.${name}`}>
     <Select
-      disabled={props.disabled}
-      options={props.options}
+      disabled={disabled}
+      options={options}
       clearable={false}
       matchPos="start"
       matchProp="value"
       simpleValue
       selectComponent={Creatable}
-      onChange={newTag => props.onChange(newTag as any)}
+      onChange={newTag => onChange(newTag as any)}
       placeholder={"Add category"}
       noResultsText="No matching word"
       className={cn("mb-3", styles.tagsForm)}
     />
-    {!!props.values && (
+    {values.length > 0 && (
       <div>
-        {props.values.map(tag => (
+        {values.map(tag => (
           <Tag
-            onClick={() => props.handleSelectedTagClick(tag)}
+            onClick={() => handleSelectedTagClick(tag)}
             text={tag}
             className={cn(styles.tag, "ml-1")}
             svgIcon={checkIcon}
@@ -71,10 +79,11 @@ const TagsFormEditor: React.SFC<ICombinedProps & IInternalProps> = props => (
         ))}
       </div>
     )}
+    <FormError name={name} />
   </div>
 );
 
-export class EtoTagWidget extends React.Component<IProps & CommonHtmlProps> {
+class EtoTagWidget extends React.Component<IProps & CommonHtmlProps> {
   render(): React.ReactNode {
     const { name, selectedTagsLimit } = this.props;
 
@@ -109,3 +118,5 @@ export class EtoTagWidget extends React.Component<IProps & CommonHtmlProps> {
     );
   }
 }
+
+export { EtoTagWidget };

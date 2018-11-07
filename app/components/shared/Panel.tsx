@@ -12,7 +12,7 @@ export interface IPanelProps extends CommonHtmlProps {
   narrow?: boolean;
 }
 
-export const Panel: React.SFC<IPanelProps> = ({
+const Panel: React.SFC<IPanelProps> = ({
   headerText,
   rightComponent,
   icon,
@@ -39,3 +39,5 @@ export const Panel: React.SFC<IPanelProps> = ({
     </div>
   );
 };
+
+export { Panel };

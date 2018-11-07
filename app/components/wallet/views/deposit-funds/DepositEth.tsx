@@ -44,8 +44,8 @@ export const DepositEthComponent: React.SFC<IProps & IStateProps> = ({ path, eth
 
 export const DepositEth = compose(
   appConnect<IStateProps>({
-    stateToProps: s => ({
-      ethAddress: selectEthereumAddressWithChecksum(s.web3),
+    stateToProps: state => ({
+      ethAddress: selectEthereumAddressWithChecksum(state),
     }),
   }),
 )(DepositEthComponent);

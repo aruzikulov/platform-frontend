@@ -62,6 +62,7 @@ function renderApp(
   Component: React.ComponentClass,
 ): void {
   const mountNode = document.getElementById("app");
+
   ReactDOM.render(
     <ReduxProvider store={store}>
       <InversifyProvider container={container}>

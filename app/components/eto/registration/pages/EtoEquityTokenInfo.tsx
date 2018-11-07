@@ -9,13 +9,15 @@ import {
   EtoEquityTokenInfoType,
   TPartialEtoSpecData,
 } from "../../../../lib/api/eto/EtoApi.interfaces";
+import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
 import { actions } from "../../../../modules/actions";
-import { selectIssuerEto } from "../../../../modules/eto-flow/selectors";
+import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-flow/selectors";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField } from "../../../shared/forms";
-import { FormLabel } from "../../../shared/forms/formField/FormLabel";
-import { FormSingleFileUpload } from "../../../shared/forms/formField/FormSingleFileUpload";
+import { FormLabel } from "../../../shared/forms/form-field/FormLabel";
+import { FormSingleFileUpload } from "../../../shared/forms/form-field/FormSingleFileUpload";
 import { EtoFormBase } from "../EtoFormBase";
 
 interface IExternalProps {
@@ -53,7 +55,7 @@ const EtoEquityTokenInfoComponent: React.SFC<IProps> = ({ readonly, savingData }
       disabled={readonly}
     />
     <div className="form-group">
-      <FormLabel>
+      <FormLabel name="equityTokenImage">
         <FormattedMessage id="eto.form.section.equity-token-information.token-image" />
       </FormLabel>
       <FormSingleFileUpload
@@ -69,7 +71,7 @@ const EtoEquityTokenInfoComponent: React.SFC<IProps> = ({ readonly, savingData }
       <Col>
         <Row className="justify-content-center">
           <Button
-            layout="primary"
+            layout={EButtonLayout.PRIMARY}
             type="submit"
             isLoading={savingData}
             data-test-id="eto-registration-token-info-submit"
@@ -83,12 +85,13 @@ const EtoEquityTokenInfoComponent: React.SFC<IProps> = ({ readonly, savingData }
 );
 
 export const EtoEquityTokenInfo = compose<React.SFC<IExternalProps>>(
-  setDisplayName("EtoEquityTokenInfo"),
+  setDisplayName(EEtoFormTypes.EtoEquityTokenInfo),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,
       savingData: s.etoFlow.saving,
       stateValues: selectIssuerEto(s) as TPartialEtoSpecData,
+      readonly: etoFormIsReadonly(EEtoFormTypes.EtoEquityTokenInfo, selectIssuerEtoState(s)),
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialEtoSpecData) => {

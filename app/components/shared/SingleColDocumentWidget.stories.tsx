@@ -2,7 +2,7 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { EEtoDocumentType, IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
-import { SingleColDocumentsWidget } from "./SingleColDocumentWidget";
+import { SingleColDocumentsLayout } from "./SingleColDocumentWidget";
 
 const documents: IEtoDocument[] = [
   {
@@ -50,5 +50,5 @@ const documents: IEtoDocument[] = [
 ];
 
 storiesOf("Document/SingleColDocumentWidget", module).add("default", () => (
-  <SingleColDocumentsWidget title="fufu" documents={documents} downloadImmutableFile={() => {}} />
+  <SingleColDocumentsLayout title="fufu" documents={documents} downloadImmutableFile={() => {}} />
 ));

@@ -23,3 +23,77 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add("awaitedClick", { prevSubject: "element" }, (subject, waitDuration = 500) => {
+  cy.get(subject.selector)
+    .wait(waitDuration)
+    .click();
+});
+
+const resolveMediaType = headerContents => {
+  const header = new Uint8Array(headerContents)
+    .subarray(0, 4)
+    .reduce((acc, item) => acc + item.toString(16), "");
+
+  switch (header) {
+    case "89504e47":
+      return "image/png";
+    case "47494638":
+      return "image/gif";
+    case "ffd8ffe0":
+    case "ffd8ffe1":
+    case "ffd8ffe2":
+    case "ffd8ffe3":
+    case "ffd8ffe8":
+      return "image/jpeg";
+    case "25504446":
+      return "application/pdf";
+    case "504b0304":
+      return "application/zip";
+  }
+
+  return "application/octet-stream";
+};
+
+const configureBlob = (blob, name) => {
+  return new Cypress.Promise((resolve, reject) =>
+    Object.assign(new FileReader(), {
+      onloadend: progress =>
+        resolve(
+          Object.assign(blob.slice(0, blob.size, resolveMediaType(progress.target.result)), {
+            name,
+          }),
+        ),
+      onerror: () => reject(null),
+    }).readAsArrayBuffer(blob.slice(0, 4)),
+  );
+};
+
+const createCustomEvent = (eventName, data, files) => {
+  const event = new CustomEvent(eventName, {
+    bubbles: true,
+    cancelable: true,
+  });
+
+  const dataTransfer = Object.assign(new DataTransfer(), {
+    dropEffect: "move",
+  });
+
+  (files || []).forEach(file => dataTransfer.items.add(file));
+
+  Object.entries(data || {}).forEach(entry => dataTransfer.setData(...entry));
+
+  return Object.assign(event, { dataTransfer });
+};
+
+Cypress.Commands.add("dropFile", { prevSubject: "element" }, (subject, file) => {
+  cy.log(`Drop ${file}`);
+
+  return cy
+    .fixture(file, "base64")
+    .then(Cypress.Blob.base64StringToBlob)
+    .then(blob => configureBlob(blob, file))
+    .then(blob => new File([blob], file, { type: blob.type }))
+    .then(file => createCustomEvent("drop", {}, [file]))
+    .then(event => console.log(event) || subject[0].dispatchEvent(event));
+});

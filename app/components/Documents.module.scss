@@ -10,11 +10,23 @@
 }
 
 .sub-title-download {
+  width: 100%;
   color: $color-black;
   display: flex;
   justify-content: center;
   text-align: center;
   font-size: px-to-rem(8px);
+  padding: 0;
   margin-bottom: 0;
+  background-color: transparent;
+  border: 0;
   cursor: pointer;
+
+  &:active,
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+    text-decoration-color: $color-brand;
+  }
 }
+

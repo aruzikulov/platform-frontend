@@ -1,69 +1,53 @@
 import * as React from "react";
-import { branch, compose } from "recompose";
+import { branch, renderComponent } from "recompose";
+import { compose } from "redux";
 
-import { TUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
-import { selectEtoWithCompanyAndContractById } from "../../modules/public-etos/selectors";
+import { selectEtoWithCompanyAndContract } from "../../modules/public-etos/selectors";
 import { TEtoWithCompanyAndContract } from "../../modules/public-etos/types";
-import { IWalletState } from "../../modules/wallet/reducer";
 import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer";
 import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
 import { LayoutBase } from "../layouts/LayoutBase";
-import { LoadingIndicator } from "../shared/LoadingIndicator";
+import { LoadingIndicator } from "../shared/loading-indicator";
 import { EtoPublicComponent } from "./shared/EtoPublicComponent";
 
 interface IStateProps {
   eto?: TEtoWithCompanyAndContract;
-  userType?: TUserType;
-  wallet?: IWalletState;
+  userType?: EUserType;
 }
 
 interface IRouterParams {
-  etoId: string;
+  previewCode: string;
 }
 
-interface IDispatchProps {
-  loadEto: () => void;
-}
+type TProps = {
+  eto: TEtoWithCompanyAndContract;
+};
 
-type IProps = IStateProps & IDispatchProps & IRouterParams;
+const EtoPublicViewLayout: React.SFC<TProps> = ({ eto }) => (
+  <EtoPublicComponent companyData={eto.company} etoData={eto} />
+);
 
-class EtoPreviewComponent extends React.Component<IProps> {
-  render(): React.ReactNode {
-    if (!this.props.eto) {
-      return <LoadingIndicator />;
-    }
-
-    return (
-      <EtoPublicComponent
-        wallet={this.props.wallet}
-        companyData={this.props.eto.company}
-        etoData={this.props.eto}
-      />
-    );
-  }
-}
-
-export const EtoPublicView = compose<IProps, IRouterParams>(
-  appConnect<IStateProps, IDispatchProps, IRouterParams>({
+export const EtoPublicView = compose<React.SFC<IRouterParams>>(
+  appConnect<IStateProps, {}, IRouterParams>({
     stateToProps: (state, props) => ({
       userType: selectUserType(state.auth),
-      eto: selectEtoWithCompanyAndContractById(state, props.etoId),
-      wallet: state.wallet,
+      eto: selectEtoWithCompanyAndContract(state, props.previewCode),
     }),
   }),
   onEnterAction({
     actionCreator: (dispatch, props) => {
-      dispatch(actions.publicEtos.loadEto(props.etoId));
-      dispatch(actions.wallet.startLoadingWalletData());
+      dispatch(actions.publicEtos.loadEtoPreview(props.previewCode));
     },
   }),
   branch<IStateProps>(
-    props => props.userType === "investor",
+    props => props.userType === EUserType.INVESTOR,
     withContainer(LayoutAuthorized),
     withContainer(LayoutBase),
   ),
-)(EtoPreviewComponent);
+  branch<IStateProps>(props => !props.eto, renderComponent(LoadingIndicator)),
+)(EtoPublicViewLayout);

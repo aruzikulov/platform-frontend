@@ -3,7 +3,7 @@ import { symbols } from "../../di/symbols";
 import { selectUserType } from "../../modules/auth/selectors";
 import { IAppState } from "../../store";
 import { invariant } from "../../utils/invariant";
-import { TUserType } from "../api/users/interfaces";
+import { EUserType } from "../api/users/interfaces";
 import { ILogger } from "../dependencies/Logger";
 import { ObjectStorage } from "./ObjectStorage";
 import { Storage } from "./Storage";
@@ -45,14 +45,14 @@ export class WalletStorage<TWalletMetadata> {
     );
   }
 
-  public set(value: TWalletMetadata, forcedUserType?: TUserType): void {
+  public set(value: TWalletMetadata, forcedUserType?: EUserType): void {
     const userType = forcedUserType || selectUserType(this.getState().auth);
 
     switch (userType) {
-      case "issuer":
+      case EUserType.ISSUER:
         this.walletMetadataStorageIssuer.set(value);
         break;
-      case "investor":
+      case EUserType.INVESTOR:
         this.walletMetadataStorageInvestor.set(value);
         break;
       default:
@@ -60,24 +60,24 @@ export class WalletStorage<TWalletMetadata> {
     }
   }
 
-  public get(forcedUserType?: TUserType): TWalletMetadata | undefined {
+  public get(forcedUserType?: EUserType): TWalletMetadata | undefined {
     const userType = forcedUserType || selectUserType(this.getState().auth);
 
     switch (userType) {
-      case "issuer":
+      case EUserType.ISSUER:
         return this.walletMetadataStorageIssuer.get();
-      case "investor":
+      case EUserType.INVESTOR:
         return this.walletMetadataStorageInvestor.get();
       default:
         invariant(false, "Unknown user type");
     }
   }
 
-  public clear(userType: TUserType): void {
+  public clear(userType: EUserType): void {
     switch (userType) {
-      case "issuer":
+      case EUserType.ISSUER:
         return this.walletMetadataStorageIssuer.clear();
-      case "investor":
+      case EUserType.INVESTOR:
         return this.walletMetadataStorageInvestor.clear();
       default:
         invariant(false, "Unknown user type");

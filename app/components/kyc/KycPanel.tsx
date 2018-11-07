@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ButtonLink } from "../shared/buttons";
+import { ButtonLink, EButtonLayout } from "../shared/buttons";
 import { Panel } from "../shared/Panel";
 import { IVerificationProgressStep, VerificationStatus } from "../shared/VerificationStatus";
 
@@ -45,7 +45,7 @@ export const KycPanel: React.SFC<IPropsKycPanel> = ({
         {backLink && (
           <ButtonLink
             to={backLink}
-            layout="secondary"
+            layout={EButtonLayout.SECONDARY}
             iconPosition="icon-before"
             svgIcon={arrowLeft}
           >

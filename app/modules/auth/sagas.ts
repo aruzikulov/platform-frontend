@@ -2,7 +2,7 @@ import { effects } from "redux-saga";
 import { call, Effect, fork, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { IUser, IUserInput, IVerifyEmailUser, TUserType } from "../../lib/api/users/interfaces";
+import { EUserType, IUser, IUserInput, IVerifyEmailUser } from "../../lib/api/users/interfaces";
 import { EmailAlreadyExists, UserNotExisting } from "../../lib/api/users/UsersApi";
 import {
   SignerRejectConfirmationError,
@@ -11,18 +11,18 @@ import {
 } from "../../lib/web3/Web3Manager";
 import { IAppState } from "../../store";
 import { hasValidPermissions } from "../../utils/JWTUtils";
-import { accessWalletAndRunEffect } from "../accessWallet/sagas";
+import { accessWalletAndRunEffect } from "../access-wallet/sagas";
 import { actions } from "../actions";
 import { loadKycRequestData } from "../kyc/sagas";
 import { selectRedirectURLFromQueryString } from "../routing/selectors";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectUrlUserType } from "../wallet-selector/selectors";
 import {
   selectActivationCodeFromQueryString,
   selectEmailFromQueryString,
   selectEthereumAddressWithChecksum,
 } from "../web3/selectors";
-import { WalletSubType, WalletType } from "../web3/types";
+import { EWalletSubType, EWalletType } from "../web3/types";
 import { selectVerifiedUserEmail } from "./selectors";
 
 export function* loadJwt({ jwtStorage }: TGlobalDependencies): Iterator<Effect> {
@@ -35,7 +35,7 @@ export function* loadJwt({ jwtStorage }: TGlobalDependencies): Iterator<Effect> 
 
 export async function loadOrCreateUserPromise(
   { apiUserService, web3Manager }: TGlobalDependencies,
-  userType: TUserType,
+  userType: EUserType,
 ): Promise<IUser> {
   // tslint:disable-next-line
   const walletMetadata = web3Manager.personalWallet!.getMetadata();
@@ -57,14 +57,14 @@ export async function loadOrCreateUserPromise(
     }
   }
   // for light wallet we need to send slightly different request
-  if (walletMetadata && walletMetadata.walletType === WalletType.LIGHT) {
+  if (walletMetadata && walletMetadata.walletType === EWalletType.LIGHT) {
     return apiUserService.createAccount({
       newEmail: walletMetadata.email,
       salt: walletMetadata.salt,
       backupCodesVerified: false,
       type: userType,
       walletType: walletMetadata.walletType,
-      walletSubtype: WalletSubType.UNKNOWN,
+      walletSubtype: EWalletSubType.UNKNOWN,
     });
   } else {
     return apiUserService.createAccount({
@@ -72,9 +72,9 @@ export async function loadOrCreateUserPromise(
       type: userType,
       walletType: walletMetadata.walletType,
       walletSubtype:
-        walletMetadata.walletType === WalletType.BROWSER
+        walletMetadata.walletType === EWalletType.BROWSER
           ? walletMetadata.walletSubType
-          : WalletSubType.UNKNOWN,
+          : EWalletSubType.UNKNOWN,
     });
   }
 }
@@ -122,7 +122,7 @@ export async function updateUserPromise(
   return apiUserService.updateUser(user);
 }
 
-export function* loadOrCreateUser(userType: TUserType): Iterator<any> {
+export function* loadOrCreateUser(userType: EUserType): Iterator<any> {
   const user: IUser = yield neuCall(loadOrCreateUserPromise, userType);
   yield effects.put(actions.auth.loadUser(user));
 
@@ -175,7 +175,7 @@ function* logoutWatcher(
 export function* signInUser({ walletStorage, web3Manager }: TGlobalDependencies): Iterator<any> {
   try {
     // we will try to create with user type from URL but it could happen that account already exists and has different user type
-    const probableUserType: TUserType = yield select((s: IAppState) => selectUrlUserType(s.router));
+    const probableUserType: EUserType = yield select((s: IAppState) => selectUrlUserType(s.router));
     yield effects.put(actions.walletSelector.messageSigning());
 
     yield neuCall(obtainJWT);
@@ -249,7 +249,7 @@ export async function obtainJwtPromise(
   { getState, web3Manager, signatureAuthApi, cryptoRandomString, logger }: TGlobalDependencies,
   permissions: Array<string> = [],
 ): Promise<string> {
-  const address = selectEthereumAddressWithChecksum(getState().web3);
+  const address = selectEthereumAddressWithChecksum(getState());
 
   const salt = cryptoRandomString(64);
 

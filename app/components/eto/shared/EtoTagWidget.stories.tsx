@@ -1,7 +1,7 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { formWrapper } from "../../shared/forms/formField/form-utils";
+import { formWrapper } from "../../shared/forms/form-field/form-utils";
 import { EtoTagWidget, generateTagOptions } from "./EtoTagWidget";
 
 const tagList = ["Science", "Technology", "Blockchain", "Medical", "Research"];

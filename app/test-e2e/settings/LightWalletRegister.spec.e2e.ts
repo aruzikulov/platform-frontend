@@ -1,7 +1,8 @@
 import {
   assertErrorModal,
-  assertLatestEmailSentWithSalt,
+  assertWaitForLatestEmailSentWithSalt,
   assertUserInDashboard,
+  clearEmailServer,
   convertToUniqueEmail,
   loginWithLightWallet,
   logoutViaTopRightButton,
@@ -10,18 +11,20 @@ import {
   typeEmailPassword,
   verifyLatestUserEmail,
   tid,
+  assertButtonIsActive,
 } from "../utils";
 
 describe("Light wallet login / register", () => {
   it("should register user with light-wallet and send email", () => {
     const email = "moe@test.com";
     const password = "strongpassword";
+    clearEmailServer();
 
     cy.request({ url: mockApiUrl + "sendgrid/session/mails", method: "DELETE" });
 
     registerWithLightWallet(email, password);
 
-    assertLatestEmailSentWithSalt(email);
+    assertWaitForLatestEmailSentWithSalt(email);
   });
 
   it("should remember light wallet details after logout", () => {
@@ -30,7 +33,7 @@ describe("Light wallet login / register", () => {
 
     registerWithLightWallet(email, password);
 
-    cy.get(tid("Header-logout")).click();
+    cy.get(tid("Header-logout")).awaitedClick();
 
     loginWithLightWallet(email, password);
 
@@ -43,7 +46,7 @@ describe("Light wallet login / register", () => {
 
     registerWithLightWallet(email, password);
 
-    cy.get(tid("Header-logout")).click();
+    cy.get(tid("Header-logout")).awaitedClick();
 
     loginWithLightWallet(email, password);
 
@@ -55,7 +58,7 @@ describe("Light wallet login / register", () => {
         cy.visit("eto/login/light");
         cy.contains(tid("light-wallet-login-with-email-email-field"), email);
         cy.get(tid("light-wallet-login-with-email-password-field")).type(password);
-        cy.get(tid("wallet-selector-nuewallet.login-button")).click();
+        cy.get(tid("wallet-selector-nuewallet.login-button")).awaitedClick();
 
         return assertUserInDashboard().then(() => {
           expect((window.localStorage as any).NF_WALLET_METADATA).to.be.deep.eq(savedMetadata);
@@ -80,6 +83,10 @@ describe("Light wallet login / register", () => {
     cy.visit("/register");
     typeEmailPassword(email, password);
     assertErrorModal();
+
+    //dismiss warning, register button must be enabled
+    cy.get(tid("generic-modal-dismiss-button")).awaitedClick();
+    assertButtonIsActive("wallet-selector-register-button");
   });
 
   // This test case is commented due to cypressjs bugs which occurs while reusing cy.visit
@@ -92,7 +99,7 @@ describe("Light wallet login / register", () => {
 
     registerWithLightWallet(email, password);
 
-    cy.get(tid("Header-logout")).click();
+    cy.get(tid("Header-logout")).awaitedClick();
     cy.clearLocalStorage();
 
     cy.writeFile('/tmp/cypress-outout.log', 'test!')

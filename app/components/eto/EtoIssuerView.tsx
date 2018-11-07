@@ -15,7 +15,7 @@ import { appConnect } from "../../store";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { withContainer } from "../../utils/withContainer";
 import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
-import { LoadingIndicator } from "../shared/LoadingIndicator";
+import { LoadingIndicator } from "../shared/loading-indicator";
 import { EtoPublicComponent } from "./shared/EtoPublicComponent";
 
 type TStateProps = {

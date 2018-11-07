@@ -22,6 +22,9 @@ export interface ITag {
   onClick?: (e: any) => void;
   svgIcon?: string;
   placeSvgInEnd?: boolean;
+  component?: React.ComponentType<any>;
+  componentProps?: any;
+  target?: string;
 }
 
 export const Tag: React.SFC<ITag> = ({
@@ -34,24 +37,42 @@ export const Tag: React.SFC<ITag> = ({
   onClick,
   svgIcon,
   placeSvgInEnd,
+  component: Component,
+  componentProps = {},
+  target,
 }) => {
   const classes = cn(styles.tag, layout, size, theme, className);
-
-  return (
+  const tagContent = (
     <>
-      {to ? (
-        <Link to={to} className={classes}>
-          {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
-          {text}
-          {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
-        </Link>
-      ) : (
-        <span onClick={onClick} className={classes}>
-          {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
-          {text}
-          {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
-        </span>
-      )}
+      {!placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} />}
+      {text}
+      {placeSvgInEnd && !!svgIcon && <InlineIcon svgIcon={svgIcon} className="ml-2" />}
     </>
   );
+
+  if (to) {
+    return (
+      <Link to={to} className={classes} target={target}>
+        {tagContent}
+      </Link>
+    );
+  }
+
+  if (Component) {
+    return (
+      <Component className={classes} {...componentProps}>
+        {tagContent}
+      </Component>
+    );
+  }
+
+  if (onClick) {
+    return (
+      <button onClick={onClick} className={cn(classes, styles.tagAsButton)}>
+        {tagContent}
+      </button>
+    );
+  }
+
+  return <span className={classes}>{tagContent}</span>;
 };

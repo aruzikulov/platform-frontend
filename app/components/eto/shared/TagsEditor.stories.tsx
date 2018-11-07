@@ -5,7 +5,7 @@ import { TagsEditorWidget } from "./TagsEditor";
 
 storiesOf("TagsEditorWidget", module).add("default", () => (
   <TagsEditorWidget
-    availiableTags={["tag1", "tag2", "tag3", "tag with random text4", "tag5", "tag6"]}
+    availableTags={["tag1", "tag2", "tag3", "tag with random text4", "tag5", "tag6"]}
     selectedTags={["tag1", "tag3"]}
     selectedTagsLimit={5}
   />

@@ -14,7 +14,7 @@ const UPLOAD_DOCUMENT_PATH = "/upload";
 export class ImmutableStorageApi {
   constructor(
     @inject(symbols.authorizedJsonHttpClient) private httpClient: IHttpClient,
-    @inject(symbols.authorizedBinaryHttpClient) private binaryHttpClient: IHttpClient,
+    @inject(symbols.binaryHttpClient) private binaryHttpClient: IHttpClient,
   ) {}
 
   public async uploadFile(

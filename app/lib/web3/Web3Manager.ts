@@ -3,6 +3,7 @@ import { inject, injectable } from "inversify";
 import * as Web3 from "web3";
 
 import { symbols } from "../../di/symbols";
+import { calculateGasLimitWithOverhead, encodeTransaction } from "../../modules/tx/utils";
 import { web3Actions } from "../../modules/web3/actions";
 import { web3Flows } from "../../modules/web3/flows";
 import { AppDispatch } from "../../store";
@@ -15,25 +16,8 @@ import { promiseTimeout } from "../../utils/promiseTimeout";
 import { ILogger } from "../dependencies/Logger";
 import { LightWallet } from "./LightWallet";
 import { IPersonalWallet } from "./PersonalWeb3";
+import { IEthereumNetworkConfig } from "./types";
 import { Web3Adapter } from "./Web3Adapter";
-
-export interface ITxData {
-  to: string;
-  value: string;
-  gas: string;
-  gasPrice: string;
-  data?: string;
-  from: string;
-  input?: string;
-}
-
-export interface IRawTxData extends ITxData {
-  nonce: string;
-}
-
-export interface IEthereumNetworkConfig {
-  rpcUrl: string;
-}
 
 export class WalletNotConnectedError extends Error {
   constructor(public readonly wallet: IPersonalWallet) {
@@ -117,19 +101,20 @@ export class Web3Manager {
   }
 
   public async getTransactionByHash(txHash: string): Promise<Web3.Transaction> {
-    if (this.personalWallet) {
-      return this.personalWallet.web3Adapter.getTransactionByHash(txHash);
-    } else {
-      throw new Error("No wallet!");
-    }
+    return this.internalWeb3Adapter.getTransactionByHash(txHash);
   }
 
   public async getBalance(userAddress: string): Promise<BigNumber> {
-    if (this.personalWallet) {
-      return this.personalWallet.web3Adapter.getBalance(userAddress);
-    } else {
-      throw new Error("No wallet!");
-    }
+    return this.internalWeb3Adapter.getBalance(userAddress);
+  }
+  public async estimateGas(txData: Partial<Web3.TxData>): Promise<number> {
+    const encodedTxData = encodeTransaction(txData);
+    return this.internalWeb3Adapter.estimateGas(encodedTxData);
+  }
+
+  public async estimateGasWithOverhead(txData: Partial<Web3.TxData>): Promise<string> {
+    const gas = await this.estimateGas(txData);
+    return calculateGasLimitWithOverhead(gas);
   }
 
   private watchConnection = async () => {

@@ -1,6 +1,26 @@
-.swiper-widget {
-  padding: 0 30px;
+%swiper-wrapper-base {
   position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  transition-property: transform;
+  box-sizing: content-box;
+  transform: translate3d(0, 0, 0);
+}
+
+.swiper-widget {
+  padding: 0 50px;
+  position: relative;
+}
+
+.swiper-wrapper {
+  @extend %swiper-wrapper-base
+}
+
+.swiper-wrapper-centered {
+  @extend %swiper-wrapper-base;
+  justify-content: center;
 }
 
 .next,
@@ -20,4 +40,10 @@
 
 .next {
   right: 0;
+}
+
+.clickable {
+  padding: 0;
+  border: 0;
+  background-color: transparent;
 }

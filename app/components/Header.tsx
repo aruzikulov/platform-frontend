@@ -2,13 +2,13 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "reactstrap";
 
-import { TUserType } from "../lib/api/users/interfaces";
+import { EUserType } from "../lib/api/users/interfaces";
 import { actions } from "../modules/actions";
 import { selectIsAuthorized, selectUserType } from "../modules/auth/selectors";
 import { appConnect } from "../store";
 import { appRoutes } from "./appRoutes";
-import { Button, ButtonLink } from "./shared/buttons";
-import { loginWalletRoutes, walletRegisterRoutes } from "./walletSelector/walletRoutes";
+import { Button, ButtonLink, EButtonLayout } from "./shared/buttons";
+import { loginWalletRoutes, walletRegisterRoutes } from "./wallet-selector/walletRoutes";
 
 import * as logo from "../../app/assets/img/logo_yellow.svg";
 import * as logoText from "../../app/assets/img/neufund-logo.svg";
@@ -16,12 +16,12 @@ import * as styles from "./Header.module.scss";
 
 interface IStateProps {
   isAuthorized: boolean;
-  userType: TUserType;
+  userType: EUserType;
   location: any;
 }
 
 interface IDispatchProps {
-  logout: (userType: TUserType) => void;
+  logout: (userType: EUserType) => void;
 }
 
 export const HeaderComponent: React.SFC<IStateProps & IDispatchProps> = props => (
@@ -32,7 +32,7 @@ export const HeaderComponent: React.SFC<IStateProps & IDispatchProps> = props =>
     </Link>
     {props.isAuthorized ? (
       <Button
-        layout="secondary"
+        layout={EButtonLayout.SECONDARY}
         theme="white"
         onClick={() => props.logout(props.userType)}
         data-test-id="Header-logout"
@@ -82,7 +82,7 @@ export const Header = appConnect<IStateProps, IDispatchProps>({
     location: s.router.location && s.router.location.pathname,
   }),
   dispatchToProps: dispatch => ({
-    logout: (userType: TUserType) => {
+    logout: (userType: EUserType) => {
       dispatch(actions.auth.logout(userType));
     },
   }),

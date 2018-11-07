@@ -7,7 +7,7 @@ import { actions } from "../../modules/actions";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
 import { InlineIcon } from "./InlineIcon";
-import { SlidePerson, TSlidePersonLayout } from "./SlidePerson";
+import { SlidePerson } from "./SlidePerson";
 import { IEtoSocialProfile } from "./SocialProfilesList";
 
 import * as prevIcon from "../../assets/img/inline_icons/arrow_bordered_left.svg";
@@ -18,7 +18,6 @@ export interface IPerson {
   name: string;
   image: string;
   description: string;
-  layout?: TSlidePersonLayout;
   role: string;
   socialChannels: IEtoSocialProfile[];
   website: string;
@@ -45,26 +44,25 @@ interface IDispatchProps {
 }
 
 class PeopleSwiperWidgetComponent extends React.Component<IOwnProps & IDispatchProps> {
-  swiper: any = null;
-
-  swiperRef = (ref: any) => {
-    if (ref) this.swiper = ref.swiper;
-  };
+  swiperRef = React.createRef();
 
   goNext = () => {
-    if (this.swiper) {
-      this.swiper.slideNext();
+    if (this.swiperRef.current !== null) {
+      (this.swiperRef.current as any).swiper.slideNext();
     }
   };
 
   goPrev = () => {
-    if (this.swiper) {
-      this.swiper.slidePrev();
+    if (this.swiperRef.current !== null) {
+      (this.swiperRef.current as any).swiper.slidePrev();
     }
   };
 
   render(): React.ReactNode {
-    const { people, navigation, layout, showPersonModal } = this.props;
+    const { people, navigation, showPersonModal } = this.props;
+    const isHorizontal = people.length < 3;
+    const isSingle = people.length === 1;
+    const slidesPerView = isHorizontal ? (isSingle ? 1 : 2) : 5;
     const swiperSettings = {
       breakpoints: {
         576: {
@@ -74,14 +72,16 @@ class PeopleSwiperWidgetComponent extends React.Component<IOwnProps & IDispatchP
           slidesPerView: 2,
         },
         992: {
-          slidesPerView: 3,
+          slidesPerView: isHorizontal ? (isSingle ? 1 : 2) : 4,
         },
         1200: {
-          slidesPerView: 4,
+          slidesPerView: isHorizontal ? (isSingle ? 1 : 2) : 5,
         },
       },
       observer: true,
-      slidesPerView: 5,
+      centeredSlides: isSingle,
+      slidesPerView,
+      wrapperClass: people.length === 3 ? styles.swiperWrapperCentered : styles.swiperWrapper,
     };
 
     return (
@@ -89,37 +89,40 @@ class PeopleSwiperWidgetComponent extends React.Component<IOwnProps & IDispatchP
         <Swiper {...swiperSettings} ref={this.swiperRef}>
           {people.map(({ image, name, description, role, socialChannels, website }, i) => {
             return (
-              <div
+              <button
                 key={i}
+                className={styles.clickable}
                 onClick={() =>
                   showPersonModal(name, role, description, image, socialChannels, website)
                 }
               >
                 <SlidePerson
+                  description={description}
                   socialChannels={socialChannels}
                   role={role}
                   name={name}
                   srcSet={{ "1x": image }}
-                  layout={layout}
+                  layout={isHorizontal ? "horizontal" : "vertical"}
                 />
-              </div>
+              </button>
             );
           })}
         </Swiper>
-        {navigation && (
-          <>
-            <InlineIcon
-              svgIcon={prevIcon}
-              className={cn(styles.prev, navigation.prevEl)}
-              onClick={this.goPrev}
-            />
-            <InlineIcon
-              svgIcon={nextIcon}
-              className={cn(styles.next, navigation.nextEl)}
-              onClick={this.goNext}
-            />
-          </>
-        )}
+        {!isSingle &&
+          navigation && (
+            <>
+              <InlineIcon
+                svgIcon={prevIcon}
+                className={cn(styles.prev, navigation.prevEl)}
+                onClick={this.goPrev}
+              />
+              <InlineIcon
+                svgIcon={nextIcon}
+                className={cn(styles.next, navigation.nextEl)}
+                onClick={this.goNext}
+              />
+            </>
+          )}
       </div>
     );
   }

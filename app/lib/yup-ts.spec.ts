@@ -1,7 +1,8 @@
 import { expect } from "chai";
+import { NumberSchema } from "yup";
 import * as YupTS from "./yup-ts";
 
-describe("yup-ts", () => {
+describe("Yup-ts", () => {
   const animalValidator = YupTS.object({
     name: YupTS.string().optional(),
   });
@@ -12,18 +13,20 @@ describe("yup-ts", () => {
     age: YupTS.number(),
     married: YupTS.boolean().optional(),
     animals: YupTS.array(animalValidator).optional(),
+    url: YupTS.url().optional(),
   });
 
   type TValidatorType = YupTS.TypeOf<typeof personValidatorTemplate>;
   const validator = personValidatorTemplate.toYup();
 
-  it("should work as yup", () => {
+  it("should work as Yup", () => {
     const validValue1: TValidatorType = {
       fullName: "Typical Millennial Dev",
       middleName: undefined,
       age: 21,
       married: false,
       animals: undefined,
+      url: undefined,
     };
     const validValue2 = { fullName: "Typical Millennial Dev", age: "21" }; // testing coercing
     const validValue3: TValidatorType = {
@@ -32,6 +35,7 @@ describe("yup-ts", () => {
       age: 21,
       married: false,
       animals: [{ name: "kitty" }],
+      url: "http://www.foo.de",
     };
 
     expect(validator.isValidSync(validValue1)).to.be.true;
@@ -39,7 +43,8 @@ describe("yup-ts", () => {
     expect(validator.isValidSync(validValue3)).to.be.true;
 
     expect(validator.isValidSync(5)).to.be.false;
-    expect(validator.isValidSync({ name: "test" })).to.be.false; // missing values
+    expect(validator.isValidSync({ fullName: "test" })).to.be.false; // missing values
+    expect(validator.isValidSync({ ...validValue2, url: "fufu" })).to.be.false; // url
   });
 
   // assertions on types done according to: https://abstract.properties/typescript-compile-assertions.html
@@ -50,6 +55,7 @@ describe("yup-ts", () => {
       age: number;
       married: boolean | undefined;
       animals: Array<{ name: string | undefined }> | undefined;
+      url: string | undefined;
     }
       ? true
       : never;
@@ -80,5 +86,14 @@ describe("yup-ts", () => {
 
     expect(array.isValidSync([])).to.be.true;
     expect(array.isValidSync(null)).to.be.false;
+  });
+
+  it("can be enhanced by further validations", () => {
+    const validator = YupTS.number()
+      .enhance((v: NumberSchema) => v.min(4))
+      .toYup();
+
+    expect(validator.isValidSync(2)).to.be.false;
+    expect(validator.isValidSync(5)).to.be.true;
   });
 });

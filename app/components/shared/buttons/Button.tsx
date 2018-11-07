@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as React from "react";
 
 import { InlineIcon } from "../InlineIcon";
-import { LoadingIndicator } from "../LoadingIndicator";
+import { LoadingIndicator } from "../loading-indicator";
 
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as closeIcon from "../../../assets/img/inline_icons/close.svg";
@@ -10,9 +10,15 @@ import { CommonHtmlProps } from "../../../types";
 
 import * as styles from "./Button.module.scss";
 
-type TButtonLayout = "primary" | "secondary" | "simple";
 type TButtonTheme = "dark" | "white" | "brand" | "silver" | "graphite";
 type TIconPosition = "icon-before" | "icon-after";
+
+export enum EButtonLayout {
+  PRIMARY = "primary",
+  SECONDARY = "secondary",
+  INLINE = "inline",
+  SIMPLE = "simple",
+}
 
 export enum ButtonSize {
   NORMAL = "",
@@ -25,6 +31,12 @@ export enum ButtonWidth {
   BLOCK = "block",
 }
 
+export enum ButtonTextPosition {
+  CENTER = "",
+  LEFT = "text-left",
+  RIGHT = "text-right",
+}
+
 export interface IGeneralButton {
   onClick?: (event: any) => void;
 }
@@ -35,7 +47,7 @@ interface IButtonIcon extends IGeneralButton {
 }
 
 export interface IButtonProps extends IGeneralButton, CommonHtmlProps {
-  layout?: TButtonLayout;
+  layout?: EButtonLayout;
   theme?: TButtonTheme;
   disabled?: boolean;
   svgIcon?: string;
@@ -44,6 +56,7 @@ export interface IButtonProps extends IGeneralButton, CommonHtmlProps {
   size?: ButtonSize;
   width?: ButtonWidth;
   isLoading?: boolean;
+  textPosition?: ButtonTextPosition;
 }
 
 const Button: React.SFC<IButtonProps> = ({
@@ -58,15 +71,16 @@ const Button: React.SFC<IButtonProps> = ({
   width,
   isLoading,
   type,
+  textPosition,
   ...props
 }) => (
   <button
-    className={cn("button", layout, iconPosition, theme, size, width)}
+    className={cn(styles.button, layout, iconPosition, theme, size, width)}
     disabled={disabled || isLoading}
     type={type}
     {...props}
   >
-    <div className={cn(styles.content, className)} tabIndex={-1}>
+    <div className={cn(styles.content, className, textPosition)} tabIndex={-1}>
       {isLoading ? (
         <LoadingIndicator light />
       ) : (
@@ -81,7 +95,7 @@ const Button: React.SFC<IButtonProps> = ({
 );
 
 Button.defaultProps = {
-  layout: "primary",
+  layout: EButtonLayout.PRIMARY,
   theme: "dark",
   type: "button",
   disabled: false,
@@ -90,9 +104,9 @@ Button.defaultProps = {
 };
 
 const ButtonIcon: React.SFC<IButtonIcon> = ({ onClick, className, ...props }) => (
-  <div className={cn(styles.buttonIcon, className)} onClick={onClick}>
-    <InlineIcon {...props} width="20px" height="20px" />
-  </div>
+  <button className={cn(styles.buttonIcon, className)} onClick={onClick}>
+    <InlineIcon {...props} />
+  </button>
 );
 
 const ButtonClose: React.SFC<IGeneralButton> = props => (
@@ -100,7 +114,12 @@ const ButtonClose: React.SFC<IGeneralButton> = props => (
 );
 
 const ButtonArrowRight: React.SFC<IButtonProps> = props => (
-  <Button {...props} layout="secondary" iconPosition="icon-after" svgIcon={arrowRight} />
+  <Button
+    {...props}
+    layout={EButtonLayout.SECONDARY}
+    iconPosition="icon-after"
+    svgIcon={arrowRight}
+  />
 );
 
 export { ButtonIcon, ButtonClose, ButtonArrowRight, Button };

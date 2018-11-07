@@ -4,7 +4,7 @@ import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
 import { TKycRequestType, TRequestStatus } from "../../lib/api/KycApi.interfaces";
-import { TUserType } from "../../lib/api/users/interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
 import { selectUserType } from "../../modules/auth/selectors";
 import { selectKycRequestStatus, selectKycRequestType } from "../../modules/kyc/selectors";
@@ -18,17 +18,17 @@ import { onEnterAction } from "../../utils/OnEnterAction";
 import { DashboardSection } from "../eto/shared/DashboardSection";
 import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
 import { SectionHeader } from "../shared/SectionHeader";
-import { ChangeEmail } from "./changeEmail/ChangeEmail";
-import { YourEthereumAddressWidget } from "./ethereumAddressWidget/YourEthereumAddressWidget";
-import { CheckYourICBMWalletWidget } from "./icbmWalletWidget/CheckYourICBMWalletWidget";
-import { PersonalAccountDetails } from "./personalAccountDetails/PersonalAccountDetails";
+import { ChangeEmail } from "./change-email/ChangeEmail";
+import { YourEthereumAddressWidget } from "./ethereum-address-widget/YourEthereumAddressWidget";
+import { CheckYourICBMWalletWidget } from "./icbm-wallet-widget/CheckYourICBMWalletWidget";
+import { PersonalAccountDetails } from "./personal-account-details/PersonalAccountDetails";
 import { SettingsWidgets } from "./SettingsWidgets";
 
 interface IStateProps {
   isLightWallet: boolean;
   isIcbmWalletConnected: boolean;
   isLockedWalletConnected: boolean;
-  userType?: TUserType;
+  userType?: EUserType;
   kycRequestType?: TKycRequestType;
   kycRequestStatus?: TRequestStatus;
 }
@@ -42,7 +42,7 @@ export const SettingsComponent: React.SFC<IStateProps> = ({
   kycRequestStatus,
 }) => {
   const isPersonalDataProcessed = kycRequestStatus !== "Draft";
-  const isUserInvestor = userType === "investor";
+  const isUserInvestor = userType === EUserType.INVESTOR;
   const isIndividual = kycRequestType === "individual";
 
   return (
@@ -98,7 +98,7 @@ export const SettingsComponent: React.SFC<IStateProps> = ({
 };
 
 export const Settings = compose<React.SFC>(
-  onEnterAction({ actionCreator: d => d(actions.wallet.startLoadingWalletData()) }),
+  onEnterAction({ actionCreator: d => d(actions.wallet.loadWalletData()) }),
   appConnect<IStateProps>({
     stateToProps: s => ({
       isLightWallet: selectIsLightWallet(s.web3),

@@ -11,8 +11,8 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v12-deps-{{ checksum "package.json" }}
-          - v12-deps-
+          - v13-deps-{{ checksum "package.json" }}
+          - v13-deps-
       - run: mkdir -p /home/circleci/.cache/Cypress && cp -R /home/circleci/.cache/Cypress ~/.cache/Cypress
 
       - run: yarn --frozen-lockfile
@@ -22,7 +22,7 @@ jobs:
           paths:
             - node_modules
             - /home/circleci/.cache/Cypress
-          key: v12-deps-{{ checksum "package.json" }}
+          key: v13-deps-{{ checksum "package.json" }}
 
   lint:
     docker:
@@ -33,8 +33,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v12-deps-{{ checksum "package.json" }}
-          - v12-deps-
+          - v13-deps-{{ checksum "package.json" }}
+          - v13-deps-
       - run: yarn prepare
 
       - run: yarn lint
@@ -48,8 +48,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v12-deps-{{ checksum "package.json" }}
-          - v12-deps-
+          - v13-deps-{{ checksum "package.json" }}
+          - v13-deps-
       - run: yarn prepare
 
       - run: yarn test:browser-coverage && yarn test:node
@@ -69,8 +69,8 @@ jobs:
       - run: ./.circleci/install-yarn.sh
       - restore_cache:
           keys:
-          - v12-deps-{{ checksum "package.json" }}
-          - v12-deps-
+          - v13-deps-{{ checksum "package.json" }}
+          - v13-deps-
       - run: source /opt/circleci/.nvm/nvm.sh && yarn prepare
 
       - run: source /opt/circleci/.nvm/nvm.sh && yarn test:e2e
@@ -84,8 +84,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v12-deps-{{ checksum "package.json" }}
-          - v12-deps-
+          - v13-deps-{{ checksum "package.json" }}
+          - v13-deps-
       - run: yarn prepare
 
       - run: yarn storybook:screenshots

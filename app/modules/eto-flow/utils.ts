@@ -29,7 +29,7 @@ export interface IProgressOptions {
 export type ProgressCalculator = (formState: any, initialData?: any) => number;
 
 // recursivly clones a YUP Schema and makes number and string properties required
-function updateValidator(objectSchema: any, ignore: any): any {
+export function updateValidator(objectSchema: any, ignore: any): any {
   const type = objectSchema._type;
   if (ignore !== true) {
     switch (type) {
@@ -77,6 +77,12 @@ export const etoMediaProgressOptions: IProgressOptions = {
   },
 };
 
+export const etoInvestmentTermsProgressOptions: IProgressOptions = {
+  ignore: {
+    discountScheme: true,
+  },
+};
+
 export const calculateCompanyInformationProgress = getFormFractionDoneCalculator(
   EtoCompanyInformationType.toYup(),
 );
@@ -95,7 +101,7 @@ export const calculateEtoMediaProgress = getFormFractionDoneCalculator(
 export const calculateEtoRiskAssessmentProgress = getFormFractionDoneCalculator(
   EtoRiskAssessmentType.toYup(),
 );
-export const calculateEtoVotingRightProgress = getFormFractionDoneCalculator(
+export const calculateEtoVotingRightsProgress = getFormFractionDoneCalculator(
   EtoVotingRightsType.toYup(),
 );
 export const calculateEtoEquityTokenInfoProgress = getFormFractionDoneCalculator(
@@ -103,6 +109,7 @@ export const calculateEtoEquityTokenInfoProgress = getFormFractionDoneCalculator
 );
 export const calculateInvestmentTermsProgress = getFormFractionDoneCalculator(
   EtoInvestmentTermsType.toYup(),
+  etoInvestmentTermsProgressOptions,
 );
 
 export const calculateGeneralEtoData = getFormFractionDoneCalculator(GeneralEtoDataType.toYup(), {

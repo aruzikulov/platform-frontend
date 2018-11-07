@@ -1,0 +1,29 @@
+.widget {
+  @include media-breakpoint-only(md) {
+    flex-direction: row;
+    justify-content: space-around;
+    flex-grow: 1;
+  }
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .message {
+    text-align: center;
+    margin-bottom: $spacing-vertical-sm-1;
+
+    h5,
+    p {
+      margin: 0;
+    }
+
+    h5 {
+      @include font-default;
+
+      color: $neu-seaweed;
+      text-transform: uppercase;
+    }
+  }
+}

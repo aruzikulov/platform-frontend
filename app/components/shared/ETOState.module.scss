@@ -1,0 +1,40 @@
+@mixin _set-indicator-color($eto-stage, $color) {
+  &.#{unquote($eto-stage)} {
+    &::before {
+      background-color: $color;
+    }
+
+  }
+}
+
+.project-status {
+  text-transform: uppercase;
+  color: $color-graphite;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  letter-spacing: -.2px;
+
+  &::before {
+    display: block;
+    content: "";
+    width: px-to-rem(14px);
+    height: px-to-rem(14px);
+    margin-right: px-to-rem(8px);
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: $green-light;
+  }
+
+  &:global(.large) {
+    font-size: 16px;
+  }
+
+  &:global(.black) {
+    color: $neu-black;
+  }
+
+  @include _set-indicator-color(refund, $color-orange);
+  @include _set-indicator-color(listed, $blue-light);
+  @include _set-indicator-color(pending, $neu-bright-orange);
+}

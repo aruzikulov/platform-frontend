@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { InlineIcon } from "./InlineIcon";
 
+import * as bitcointalk from "../../assets/img/inline_icons/icon-menu-help.svg";
 import * as facebook from "../../assets/img/inline_icons/social_facebook.svg";
 import * as github from "../../assets/img/inline_icons/social_github.svg";
 import * as gplus from "../../assets/img/inline_icons/social_google_plus.svg";
@@ -63,6 +64,7 @@ export const SOCIAL_PROFILE_ICONS: {
   twitter,
   xing,
   youtube,
+  bitcointalk,
 };
 
 const SocialProfilesList: React.SFC<IProps> = ({

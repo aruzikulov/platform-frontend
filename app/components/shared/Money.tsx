@@ -1,22 +1,36 @@
+import BigNumber from "bignumber.js";
 import * as cn from "classnames";
 import * as React from "react";
 
 import { MONEY_DECIMALS } from "../../config/constants";
-import { formatMoney, formatThousands } from "../../utils/Money.utils";
+import { formatMoney } from "../../utils/Money.utils";
+import { NumberFormat } from "./NumberFormat";
 
 import * as styles from "./Money.module.scss";
 
-export type TCurrency = "neu" | "eur" | "eur_token" | "eth";
+enum ECurrencySymbol {
+  SYMBOL = "symbol",
+  CODE = "code",
+  NONE = "none",
+}
 
-export type TMoneyTransfer = "income" | "outcome";
+type TCurrency = "neu" | "eur" | "eur_token" | "eth";
+
+enum EMoneyFormat {
+  WEI = "wei",
+  FLOAT = "float",
+}
+
+type TMoneyTransfer = "income" | "outcome";
 
 type TTheme = "t-green" | "t-orange";
 
 interface IOwnProps extends React.HTMLAttributes<HTMLSpanElement> {
   currency: TCurrency;
-  value: string;
+  value?: React.ReactElement<any> | string | BigNumber | number | null;
+  format?: EMoneyFormat;
   doNotSeparateThousands?: boolean;
-  noCurrencySymbol?: boolean;
+  currencySymbol?: ECurrencySymbol;
   currencyClassName?: string;
   currencyStyle?: React.CSSProperties;
   transfer?: TMoneyTransfer;
@@ -25,7 +39,7 @@ interface IOwnProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 type IProps = IOwnProps;
 
-export const selectDecimalPlaces = (currency: TCurrency): number => {
+const selectDecimalPlaces = (currency: TCurrency): number => {
   switch (currency) {
     case "eth":
       return 4;
@@ -38,7 +52,7 @@ export const selectDecimalPlaces = (currency: TCurrency): number => {
   }
 };
 
-export const selectCurrencySymbol = (currency: TCurrency): string => {
+const selectCurrencyCode = (currency: TCurrency): string => {
   switch (currency) {
     case "eth":
       return "ETH";
@@ -51,30 +65,83 @@ export const selectCurrencySymbol = (currency: TCurrency): string => {
   }
 };
 
-export const Money: React.SFC<IProps> = ({
+const selectCurrencySymbol = (currency: TCurrency): string => {
+  switch (currency) {
+    case "eur":
+      return "€";
+    default:
+      throw new Error("Only EUR can be displayed as a symbol");
+  }
+};
+
+function getFormatDecimals(format: EMoneyFormat): number {
+  switch (format) {
+    case EMoneyFormat.WEI:
+      return MONEY_DECIMALS;
+    case EMoneyFormat.FLOAT:
+      return 0;
+    default:
+      throw new Error("Unsupported money format");
+  }
+}
+
+export function getFormattedMoney(
+  value: string | number | BigNumber,
+  currency: TCurrency,
+  format: EMoneyFormat,
+): string {
+  return formatMoney(value, getFormatDecimals(format), selectDecimalPlaces(currency));
+}
+
+const Money: React.SFC<IProps> = ({
   value,
+  format = EMoneyFormat.WEI,
   currency,
   currencyClassName,
   currencyStyle,
   doNotSeparateThousands,
   transfer,
-  noCurrencySymbol,
+  currencySymbol = ECurrencySymbol.CODE,
   theme,
   ...props
 }) => {
-  const decimalPlaces = selectDecimalPlaces(currency);
-  const currencySymbol = selectCurrencySymbol(currency);
+  if (!value) {
+    return <>-</>;
+  }
 
-  const formattedMoney = doNotSeparateThousands
-    ? formatMoney(value, MONEY_DECIMALS, decimalPlaces)
-    : formatThousands(formatMoney(value, MONEY_DECIMALS, decimalPlaces));
+  const money =
+    format === EMoneyFormat.WEI && !React.isValidElement(value)
+      ? getFormattedMoney(value as BigNumber, currency, EMoneyFormat.WEI)
+      : value;
 
+  const doFormat = !doNotSeparateThousands && !React.isValidElement(money);
+
+  const formattedMoney = doFormat ? <NumberFormat value={money as string} /> : money;
   return (
     <span {...props} className={cn(styles.money, transfer, props.className, theme)}>
-      {formattedMoney}{" "}
-      <span className={cn(currencyClassName)} style={currencyStyle}>
-        {noCurrencySymbol ? "" : currencySymbol}
-      </span>
+      {currencySymbol === ECurrencySymbol.SYMBOL && (
+        <span className={cn(currencyClassName)} style={currencyStyle}>
+          {selectCurrencySymbol(currency)}
+        </span>
+      )}
+      {formattedMoney}
+      {currencySymbol === ECurrencySymbol.CODE && (
+        <span className={cn(currencyClassName)} style={currencyStyle}>
+          {" "}
+          {selectCurrencyCode(currency)}
+        </span>
+      )}
     </span>
   );
+};
+
+export {
+  Money,
+  selectCurrencySymbol,
+  selectCurrencyCode,
+  selectDecimalPlaces,
+  TMoneyTransfer,
+  EMoneyFormat,
+  TCurrency,
+  ECurrencySymbol,
 };

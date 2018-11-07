@@ -8,6 +8,7 @@ import {
   TKycBusinessType,
 } from "../../lib/api/KycApi.interfaces";
 import { createAction, createSimpleAction } from "../actionsUtils";
+import { TClaims } from "./types";
 
 export const kycActions = {
   /**
@@ -20,6 +21,12 @@ export const kycActions = {
    */
   kycStartWatching: () => createSimpleAction("KYC_WATCHER_START"),
   kycStopWatching: () => createSimpleAction("KYC_WATCHER_STOP"),
+
+  /**
+   * Contract Claims
+   */
+  kycLoadClaims: () => createSimpleAction("KYC_LOAD_CLAIMS"),
+  kycSetClaims: (claims: TClaims) => createAction("KYC_SET_CLAIMS", { claims }),
 
   /**
    * Individual
@@ -182,7 +189,8 @@ export const kycActions = {
       file,
     }),
   // request
-  kycLoadBusinessRequest: () => createSimpleAction("KYC_LOAD_BUSINESS_REQUEST_STATE"),
+  kycLoadBusinessRequest: (inBackground: boolean = false) =>
+    createAction("KYC_LOAD_BUSINESS_REQUEST_STATE", { inBackground }),
 
   kycUpdateBusinessRequestState: (
     businessRequestStateLoading?: boolean,

@@ -1,8 +1,5 @@
-
-
 .counter {
   display: flex;
-  line-height: px-to-rem(32px);
   justify-content: center;
 }
 
@@ -20,6 +17,7 @@
 }
 
 .label {
+  margin-top: px-to-rem(6px);
   font-size: px-to-rem(12px);
   font-weight: $font-weight-light;
   text-align: center;

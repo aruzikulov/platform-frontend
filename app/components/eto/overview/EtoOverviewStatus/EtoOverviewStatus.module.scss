@@ -3,6 +3,7 @@
   box-shadow: $shadow-bottom-black;
   color: $color-graphite-light;
   padding: px-to-rem(8px);
+  position: relative;
 }
 
 // wrappers
@@ -10,15 +11,10 @@
 .status-wrapper,
 .stage-content-wrapper,
 .tags-wrapper {
-  @include media-breakpoint-up(md) {
-    margin-bottom: 0;
-    margin-top: 0;
-  }
-
+  margin-bottom: 0;
+  margin-top: 0;
   flex-basis: 25%;
   flex-grow: 1;
-  margin-bottom: px-to-rem(20px);
-  margin-top: px-to-rem(20px);
 }
 
 .status-wrapper {
@@ -30,12 +26,16 @@
 }
 
 .tags-wrapper {
+  @include media-breakpoint-down(sm) {
+    padding: 0;
+  }
+
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   margin: 0 auto;
-  padding: 20px 0;
-  max-width: 200px;
+  padding: 20px 4px;
+  max-width: 150px;
 
   span {
     width: 100%;
@@ -43,18 +43,21 @@
 }
 
 .overview-wrapper {
-  @include media-breakpoint-up(md) {
-    flex-direction: row;
+  @include media-breakpoint-down(md) {
+    flex-wrap: wrap;
+    padding-top: px-to-rem(12px);
+    padding-bottom: px-to-rem(30px);
   }
 
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .stage-content-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .divider {
@@ -62,9 +65,10 @@
   @include responsive-size(margin-right, 14px, 30px);
 
   background-color: $color-silver;
-  flex-basis: 1px;
   margin-bottom: 10px;
   margin-top: 10px;
+  min-width: 1px;
+  min-height: 1px;
 }
 
 .group-wrapper {
@@ -72,16 +76,39 @@
   margin-top: px-to-rem(12px);
   margin-bottom: px-to-rem(12px);
 
+  &.campaign-wrapper {
+    @include media-breakpoint-only(md) {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-grow: 1;
+      flex-direction: row-reverse;
+    }
+  }
+
+  .rows-group {
+    display: table-row-group;
+  }
+
   .group {
     display: table-row;
 
-    .label {
-      @include font-label;
-
+    .label,
+    .value {
       display: table-cell;
+      vertical-align: middle;
+    }
+
+    .label {
+      @include media-breakpoint-down(md) {
+        font-size: px-to-rem(12px);
+      }
+
+      @include font-label;
+      font-size: px-to-rem(8.8px);
       padding-top: px-to-rem(10px);
       padding-bottom: px-to-rem(10px);
-      padding-right: px-to-rem(30px);
+      padding-right: px-to-rem(13.6px);
 
       &-no-uppercase {
         text-transform: none;
@@ -91,7 +118,6 @@
     .value {
       @include font-label;
 
-      display: table-cell;
       text-transform: none;
     }
   }
@@ -99,14 +125,21 @@
 
 // widgets
 
-.change-pledge {
-  color: $color-green-dark;
+@mixin pledge-actions-button($color) {
+  color: $color;
   text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+}
+
+.change-pledge {
+  @include pledge-actions-button($color-green-dark);
 }
 
 .delete-pledge {
-  color: $color-orange;
-  text-decoration: underline;
+  @include pledge-actions-button($color-orange);
 }
 
 .ends-in {
@@ -121,19 +154,10 @@
   line-height: 1.06;
   letter-spacing: -.2px;
   font-style: italic;
-
-  &::before,
-  &::after {
-    content: "\"";
-  }
-}
-
-.register-now {
-  justify-content: center;
-  text-align: center;
 }
 
 .status-of-eto {
+  position: absolute;
   font-size: 12px;
   letter-spacing: -.2px;
   display: flex;
@@ -146,6 +170,9 @@
 }
 
 .powered-by-neufund {
+  position: absolute;
+  bottom: px-to-rem(8px);
+
   .powered {
     font-size: 8px;
   }
@@ -153,10 +180,25 @@
   .neufund {
     font-size: 16px;
     margin-top: -2px;
+    text-decoration: none;
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: $color-brand;
+    }
   }
 }
 
 .token-details {
   display: flex;
   margin: px-to-rem(20px) 0;
+}
+
+@each $breakpoint, $val in $grid-breakpoints {
+  .break-#{$breakpoint} {
+    @include media-breakpoint-down($breakpoint) {
+      flex-basis: 100%;
+    }
+  }
 }

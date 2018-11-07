@@ -1,21 +1,28 @@
+import BigNumber from "bignumber.js";
 import * as Web3Utils from "web3-utils";
 import { IAppState } from "../../store";
-import { addBigNumbers, multiplyBigNumbers } from "../../utils/BigNumberUtils";
+import { addBigNumbers, multiplyBigNumbers, subtractBigNumbers } from "../../utils/BigNumberUtils";
 import { selectEtherPriceEur, selectNeuPriceEur } from "../shared/tokenPrice/selectors";
+import { selectTxGasCostEth } from "../tx/sender/selectors";
 import { IWalletState } from "./reducer";
 
 /**
  * Simple State Selectors
  */
-
 export const selectNeuBalanceEuroAmount = (state: IAppState): string =>
   multiplyBigNumbers([selectNeuPriceEur(state.tokenPrice), selectNeuBalance(state.wallet)]);
 
 export const selectNeuBalance = (state: IWalletState): string =>
   (state.data && state.data.neuBalance) || "0";
 
-export const selectEtherTokenBalance = (state: IWalletState): string | undefined =>
-  state.data && state.data.etherTokenBalance;
+export const selectEtherTokenBalance = (state: IAppState): string =>
+  (state.wallet.data && state.wallet.data.etherTokenBalance) || "0";
+
+export const selectEtherTokenBalanceAsBigNumber = (state: IAppState): BigNumber =>
+  new BigNumber((state.wallet.data && state.wallet.data.etherTokenBalance) || "0");
+
+export const selectEtherBalance = (state: IAppState): string =>
+  (state.wallet.data && state.wallet.data.etherBalance) || "0";
 
 /**
  * Liquid Assets
@@ -71,41 +78,39 @@ export const selectLockedWalletHasFunds = (state: IAppState): boolean =>
 /**
  * ICBM Wallet Assets
  */
-export const selectICBMLockedEtherBalance = (state: IWalletState) =>
-  (state.data &&
-    state.data.etherTokenICBMLockedWallet &&
-    state.data.etherTokenICBMLockedWallet.LockedBalance) ||
+export const selectICBMLockedEtherBalance = (state: IAppState): string =>
+  (state.wallet.data &&
+    state.wallet.data.etherTokenICBMLockedWallet &&
+    state.wallet.data.etherTokenICBMLockedWallet.LockedBalance) ||
   "0";
 
 export const selectICBMLockedEtherBalanceEuroAmount = (state: IAppState) =>
-  multiplyBigNumbers([
-    selectEtherPriceEur(state.tokenPrice),
-    selectICBMLockedEtherBalance(state.wallet),
-  ]);
+  multiplyBigNumbers([selectEtherPriceEur(state.tokenPrice), selectICBMLockedEtherBalance(state)]);
 
-export const selectICBMLockedEuroTokenBalance = (state: IWalletState) =>
-  (state.data &&
-    state.data.euroTokenICBMLockedWallet &&
-    state.data.euroTokenICBMLockedWallet.LockedBalance) ||
+export const selectICBMLockedEuroTokenBalance = (state: IAppState) =>
+  (state.wallet &&
+    state.wallet.data &&
+    state.wallet.data.euroTokenICBMLockedWallet &&
+    state.wallet.data.euroTokenICBMLockedWallet.LockedBalance) ||
   "0";
 
 export const selectICBMLockedEuroTotalAmount = (state: IAppState) =>
   addBigNumbers([
     selectICBMLockedEtherBalanceEuroAmount(state),
-    selectICBMLockedEuroTokenBalance(state.wallet),
+    selectICBMLockedEuroTokenBalance(state),
   ]);
 
-export const selectICBMLockedWalletHasFunds = (state: IWalletState): boolean =>
+export const selectICBMLockedWalletHasFunds = (state: IAppState): boolean =>
   addBigNumbers([selectICBMLockedEuroTokenBalance(state), selectICBMLockedEtherBalance(state)]) !==
   "0";
 
 /**
  * Total wallet assets value
  */
-export const selectTotalEtherBalance = (state: IWalletState) =>
+export const selectTotalEtherBalance = (state: IAppState) =>
   addBigNumbers([
-    selectLiquidEtherBalance(state),
-    selectLockedEtherBalance(state),
+    selectLiquidEtherBalance(state.wallet),
+    selectLockedEtherBalance(state.wallet),
     selectICBMLockedEtherBalance(state),
   ]);
 
@@ -115,10 +120,10 @@ export const selectTotalEtherBalanceEuroAmount = (state: IAppState) =>
     selectLockedEtherBalanceEuroAmount(state),
     selectICBMLockedEtherBalanceEuroAmount(state),
   ]);
-export const selectTotalEuroTokenBalance = (state: IWalletState) =>
+export const selectTotalEuroTokenBalance = (state: IAppState) =>
   addBigNumbers([
-    selectLiquidEuroTokenBalance(state),
-    selectLockedEuroTokenBalance(state),
+    selectLiquidEuroTokenBalance(state.wallet),
+    selectLockedEuroTokenBalance(state.wallet),
     selectICBMLockedEuroTokenBalance(state),
   ]);
 export const selectTotalEuroBalance = (state: IAppState) =>
@@ -156,8 +161,12 @@ export const selectIsLoading = (state: IWalletState): boolean => state.loading;
 
 export const selectWalletError = (state: IWalletState): string | undefined => state.error;
 
-export const selectIsEtherUpgradeTargetSet = (state: IWalletState): boolean =>
-  state.data && Web3Utils.isAddress(state.data.etherTokenUpgradeTarget);
+export const selectIsEtherUpgradeTargetSet = (state: IAppState): boolean =>
+  state.wallet.data && Web3Utils.isAddress(state.wallet.data.etherTokenUpgradeTarget);
 
-export const selectIsEuroUpgradeTargetSet = (state: IWalletState): boolean =>
-  state.data && Web3Utils.isAddress(state.data.euroTokenUpgradeTarget);
+export const selectIsEuroUpgradeTargetSet = (state: IAppState): boolean =>
+  state.wallet.data && Web3Utils.isAddress(state.wallet.data.euroTokenUpgradeTarget);
+
+/**General State Selectors */
+export const selectMaxAvailableEther = (state: IAppState): string =>
+  subtractBigNumbers([selectLiquidEtherBalance(state.wallet), selectTxGasCostEth(state)]);

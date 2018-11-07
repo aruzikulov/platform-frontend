@@ -7,6 +7,7 @@ import { EthereumAddress, EthereumAddressWithChecksum, EthereumNetworkId } from 
 import { delay } from "../../utils/delay";
 
 class Web3Error extends Error {}
+export class NotEnoughEtherForGasError extends Error {}
 export class RevertedTransactionError extends Web3Error {}
 export class OutOfGasError extends Web3Error {}
 export class NotEnoughFundsError extends Web3Error {}
@@ -36,6 +37,10 @@ export class Web3Adapter {
 
   public async getBalance(address: string): Promise<BigNumber> {
     return promisify(this.web3.eth.getBalance)(address);
+  }
+
+  public async estimateGas(txData: Partial<Web3.TxData>): Promise<number> {
+    return promisify(this.web3.eth.estimateGas)(txData);
   }
 
   public async getAccountAddress(): Promise<EthereumAddress> {

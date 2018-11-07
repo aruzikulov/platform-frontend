@@ -1,0 +1,36 @@
+.background {
+  background: $neu-pale-blue;
+  padding: px-to-rem(15px) px-to-rem(10px);
+}
+
+.icon {
+  height: px-to-rem(30);
+  width: px-to-rem(30);
+}
+
+@include media-breakpoint-up(md) {
+  .icon {
+    height: px-to-rem(43);
+    width: px-to-rem(43);
+  }
+}
+
+.neu-ratio {
+  color: $neu-seaweed;
+  font-weight: $font-weight-bold;
+  font-size: $smaller-font-size;
+  font: $font-family-base;
+}
+
+.title {
+  color: $neu-greyish-brown;
+  font-size: $smaller-font-size;
+  font-weight: $font-weight-bold;
+  font-family: $font-family-base;
+  margin-bottom: px-to-rem(20px);
+}
+
+.neu {
+  color: $neu-greyish-brown;
+  font-size: $extra-bigger-font-size;
+}

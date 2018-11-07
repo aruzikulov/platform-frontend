@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Redirect, Route } from "react-router-dom";
 
-import { SwitchConnected } from "../shared/connectedRouting";
+import { SwitchConnected } from "../../utils/connectedRouting";
 import { parentRoutePath, walletRoutes } from "./routes";
 import { DepositEth } from "./views/deposit-funds/DepositEth";
 import { DepositEuroToken } from "./views/deposit-funds/DepositEuroToken";

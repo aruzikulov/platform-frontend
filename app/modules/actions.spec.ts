@@ -1,17 +1,17 @@
 import { expect } from "chai";
 import { forEach, values } from "lodash";
-import { allActions } from "./actions";
+import { actions } from "./actions";
 
 const ALLOWED_DUPLICATES: { [type: string]: boolean } = {
   "@@router/CALL_HISTORY_METHOD": true,
 };
 
 describe("modules", () => {
-  describe("all actions", () => {
+  describe("actions", () => {
     it("should have unique types", () => {
       const typeMap: { [key: string]: boolean } = {};
 
-      forEach(allActions, actionDict =>
+      forEach(actions, actionDict =>
         forEach(actionDict, (actionCreator: any, creatorName: string) => {
           const action = actionCreator({});
           const type: string = action.type;
@@ -33,7 +33,7 @@ describe("modules", () => {
     });
 
     it("should not have undefined types", () => {
-      forEach(allActions, actionDict =>
+      forEach(actions, actionDict =>
         forEach(actionDict, (actionCreator: any, creatorName: string) => {
           const action = actionCreator({});
           const type: string = action.type;
@@ -43,7 +43,7 @@ describe("modules", () => {
     });
 
     it("should not have values apart from payload and type", () => {
-      forEach(allActions, actionDict =>
+      forEach(actions, actionDict =>
         forEach(actionDict, (actionCreator: any, creatorName: string) => {
           const action = actionCreator({});
           const testAction = {

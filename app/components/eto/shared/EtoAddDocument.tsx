@@ -26,6 +26,7 @@ export const ETOAddDocumentsComponent: React.SFC<IDispatchProps & IOwnProps> = (
   const onDrop = (accepted: File[]) => accepted[0] && onDropFile(accepted[0], documentType);
   return (
     <Dropzone
+      data-test-id="eto-add-document-drop-zone"
       accept="application/pdf"
       onDrop={onDrop}
       activeClassName={styles.invisible}

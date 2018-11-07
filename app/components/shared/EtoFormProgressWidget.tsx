@@ -1,9 +1,9 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { ButtonLink } from "./buttons";
+import { ButtonLink, EButtonLayout } from "./buttons";
 import { ChartCircle, IChartCircleProps } from "./charts/ChartCircle";
-import { LoadingIndicator } from "./LoadingIndicator";
+import { LoadingIndicator } from "./loading-indicator";
 import { Panel } from "./Panel";
 import { Proportion } from "./Proportion";
 
@@ -55,10 +55,9 @@ export const EtoFormProgressWidget: React.SFC<IProps & IChartCircleProps> = ({
               <ButtonLink
                 to={{
                   pathname: to,
-                  state: { readonly },
                 }}
                 theme="silver"
-                layout="secondary"
+                layout={EButtonLayout.SECONDARY}
                 iconPosition="icon-after"
                 svgIcon={arrowRightIcon}
                 disabled={disabled}

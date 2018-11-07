@@ -1,5 +1,5 @@
 import {
-  assertLatestEmailSentWithSalt,
+  assertWaitForLatestEmailSentWithSalt,
   assertUserInDashboard,
   assertVerifyEmailWidgetIsInNoEmailState,
   assertVerifyEmailWidgetIsInUnverifiedEmailState,
@@ -25,19 +25,16 @@ describe("Verify Email Widget", () => {
 
     goToSettings();
     assertVerifyEmailWidgetIsInUnverifiedEmailState();
-    cy.get(tid("verify-email-widget.change-email.button")).click();
+    cy.get(tid("verify-email-widget.change-email.button")).awaitedClick();
     assertVerifyEmailWidgetIsInNoEmailState();
 
     cy.get(tid("verify-email-widget-form-email-input")).type(secondEmail);
-    cy.get(tid("verify-email-widget-form-submit"))
-      .wait(1500)
-      .click();
+    cy.get(tid("verify-email-widget-form-submit")).awaitedClick();
 
     confirmAccessModal(password);
 
     // Email server takes time before getting the request
-    cy.wait(3000);
-    assertLatestEmailSentWithSalt(secondEmail);
+    assertWaitForLatestEmailSentWithSalt(secondEmail);
     verifyLatestUserEmail();
 
     assertVerifyEmailWidgetIsInVerfiedEmailState();

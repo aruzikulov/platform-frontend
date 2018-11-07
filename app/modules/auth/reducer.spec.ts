@@ -1,5 +1,7 @@
 import { expect } from "chai";
-import { WalletSubType, WalletType } from "../web3/types";
+
+import { EUserType } from "../../lib/api/users/interfaces";
+import { EWalletSubType, EWalletType } from "../web3/types";
 import { IAuthState } from "./reducer";
 import { selectIsAuthorized, selectUserEmail } from "./selectors";
 
@@ -10,9 +12,9 @@ describe("auth > selectors", () => {
         jwt: "eyjwt",
         user: {
           userId: "user-id",
-          type: "investor",
-          walletType: WalletType.LIGHT,
-          walletSubtype: WalletSubType.UNKNOWN,
+          type: EUserType.INVESTOR,
+          walletType: EWalletType.LIGHT,
+          walletSubtype: EWalletSubType.UNKNOWN,
         },
       };
 
@@ -42,9 +44,9 @@ describe("auth > selectors", () => {
           userId: "user-id",
           unverifiedEmail: "unverified@email.com",
           verifiedEmail: "some.verified@email.com",
-          type: "investor",
-          walletType: WalletType.LIGHT,
-          walletSubtype: WalletSubType.UNKNOWN,
+          type: EUserType.INVESTOR,
+          walletType: EWalletType.LIGHT,
+          walletSubtype: EWalletSubType.UNKNOWN,
         },
       };
 

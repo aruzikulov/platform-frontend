@@ -27,7 +27,7 @@ interface IDispatchProps {
 
 type IProps = IOwnProps & IDispatchProps;
 
-const SingleColDocumentsWidget: React.SFC<IProps> = ({
+const SingleColDocumentsLayout: React.SFC<IProps> = ({
   documents,
   className,
   title,
@@ -69,6 +69,6 @@ const SingleColDocuments = compose<React.SFC<IOwnProps>>(
         dispatch(actions.immutableStorage.downloadImmutableFile(fileId, name)),
     }),
   }),
-)(SingleColDocumentsWidget);
+)(SingleColDocumentsLayout);
 
-export { SingleColDocuments, SingleColDocumentsWidget };
+export { SingleColDocuments, SingleColDocumentsLayout };

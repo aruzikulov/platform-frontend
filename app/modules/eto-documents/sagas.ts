@@ -1,13 +1,18 @@
+import { findKey } from "lodash/fp";
 import { fork, put } from "redux-saga/effects";
 
 import { ETHEREUM_ZERO_ADDRESS, UPLOAD_IMMUTABLE_DOCUMENT } from "../../config/constants";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { FileAlreadyExists } from "../../lib/api/eto/EtoFileApi";
-import { EEtoDocumentType, IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
+import {
+  EEtoDocumentType,
+  IEtoDocument,
+  TEtoDocumentTemplates,
+} from "../../lib/api/eto/EtoFileApi.interfaces";
 import { actions, TAction } from "../actions";
 import { ensurePermissionsArePresent } from "../auth/sagas";
-import { downloadLink } from "../immutableFile/sagas";
-import { neuCall, neuTakeEvery } from "../sagas";
+import { downloadLink } from "../immutable-file/sagas";
+import { neuCall, neuTakeEvery } from "../sagasUtils";
 
 export function* generateTemplate(
   { apiImmutableStorage, notificationCenter, logger, apiEtoFileService }: TGlobalDependencies,
@@ -15,15 +20,15 @@ export function* generateTemplate(
 ): any {
   if (action.type !== "ETO_DOCUMENTS_GENERATE_TEMPLATE") return;
   try {
-    const immutableFileId = action.payload.immutableFileId;
+    const document = action.payload.document;
 
     const templates = yield apiEtoFileService.getEtoTemplate(
       {
-        documentType: immutableFileId.documentType,
-        name: immutableFileId.name,
+        documentType: document.documentType,
+        name: document.name,
         form: "template",
-        ipfsHash: immutableFileId.ipfsHash,
-        mimeType: immutableFileId.mimeType,
+        ipfsHash: document.ipfsHash,
+        mimeType: document.mimeType,
       },
       // token holder is required in on-chain state, use non-existing address
       // to obtain issuer side template
@@ -37,9 +42,9 @@ export function* generateTemplate(
       },
       asPdf: false,
     });
-    yield neuCall(downloadLink, generatedDocument, immutableFileId.name, ".doc");
+    yield neuCall(downloadLink, generatedDocument, document.name, ".doc");
   } catch (e) {
-    logger.debug(e);
+    logger.error(e);
     notificationCenter.error("Failed to download file from IPFS");
   }
 }
@@ -91,11 +96,11 @@ async function getDocumentOfTypePromise(
   { apiEtoFileService }: TGlobalDependencies,
   documentType: EEtoDocumentType,
 ): Promise<IEtoDocument> {
-  const documents: any = await apiEtoFileService.getAllEtoDocuments();
-  const matchingDocument = Object.keys(documents).filter(ipfsHashKey => {
-    if (documents[ipfsHashKey].documentType === documentType) return documents[ipfsHashKey];
-  });
-  return documents[matchingDocument[0]];
+  const documents: TEtoDocumentTemplates = await apiEtoFileService.getAllEtoDocuments();
+
+  const matchingDocument = findKey(document => document.documentType === documentType, documents);
+
+  return documents[matchingDocument!];
 }
 
 function* uploadEtoFile(

@@ -2,7 +2,7 @@ import { Form, FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import { FormField } from "../../shared/forms";
 
 interface IStateProps {
@@ -33,7 +33,7 @@ const AccessLightWalletForm = (formikBag: FormikProps<IFormValues> & IProps) => 
     <div className="mt-3">
       <Button
         type="submit"
-        layout="secondary"
+        layout={EButtonLayout.SECONDARY}
         disabled={!formikBag.values.password}
         data-test-id="access-light-wallet-confirm"
       >
@@ -41,7 +41,7 @@ const AccessLightWalletForm = (formikBag: FormikProps<IFormValues> & IProps) => 
         <FormattedMessage id="modal.light-wallet.button.accept" />
       </Button>
       {formikBag.onCancel && (
-        <Button layout="secondary" onClick={formikBag.onCancel}>
+        <Button layout={EButtonLayout.SECONDARY} onClick={formikBag.onCancel}>
           <FormattedMessage id="modal.light-wallet.button.reject" />
         </Button>
       )}
@@ -58,12 +58,12 @@ export const AccessLightWalletPrompt: React.SFC<IProps> = props =>
     <div className="mt-3">
       <Button
         onClick={() => props.onAccept()}
-        layout="secondary"
+        layout={EButtonLayout.SECONDARY}
         data-test-id="access-light-wallet-prompt-accept-button"
       >
         <FormattedMessage id="modal.light-wallet.button.accept" />
       </Button>
-      <Button layout="secondary" onClick={props.onCancel}>
+      <Button layout={EButtonLayout.SECONDARY} onClick={props.onCancel}>
         <FormattedMessage id="modal.light-wallet.button.reject" />
       </Button>
     </div>

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as Yup from "yup";
 
-import { getField, isRequired } from "./yupUtils";
+import { getFieldSchema, isRequired } from "./yupUtils";
 
 describe("yupUtils", () => {
   describe("isRequired", () => {
@@ -10,7 +10,7 @@ describe("yupUtils", () => {
         id: Yup.string().required(),
       });
 
-      const idField = getField("id", schema);
+      const idField = getFieldSchema("id", schema);
 
       expect(isRequired(idField)).to.be.true;
     });
@@ -20,7 +20,7 @@ describe("yupUtils", () => {
         name: Yup.string(),
       });
 
-      const nameField = getField("name", schema);
+      const nameField = getFieldSchema("name", schema);
 
       expect(isRequired(nameField)).to.be.false;
     });

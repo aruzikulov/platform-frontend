@@ -1,6 +1,6 @@
 import { TxData } from "web3";
 
-import { WalletSubType, WalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { EthereumAddress, EthereumNetworkId } from "../../types";
 import { TWalletMetadata } from "../persistence/WalletMetadataObjectStorage";
 import { Web3Adapter } from "./Web3Adapter";
@@ -14,8 +14,8 @@ export enum SignerType {
 export interface IPersonalWallet {
   readonly web3Adapter: Web3Adapter;
   readonly ethereumAddress: EthereumAddress;
-  readonly walletType: WalletType;
-  readonly walletSubType: WalletSubType;
+  readonly walletType: EWalletType;
+  readonly walletSubType: EWalletSubType;
 
   // returns type of a signer based on walletType and walletSubType
   getSignerType(): SignerType;

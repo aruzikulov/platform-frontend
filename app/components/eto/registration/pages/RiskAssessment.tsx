@@ -11,8 +11,9 @@ import {
 } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormCheckbox, FormTextArea } from "../../../shared/forms";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
@@ -97,7 +98,7 @@ const EtoRegistrationRiskAssessmentComponent = (props: IProps) => {
       <Col>
         <Row className="justify-content-end">
           <Button
-            layout="primary"
+            layout={EButtonLayout.PRIMARY}
             className="mr-4"
             type="submit"
             isLoading={props.savingData}
@@ -112,7 +113,7 @@ const EtoRegistrationRiskAssessmentComponent = (props: IProps) => {
 };
 
 export const EtoRegistrationRiskAssessment = compose<React.SFC>(
-  setDisplayName("EtoRegistrationRiskAssessment"),
+  setDisplayName(EEtoFormTypes.EtoRiskAssessment),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,

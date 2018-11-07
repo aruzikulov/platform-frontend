@@ -1,7 +1,9 @@
 import { expect } from "chai";
 import { shallow } from "enzyme";
 import * as React from "react";
+
 import { tid } from "../../../test/testUtils";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { LayoutAuthorizedMenuComponent } from "./LayoutAuthorizedMenu";
 
 describe("<LayoutAuthorizedMenuComponent />", () => {
@@ -9,7 +11,7 @@ describe("<LayoutAuthorizedMenuComponent />", () => {
     const MyNeuWidgetComponent = shallow(
       <LayoutAuthorizedMenuComponent
         shouldEtoDataLoad={true}
-        userType="investor"
+        userType={EUserType.INVESTOR}
         actionRequiredSettings={false}
       />,
     );
@@ -22,7 +24,7 @@ describe("<LayoutAuthorizedMenuComponent />", () => {
     const MyNeuWidgetComponent = shallow(
       <LayoutAuthorizedMenuComponent
         shouldEtoDataLoad={true}
-        userType="issuer"
+        userType={EUserType.ISSUER}
         actionRequiredSettings={false}
       />,
     );

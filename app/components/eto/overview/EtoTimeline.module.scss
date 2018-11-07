@@ -44,6 +44,17 @@
       fill: $color-gray;
     }
   }
+
+  &:global(.gray-opacity) {
+    .block-background {
+      fill: $neu-pale-blue;
+    }
+
+    .block-border-bottom {
+      fill: $color-gray;
+      fill-opacity: .7;
+    }
+  }
 }
 
 .block-text {

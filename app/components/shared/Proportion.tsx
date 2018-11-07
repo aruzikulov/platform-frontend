@@ -8,6 +8,7 @@ interface IProps {
   width?: number;
   className?: string;
   onClick?: () => void;
+  dataTestId?: string;
 }
 
 export const Proportion: React.SFC<IProps> = ({
@@ -15,15 +16,28 @@ export const Proportion: React.SFC<IProps> = ({
   height = 1,
   children,
   className,
-  onClick = () => {},
+  onClick,
+  dataTestId,
 }) => {
-  return (
-    <div
-      onClick={onClick}
-      className={cn(styles.proportion, className)}
-      style={{ paddingTop: `${(height / width) * 100}%` }}
-    >
-      <div className={styles.content}>{children}</div>
-    </div>
-  );
+  if (onClick === undefined) {
+    return (
+      <div
+        className={cn(styles.proportion, className)}
+        style={{ paddingTop: `${(height / width) * 100}%` }}
+      >
+        <div className={styles.content}>{children}</div>
+      </div>
+    );
+  } else {
+    return (
+      <button onClick={onClick} className={styles.clickableArea} data-test-id={dataTestId}>
+        <span
+          className={cn(styles.proportion, className)}
+          style={{ paddingTop: `${(height / width) * 100}%` }}
+        >
+          <div className={styles.content}>{children}</div>
+        </span>
+      </button>
+    );
+  }
 };

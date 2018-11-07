@@ -1,17 +1,14 @@
 import * as cn from "classnames";
-import { keyBy, some } from "lodash";
+import { some } from "lodash";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 
-import { EtoState, TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces";
-import { ETOStateOnChain, TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
-import { IWalletState } from "../../../modules/wallet/reducer";
+import { TCompanyEtoData } from "../../../lib/api/eto/EtoApi.interfaces";
+import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
 import { PersonProfileModal } from "../../modals/PersonProfileModal";
 import { Accordion, AccordionElement } from "../../shared/Accordion";
 import { ChartDoughnut } from "../../shared/charts/ChartDoughnut";
-import { DocumentsWidget } from "../../shared/DocumentsWidget";
-import { InlineIcon } from "../../shared/InlineIcon";
 import { ILink, MediaLinksWidget, normalizedUrl } from "../../shared/MediaLinksWidget";
 import { Panel } from "../../shared/Panel";
 import { IPerson, PeopleSwiperWidget } from "../../shared/PeopleSwiperWidget";
@@ -23,41 +20,29 @@ import { TwitterTimelineEmbed } from "../../shared/TwitterTimeline";
 import { Video } from "../../shared/Video";
 import { EtoOverviewStatus } from "../overview/EtoOverviewStatus";
 import { EtoTimeline } from "../overview/EtoTimeline";
-import { Cover } from "../publicView/Cover";
-import { EtoInvestmentTermsWidget } from "../publicView/EtoInvestmentTermsWidget";
-import { LegalInformationWidget } from "../publicView/LegalInformationWidget";
+import { Cover } from "../public-view/Cover";
+import { DocumentsWidget } from "../public-view/DocumentsWidget";
+import { EtoInvestmentTermsWidget } from "../public-view/EtoInvestmentTermsWidget";
+import { LegalInformationWidget } from "../public-view/LegalInformationWidget";
 import { areThereIndividuals, selectActiveCarouselTab } from "./EtoPublicComponent.utils";
 
-import * as icon_link from "../../../assets/img/inline_icons/social_link.svg";
-import * as token_icon from "../../../assets/img/token_icon.svg";
 import * as styles from "./EtoPublicComponent.module.scss";
 
 const DEFAULT_PLACEHOLDER = "N/A";
 
 export const CHART_COLORS = ["#50e3c2", "#2fb194", "#4a90e2", "#0b0e11", "#394652", "#c4c5c6"];
+export const DEFAULT_CHART_COLOR = "#c4c5c6";
 
 interface IProps {
   companyData: TCompanyEtoData;
   etoData: TEtoWithCompanyAndContract;
-  wallet?: IWalletState | undefined;
 }
 
 // TODO: There are lots of castings right now in this file, cause formerly the types of IProps was "any"
 // The castings should be resolved when the EtoApi.interface.ts reflects the correct data types from swagger!
 
 // TODO: Refactor to smaller components
-export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wallet }) => {
-  const preMoneyValuationEur = etoData.preMoneyValuationEur || 1;
-  const existingCompanyShares = etoData.existingCompanyShares || 1;
-  const newSharesToIssue = etoData.newSharesToIssue || 1;
-  const equityTokensPerShare = etoData.equityTokensPerShare || 1;
-  const minimumNewSharesToIssue = etoData.minimumNewSharesToIssue || 1;
-
-  const computedNewSharePrice = preMoneyValuationEur / existingCompanyShares;
-  const computedMinNumberOfTokens = newSharesToIssue * equityTokensPerShare;
-  const computedMinCapEur = computedNewSharePrice * newSharesToIssue;
-  const computedMaxCapEur = computedNewSharePrice * minimumNewSharesToIssue;
-
+export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) => {
   const { socialChannels, companyVideo, disableTwitterFeed, companySlideshare } = companyData;
 
   const isTwitterFeedEnabled =
@@ -70,26 +55,6 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
     isTwitterFeedEnabled && socialChannels
       ? (socialChannels.find(c => c.type === "twitter") as any).url
       : "";
-
-  const marketingLinks = companyData.marketingLinks && {
-    documents: companyData.marketingLinks.map(l => ({
-      url: l.url || "",
-      name: l.title || "",
-      icon: <InlineIcon svgIcon={icon_link} />,
-    })),
-    name: (
-      <FormattedMessage
-        id="eto.public-view.documents.more-information-about-brand"
-        values={{
-          brandName: companyData.brandName,
-        }}
-      />
-    ),
-  };
-
-  const links = marketingLinks ? [marketingLinks] : [];
-
-  const documentsByType = keyBy(etoData.documents, document => document.documentType);
 
   return (
     <>
@@ -113,50 +78,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
           tags={companyData.categories}
         />
 
-        <EtoOverviewStatus
-          newSharesToIssue={etoData.newSharesToIssue}
-          preMoneyValuationEur={etoData.preMoneyValuationEur}
-          existingCompanyShares={etoData.existingCompanyShares}
-          equityTokensPerShare={etoData.equityTokensPerShare}
-          contract={etoData.contract}
-          timedState={etoData.contract ? etoData.contract.timedState : ETOStateOnChain.Setup}
-          wallet={wallet}
-          etoId={etoData.etoId}
-          tokenImage={{
-            srcSet: {
-              "1x": etoData.equityTokenImage || token_icon,
-            },
-            alt: `${etoData.equityTokenSymbol} - ${etoData.equityTokenName}`,
-          }}
-          tokenName={etoData.equityTokenName || ""}
-          tokenSymbol={etoData.equityTokenSymbol || ""}
-          className="mb-4"
-          canEnableBookbuilding={etoData.canEnableBookbuilding}
-          investmentAmount={`€ ${(
-            ((etoData.preMoneyValuationEur || 1) / (etoData.existingCompanyShares || 1)) *
-            (etoData.newSharesToIssue || 1)
-          ).toFixed(4)} - €
-          ${(
-            ((etoData.preMoneyValuationEur || 1) / (etoData.existingCompanyShares || 1)) *
-            (etoData.minimumNewSharesToIssue || 1)
-          ).toFixed(4)}`}
-          newSharesGenerated={etoData.newSharesToIssue}
-          smartContractOnchain={etoData.state === EtoState.ON_CHAIN}
-          prospectusApproved={documentsByType["approved_prospectus"]}
-          termSheet={documentsByType["termsheet_template"]}
-          preMoneyValuation={etoData.preMoneyValuationEur}
-          etoStartDate={etoData.startDate}
-          preEtoDuration={etoData.whitelistDurationDays}
-          publicEtoDuration={etoData.publicDurationDays}
-          inSigningDuration={etoData.signingDurationDays}
-          campaigningWidget={{
-            investorsLimit: etoData.maxPledges,
-            maxPledge: etoData.maxTicketEur,
-            minPledge: etoData.minTicketEur,
-            isActivated: etoData.isBookbuilding,
-            quote: companyData.keyQuoteFounder,
-          }}
-        />
+        <EtoOverviewStatus eto={etoData} className="mb-4" />
 
         <Row>
           <Col className="mb-4">
@@ -164,12 +86,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
               <FormattedMessage id="eto.public-view.eto-timeline" />
             </SectionHeader>
             <Panel>
-              <EtoTimeline
-                etoStartDate={etoData.startDate}
-                preEtoDuration={etoData.whitelistDurationDays}
-                publicEtoDuration={etoData.publicDurationDays}
-                inSigningDuration={etoData.signingDurationDays}
-              />
+              <EtoTimeline startOfStates={etoData.contract && etoData.contract.startOfStates} />
             </Panel>
           </Col>
         </Row>
@@ -204,7 +121,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
                   <p className="mb-4">{companyData.companyDescription}</p>
                 )}
                 {companyData.keyQuoteInvestor && (
-                  <p className={cn(styles.quote, "mb-4")}>"{companyData.keyQuoteInvestor}"</p>
+                  <p className={cn(styles.quote, "mb-4")}>{companyData.keyQuoteInvestor}</p>
                 )}
               </Panel>
             )}
@@ -213,7 +130,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
               <FormattedMessage id="eto.public-view.legal-information.title" />
             </SectionHeader>
 
-            <LegalInformationWidget etoData={etoData} companyData={companyData} />
+            <LegalInformationWidget companyData={companyData} />
           </Col>
           {(isYouTubeVideoAvailable || isSlideShareAvailable) && (
             <Col xs={12} md={4} className="mb-4 flex-column d-flex">
@@ -269,14 +186,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
               <FormattedMessage id="eto.public-view.token-terms.title" />
             </SectionHeader>
 
-            <EtoInvestmentTermsWidget
-              etoData={etoData}
-              etoFilesData={documentsByType}
-              computedMaxCapEur={computedMaxCapEur}
-              computedMinCapEur={computedMinCapEur}
-              computedMinNumberOfTokens={computedMinNumberOfTokens}
-              computedNewSharePrice={computedNewSharePrice}
-            />
+            <EtoInvestmentTermsWidget etoData={etoData} />
           </Col>
         </Row>
 
@@ -293,7 +203,6 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
                     nextEl: "people-swiper-team-next",
                     prevEl: "people-swiper-team-prev",
                   }}
-                  layout="vertical"
                 />
               </Panel>
             </Col>
@@ -420,142 +329,180 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
 
         <Row>
           <Col sm={12} md={8} className="mb-4">
-            <SectionHeader layoutHasDecorator={false} className="mb-4">
-              <FormattedMessage id="eto.public-view.product-vision.title" />
-            </SectionHeader>
-            <Panel>
-              <Accordion>
-                {companyData.inspiration && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.inspiration" />}
-                  >
-                    <p>{companyData.inspiration}</p>
-                  </AccordionElement>
-                )}
-                {companyData.productVision && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.product-vision" />}
-                  >
-                    <p>{companyData.productVision}</p>
-                  </AccordionElement>
-                )}
-                {companyData.problemSolved && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.problem-solved" />}
-                  >
-                    <p>{companyData.problemSolved}</p>
-                  </AccordionElement>
-                )}
-                {companyData.customerGroup && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.customer-group" />}
-                  >
-                    <p>{companyData.customerGroup}</p>
-                  </AccordionElement>
-                )}
-                {companyData.sellingProposition && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.selling-proposition" />}
-                  >
-                    <p>{companyData.sellingProposition}</p>
-                  </AccordionElement>
-                )}
+            {(companyData.inspiration ||
+              companyData.companyMission ||
+              companyData.customerGroup ||
+              companyData.productVision ||
+              companyData.problemSolved ||
+              companyData.marketTraction ||
+              companyData.keyCompetitors ||
+              companyData.sellingProposition ||
+              companyData.useOfCapitalList ||
+              companyData.marketingApproach ||
+              companyData.roadmap ||
+              companyData.targetMarketAndIndustry ||
+              companyData.keyBenefitsForInvestors) && (
+              <>
+                <SectionHeader layoutHasDecorator={false} className="mb-4">
+                  <FormattedMessage id="eto.public-view.product-vision.title" />
+                </SectionHeader>
+                <Panel>
+                  <Accordion>
+                    {companyData.inspiration && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.inspiration" />}
+                      >
+                        <p>{companyData.inspiration}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.companyMission && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.company-mission" />}
+                      >
+                        <p>{companyData.companyMission}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.productVision && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.product-vision" />}
+                      >
+                        <p>{companyData.productVision}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.problemSolved && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.problem-solved" />}
+                      >
+                        <p>{companyData.problemSolved}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.customerGroup && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.customer-group" />}
+                      >
+                        <p>{companyData.customerGroup}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.targetMarketAndIndustry && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.target-segment" />}
+                      >
+                        <p>{companyData.targetMarketAndIndustry}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.keyCompetitors && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.key-competitors" />}
+                      >
+                        <p>{companyData.keyCompetitors}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.sellingProposition && (
+                      <AccordionElement
+                        title={
+                          <FormattedMessage id="eto.form.product-vision.selling-proposition" />
+                        }
+                      >
+                        <p>{companyData.sellingProposition}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.keyBenefitsForInvestors && (
+                      <AccordionElement
+                        title={
+                          <FormattedMessage id="eto.form.product-vision.key-benefits-for-investors" />
+                        }
+                      >
+                        <p>{companyData.keyBenefitsForInvestors}</p>
+                      </AccordionElement>
+                    )}
 
-                {((companyData.useOfCapitalList &&
-                  companyData.useOfCapitalList.some((e: any) => e.percent > 0)) ||
-                  companyData.useOfCapital) && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.use-of-capital" />}
-                  >
-                    <Row>
-                      {companyData.useOfCapital && (
-                        <Col>
-                          <p>{companyData.useOfCapital}</p>
-                        </Col>
-                      )}
+                    {((companyData.useOfCapitalList &&
+                      companyData.useOfCapitalList.some((e: any) => e.percent > 0)) ||
+                      companyData.useOfCapital) && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.use-of-capital" />}
+                      >
+                        <Row>
+                          {companyData.useOfCapital && (
+                            <Col>
+                              <p>{companyData.useOfCapital}</p>
+                            </Col>
+                          )}
 
-                      {companyData.useOfCapitalList && (
-                        <Col md={12} lg={6}>
-                          <ChartDoughnut
-                            className="pr-5 pb-4"
-                            layout="vertical"
-                            data={{
-                              datasets: [
-                                {
-                                  data: companyData.useOfCapitalList.map(
-                                    d => d && d.percent,
-                                  ) as number[],
-                                  backgroundColor: companyData.useOfCapitalList.map(
-                                    (_, i: number) => CHART_COLORS[i],
-                                  ),
-                                },
-                              ],
-                              labels: (companyData.useOfCapitalList || []).map(
-                                d => d && d.description,
-                              ) as string[],
-                            }}
-                          />
-                        </Col>
-                      )}
-                    </Row>
-                  </AccordionElement>
-                )}
-                {companyData.marketingApproach && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.marketing-approach" />}
-                  >
-                    <p>{companyData.marketingApproach}</p>
-                  </AccordionElement>
-                )}
-                {companyData.companyMission && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.company-mission" />}
-                  >
-                    <p>{companyData.companyMission}</p>
-                  </AccordionElement>
-                )}
-                {companyData.roadmap && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.roadmap" />}
-                  >
-                    <p>{companyData.roadmap}</p>
-                  </AccordionElement>
-                )}
-                {companyData.targetMarketAndIndustry && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.target-segment" />}
-                  >
-                    <p>{companyData.targetMarketAndIndustry}</p>
-                  </AccordionElement>
-                )}
-                {companyData.keyCompetitors && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.key-competitors" />}
-                  >
-                    <p>{companyData.keyCompetitors}</p>
-                  </AccordionElement>
-                )}
-                {companyData.marketTraction && (
-                  <AccordionElement
-                    title={<FormattedMessage id="eto.form.product-vision.market-traction" />}
-                  >
-                    <p>{companyData.marketTraction}</p>
-                  </AccordionElement>
-                )}
-              </Accordion>
-            </Panel>
+                          {companyData.useOfCapitalList && (
+                            <Col md={12} lg={6}>
+                              <ChartDoughnut
+                                className="pr-5 pb-4"
+                                layout="vertical"
+                                data={{
+                                  datasets: [
+                                    {
+                                      data: companyData.useOfCapitalList.map(
+                                        d => d && d.percent,
+                                      ) as number[],
+                                      backgroundColor: companyData.useOfCapitalList.map(
+                                        (_, i: number) => CHART_COLORS[i],
+                                      ),
+                                    },
+                                  ],
+                                  labels: (companyData.useOfCapitalList || []).map(
+                                    d => d && d.description,
+                                  ) as string[],
+                                }}
+                              />
+                            </Col>
+                          )}
+                        </Row>
+                      </AccordionElement>
+                    )}
+                    {companyData.marketTraction && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.market-traction" />}
+                      >
+                        <p>{companyData.marketTraction}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.roadmap && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.roadmap" />}
+                      >
+                        <p>{companyData.roadmap}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.businessModel && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.business-model" />}
+                      >
+                        <p>{companyData.businessModel}</p>
+                      </AccordionElement>
+                    )}
+                    {companyData.marketingApproach && (
+                      <AccordionElement
+                        title={<FormattedMessage id="eto.form.product-vision.marketing-approach" />}
+                      >
+                        <p>{companyData.marketingApproach}</p>
+                      </AccordionElement>
+                    )}
+                  </Accordion>
+                </Panel>
+              </>
+            )}
           </Col>
           <Col sm={12} md={4}>
-            {links[0] &&
-              !!links[0].documents[0].url && (
-                <>
-                  <SectionHeader layoutHasDecorator={false} className="mb-4">
-                    <FormattedMessage id="eto.form.documents.title" />
-                  </SectionHeader>
+            {companyData.marketingLinks && (
+              <>
+                <SectionHeader layoutHasDecorator={false} className="mb-4">
+                  <FormattedMessage id="eto.form.documents.title" />
+                </SectionHeader>
 
-                  <DocumentsWidget className="mb-4" groups={links} />
-                </>
-              )}
+                <DocumentsWidget
+                  className="mb-4"
+                  companyMarketingLinks={companyData.marketingLinks}
+                  etoTemplates={etoData.templates}
+                  etoDocuments={etoData.documents}
+                />
+              </>
+            )}
 
             {companyData.companyNews &&
               !!companyData.companyNews[0].url && (
@@ -563,7 +510,6 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData, wa
                   <SectionHeader layoutHasDecorator={false} className="mb-4">
                     <FormattedMessage id="eto.form.media-links.title" />
                   </SectionHeader>
-
                   <MediaLinksWidget links={companyData.companyNews.reverse() as ILink[]} />
                 </>
               )}

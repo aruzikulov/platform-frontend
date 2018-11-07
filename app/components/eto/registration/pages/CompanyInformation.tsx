@@ -11,10 +11,11 @@ import {
 } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerCompany } from "../../../../modules/eto-flow/selectors";
+import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
-import { Button } from "../../../shared/buttons";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField, FormTextArea } from "../../../shared/forms";
-import { FormSingleFileUpload } from "../../../shared/forms/formField/FormSingleFileUpload";
+import { FormSingleFileUpload } from "../../../shared/forms/form-field/FormSingleFileUpload";
 import { EtoTagWidget, generateTagOptions } from "../../shared/EtoTagWidget";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
@@ -36,7 +37,11 @@ type IProps = IStateProps & IDispatchProps;
 const EtoRegistrationTeamAndInvestorsComponent = (
   props: FormikProps<TPartialCompanyEtoData> & IProps,
 ) => (
-  <EtoFormBase title="Company Information" validator={EtoCompanyInformationType.toYup()}>
+  <EtoFormBase
+    data-test-id="eto.form.company-information"
+    title="Company Information"
+    validator={EtoCompanyInformationType.toYup()}
+  >
     <Section>
       <FormField
         label={<FormattedMessage id="eto.form.company-information.brand-name" />}
@@ -76,7 +81,6 @@ const EtoRegistrationTeamAndInvestorsComponent = (
         options={generateTagOptions(tagList)}
         name="categories"
         className="mb-4"
-        testId="eto-about-category"
       />
       <Row>
         <Col>
@@ -104,7 +108,7 @@ const EtoRegistrationTeamAndInvestorsComponent = (
     <Col>
       <Row className="justify-content-end">
         <Button
-          layout="primary"
+          layout={EButtonLayout.PRIMARY}
           className="mr-4"
           type="submit"
           isLoading={props.savingData}
@@ -118,7 +122,7 @@ const EtoRegistrationTeamAndInvestorsComponent = (
 );
 
 export const EtoRegistrationCompanyInformation = compose<React.SFC>(
-  setDisplayName("EtoRegistrationCompanyInformation"),
+  setDisplayName(EEtoFormTypes.CompanyInformation),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
       loadingData: s.etoFlow.loading,

@@ -1,6 +1,6 @@
 import { tid } from "../utils";
 
-const navigateToSettings = () => cy.get(tid("authorized-layout-settings-button")).click();
+const navigateToSettings = () => cy.get(tid("authorized-layout-settings-button")).awaitedClick();
 
 const extractSeedFromDOM = (seed: string): string[] =>
   seed
@@ -14,20 +14,20 @@ const extractRandomWordIndexFromDOM = (indexArray: string): string[] =>
 export const backupLightWalletSeed = () => {
   navigateToSettings();
 
-  cy.get(tid("backup-seed-widget-link-button")).click();
-  cy.get(tid("access-light-wallet-prompt-accept-button")).click();
-  cy.get(tid("backup-seed-intro-button")).click();
+  cy.get(tid("backup-seed-widget-link-button")).awaitedClick();
+  cy.get(tid("access-light-wallet-prompt-accept-button")).awaitedClick();
+  cy.get(tid("backup-seed-intro-button")).awaitedClick();
 
   cy.get(tid("seed-display-word")).then(word => {
     const firstSeed = extractSeedFromDOM(word.text());
     firstSeed.shift();
-    cy.get(tid("seed-display-next-words")).click();
+    cy.get(tid("seed-display-next-words")).awaitedClick();
 
     cy.get(tid("seed-display-word")).then(words2 => {
       const secondSeed = extractSeedFromDOM(words2.text());
       secondSeed.shift();
       const seed = firstSeed.concat(secondSeed);
-      cy.get(tid("seed-display-next-link")).click();
+      cy.get(tid("seed-display-next-link")).awaitedClick();
 
       cy.get(tid("seed-verify-label")).then(randomWords => {
         const randomEnt = extractRandomWordIndexFromDOM(randomWords.text());
@@ -39,8 +39,8 @@ export const backupLightWalletSeed = () => {
             .type("{enter}", { force: true });
         }
 
-        cy.get(tid("seed-verify-button-next")).click();
-        cy.get(tid("generic-modal-dismiss-button")).click();
+        cy.get(tid("seed-verify-button-next")).awaitedClick();
+        cy.get(tid("generic-modal-dismiss-button")).awaitedClick();
 
         cy.get(tid("backup-seed-verified-section")).should("exist");
       });

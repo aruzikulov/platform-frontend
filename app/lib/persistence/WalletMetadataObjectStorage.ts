@@ -1,4 +1,4 @@
-import { WalletSubType, WalletType } from "../../modules/web3/types";
+import { EWalletSubType, EWalletType } from "../../modules/web3/types";
 import { EthereumAddress } from "../../types";
 
 export type TWalletMetadata = ILightWalletMetadata | IBrowserWalletMetadata | ILedgerWalletMetadata;
@@ -8,8 +8,8 @@ export interface ICommonWalletMetadata {
 }
 
 export interface ILightWalletMetadata extends ICommonWalletMetadata {
-  walletType: WalletType.LIGHT;
-  walletSubType: WalletSubType.UNKNOWN;
+  walletType: EWalletType.LIGHT;
+  walletSubType: EWalletSubType.UNKNOWN;
   vault: string;
   salt: string;
   email: string;
@@ -19,20 +19,20 @@ export interface ILightWalletMetadata extends ICommonWalletMetadata {
  * Data that are needed to recreate light wallet instance. Note that its missing ethereum address since it will be derived from vault.
  */
 export interface ILightWalletRetrieveMetadata {
-  walletType: WalletType.LIGHT;
+  walletType: EWalletType.LIGHT;
   vault: string;
   salt: string;
   email: string;
 }
 
 export interface IBrowserWalletMetadata extends ICommonWalletMetadata {
-  walletType: WalletType.BROWSER;
-  walletSubType: WalletSubType;
+  walletType: EWalletType.BROWSER;
+  walletSubType: EWalletSubType;
 }
 
 export interface ILedgerWalletMetadata extends ICommonWalletMetadata {
-  walletType: WalletType.LEDGER;
-  walletSubType: WalletSubType.UNKNOWN;
+  walletType: EWalletType.LEDGER;
+  walletSubType: EWalletSubType.UNKNOWN;
   derivationPath: string;
 }
 

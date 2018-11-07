@@ -9,6 +9,7 @@ import { Button, IButtonProps, IGeneralButton } from "./Button";
 
 type TButtonLinkToProps = {
   to: LocationDescriptor;
+  target?: string;
 };
 
 type TButtonLinkComponentProps = {
@@ -41,7 +42,12 @@ export const ButtonLink = compose<
   setDisplayName("ButtonLink"),
   withRouter,
   withHandlers<RouterProps & TButtonLinkToProps, TButtonHandlersProps>({
-    navigate: ({ history, to }) => () => history.push(to as any),
+    navigate: ({ history, to, target }) => () => {
+      if (target && to) {
+        return window.open(typeof to === "string" ? to : "", target);
+      }
+      return history.push(to as any);
+    },
   }),
   mapProps<RouterProps & TButtonLinkToProps, TProps>(
     // Remove unneeded props as they are passed through to underlying component

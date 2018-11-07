@@ -22,11 +22,12 @@ export class FileAlreadyExists extends EtoFileApiError {}
 export class EtoFileApi {
   constructor(@inject(symbols.authorizedJsonHttpClient) private httpClient: IHttpClient) {}
 
-  public async getAllEtoDocuments(): Promise<IHttpResponse<TEtoDocumentTemplates>> {
-    const response = await this.httpClient.get<IHttpResponse<TEtoDocumentTemplates>>({
+  public async getAllEtoDocuments(): Promise<TEtoDocumentTemplates> {
+    const response = await this.httpClient.get<TEtoDocumentTemplates>({
       baseUrl: BASE_PATH,
       url: ETO_DOCUMENTS_PATH,
     });
+
     return response.body;
   }
 

@@ -2,8 +2,8 @@ import { push } from "react-router-redux";
 
 import { appRoutes } from "../../components/appRoutes";
 import { kycRoutes } from "../../components/kyc/routes";
+import { recoverRoutes } from "../../components/wallet-selector/wallet-recover/recoverRoutes";
 import { walletRoutes } from "../../components/wallet/routes";
-import { recoverRoutes } from "../../components/walletSelector/walletRecover/recoverRoutes";
 import { createAction } from "../actionsUtils";
 
 const createRoutingAction = (path: string) => push(path);

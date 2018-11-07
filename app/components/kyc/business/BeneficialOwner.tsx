@@ -13,7 +13,7 @@ import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { AccordionElement } from "../../shared/Accordion";
-import { Button } from "../../shared/buttons";
+import { Button, EButtonLayout } from "../../shared/buttons";
 import {
   BOOL_FALSE_KEY,
   BOOL_TRUE_KEY,
@@ -92,7 +92,6 @@ const KYCForm = injectIntlHelpers<FormikProps<IKycBeneficialOwner> & IProps>(
             <>
               <FormattedMessage id="kyc.business.beneficial-owner.pep" />
               <Tooltip
-                className="ml-2"
                 content={
                   <FormattedHTMLMessage
                     id="kyc.personal.politically-exposed.tooltip"
@@ -174,7 +173,7 @@ class KYCBeneficialOwnerComponent extends React.Component<IProps> {
         <div className="p-4 text-center">
           <Button
             data-test-id="kyc-beneficial-owner-delete"
-            layout="secondary"
+            layout={EButtonLayout.SECONDARY}
             onClick={this.props.delete}
           >
             <FormattedMessage id="form.button.delete" /> {name}

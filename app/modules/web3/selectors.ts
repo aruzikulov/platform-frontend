@@ -3,8 +3,9 @@ import { RouterState } from "react-router-redux";
 import { createSelector } from "reselect";
 import { TWalletMetadata } from "../../lib/persistence/WalletMetadataObjectStorage";
 import { EthereumAddress } from "../../types";
+import { IAppState } from "./../../store";
 import { IConnectedWeb3State, IWeb3State } from "./reducer";
-import { WalletSubType, WalletType } from "./types";
+import { EWalletSubType, EWalletType } from "./types";
 import { makeEthereumAddressChecksummed } from "./utils";
 
 export const selectConnectedWeb3State = (state: IWeb3State): IConnectedWeb3State => {
@@ -14,8 +15,8 @@ export const selectConnectedWeb3State = (state: IWeb3State): IConnectedWeb3State
   return state;
 };
 
-const selectEthereumAddress = (state: IWeb3State): EthereumAddress =>
-  state.connected ? state.wallet.address : state.previousConnectedWallet!.address;
+const selectEthereumAddress = (state: IAppState): EthereumAddress =>
+  state.web3.connected ? state.web3.wallet.address : state.web3.previousConnectedWallet!.address;
 
 export const selectEthereumAddressWithChecksum = createSelector(selectEthereumAddress, address => {
   return makeEthereumAddressChecksummed(address);
@@ -29,7 +30,7 @@ export const isLightWalletReadyToLogin = (state: IWeb3State): boolean =>
   !!(
     !state.connected &&
     state.previousConnectedWallet &&
-    state.previousConnectedWallet.walletType === WalletType.LIGHT &&
+    state.previousConnectedWallet.walletType === EWalletType.LIGHT &&
     state.previousConnectedWallet.email &&
     state.previousConnectedWallet.salt &&
     state.previousConnectedWallet.vault
@@ -40,20 +41,20 @@ export const isLightWalletReadyToLogin = (state: IWeb3State): boolean =>
  */
 export const selectIsLightWallet = (state: IWeb3State): boolean => {
   return (
-    (state.connected && state.wallet.walletType === WalletType.LIGHT) ||
+    (state.connected && state.wallet.walletType === EWalletType.LIGHT) ||
     isLightWalletReadyToLogin(state)
   );
 };
 
-export const selectWalletSubType = (state: IWeb3State): WalletSubType | undefined =>
+export const selectWalletSubType = (state: IWeb3State): EWalletSubType | undefined =>
   state.connected
-    ? (state.wallet.walletType === WalletType.BROWSER && state.wallet.walletSubType) || undefined
+    ? (state.wallet.walletType === EWalletType.BROWSER && state.wallet.walletSubType) || undefined
     : (state.previousConnectedWallet &&
-        (state.previousConnectedWallet.walletType === WalletType.BROWSER &&
+        (state.previousConnectedWallet.walletType === EWalletType.BROWSER &&
           state.previousConnectedWallet.walletSubType)) ||
       undefined;
 
-export const selectWalletType = (state: IWeb3State): WalletType | undefined =>
+export const selectWalletType = (state: IWeb3State): EWalletType | undefined =>
   state.connected
     ? state.wallet.walletType
     : state.previousConnectedWallet && state.previousConnectedWallet.walletType;
@@ -61,7 +62,7 @@ export const selectWalletType = (state: IWeb3State): WalletType | undefined =>
 export const selectLightWalletSalt = (state: IWeb3State): string | undefined =>
   (state.connected &&
     state.wallet &&
-    state.wallet.walletType === WalletType.LIGHT &&
+    state.wallet.walletType === EWalletType.LIGHT &&
     state.wallet.salt) ||
   undefined;
 
@@ -72,14 +73,14 @@ export const selectIsUnlocked = (state: IWeb3State): boolean => {
 export const selectPreviousLightWalletEmail = (state: IWeb3State): string | undefined =>
   (!state.connected &&
     state.previousConnectedWallet &&
-    state.previousConnectedWallet.walletType === WalletType.LIGHT &&
+    state.previousConnectedWallet.walletType === EWalletType.LIGHT &&
     state.previousConnectedWallet.email) ||
   undefined;
 
 export const selectPreviousLightWalletSalt = (state: IWeb3State): string | undefined =>
   (!state.connected &&
     state.previousConnectedWallet &&
-    state.previousConnectedWallet.walletType === WalletType.LIGHT &&
+    state.previousConnectedWallet.walletType === EWalletType.LIGHT &&
     state.previousConnectedWallet.salt) ||
   undefined;
 

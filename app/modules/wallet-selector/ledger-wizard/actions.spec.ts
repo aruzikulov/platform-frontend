@@ -18,7 +18,7 @@ import { WalletNotConnectedError, Web3Manager } from "../../../lib/web3/Web3Mana
 import { IAppState } from "../../../store";
 import { Dictionary } from "../../../types";
 import { actions } from "../../actions";
-import { WalletSubType, WalletType } from "../../web3/types";
+import { EWalletSubType, EWalletType } from "../../web3/types";
 import { ledgerWizardFlows } from "./flows";
 import { DEFAULT_DERIVATION_PATH_PREFIX } from "./reducer";
 
@@ -240,8 +240,8 @@ describe("Wallet selector > Ledger wizard > actions", () => {
       const dummyMetadata: ILedgerWalletMetadata = {
         address: dummyEthereumAddress,
         derivationPath: expectedDerivationPath,
-        walletType: WalletType.LEDGER,
-        walletSubType: WalletSubType.UNKNOWN,
+        walletType: EWalletType.LEDGER,
+        walletSubType: EWalletSubType.UNKNOWN,
       };
 
       const dispatchMock = spy();
@@ -268,13 +268,13 @@ describe("Wallet selector > Ledger wizard > actions", () => {
       expect(dispatchMock).to.be.calledWithExactly(actions.walletSelector.connected());
     });
 
-    it("should work when ledger wallet is connected and user TYPE should be issuer", async () => {
+    it("should work when ledger wallet is connected and user TYPE should be ISSUER", async () => {
       const expectedDerivationPath = "44'/60'/0'/2";
       const dummyMetadata: ILedgerWalletMetadata = {
         address: dummyEthereumAddress,
         derivationPath: expectedDerivationPath,
-        walletType: WalletType.LEDGER,
-        walletSubType: WalletSubType.UNKNOWN,
+        walletType: EWalletType.LEDGER,
+        walletSubType: EWalletSubType.UNKNOWN,
       };
 
       const dispatchMock = spy();

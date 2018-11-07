@@ -1,11 +1,11 @@
 import * as cn from "classnames";
-import { uniqueId } from "lodash";
 import * as React from "react";
-
 import { FormattedMessage } from "react-intl-phraseapp";
+
 import { TTranslatedString } from "../../types";
-import * as styles from "./NewTable.module.scss";
 import { Panel } from "./Panel";
+
+import * as styles from "./NewTable.module.scss";
 
 interface INewTableHeader {
   titles: (TTranslatedString | React.ReactNode)[];
@@ -20,8 +20,13 @@ interface IPlaceholderTableRow {
   numberOfCells: number;
 }
 
+type INewTableChildren =
+  | React.ReactElement<INewTableRow>
+  | React.ReactElement<INewTableRow>[]
+  | null;
+
 interface INewTable {
-  children: React.ReactElement<INewTableRow> | React.ReactElement<INewTableRow>[];
+  children: INewTableChildren | INewTableChildren[];
   placeholder?: TTranslatedString;
   className?: string;
   keepRhythm?: boolean;
@@ -29,45 +34,27 @@ interface INewTable {
 
 type TProps = INewTable & INewTableHeader;
 
-export class NewTableRow extends React.Component<INewTableRow> {
-  render(): React.ReactNode {
-    const { children } = this.props;
-
-    return (
-      <tr className={styles.row}>
-        {React.Children.map(children, child => {
-          return (
-            <td className={styles.cell} key={uniqueId("table-row")}>
-              {child}
-            </td>
-          );
-        })}
-      </tr>
-    );
-  }
-}
-
-class PlaceholderTableRow extends React.Component<IPlaceholderTableRow> {
-  render(): React.ReactNode {
-    const { children, numberOfCells } = this.props;
-
-    return (
-      <tr className={styles.row}>
-        <td className={cn(styles.cell, styles.cellPlaceholder)} colSpan={numberOfCells}>
-          {children || <FormattedMessage id="shared-components.table.default-placeholder" />}
+const NewTableRow: React.SFC<INewTableRow> = ({ children }) => (
+  <tr className={styles.row}>
+    {React.Children.toArray(children).map((child, index) => {
+      return (
+        <td className={styles.cell} key={index}>
+          {child}
         </td>
-      </tr>
-    );
-  }
-}
+      );
+    })}
+  </tr>
+);
 
-export const NewTable: React.SFC<TProps> = ({
-  titles,
-  children,
-  className,
-  placeholder,
-  keepRhythm,
-}) => {
+const PlaceholderTableRow: React.SFC<IPlaceholderTableRow> = ({ children, numberOfCells }) => (
+  <tr className={styles.row}>
+    <td className={cn(styles.cell, styles.cellPlaceholder)} colSpan={numberOfCells}>
+      {children || <FormattedMessage id="shared-components.table.default-placeholder" />}
+    </td>
+  </tr>
+);
+
+const NewTable: React.SFC<TProps> = ({ titles, children, className, placeholder, keepRhythm }) => {
   const isEmpty = React.Children.count(children) === 0;
 
   return (
@@ -95,3 +82,5 @@ export const NewTable: React.SFC<TProps> = ({
     </Panel>
   );
 };
+
+export { NewTable, NewTableRow };

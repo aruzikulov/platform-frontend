@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Bar } from "react-chartjs-2";
 import * as styles from "./ChartBars.module.scss";
-import { ChartLegned } from "./ChartLegned";
+import { ChartLegend } from "./ChartLegend";
 
 interface IDataset {
   data: number[];
@@ -43,7 +43,7 @@ export const ChartBarsWithLegend: React.SFC<IProps> = ({ data }) => {
         />
       </div>
       <div className={styles.legendWrapper}>
-        <ChartLegned data={data} />
+        <ChartLegend data={data} />
       </div>
     </div>
   );

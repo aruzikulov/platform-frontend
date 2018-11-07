@@ -9,13 +9,7 @@ files:
     - 'coverage/**'
     - 'dist/**'
     - 'test/**'
-    - 'app/styles/react-slick-overrides.scss'
-    - 'app/components/landing/parts/SmartContractWindow.module.scss'
-    - 'app/components/landing/parts/Interoperable.module.scss'
-    - 'app/components/landing/parts/SpinningEthereum.module.scss'
-    - 'app/components/shared/SuccessTick.module.scss'
     - 'app/styles/vendor/**'
-    - 'app/components/shared/forms/formField/FormFieldDatePicker.module.scss'
 rules:
   no-transition-all: 0
   nesting-depth:

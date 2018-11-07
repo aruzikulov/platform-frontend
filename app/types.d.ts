@@ -32,6 +32,8 @@ export type DeepReadonly<T> = T extends primitive
 
 export type DeepReadonlyObject<T> = { readonly [P in keyof T]: DeepReadonly<T[P]> };
 
+export type FirstParameterType<T> = T extends (param: infer R) => any ? R : never;
+
 // Taken from @types/reactstrap
 // @see https://github.com/DefinitelyTyped/DefinitelyTyped/pull/23700
 export type InputType =
@@ -69,6 +71,10 @@ export type CommonHtmlProps = {
 
 export type TTranslatedString = string | React.ReactElement<FormattedMessage>;
 
+export type TDataTestId = {
+  "data-test-id"?: string;
+};
+
 export type TAcceptedFileType =
   | string
   | "application/pdf"
@@ -80,6 +86,8 @@ export type TAcceptedFileType =
 // TODO: Correct TAcceptedFileType types it can contain more than one type
 
 export type Omit<T extends K, K> = Pick<T, Exclude<keyof T, keyof K>>;
+
+export type OmitKeys<T, K> = Pick<T, Exclude<keyof T, K>>;
 
 export type TFormikConnect = {
   formik: FormikContext<any>;

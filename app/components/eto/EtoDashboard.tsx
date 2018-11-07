@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
+import { FormattedHTMLMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
@@ -19,6 +19,7 @@ import {
 import {
   selectCanEnableBookBuilding,
   selectCombinedEtoCompanyData,
+  selectIssuerEtoPreviewCode,
   selectIssuerEtoState,
   selectShouldEtoDataLoad,
 } from "../../modules/eto-flow/selectors";
@@ -28,8 +29,8 @@ import { selectIsLightWallet } from "../../modules/web3/selectors";
 import { appConnect } from "../../store";
 import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
 import { SettingsWidgets } from "../settings/SettingsWidgets";
-import { EtoProjectState } from "../shared/EtoProjectState";
-import { LoadingIndicator } from "../shared/LoadingIndicator";
+import { EProjecStatusLayout, EProjectStatusSize, ETOState } from "../shared/ETOState";
+import { LoadingIndicator } from "../shared/loading-indicator";
 import { BookBuildingWidget } from "./dashboard/bookBuildingWidget/BookBuildingWidget";
 import { ChoosePreEtoDateWidget } from "./dashboard/choosePreEtoDateWidget/ChoosePreEtoDateWidget";
 import { ETOFormsProgressSection } from "./dashboard/ETOFormsProgressSection";
@@ -48,6 +49,7 @@ interface IStateProps {
   shouldEtoDataLoad?: boolean;
   requestStatus?: TRequestStatus;
   etoState?: EtoState;
+  previewCode?: string;
   canEnableBookbuilding: boolean;
   etoFormProgress?: number;
   isTermSheetSubmitted?: boolean;
@@ -86,7 +88,7 @@ const EtoProgressDashboardSection: React.SFC = () => (
   <>
     <DashboardSection step={2} title="ETO APPLICATION" />
     <Col xs={12}>
-      <FormattedMessage id="eto-dashboard-application-description" />
+      <FormattedHTMLMessage tagName="span" id="eto-dashboard-application-description" />
     </Col>
     <ETOFormsProgressSection />
   </>
@@ -99,6 +101,7 @@ interface IEtoStateRender {
   isPamphletSubmitted?: boolean;
   isProspectusSubmitted?: boolean;
   canEnableBookbuilding: boolean;
+  previewCode?: string;
 }
 
 const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
@@ -108,8 +111,9 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
   isPamphletSubmitted,
   isProspectusSubmitted,
   canEnableBookbuilding,
+  previewCode,
 }) => {
-  if (!etoState) {
+  if (!previewCode) {
     return <LoadingIndicator />;
   }
 
@@ -126,14 +130,32 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
     case EtoState.PENDING:
       return (
         <>
-          <DashboardSection hasDecorator={false} title={<EtoProjectState status={etoState} />} />
+          <DashboardSection
+            hasDecorator={false}
+            title={
+              <ETOState
+                previewCode={previewCode}
+                size={EProjectStatusSize.LARGE}
+                layout={EProjecStatusLayout.BLACK}
+              />
+            }
+          />
           <ETOFormsProgressSection />
         </>
       );
     case EtoState.LISTED:
       return (
         <>
-          <DashboardSection hasDecorator={false} title={<EtoProjectState status={etoState} />} />
+          <DashboardSection
+            hasDecorator={false}
+            title={
+              <ETOState
+                previewCode={previewCode}
+                size={EProjectStatusSize.LARGE}
+                layout={EProjecStatusLayout.BLACK}
+              />
+            }
+          />
           {canEnableBookbuilding && (
             <Col lg={4} xs={12}>
               <BookBuildingWidget />
@@ -150,7 +172,7 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
             </Col>
           )}
           <Col xs={12}>
-            <FormattedMessage id="eto-dashboard-application-description" />
+            <FormattedHTMLMessage tagName="span" id="eto-dashboard-application-description" />
           </Col>
           <ETOFormsProgressSection />
         </>
@@ -158,14 +180,23 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
     case EtoState.PROSPECTUS_APPROVED:
       return (
         <>
-          <DashboardSection hasDecorator={false} title={<EtoProjectState status={etoState} />} />
+          <DashboardSection
+            hasDecorator={false}
+            title={
+              <ETOState
+                previewCode={previewCode}
+                size={EProjectStatusSize.LARGE}
+                layout={EProjecStatusLayout.BLACK}
+              />
+            }
+          />
           {canEnableBookbuilding && (
             <Col lg={4} xs={12}>
               <BookBuildingWidget />
             </Col>
           )}
           <Col xs={12}>
-            <FormattedMessage id="eto-dashboard-application-description" />
+            <FormattedHTMLMessage tagName="span" id="eto-dashboard-application-description" />
           </Col>
           <ETOFormsProgressSection />
         </>
@@ -173,7 +204,16 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
     case EtoState.ON_CHAIN:
       return (
         <>
-          <DashboardSection hasDecorator={false} title={<EtoProjectState status={etoState} />} />
+          <DashboardSection
+            hasDecorator={false}
+            title={
+              <ETOState
+                previewCode={previewCode}
+                size={EProjectStatusSize.LARGE}
+                layout={EProjecStatusLayout.BLACK}
+              />
+            }
+          />
           {canEnableBookbuilding && (
             <Col lg={4} xs={12}>
               <BookBuildingWidget />
@@ -183,14 +223,23 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
             <ChoosePreEtoDateWidget />
           </Col>
           <Col xs={12}>
-            <FormattedMessage id="eto-dashboard-application-description" />
+            <FormattedHTMLMessage tagName="span" id="eto-dashboard-application-description" />
           </Col>
           <ETOFormsProgressSection />
         </>
       );
     default:
       return (
-        <DashboardSection hasDecorator={false} title={<EtoProjectState status={etoState} />} />
+        <DashboardSection
+          hasDecorator={false}
+          title={
+            <ETOState
+              previewCode={previewCode}
+              size={EProjectStatusSize.LARGE}
+              layout={EProjecStatusLayout.BLACK}
+            />
+          }
+        />
       );
   }
 };
@@ -215,6 +264,7 @@ class EtoDashboardComponent extends React.Component<IProps> {
       shouldEtoDataLoad,
       isPamphletSubmitted,
       isProspectusSubmitted,
+      previewCode,
     } = this.props;
 
     const isVerificationSectionDone = !!(
@@ -222,6 +272,7 @@ class EtoDashboardComponent extends React.Component<IProps> {
       (backupCodesVerified || !isLightWallet) &&
       requestStatus === "Accepted"
     );
+
     const shouldViewSubmissionSection = !!(
       etoFormProgress && etoFormProgress >= SUBMIT_PROPOSAL_THRESHOLD
     );
@@ -248,6 +299,7 @@ class EtoDashboardComponent extends React.Component<IProps> {
               shouldViewSubmissionSection={shouldViewSubmissionSection}
               etoState={etoState}
               canEnableBookbuilding={canEnableBookbuilding}
+              previewCode={previewCode}
             />
           ) : (
             <EtoProgressDashboardSection />
@@ -269,6 +321,7 @@ export const EtoDashboard = compose<React.SFC>(
       shouldEtoDataLoad: selectShouldEtoDataLoad(s),
       requestStatus: selectKycRequestStatus(s.kyc),
       etoState: selectIssuerEtoState(s),
+      previewCode: selectIssuerEtoPreviewCode(s.etoFlow),
       canEnableBookbuilding: selectCanEnableBookBuilding(s),
       isTermSheetSubmitted: selectIsTermSheetSubmitted(s.etoDocuments),
       isPamphletSubmitted: selectIsPamphletSubmitted(s.etoDocuments),

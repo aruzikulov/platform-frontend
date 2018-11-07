@@ -2,22 +2,13 @@ import BigNumber from "bignumber.js";
 
 import { TCompanyEtoData, TEtoSpecsData } from "../../lib/api/eto/EtoApi.interfaces";
 
-export interface ICalculatedContribution {
-  isWhitelisted: boolean;
-  minTicketEurUlps: BigNumber;
-  maxTicketEurUlps: BigNumber;
-  equityTokenInt: BigNumber;
-  neuRewardUlps: BigNumber;
-  maxCapExceeded: boolean;
-}
-
 export interface IEtoTotalInvestment {
   totalEquivEurUlps: BigNumber;
   totalTokensInt: BigNumber;
   totalInvestors: BigNumber;
 }
 
-export enum ETOStateOnChain {
+export enum EETOStateOnChain {
   Setup = 0, // Initial state
   Whitelist = 1,
   Public = 2,
@@ -27,10 +18,10 @@ export enum ETOStateOnChain {
   Refund = 6, // Terminal state
 }
 
-export type TEtoStartOfStates = Record<ETOStateOnChain, Date | undefined>;
+export type TEtoStartOfStates = Record<EETOStateOnChain, Date | undefined>;
 
 export interface IEtoContractData {
-  timedState: ETOStateOnChain;
+  timedState: EETOStateOnChain;
   totalInvestment: IEtoTotalInvestment;
   startOfStates: TEtoStartOfStates;
 }

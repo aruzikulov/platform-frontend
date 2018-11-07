@@ -1,6 +1,11 @@
 .content {
   max-width: 400px;
   margin: 0 auto;
+
+  :global(.button) {
+    display: block;
+    margin: 0 auto;
+  }
 }
 
 .wrapper {
@@ -40,8 +45,21 @@
   margin-right: 6px;
 }
 
-.download-icon {
-  @include rect(14px);
+.description {
+  font-size: px-to-rem(12px);
+  letter-spacing: px-to-rem(-.2px);
+}
 
-  margin-right: 4px;
+.animated-ethereum {
+  transform: scale(.3);
+  height: 110px !important; // sass-lint:disable-line no-important
+  width: 60px !important; // sass-lint:disable-line no-important
+}
+
+.footer-success,
+.footer-waiting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
 }

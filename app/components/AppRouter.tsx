@@ -11,32 +11,41 @@ import { EtoDashboard } from "./eto/EtoDashboard";
 import { Kyc } from "./kyc/Kyc";
 import { Portfolio } from "./portfolio";
 
+import { SwitchConnected } from "../utils/connectedRouting";
 import { appRoutes } from "./appRoutes";
 import { EmailVerify } from "./EmailVerify";
 import { EtoIssuerView } from "./eto/EtoIssuerView";
-import { EtoPreview } from "./eto/EtoPreview";
 import { EtoPublicView } from "./eto/EtoPublicView";
+import { EtoPublicViewByContractId } from "./eto/EtoPublicViewByContractId";
+import { EtoWidgetView } from "./eto/EtoWidgetView";
 import { EtoRegister } from "./eto/registration/Start";
 import { Landing } from "./landing/Landing";
 import { LandingEto } from "./landing/LandingEto";
-import { BackupSeed } from "./settings/backupSeed/BackupSeed";
+import { BackupSeed } from "./settings/backup-seed/BackupSeed";
 import { settingsRoutes } from "./settings/routes";
 import { Settings } from "./settings/Settings";
-import { SwitchConnected } from "./shared/connectedRouting";
+import { WalletRecoverMain } from "./wallet-selector/wallet-recover/WalletRecoverMain";
+import { WalletSelector } from "./wallet-selector/WalletSelector";
 import { Wallet } from "./wallet/Wallet";
-import { WalletRecoverMain } from "./walletSelector/walletRecover/WalletRecoverMain";
-import { WalletSelector } from "./walletSelector/WalletSelector";
 
 export const AppRouter: React.SFC = () => (
   <SwitchConnected>
     <Route
-      path={appRoutes.etoPreview}
-      render={({ match }) => <EtoPreview previewCode={match.params.previewCode} />}
+      path={appRoutes.etoPublicView}
+      render={({ match }) => <EtoPublicView previewCode={match.params.previewCode} />}
+      exact
     />
 
     <Route
-      path={appRoutes.etoPublicView}
-      render={({ match }) => <EtoPublicView etoId={match.params.etoId} />}
+      path={appRoutes.etoPublicViewById}
+      render={({ match }) => <EtoPublicViewByContractId etoId={match.params.etoId} />}
+      exact
+    />
+
+    <Route
+      path={appRoutes.etoWidgetView}
+      render={({ match }) => <EtoWidgetView previewCode={match.params.previewCode} />}
+      exact
     />
 
     <OnlyPublicRoute path={appRoutes.root} component={Landing} exact />
@@ -71,12 +80,18 @@ export const AppRouter: React.SFC = () => (
     {process.env.NF_PORTFOLIO_PAGE_VISIBLE === "1" && (
       <OnlyAuthorizedRoute path={appRoutes.portfolio} investorComponent={Portfolio} />
     )}
-    <OnlyAuthorizedRoute path={appRoutes.wallet} investorComponent={Wallet} />
+
+    {/* only issuer routes */}
     <OnlyAuthorizedRoute path={appRoutes.documents} issuerComponent={Documents} />
     <OnlyAuthorizedRoute path={appRoutes.etoRegister} issuerComponent={EtoRegister} />
     <OnlyAuthorizedRoute path={appRoutes.etoIssuerView} issuerComponent={EtoIssuerView} exact />
 
     {/* common routes for both investors and issuers */}
+    <OnlyAuthorizedRoute
+      path={appRoutes.wallet}
+      investorComponent={Wallet}
+      issuerComponent={Wallet}
+    />
     <OnlyAuthorizedRoute
       path={appRoutes.dashboard}
       investorComponent={Dashboard}

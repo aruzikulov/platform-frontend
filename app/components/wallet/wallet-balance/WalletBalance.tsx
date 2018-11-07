@@ -2,9 +2,11 @@ import * as cn from "classnames";
 import * as React from "react";
 
 import { CommonHtmlProps } from "../../../types";
-import { LoadingIndicator } from "../../shared/LoadingIndicator";
+import { LoadingIndicator } from "../../shared/loading-indicator";
 import { IPanelProps, Panel } from "../../shared/Panel";
 import { TotalEuro } from "../TotalEuro";
+
+import * as styles from "./WalletBalance.module.scss";
 
 export interface IWalletValues {
   ethAmount: string;
@@ -34,7 +36,7 @@ export const WalletBalanceContainer: React.SFC<
       rightComponent={data && <TotalEuro totalEurValue={data.totalEuroAmount} />}
       className={cn(className, "d-flex flex-column")}
     >
-      {children}
+      <div className={styles.wrapper}>{children}</div>
     </Panel>
   );
 };
