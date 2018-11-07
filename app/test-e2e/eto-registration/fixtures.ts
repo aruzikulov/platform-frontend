@@ -278,7 +278,7 @@ export const productVisionForm: TFormFixture = {
   productVision: "Something about the vision",
   problemSolved: "Something about the key problem",
   customerGroup: "Who do we target?",
-  targetMarketAndIndustry: "Target market and industry",
+  targetMarketAndIndustry: "Market traction",
   keyCompetitors: "Key competition",
   sellingProposition: "The selling prop",
   keyBenefitsForInvestors: "Benefits for our investors",
