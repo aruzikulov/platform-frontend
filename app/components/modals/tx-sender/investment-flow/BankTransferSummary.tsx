@@ -15,22 +15,25 @@ import {
   selectNeuRewardUlpsByEtoId,
 } from "../../../../modules/investor-tickets/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
+import { ETxSenderType } from "../../../../modules/tx/interfaces";
 import { appConnect } from "../../../../store";
 import { divideBigNumbers } from "../../../../utils/BigNumberUtils";
 import { formatMoney } from "../../../../utils/Money.utils";
+import { Button, EButtonLayout } from "../../../shared/buttons";
 import { DocumentTemplateButton } from "../../../shared/DocumentLink";
 import { Heading } from "../../../shared/modals/Heading";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
+import { ITxSummaryDispatchProps } from "../TxSender";
 import { formatEur } from "./utils";
 
 import * as neuIcon from "../../../../assets/img/neu_icon.svg";
 import * as tokenIcon from "../../../../assets/img/token_icon.svg";
 import * as styles from "./Summary.module.scss";
 
-type IDispatchProps = {
+interface IDispatchProps extends ITxSummaryDispatchProps {
   downloadAgreement: (etoId: string) => void;
-};
+}
 
 interface IStateProps {
   companyName: string;
@@ -46,6 +49,8 @@ const BankTransferSummaryComponent: React.SFC<IProps> = ({
   investmentEur,
   companyName,
   downloadAgreement,
+  onAccept,
+  onChange,
   ...data
 }) => {
   const equityTokens = (
@@ -117,13 +122,27 @@ const BankTransferSummaryComponent: React.SFC<IProps> = ({
           title={<FormattedMessage id="investment-flow.summary.download-agreement" />}
         />
       </Row>
+
+      <Row className="justify-content-center mb-0 mt-0">
+        <Button layout={EButtonLayout.PRIMARY} type="button" onClick={onAccept}>
+          <FormattedMessage id="investment-flow.confirm" />
+        </Button>
+        <Button
+          layout={EButtonLayout.SECONDARY}
+          type="button"
+          onClick={onChange}
+          data-test-id="invest-modal-summary-change-button"
+        >
+          <FormattedMessage id="investment-flow.change" />
+        </Button>
+      </Row>
     </Container>
   );
 };
 
 const BankTransferSummary = compose<IProps, {}>(
   setDisplayName("BankTransferSummary"),
-  appConnect<IStateProps>({
+  appConnect<IStateProps, ITxSummaryDispatchProps>({
     stateToProps: state => {
       const etoId = selectInvestmentEtoId(state);
       // eto and computed values are guaranteed to be present at investment summary state
@@ -137,6 +156,8 @@ const BankTransferSummary = compose<IProps, {}>(
       };
     },
     dispatchToProps: d => ({
+      onAccept: () => d(actions.investmentFlow.showBankTransferDetails()),
+      onChange: () => d(actions.investmentFlow.changeBankTransfer(ETxSenderType.INVEST)),
       downloadAgreement: (etoId: string) =>
         d(
           actions.publicEtos.downloadPublicEtoTemplateByType(

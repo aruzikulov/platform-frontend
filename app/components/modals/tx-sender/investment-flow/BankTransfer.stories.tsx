@@ -11,6 +11,8 @@ const detailsData = {
   bic: "bar bic",
   referenceCode: "asdfölk",
   amount: "123456781234567812345678",
+  onGasStipendChange: () => {},
+  handleCheckbox: () => {},
 };
 
 const summaryData = {
@@ -19,16 +21,10 @@ const summaryData = {
   equityTokens: "1234",
   estimatedReward: "3456123412341231234123412344",
   etoAddress: "0xfufu",
+  onAccept: () => {},
+  downloadAgreement: () => {},
 };
 
 storiesOf("Investment/Bank Transfer", module)
-  .add("Details", () => (
-    <BankTransferDetailsComponent
-      onAccept={() => {}}
-      onGasStipendChange={() => {}}
-      {...detailsData}
-    />
-  ))
-  .add("Summary", () => (
-    <BankTransferSummaryComponent downloadAgreement={() => {}} {...summaryData} />
-  ));
+  .add("Details", () => <BankTransferDetailsComponent {...detailsData} />)
+  .add("Summary", () => <BankTransferSummaryComponent {...summaryData} />);

@@ -77,7 +77,7 @@ interface IDispatchProps {
   changeEuroValue: (value: string) => void;
   changeEthValue: (value: string) => void;
   changeInvestmentType: (type: EInvestmentType) => void;
-  showBankTransferDetails: () => void;
+  showBankTransferSummary: () => void;
 }
 
 interface IWithProps {
@@ -303,7 +303,7 @@ export const InvestmentSelection: React.SFC = compose<any>(
     },
     dispatchToProps: dispatch => ({
       sendTransaction: () => dispatch(actions.txSender.txSenderAcceptDraft()),
-      showBankTransferDetails: () => dispatch(actions.investmentFlow.showBankTransferDetails()),
+      showBankTransferSummary: () => dispatch(actions.investmentFlow.showBankTransferSummary()),
       changeEthValue: value =>
         dispatch(actions.investmentFlow.submitCurrencyValue(value, EInvestmentCurrency.Ether)),
       changeEuroValue: value =>
@@ -314,16 +314,18 @@ export const InvestmentSelection: React.SFC = compose<any>(
   }),
   withProps<IWithProps, IStateProps>(
     ({ eto, ethValue, investmentType, gasCostEth, euroValue, etherPriceEur }) => {
-      const gasCostEuro = multiplyBigNumbers([gasCostEth, etherPriceEur]);
+      const isBankTransfer = investmentType === EInvestmentType.BankTransfer;
+      const gasCostEther = isBankTransfer ? "0" : gasCostEth;
+      const gasCostEuro = multiplyBigNumbers([gasCostEther, etherPriceEur]);
       const minTicketEur = eto.minTicketEur || 0;
-
       return {
-        gasCostEuro,
         minTicketEur,
+        gasCostEuro,
+        gasCostEth: gasCostEther,
         minTicketEth: divideBigNumbers(minTicketEur, etherPriceEur),
-        totalCostEth: addBigNumbers([gasCostEth, ethValue || "0"]),
+        totalCostEth: addBigNumbers([gasCostEther, ethValue || "0"]),
         totalCostEur: addBigNumbers([gasCostEuro, euroValue || "0"]),
-        isWalletBalanceKnown: investmentType !== EInvestmentType.BankTransfer,
+        isWalletBalanceKnown: !isBankTransfer,
       };
     },
   ),
@@ -340,11 +342,11 @@ export const InvestmentSelection: React.SFC = compose<any>(
 
       changeEuroValue(balanceEurFormatted);
     },
-    investNow: ({ investmentType, sendTransaction, showBankTransferDetails }) => () => {
+    investNow: ({ investmentType, sendTransaction, showBankTransferSummary }) => () => {
       if (investmentType !== EInvestmentType.BankTransfer) {
         sendTransaction();
       } else {
-        showBankTransferDetails();
+        showBankTransferSummary();
       }
     },
   }),

@@ -119,7 +119,7 @@ Button.defaultProps = {
 
 const ButtonIcon: React.SFC<IButtonIcon> = ({ onClick, className, ...props }) => (
   <button className={cn(styles.buttonIcon, className)} onClick={onClick}>
-    <InlineIcon {...props} width="20px" height="20px" />
+    <InlineIcon {...props} />
   </button>
 );
 

@@ -11,6 +11,7 @@ interface IProps {
   value?: any;
   checked?: boolean;
   disabled?: boolean;
+  inputRef?: (el: HTMLInputElement | null) => void;
   "data-test-id"?: string;
 }
 
@@ -26,6 +27,7 @@ const CheckboxComponent: React.SFC<IProps & IInternalProps> = ({
   checked,
   disabled,
   inputId,
+  inputRef,
   "data-test-id": dataTestId,
 }) => {
   return (
@@ -40,6 +42,7 @@ const CheckboxComponent: React.SFC<IProps & IInternalProps> = ({
         checked={checked}
         data-test-id={dataTestId}
         disabled={disabled}
+        ref={inputRef}
       />
       <div className={cn(styles.indicator, disabled && styles.disabled)} />
       {label && <div className={styles.label}>{label}</div>}
@@ -54,6 +57,7 @@ const RadioButtonComponent: React.SFC<IProps & IInternalProps> = ({
   onChange,
   checked,
   disabled,
+  inputRef,
   "data-test-id": dataTestId,
 }) => {
   return (
@@ -67,6 +71,7 @@ const RadioButtonComponent: React.SFC<IProps & IInternalProps> = ({
         value={value}
         defaultChecked={checked}
         data-test-id={dataTestId}
+        ref={inputRef}
       />
       <div className={cn(styles.indicator, disabled && styles.disabled)} />
       {label && <div className={styles.label}>{label}</div>}
