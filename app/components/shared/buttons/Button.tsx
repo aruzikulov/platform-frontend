@@ -66,6 +66,14 @@ const buttonLayoutClassNames: Record<EButtonLayout, string> = {
   [EButtonLayout.SIMPLE]: styles.buttonSimple,
 };
 
+const buttonThemeClassNames: Record<TButtonTheme, string> = {
+  dark: styles.buttonDark,
+  white: styles.buttonWhite,
+  brand: styles.buttonBrand,
+  silver: styles.buttonSilver,
+  graphite: styles.buttonGraphite,
+};
+
 const Button: React.SFC<IButtonProps> = ({
   children,
   layout,
@@ -86,7 +94,7 @@ const Button: React.SFC<IButtonProps> = ({
       styles.button,
       buttonLayoutClassNames[layout!],
       iconPosition,
-      { [theme!]: layout !== EButtonLayout.INLINE },
+      { [buttonThemeClassNames[theme!]]: layout !== EButtonLayout.INLINE },
       size,
       width,
     )}

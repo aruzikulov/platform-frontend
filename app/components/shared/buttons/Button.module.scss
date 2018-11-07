@@ -26,21 +26,23 @@ $_active-color: lighten($_hover-color, 20%);
     }
   }
 
-  &:not(.button-inline) {
-    > .content {
-      align-items: center;
-      display: flex;
-      flex-shrink: 0;
-      justify-content: center;
-      padding: px-to-rem(8px) px-to-rem(20px);
-      position: relative;
-      text-align: center;
-      text-decoration: inherit;
-      transition: 200ms ease-out all; // sass-lint:disable-line no-transition-all
-    }
+  > .content {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    padding: px-to-rem(8px) px-to-rem(20px);
+    position: relative;
+    text-align: center;
+    text-decoration: inherit;
+    transition: 200ms ease-out all; // sass-lint:disable-line no-transition-all
   }
 
-  &:disabled {
+  &:disabled,
+  &-primary:disabled, // sass-lint:disable-line force-pseudo-nesting
+  &-secondary:disabled, // sass-lint:disable-line force-pseudo-nesting
+  &-inline:disabled, // sass-lint:disable-line force-pseudo-nesting
+  &-simple:disabled { // sass-lint:disable-line force-pseudo-nesting
     color: $neu-pale-grey;
     cursor: not-allowed;
 
@@ -129,6 +131,7 @@ $_active-color: lighten($_hover-color, 20%);
     .content {
       padding: 0;
       margin-top: 0;
+      justify-content: initial;
 
       text-decoration: underline;
 
@@ -158,31 +161,42 @@ $_active-color: lighten($_hover-color, 20%);
     }
   }
 
-  &:global {
-    // themes
-    &.white {
-      color: $neu-white-two;
+  // themes
+  &-white {
+    color: $neu-white-two;
+  }
+
+  &-dark {
+    color: $neu-greyish-brown;
+  }
+
+  &-graphite {
+    color: $color-graphite-light;
+  }
+
+  &-brand {
+    background-color: $color-brand;
+    color: $color-graphite;
+
+    :local(.content) {
+      border-color: $color-brand;
     }
+  }
 
-    &.dark {
-      color: $neu-greyish-brown;
+  &-silver {
+    color: $neu-slate-grey;
+  }
+
+  // elements
+  &.icon-before {
+    :global(.inline-icon) {
+      margin-right: 10px;
     }
+  }
 
-    &.graphite {
-      color: $color-graphite-light;
-    }
-
-    &.brand {
-      background-color: $color-brand;
-      color: $color-graphite;
-
-      :local(.content) {
-        border-color: $color-brand;
-      }
-    }
-
-    &.silver {
-      color: $neu-slate-grey;
+  &.icon-after {
+    :global(.inline-icon) {
+      margin-left: 10px;
     }
   }
 
@@ -190,15 +204,6 @@ $_active-color: lighten($_hover-color, 20%);
     color: currentColor;
     height: px-to-rem(20px);
     width: px-to-rem(20px);
-
-    // elements
-    &.icon-before {
-      margin-right: 10px;
-    }
-
-    &.icon-after {
-      margin-left: 10px;
-    }
   }
 }
 

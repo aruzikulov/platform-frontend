@@ -46,7 +46,7 @@ interface IMenuEntryLink {
 
 interface IMenuEntryButton {
   onClick: () => void;
-  isActive: () => boolean;
+  isActive: boolean;
 }
 
 interface IMenuEntryDisabled {
@@ -68,7 +68,6 @@ interface IDispatchProps {
 
 interface IWithProps {
   isLinkActive: (match: match<any>, location: H.Location) => boolean;
-  isIdentityButtonActive: () => boolean;
 }
 
 interface IMenuContent {
@@ -140,7 +139,7 @@ const MenuEntryButton: React.SFC<IMenuEntry & IMenuEntryButton> = ({
     <MenuEntryDisabled {...props} />
   ) : (
     <Button
-      className={cn(styles.menuItem, { [styles.menuItemActive]: isActive() })}
+      className={cn(styles.menuItem, { [styles.menuItemActive]: isActive })}
       onClick={onClick}
       layout={EButtonLayout.INLINE}
     >
@@ -153,7 +152,7 @@ const InvestorMenu: React.SFC<IStateProps & IDispatchProps & IWithProps> = ({
   actionRequiredSettings,
   openIdentityModal,
   isLinkActive,
-  isIdentityButtonActive,
+  isIdentityModalOpened,
   isVerifiedInvestor,
 }) => (
   <div className={styles.menu}>
@@ -199,7 +198,7 @@ const InvestorMenu: React.SFC<IStateProps & IDispatchProps & IWithProps> = ({
         onClick={openIdentityModal}
         menuName={<FormattedMessage id="menu.identity" />}
         data-test-id="authorized-layout-identity-button"
-        isActive={isIdentityButtonActive}
+        isActive={isIdentityModalOpened}
       />
     </div>
   </div>
@@ -278,6 +277,5 @@ export const LayoutAuthorizedMenu = compose<IStateProps & IDispatchProps & IWith
   }),
   withHandlers<IStateProps, IWithProps>({
     isLinkActive: props => match => match && !props.isIdentityModalOpened,
-    isIdentityButtonActive: props => () => props.isIdentityModalOpened,
   }),
 )(LayoutAuthorizedMenuComponent);

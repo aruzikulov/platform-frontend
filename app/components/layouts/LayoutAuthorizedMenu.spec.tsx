@@ -7,17 +7,19 @@ import { EUserType } from "../../lib/api/users/interfaces";
 import { LayoutAuthorizedMenuComponent } from "./LayoutAuthorizedMenu";
 
 describe("<LayoutAuthorizedMenuComponent />", () => {
+  const defaultProps = {
+    shouldEtoDataLoad: true,
+    isIdentityModalOpened: false,
+    openIdentityModal: () => {},
+    isLinkActive: () => true,
+    isIdentityButtonActive: () => true,
+    isVerifiedInvestor: false,
+    actionRequiredSettings: false,
+  };
+
   it("should render investor menu", () => {
     const MyNeuWidgetComponent = shallow(
-      <LayoutAuthorizedMenuComponent
-        shouldEtoDataLoad={true}
-        userType={EUserType.INVESTOR}
-        actionRequiredSettings={false}
-        isIdentityModalOpened={false}
-        openIdentityModal={() => {}}
-        isLinkActive={() => true}
-        isIdentityButtonActive={() => true}
-      />,
+      <LayoutAuthorizedMenuComponent userType={EUserType.INVESTOR} {...defaultProps} />,
     );
 
     expect(MyNeuWidgetComponent.find(tid("issuer-menu"))).to.have.length(0);
@@ -26,15 +28,7 @@ describe("<LayoutAuthorizedMenuComponent />", () => {
 
   it("should render issuer menu", () => {
     const MyNeuWidgetComponent = shallow(
-      <LayoutAuthorizedMenuComponent
-        shouldEtoDataLoad={true}
-        userType={EUserType.ISSUER}
-        actionRequiredSettings={false}
-        isIdentityModalOpened={false}
-        openIdentityModal={() => {}}
-        isLinkActive={() => true}
-        isIdentityButtonActive={() => true}
-      />,
+      <LayoutAuthorizedMenuComponent userType={EUserType.ISSUER} {...defaultProps} />,
     );
 
     expect(MyNeuWidgetComponent.find(tid("issuer-menu"))).to.have.length(1);
@@ -43,16 +37,7 @@ describe("<LayoutAuthorizedMenuComponent />", () => {
 
   it("should throw when userType is not defined", () => {
     expect(() => {
-      shallow(
-        <LayoutAuthorizedMenuComponent
-          shouldEtoDataLoad={true}
-          actionRequiredSettings={false}
-          isIdentityModalOpened={false}
-          openIdentityModal={() => {}}
-          isLinkActive={() => true}
-          isIdentityButtonActive={() => true}
-        />,
-      );
+      shallow(<LayoutAuthorizedMenuComponent userType={undefined} {...defaultProps} />);
     }).to.throw();
   });
 });
