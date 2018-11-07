@@ -188,15 +188,18 @@ $_active-color: lighten($_hover-color, 20%);
   }
 
   // elements
-  &.icon-before {
-    :global(.inline-icon) {
-      margin-right: 10px;
-    }
-  }
+  &:global {
 
-  &.icon-after {
-    :global(.inline-icon) {
-      margin-left: 10px;
+    &.icon-before {
+      :global(.inline-icon) {
+        margin-right: 10px;
+      }
+    }
+
+    &.icon-after {
+      :global(.inline-icon) {
+        margin-left: 10px;
+      }
     }
   }
 
@@ -205,6 +208,7 @@ $_active-color: lighten($_hover-color, 20%);
     height: px-to-rem(20px);
     width: px-to-rem(20px);
   }
+
 }
 
 .button-icon {
