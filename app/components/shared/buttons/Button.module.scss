@@ -6,9 +6,14 @@ $_focus-color: $color-brand;
 $_active-color: lighten($_hover-color, 20%);
 
 .button {
-  all: initial;
-  cursor: pointer;
-  font-weight: $font-weight-bold;
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
 
   &:focus,
   .content:focus {
@@ -21,23 +26,21 @@ $_active-color: lighten($_hover-color, 20%);
     }
   }
 
-  > .content {
-    align-items: center;
-    display: flex;
-    flex-shrink: 0;
-    justify-content: center;
-    padding: px-to-rem(8px) px-to-rem(20px);
-    position: relative;
-    text-align: center;
-    text-decoration: inherit;
-    transition: 200ms ease-out all; // sass-lint:disable-line no-transition-all
+  &:not(.button-inline) {
+    > .content {
+      align-items: center;
+      display: flex;
+      flex-shrink: 0;
+      justify-content: center;
+      padding: px-to-rem(8px) px-to-rem(20px);
+      position: relative;
+      text-align: center;
+      text-decoration: inherit;
+      transition: 200ms ease-out all; // sass-lint:disable-line no-transition-all
+    }
   }
 
-  &:disabled,
-  &:global(.primary):disabled, // sass-lint:disable-line force-pseudo-nesting
-  &:global(.secondary):disabled, // sass-lint:disable-line force-pseudo-nesting
-  &:global(.inline):disabled, // sass-lint:disable-line force-pseudo-nesting
-  &:global(.simple):disabled { // sass-lint:disable-line force-pseudo-nesting
+  &:disabled {
     color: $neu-pale-grey;
     cursor: not-allowed;
 
@@ -51,8 +54,10 @@ $_active-color: lighten($_hover-color, 20%);
   }
 
   // types
-  &:global(.primary) {
+  &-primary {
     @include font-button-default;
+
+    font-weight: $font-weight-bold;
     text-transform: uppercase;
 
     .content {
@@ -91,9 +96,10 @@ $_active-color: lighten($_hover-color, 20%);
     }
   }
 
-  &:global(.secondary) {
+  &-secondary {
     @include font-tab;
 
+    font-weight: $font-weight-bold;
     text-transform: uppercase;
 
     &:hover {
@@ -105,7 +111,7 @@ $_active-color: lighten($_hover-color, 20%);
     }
   }
 
-  &:global(.simple) {
+  &-simple {
     @include font-label;
 
     font-weight: normal;
@@ -117,20 +123,19 @@ $_active-color: lighten($_hover-color, 20%);
     }
   }
 
-  &:global(.inline) {
+  &-inline {
     @include font-default;
-
-    font-weight: inherit;
-    text-decoration: underline;
-
-    &:hover,
-    &:focus {
-      text-decoration: none;
-    }
 
     .content {
       padding: 0;
       margin-top: 0;
+
+      text-decoration: underline;
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+      }
     }
   }
 
@@ -179,25 +184,21 @@ $_active-color: lighten($_hover-color, 20%);
     &.silver {
       color: $neu-slate-grey;
     }
-
-    // elements
-    &.icon-before {
-      :global(.inline-icon) {
-        margin-right: 10px;
-      }
-    }
-
-    &.icon-after {
-      :global(.inline-icon) {
-        margin-left: 10px;
-      }
-    }
   }
 
   :global(.inline-icon) {
     color: currentColor;
     height: px-to-rem(20px);
     width: px-to-rem(20px);
+
+    // elements
+    &.icon-before {
+      margin-right: 10px;
+    }
+
+    &.icon-after {
+      margin-left: 10px;
+    }
   }
 }
 

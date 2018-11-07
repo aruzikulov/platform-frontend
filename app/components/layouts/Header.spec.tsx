@@ -2,9 +2,9 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 import * as React from "react";
 import { spy } from "sinon";
-import { tid } from "../../test/testUtils";
-import { EUserType } from "../lib/api/users/interfaces";
-import { appRoutes } from "./appRoutes";
+import { tid } from "../../../test/testUtils";
+import { EUserType } from "../../lib/api/users/interfaces";
+import { appRoutes } from "../appRoutes";
 import { HeaderComponent } from "./Header";
 
 describe("<HeaderComponent />", () => {

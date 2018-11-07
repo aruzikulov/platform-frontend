@@ -8,7 +8,7 @@ import { ImmutableFileId } from "../../lib/api/ImmutableStorage.interfaces";
 import { actions } from "../../modules/actions";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
-import { documentTitles } from "../Documents";
+import { documentTitles } from "../documents/Documents";
 import { DocumentTemplateButton } from "./DocumentLink";
 import { InlineIcon } from "./InlineIcon";
 import { Panel } from "./Panel";

@@ -1,8 +1,5 @@
 a {
-  &[href^="http"],
-  &[download] {
-    text-decoration: underline;
-  }
+  text-decoration: underline;
 
   &,
   &:visited {

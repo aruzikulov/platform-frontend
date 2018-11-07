@@ -10,7 +10,7 @@ import { Q18 } from "../../config/constants";
 import { IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { TETOWithInvestorTicket } from "../../modules/investor-tickets/types";
 import { EETOStateOnChain } from "../../modules/public-etos/types";
-import { documentTitles } from "../Documents";
+import { documentTitles } from "../documents/Documents";
 import { AssetPortfolio } from "../shared/AssetPortfolio";
 import { Button, EButtonLayout } from "../shared/buttons";
 import { Document } from "../shared/Document";

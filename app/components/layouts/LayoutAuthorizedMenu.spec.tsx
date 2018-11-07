@@ -13,6 +13,10 @@ describe("<LayoutAuthorizedMenuComponent />", () => {
         shouldEtoDataLoad={true}
         userType={EUserType.INVESTOR}
         actionRequiredSettings={false}
+        isIdentityModalOpened={false}
+        openIdentityModal={() => {}}
+        isLinkActive={() => true}
+        isIdentityButtonActive={() => true}
       />,
     );
 
@@ -26,6 +30,10 @@ describe("<LayoutAuthorizedMenuComponent />", () => {
         shouldEtoDataLoad={true}
         userType={EUserType.ISSUER}
         actionRequiredSettings={false}
+        isIdentityModalOpened={false}
+        openIdentityModal={() => {}}
+        isLinkActive={() => true}
+        isIdentityButtonActive={() => true}
       />,
     );
 
@@ -36,7 +44,14 @@ describe("<LayoutAuthorizedMenuComponent />", () => {
   it("should throw when userType is not defined", () => {
     expect(() => {
       shallow(
-        <LayoutAuthorizedMenuComponent shouldEtoDataLoad={true} actionRequiredSettings={false} />,
+        <LayoutAuthorizedMenuComponent
+          shouldEtoDataLoad={true}
+          actionRequiredSettings={false}
+          isIdentityModalOpened={false}
+          openIdentityModal={() => {}}
+          isLinkActive={() => true}
+          isIdentityButtonActive={() => true}
+        />,
       );
     }).to.throw();
   });

@@ -59,6 +59,13 @@ export interface IButtonProps extends IGeneralButton, CommonHtmlProps {
   textPosition?: ButtonTextPosition;
 }
 
+const buttonLayoutClassNames: Record<EButtonLayout, string> = {
+  [EButtonLayout.PRIMARY]: styles.buttonPrimary,
+  [EButtonLayout.SECONDARY]: styles.buttonSecondary,
+  [EButtonLayout.INLINE]: styles.buttonInline,
+  [EButtonLayout.SIMPLE]: styles.buttonSimple,
+};
+
 const Button: React.SFC<IButtonProps> = ({
   children,
   layout,
@@ -75,7 +82,14 @@ const Button: React.SFC<IButtonProps> = ({
   ...props
 }) => (
   <button
-    className={cn(styles.button, layout, iconPosition, theme, size, width)}
+    className={cn(
+      styles.button,
+      buttonLayoutClassNames[layout!],
+      iconPosition,
+      { [theme!]: layout !== EButtonLayout.INLINE },
+      size,
+      width,
+    )}
     disabled={disabled || isLoading}
     type={type}
     {...props}
