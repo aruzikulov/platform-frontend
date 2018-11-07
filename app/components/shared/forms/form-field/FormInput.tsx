@@ -24,7 +24,7 @@ export interface IFormInputExternalProps {
   prefix?: string | React.ReactNode;
   suffix?: string | React.ReactNode;
   addonStyle?: string;
-  maxLength?: string;
+  maxLength?: number;
   charactersLimit?: number;
   size?: InputSize;
   customValidation?: (value: any) => string | Function | Promise<void> | undefined;
@@ -72,6 +72,7 @@ export class FormInput extends React.Component<FormInputProps> {
       disabled,
       customValidation,
       ignoreTouched,
+      maxLength,
       ...props
     } = this.props;
     return (
@@ -103,6 +104,7 @@ export class FormInput extends React.Component<FormInputProps> {
                         </InputGroupAddon>
                       )}
                       <Input
+                        maxLength={maxLength}
                         className={cn(
                           className,
                           styles.inputField,
