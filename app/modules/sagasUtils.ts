@@ -2,8 +2,6 @@ import { isEqual } from "lodash/fp";
 import {
   call,
   Effect,
-  fork,
-  GenericRaceEffect,
   getContext,
   race,
   spawn,
@@ -56,12 +54,10 @@ export function* neuTakeUntil(
 ): any {
   while (true) {
     const action = yield take(startAction);
-
-    yield fork(function*(): IterableIterator<GenericRaceEffect<any>> {
-      yield race({
-        task: neuCall(saga, action),
-        cancel: take(stopAction),
-      });
+    // No direct concurrent requests like `fork` or `spawn` should be in the loop
+    yield race({
+      task: neuCall(saga, action),
+      cancel: take(stopAction),
     });
   }
 }

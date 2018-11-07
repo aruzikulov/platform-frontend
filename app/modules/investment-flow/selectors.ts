@@ -1,6 +1,8 @@
 import { IAppState } from "../../store";
 import { addBigNumbers, compareBigNumbers } from "../../utils/BigNumberUtils";
 import { convertToBigInt } from "../../utils/Number.utils";
+import { selectEtoOnChainStateById } from "../public-etos/selectors";
+import { EETOStateOnChain } from "../public-etos/types";
 import { EValidationState } from "../tx/sender/reducer";
 import { selectTxValidationState } from "../tx/sender/selectors";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
@@ -75,8 +77,13 @@ export const selectBankTransferReferenceCode = (state: IAppState) => {
   const base64 = btoa(byteString).replace("=", "");
 
   let code = "NF " + base64;
-  if (state.investmentFlow.bankTransferGasStipend) {
+  if (selectIsBankTransferGasStipend(state)) {
     code += " G";
+  }
+
+  const etoState = selectEtoOnChainStateById(state.publicEtos, selectInvestmentEtoId(state));
+  if (etoState === EETOStateOnChain.Whitelist) {
+    code += " WL";
   }
 
   return code;

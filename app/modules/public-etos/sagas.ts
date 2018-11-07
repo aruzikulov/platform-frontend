@@ -18,7 +18,7 @@ import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { IAppState } from "../../store";
 import { actions, TAction } from "../actions";
 import { selectUserType } from "../auth/selectors";
-import { neuCall, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
+import { neuCall, neuFork, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
 import { etoInProgressPoolingDelay, etoNormalPoolingDelay } from "./constants";
 import { InvalidETOStateError } from "./errors";
 import { selectEtoById, selectEtoWithCompanyAndContract } from "./selectors";
@@ -139,7 +139,7 @@ function* watchEtoSetAction(_: TGlobalDependencies, action: TAction): any {
 function* watchEtosSetAction(_: TGlobalDependencies, action: TAction): any {
   if (action.type !== "PUBLIC_ETOS_SET_PUBLIC_ETOS") return;
 
-  yield all(map(eto => neuCall(watchEto, eto.previewCode), action.payload.etos));
+  yield all(map(eto => neuFork(watchEto, eto.previewCode), action.payload.etos));
 }
 
 function* watchEto(_: TGlobalDependencies, previewCode: string): any {

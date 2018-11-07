@@ -26,6 +26,7 @@ export interface IDividendPayout {
 interface IClaimedDividendsProps {
   totalEurValue: string;
   recentPayouts: IDividendPayout[];
+  headerText?: string | React.ReactElement<any>;
 }
 
 const NoPayoutsInfo = () => (
@@ -37,11 +38,12 @@ export const ClaimedDividends: React.SFC<IClaimedDividendsProps & CommonHtmlProp
   totalEurValue,
   recentPayouts,
   className,
+  headerText,
   ...htmlProps
 }) => (
   <Panel
     icon={neuIcon}
-    headerText="MY PROCEEDS"
+    headerText={headerText || "MY PROCEEDS"}
     rightComponent={<TotalEuro totalEurValue={totalEurValue} />}
     className={cn(styles.claimedDividends, className)}
     {...htmlProps}

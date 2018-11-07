@@ -12,23 +12,28 @@ $indicator-size: 16px;
 }
 
 .input {
-  @include visually-hidden;
 
-  &[type="radio"] + .indicator {
+  // only hide checkbox on screen. In print, show the real checkbox, because of print display problems
+  @media screen {
+    @include visually-hidden;
+  }
+
+  &[type="radio"]+.indicator {
+
     &,
     &::after {
       border-radius: 50%;
     }
   }
 
-  &:checked + .indicator {
+  &:checked+.indicator {
     &::after {
       @include rect($indicator-size - 6px);
     }
   }
 
   &:required {
-    ~ .label {
+    ~.label {
       &::after {
         content: "*";
       }
@@ -50,9 +55,14 @@ $indicator-size: 16px;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: $color-green;
-    content: "";
+    content: " ";
     transition: 200ms $ease-out-expo;
     transition-property: width, height;
+  }
+
+  // display raw input in print
+  @media print {
+    display: none;
   }
 
   &.disabled {
@@ -77,4 +87,3 @@ $indicator-size: 16px;
     vertical-align: super;
   }
 }
-
