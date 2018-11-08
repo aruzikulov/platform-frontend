@@ -760,7 +760,7 @@
   "shared-component.wallet-balance.title.account-address": "Account address:",
   "shared-component.wallet-balance.title.account-balance": "Account balance:",
   "shared-component.wallet-icbm.already-upgraded-message": "You have currently an upgraded wallet with which you can participate in the next ETO",
-  "shared-component.wallet-icbm.upgrade-message": "ICBM investors will soon need to upgrade their ICBM wallet. This feature is coming soon.",
+  "shared-component.wallet-icbm.upgrade-message": "Please upgrade your ICBM Wallet to be able to invest your funds in ETOs.",
   "shared-components.account-address.transaction-history": "Transaction history",
   "shared-components.asset-portfolio.title": "Your neumark",
   "shared-components.table.default-placeholder": "There is nothing to show here right now",
