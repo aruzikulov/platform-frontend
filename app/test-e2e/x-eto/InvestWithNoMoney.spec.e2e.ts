@@ -1,9 +1,8 @@
 import { INV_EMPTY_HAS_KYC } from "../constants";
 import { tid } from "../utils";
 import { createAndLoginNewUser } from "../utils/userHelpers";
-import { waitUntilEtoIsInState } from "./utils";
 
-const PUBLIC_ETO_ID = "0xef2260A8e516393F313e0E659b1A3571e98D73eE";
+const PUBLIC_ETO_ID = "0x560687Db44b19Ce8347A2D35873Dd95269dDF6bC";
 
 describe("Try and invest without money", () => {
   it("do", () => {
