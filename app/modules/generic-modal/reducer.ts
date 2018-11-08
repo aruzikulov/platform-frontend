@@ -5,6 +5,7 @@ import { DeepReadonly } from "../../types";
 export interface IGenericModalState {
   isOpen: boolean;
   genericModalObj?: IGenericModal;
+  component?: React.ReactType;
 }
 
 //Add more custom icons here
@@ -33,6 +34,12 @@ export const genericModalReducer: AppReducer<IGenericModalState> = (
         isOpen: true,
         genericModalObj: action.payload,
       };
+    case "MODAL_SHOW":
+      return {
+        ...state,
+        isOpen: true,
+        component: action.payload.component,
+      };
     case "GENERIC_MODAL_HIDE":
       return initialState;
   }
@@ -43,3 +50,6 @@ export const genericModalReducer: AppReducer<IGenericModalState> = (
 export const selectGenericModalIsOpen = (state: IGenericModalState): boolean => state.isOpen;
 export const selectGenericModalObj = (state: IGenericModalState): IGenericModal | undefined =>
   state.genericModalObj;
+export const selectGenericModalComponent = (
+  state: IGenericModalState,
+): React.ReactType | undefined => state.component;

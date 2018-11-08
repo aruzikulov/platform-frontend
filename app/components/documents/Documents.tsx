@@ -5,34 +5,34 @@ import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
-import { EtoState, EtoStateToCamelcase } from "../lib/api/eto/EtoApi.interfaces";
+import { EtoState, EtoStateToCamelcase } from "../../lib/api/eto/EtoApi.interfaces";
 import {
   EEtoDocumentType,
   IEtoDocument,
   IEtoFiles,
   TEtoDocumentTemplates,
-} from "../lib/api/eto/EtoFileApi.interfaces";
-import { ignoredTemplates } from "../lib/api/eto/EtoFileUtils";
-import { actions } from "../modules/actions";
+} from "../../lib/api/eto/EtoFileApi.interfaces";
+import { ignoredTemplates } from "../../lib/api/eto/EtoFileUtils";
+import { actions } from "../../modules/actions";
 import {
   selectEtoDocumentData,
   selectEtoDocumentLoading,
-} from "../modules/eto-documents/selectors";
+} from "../../modules/eto-documents/selectors";
 import {
   selectEtoLoading,
   selectIssuerEtoState,
   selectIssuerEtoTemplates,
-} from "../modules/eto-flow/selectors";
-import { appConnect } from "../store";
-import { DeepPartial } from "../types";
-import { onEnterAction } from "../utils/OnEnterAction";
-import { ETOAddDocuments } from "./eto/shared/EtoAddDocument";
-import { EtoFileIpfsModal } from "./eto/shared/EtoFileIpfsModal";
-import { LayoutAuthorized } from "./layouts/LayoutAuthorized";
-import { ClickableDocumentTile, DocumentTile } from "./shared/Document";
-import { LoadingIndicator } from "./shared/loading-indicator";
-import { SectionHeader } from "./shared/SectionHeader";
-import { SingleColDocuments } from "./shared/SingleColDocumentWidget";
+} from "../../modules/eto-flow/selectors";
+import { appConnect } from "../../store";
+import { DeepPartial } from "../../types";
+import { onEnterAction } from "../../utils/OnEnterAction";
+import { ETOAddDocuments } from "../eto/shared/EtoAddDocument";
+import { EtoFileIpfsModal } from "../eto/shared/EtoFileIpfsModal";
+import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
+import { ClickableDocumentTile, DocumentTile } from "../shared/Document";
+import { LoadingIndicator } from "../shared/loading-indicator/index";
+import { SectionHeader } from "../shared/SectionHeader";
+import { SingleColDocuments } from "../shared/SingleColDocumentWidget";
 
 import * as styles from "./Documents.module.scss";
 

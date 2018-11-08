@@ -34,55 +34,53 @@ $lg-width: px-to-rem(140px);
   display: flex;
   top: 20px;
   position: sticky;
-}
 
-.menu-item {
-  @include media-breakpoint-up(sm) {
-    padding-right: px-to-rem(5px);
-  }
+  .menu-item {
+    @include media-breakpoint-up(sm) {
+      padding-right: px-to-rem(5px);
+      height: px-to-rem(65px);
+      border-left: 3px solid transparent;
+    }
 
-  flex-shrink: 0;
-  user-select: none;
-  position: relative;
-  height: px-to-rem(60px);
-  display: flex;
-  align-items: center;
+    @include media-breakpoint-down(xs) {
+      width: px-to-rem(60px);
+      border-bottom: 3px solid transparent;
+    }
 
-  .icon {
-    color: $color-brand;
-  }
+    @include media-breakpoint-up(lg) {
+      display: flex;
+      height: px-to-rem(40px);
+      line-height: px-to-rem(40px);
+      background-position: map-get($spacers, 3) center;
+    }
 
-  .disabled-item {
-    color: $color-white;
-  }
-
-  &:hover,
-  &:global(.active) {
-    background-color: $neu-charcoal-grey;
-    border-color: $neu-piss-yellow;
-    text-decoration: none;
-  }
-
-  &:focus {
-    background-color: lighten($neu-charcoal-grey, 8%);
-    color: $color-white;
-  }
-
-  @include media-breakpoint-down(xs) {
-    width: px-to-rem(60px);
-    border-bottom: 3px solid transparent;
-  }
-
-  @include media-breakpoint-up(sm) {
-    height: px-to-rem(65px);
-    border-left: 3px solid transparent;
-  }
-
-  @include media-breakpoint-up(lg) {
+    flex-shrink: 0;
+    user-select: none;
+    position: relative;
+    height: px-to-rem(60px);
     display: flex;
-    height: px-to-rem(40px);
-    line-height: px-to-rem(40px);
-    background-position: map-get($spacers, 3) center;
+    align-items: center;
+    text-decoration: none;
+
+    .icon {
+      color: $color-brand;
+    }
+
+    .disabled-item {
+      color: $color-white;
+    }
+
+    &:hover,
+    &--active {
+      background-color: $neu-charcoal-grey;
+      border-color: $neu-piss-yellow;
+      text-decoration: none;
+    }
+
+    &:focus {
+      background-color: lighten($neu-charcoal-grey, 8%);
+      color: $color-white;
+    }
   }
 }
 

@@ -6,9 +6,14 @@ $_focus-color: $color-brand;
 $_active-color: lighten($_hover-color, 20%);
 
 .button {
-  all: initial;
-  cursor: pointer;
-  font-weight: $font-weight-bold;
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
 
   &:focus,
   .content:focus {
@@ -34,10 +39,10 @@ $_active-color: lighten($_hover-color, 20%);
   }
 
   &:disabled,
-  &:global(.primary):disabled, // sass-lint:disable-line force-pseudo-nesting
-  &:global(.secondary):disabled, // sass-lint:disable-line force-pseudo-nesting
-  &:global(.inline):disabled, // sass-lint:disable-line force-pseudo-nesting
-  &:global(.simple):disabled { // sass-lint:disable-line force-pseudo-nesting
+  &-primary:disabled, // sass-lint:disable-line force-pseudo-nesting
+  &-secondary:disabled, // sass-lint:disable-line force-pseudo-nesting
+  &-inline:disabled, // sass-lint:disable-line force-pseudo-nesting
+  &-simple:disabled { // sass-lint:disable-line force-pseudo-nesting
     color: $neu-pale-grey;
     cursor: not-allowed;
 
@@ -51,8 +56,10 @@ $_active-color: lighten($_hover-color, 20%);
   }
 
   // types
-  &:global(.primary) {
+  &-primary {
     @include font-button-default;
+
+    font-weight: $font-weight-bold;
     text-transform: uppercase;
 
     .content {
@@ -91,9 +98,10 @@ $_active-color: lighten($_hover-color, 20%);
     }
   }
 
-  &:global(.secondary) {
+  &-secondary {
     @include font-tab;
 
+    font-weight: $font-weight-bold;
     text-transform: uppercase;
 
     &:hover {
@@ -105,7 +113,7 @@ $_active-color: lighten($_hover-color, 20%);
     }
   }
 
-  &:global(.simple) {
+  &-simple {
     @include font-label;
 
     font-weight: normal;
@@ -117,20 +125,20 @@ $_active-color: lighten($_hover-color, 20%);
     }
   }
 
-  &:global(.inline) {
+  &-inline {
     @include font-default;
-
-    font-weight: inherit;
-    text-decoration: underline;
-
-    &:hover,
-    &:focus {
-      text-decoration: none;
-    }
 
     .content {
       padding: 0;
       margin-top: 0;
+      justify-content: initial;
+
+      text-decoration: underline;
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+      }
     }
   }
 
@@ -153,34 +161,35 @@ $_active-color: lighten($_hover-color, 20%);
     }
   }
 
+  // themes
+  &-white {
+    color: $neu-white-two;
+  }
+
+  &-dark {
+    color: $neu-greyish-brown;
+  }
+
+  &-graphite {
+    color: $color-graphite-light;
+  }
+
+  &-brand {
+    background-color: $color-brand;
+    color: $color-graphite;
+
+    :local(.content) {
+      border-color: $color-brand;
+    }
+  }
+
+  &-silver {
+    color: $neu-slate-grey;
+  }
+
+  // elements
   &:global {
-    // themes
-    &.white {
-      color: $neu-white-two;
-    }
 
-    &.dark {
-      color: $neu-greyish-brown;
-    }
-
-    &.graphite {
-      color: $color-graphite-light;
-    }
-
-    &.brand {
-      background-color: $color-brand;
-      color: $color-graphite;
-
-      :local(.content) {
-        border-color: $color-brand;
-      }
-    }
-
-    &.silver {
-      color: $neu-slate-grey;
-    }
-
-    // elements
     &.icon-before {
       :global(.inline-icon) {
         margin-right: 10px;
@@ -199,6 +208,7 @@ $_active-color: lighten($_hover-color, 20%);
     height: px-to-rem(20px);
     width: px-to-rem(20px);
   }
+
 }
 
 .button-icon {

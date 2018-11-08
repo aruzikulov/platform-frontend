@@ -2,16 +2,16 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "reactstrap";
 
-import { EUserType } from "../lib/api/users/interfaces";
-import { actions } from "../modules/actions";
-import { selectIsAuthorized, selectUserType } from "../modules/auth/selectors";
-import { appConnect } from "../store";
-import { appRoutes } from "./appRoutes";
-import { Button, ButtonLink, EButtonLayout } from "./shared/buttons";
-import { loginWalletRoutes, walletRegisterRoutes } from "./wallet-selector/walletRoutes";
+import { EUserType } from "../../lib/api/users/interfaces";
+import { actions } from "../../modules/actions";
+import { selectIsAuthorized, selectUserType } from "../../modules/auth/selectors";
+import { appConnect } from "../../store";
+import { appRoutes } from "../appRoutes";
+import { Button, ButtonLink, EButtonLayout } from "../shared/buttons";
+import { loginWalletRoutes, walletRegisterRoutes } from "../wallet-selector/walletRoutes";
 
-import * as logo from "../../app/assets/img/logo_yellow.svg";
-import * as logoText from "../../app/assets/img/neufund-logo.svg";
+import * as logo from "../../assets/img/logo_yellow.svg";
+import * as logoText from "../../assets/img/neufund-logo.svg";
 import * as styles from "./Header.module.scss";
 
 interface IStateProps {

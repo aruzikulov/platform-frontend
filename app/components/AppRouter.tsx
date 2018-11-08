@@ -6,14 +6,13 @@ import { OnlyAuthorizedRoute } from "./shared/routing/OnlyAuthorizedRoute";
 import { OnlyPublicRoute } from "./shared/routing/OnlyPublicRoute";
 
 import { Dashboard } from "./dashboard/Dashboard";
-import { Documents } from "./Documents";
+import { Documents } from "./documents/Documents";
 import { EtoDashboard } from "./eto/EtoDashboard";
 import { Kyc } from "./kyc/Kyc";
 import { Portfolio } from "./portfolio";
 
 import { SwitchConnected } from "../utils/connectedRouting";
 import { appRoutes } from "./appRoutes";
-import { EmailVerify } from "./EmailVerify";
 import { EtoIssuerView } from "./eto/EtoIssuerView";
 import { EtoPublicView } from "./eto/EtoPublicView";
 import { EtoPublicViewByContractId } from "./eto/EtoPublicViewByContractId";
@@ -22,6 +21,7 @@ import { EtoRegister } from "./eto/registration/Start";
 import { Landing } from "./landing/Landing";
 import { LandingEto } from "./landing/LandingEto";
 import { BackupSeed } from "./settings/backup-seed/BackupSeed";
+import { EmailVerify } from "./settings/EmailVerify";
 import { settingsRoutes } from "./settings/routes";
 import { Settings } from "./settings/Settings";
 import { WalletRecoverMain } from "./wallet-selector/wallet-recover/WalletRecoverMain";

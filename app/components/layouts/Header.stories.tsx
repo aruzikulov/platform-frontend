@@ -1,7 +1,7 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
-import { EUserType } from "../lib/api/users/interfaces";
+import { EUserType } from "../../lib/api/users/interfaces";
 import { HeaderComponent } from "./Header";
 
 storiesOf("Layout/Header", module)

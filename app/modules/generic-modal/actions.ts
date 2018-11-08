@@ -3,6 +3,8 @@ import { TIconType } from "./reducer";
 
 // TODO: Refactor actions to receive single object as a parameter
 export const genericModalActions = {
+  showModal: (component: React.ReactType) => createAction("MODAL_SHOW", { component }),
+
   showGenericModal: (
     title: string | React.ReactNode,
     description?: string | React.ReactNode,

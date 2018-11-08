@@ -6,6 +6,7 @@ import { compose, setDisplayName, withHandlers } from "recompose";
 import { actions } from "../../modules/actions";
 import {
   IGenericModal,
+  selectGenericModalComponent,
   selectGenericModalIsOpen,
   selectGenericModalObj,
 } from "../../modules/generic-modal/reducer";
@@ -20,6 +21,7 @@ import * as styles from "./GenericModal.module.scss";
 interface IStateProps {
   isOpen: boolean;
   genericModalObj?: IGenericModal;
+  component?: React.ReactType;
 }
 
 interface IHandlersProps {
@@ -37,32 +39,39 @@ const GenericModalComponent: React.SFC<IStateProps & IHandlersProps> = ({
   closeModal,
   isOpen,
   genericModalObj,
+  component: Component,
 }) => {
   return (
     <Modal isOpen={isOpen} toggle={closeModal} centered>
       <ModalComponentBody onClose={closeModal}>
-        <Row className="mt-5 justify-content-center">
-          <h5 data-test-id="components.modals.generic-modal.title">
-            {genericModalObj && genericModalObj.title}
-          </h5>
-        </Row>
+        {Component ? (
+          <Component closeModal={closeModal} />
+        ) : (
+          <>
+            <Row className="mt-5 justify-content-center">
+              <h5 data-test-id="components.modals.generic-modal.title">
+                {genericModalObj && genericModalObj.title}
+              </h5>
+            </Row>
 
-        <Row className="mb-5 justify-content-center">
-          <div className={styles.content}>
-            {genericModalObj && genericModalObj.icon && genericModalIcons[genericModalObj.icon]}{" "}
-            {genericModalObj && genericModalObj.description}
-          </div>
-        </Row>
+            <Row className="mb-5 justify-content-center">
+              <div className={styles.content}>
+                {genericModalObj && genericModalObj.icon && genericModalIcons[genericModalObj.icon]}{" "}
+                {genericModalObj && genericModalObj.description}
+              </div>
+            </Row>
 
-        <Row className="mb-5 justify-content-center">
-          <Button onClick={onClick} data-test-id="generic-modal-dismiss-button">
-            {genericModalObj && genericModalObj.actionLinkText ? (
-              genericModalObj.actionLinkText
-            ) : (
-              <FormattedMessage id="modal.generic.button.dismiss" />
-            )}
-          </Button>
-        </Row>
+            <Row className="mb-5 justify-content-center">
+              <Button onClick={onClick} data-test-id="generic-modal-dismiss-button">
+                {genericModalObj && genericModalObj.actionLinkText ? (
+                  genericModalObj.actionLinkText
+                ) : (
+                  <FormattedMessage id="modal.generic.button.dismiss" />
+                )}
+              </Button>
+            </Row>
+          </>
+        )}
       </ModalComponentBody>
     </Modal>
   );
@@ -78,6 +87,7 @@ export const GenericModal = compose<IStateProps & IHandlersProps, {}>(
     stateToProps: state => ({
       isOpen: selectGenericModalIsOpen(state.genericModal),
       genericModalObj: selectGenericModalObj(state.genericModal),
+      component: selectGenericModalComponent(state.genericModal),
     }),
   }),
   withHandlers<IStateProps & IReduxProps, IHandlersProps>({

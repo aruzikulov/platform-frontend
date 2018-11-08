@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Col, Row } from "reactstrap";
 
-import { Footer } from "../Footer";
-import { Header } from "../Header";
 import { DepositEthModal } from "../modals/DepositEthModal";
 import { IcbmWalletBalanceModal } from "../modals/IcbmWalletBalanceModal";
 import { BankTransferFlowModal } from "../modals/tx-sender/investment-flow/BankTransferFlow";
 import { TxSenderModal } from "../modals/tx-sender/TxSender";
 import { NotificationWidget } from "../shared/notification-widget/NotificationWidget";
+import { Footer } from "./Footer";
+import { Header } from "./Header";
 import { LayoutAuthorizedMenu } from "./LayoutAuthorizedMenu";
 
 import * as styles from "./LayoutAuthorized.module.scss";

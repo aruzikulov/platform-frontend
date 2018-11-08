@@ -12,7 +12,7 @@ import { IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { TETOWithInvestorTicket } from "../../modules/investor-tickets/types";
 import { EETOStateOnChain } from "../../modules/public-etos/types";
 import { withParams } from "../../utils/withParams";
-import { documentTitles } from "../Documents";
+import { documentTitles } from "../documents/Documents";
 import { externalRoutes } from "../externalRoutes";
 import { AssetPortfolio } from "../shared/AssetPortfolio";
 import { Document } from "../shared/Document";
