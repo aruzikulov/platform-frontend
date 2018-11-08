@@ -11,10 +11,4 @@ describe("<PercentageIndicatorBar />", () => {
 
     expect(component.find(tid("percentage-indicator-bar-value")).text()).to.be.eq("23%");
   });
-
-  it("should round fraction value", () => {
-    const component = shallow(<PercentageIndicatorBar fraction={0.234} />);
-
-    expect(component.find(tid("percentage-indicator-bar-value")).text()).to.be.eq("23%");
-  });
 });

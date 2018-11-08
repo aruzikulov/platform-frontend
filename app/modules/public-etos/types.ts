@@ -6,6 +6,8 @@ export interface IEtoTotalInvestment {
   totalEquivEurUlps: BigNumber;
   totalTokensInt: BigNumber;
   totalInvestors: BigNumber;
+  euroTokenBalance: BigNumber;
+  etherTokenBalance: BigNumber;
 }
 
 export enum EETOStateOnChain {

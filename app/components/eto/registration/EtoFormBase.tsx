@@ -40,7 +40,10 @@ class PercentageFormDone extends React.Component<IFormPercentageDoneProps> {
         {({ values }) => {
           const calculatedFraction = this.calculate(values);
           return (
-            <PercentageIndicatorBar className={styles.progressBar} fraction={calculatedFraction} />
+            <PercentageIndicatorBar
+              className={styles.progressBar}
+              percent={calculatedFraction * 100}
+            />
           );
         }}
       </FormikConsumer>

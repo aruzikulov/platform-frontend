@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { convertToBigInt, formatThousands } from "./Number.utils";
+import { convertToBigInt, formatThousands, normalize } from "./Number.utils";
 
 describe("NumberUtils", () => {
   describe("formatThousands", () => {
@@ -24,6 +24,15 @@ describe("NumberUtils", () => {
       expect(convertToBigInt("123.4567", 6)).to.eq("123456700");
       expect(convertToBigInt("123.4567", 2)).to.eq("12346");
       expect(convertToBigInt("65.4321", 2)).to.eq("6544");
+    });
+  });
+
+  describe("normalize", () => {
+    it("should normalize given number to a specified range", () => {
+      expect(normalize({ min: 0, max: 100 }, 100)).to.eq(1);
+      expect(normalize({ min: 0, max: 100 }, 0)).to.eq(0);
+      expect(normalize({ min: 0, max: 100 }, 25)).to.eq(0.25);
+      expect(normalize({ min: 0, max: 100 }, 80)).to.eq(0.8);
     });
   });
 });

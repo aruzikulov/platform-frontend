@@ -14,7 +14,9 @@ import {
 } from "../../lib/api/eto/EtoApi.interfaces";
 import { IEtoDocument, immutableDocumentName } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { EUserType } from "../../lib/api/users/interfaces";
+import { EtherToken } from "../../lib/contracts/EtherToken";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
+import { EuroToken } from "../../lib/contracts/EuroToken";
 import { IAppState } from "../../store";
 import { actions, TAction } from "../actions";
 import { selectUserType } from "../auth/selectors";
@@ -111,7 +113,11 @@ export function* loadEtoContact(
     }
 
     const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
+    const etherTokenContract: EtherToken = contractsService.etherToken;
+    const euroTokenContract: EuroToken = contractsService.euroToken;
 
+    const etherTokenBalance = yield etherTokenContract.balanceOf(etoContract.address);
+    const euroTokenBalance = yield euroTokenContract.balanceOf(etoContract.address);
     const timedStateRaw = yield etoContract.timedState;
     const totalInvestmentRaw = yield etoContract.totalInvestment();
     const startOfStatesRaw = yield etoContract.startOfStates;
@@ -119,7 +125,11 @@ export function* loadEtoContact(
     yield put(
       actions.publicEtos.setEtoDataFromContract(eto.previewCode, {
         timedState: timedStateRaw.toNumber(),
-        totalInvestment: convertToEtoTotalInvestment(totalInvestmentRaw),
+        totalInvestment: convertToEtoTotalInvestment(
+          totalInvestmentRaw,
+          euroTokenBalance,
+          etherTokenBalance,
+        ),
         startOfStates: convertToStateStartDate(startOfStatesRaw),
       }),
     );

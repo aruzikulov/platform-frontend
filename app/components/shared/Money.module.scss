@@ -29,4 +29,8 @@
   &:global(.t-orange) {
     color: $bright-orange;
   }
+
+  .currency {
+    text-transform: none;
+  }
 }

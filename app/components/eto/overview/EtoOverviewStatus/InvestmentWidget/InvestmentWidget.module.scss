@@ -1,4 +1,4 @@
-.invest-widget {
+.investment-widget {
   @include media-breakpoint-only(md) {
     flex-direction: row;
     align-items: center;
@@ -7,28 +7,24 @@
     flex-grow: 1;
   }
 
+  @include font-label;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 90%;
 }
 
-.header,
-.investors-backed {
+.header {
   display: flex;
   justify-content: space-between;
+  text-transform: uppercase;
 }
 
-.investors-backed {
-  flex-basis: 40%;
+.amount {
+  display: block;
 }
 
 .invest-now-button {
   display: flex;
   justify-content: center;
-}
-
-.invest-info {
-  display: flex;
-  flex-direction: column;
 }
