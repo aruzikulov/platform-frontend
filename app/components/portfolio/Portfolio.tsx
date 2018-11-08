@@ -24,7 +24,7 @@ export const Portfolio = compose<TPortfolioLayoutProps, {}>(
       pendingAssets: selectMyPendingAssets(state),
       myNeuBalance: selectNeuBalance(state.wallet),
       myNeuBalanceEuroAmount: selectNeuBalanceEuroAmount(state),
-      neuPrice: selectNeuPriceEur(state.tokenPrice),
+      neuPrice: selectNeuPriceEur(state),
       walletAddress: selectEthereumAddressWithChecksum(state),
     }),
   }),

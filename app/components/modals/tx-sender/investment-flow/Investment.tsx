@@ -6,7 +6,6 @@ import { withHandlers, withProps } from "recompose";
 import { compose } from "redux";
 import { createNumberMask } from "text-mask-addons";
 
-import { MONEY_DECIMALS } from "../../../../config/constants";
 import { TPublicEtoData } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import {
@@ -28,16 +27,14 @@ import {
   selectNeuRewardUlpsByEtoId,
 } from "../../../../modules/investor-tickets/selectors";
 import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
-import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selectors";
+import {
+  selectEtherPriceEur,
+  selectEurPriceEther,
+} from "../../../../modules/shared/tokenPrice/selectors";
 import { EValidationState } from "../../../../modules/tx/sender/reducer";
 import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
-import {
-  addBigNumbers,
-  divideBigNumbers,
-  multiplyBigNumbers,
-  subtractBigNumbers,
-} from "../../../../utils/BigNumberUtils";
+import { addBigNumbers, multiplyBigNumbers } from "../../../../utils/BigNumberUtils";
 import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
 import { formatMoney } from "../../../../utils/Money.utils";
 import { formatThousands } from "../../../../utils/Number.utils";
@@ -49,7 +46,9 @@ import { InvestmentTypeSelector, WalletSelectionData } from "./InvestmentTypeSel
 import {
   createWallets,
   formatEth,
+  formatEthTsd,
   formatEur,
+  formatEurTsd,
   formatVaryingDecimals,
   getInputErrorMessage,
   getInvestmentTypeMessages,
@@ -63,6 +62,7 @@ interface IStateProps {
   euroValue: string;
   ethValue: string;
   etherPriceEur: string;
+  eurPriceEther: string;
   investmentType?: EInvestmentType;
   gasCostEth: string;
   errorState?: EInvestmentErrorState | EValidationState;
@@ -78,6 +78,7 @@ interface IDispatchProps {
   changeEthValue: (value: string) => void;
   changeInvestmentType: (type: EInvestmentType) => void;
   showBankTransferSummary: () => void;
+  investEntireBalance: () => void;
 }
 
 interface IWithProps {
@@ -90,7 +91,6 @@ interface IWithProps {
 }
 
 interface IHandlersProps {
-  investEntireBalance: () => void;
   investNow: () => void;
 }
 
@@ -161,7 +161,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
             placeholder={`${intl.formatIntlMessage(
               "investment-flow.min-ticket-size",
             )} ${minTicketEur} €`}
-            value={formatEur(euroValue)}
+            value={formatVaryingDecimals(euroValue)}
             className="form-control"
             renderInput={props => (
               <MaskedInput
@@ -169,7 +169,8 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
                 mask={createNumberMask({
                   prefix: "",
                   thousandsSeparatorSymbol: " ",
-                  allowDecimal: false,
+                  allowDecimal: true,
+                  decimalLimit: 2,
                   integerLimit: 20,
                 })}
                 onChange={e => changeEuroValue(e.target.value)}
@@ -239,7 +240,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
                 <FormattedMessage id="investment-flow.estimated-neu-tokens" />
               </Label>
               <InfoAlert>
-                {(showTokens && neuReward && formatThousands(formatEth(neuReward))) || "\xA0"}
+                {(showTokens && neuReward && formatEurTsd(neuReward)) || "\xA0"}
               </InfoAlert>
             </FormGroup>
           </Col>
@@ -258,8 +259,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
           <div>
             <FormattedMessage id="investment-flow.total" />:{" "}
             <span className={styles.orange}>
-              {formatThousands(formatEur(totalCostEur))} € ≈ ETH{" "}
-              {formatThousands(formatEth(totalCostEth))}
+              {formatEurTsd(totalCostEur)} € ≈ ETH {formatEthTsd(totalCostEth)}
             </span>
           </div>
         </Col>
@@ -288,7 +288,8 @@ export const InvestmentSelection: React.SFC = compose<any>(
       const eur = selectInvestmentEurValueUlps(state);
       return {
         eto,
-        etherPriceEur: selectEtherPriceEur(state.tokenPrice),
+        etherPriceEur: selectEtherPriceEur(state),
+        eurPriceEther: selectEurPriceEther(state),
         euroValue: eur,
         ethValue: selectInvestmentEthValueUlps(state),
         errorState: selectInvestmentErrorState(state),
@@ -310,19 +311,20 @@ export const InvestmentSelection: React.SFC = compose<any>(
         dispatch(actions.investmentFlow.submitCurrencyValue(value, EInvestmentCurrency.Euro)),
       changeInvestmentType: (type: EInvestmentType) =>
         dispatch(actions.investmentFlow.selectInvestmentType(type)),
+      investEntireBalance: () => dispatch(actions.investmentFlow.investEntireBalance()),
     }),
   }),
   withProps<IWithProps, IStateProps>(
-    ({ eto, ethValue, investmentType, gasCostEth, euroValue, etherPriceEur }) => {
+    ({ eto, ethValue, investmentType, gasCostEth, euroValue, etherPriceEur, eurPriceEther }) => {
       const isBankTransfer = investmentType === EInvestmentType.BankTransfer;
       const gasCostEther = isBankTransfer ? "0" : gasCostEth;
       const gasCostEuro = multiplyBigNumbers([gasCostEther, etherPriceEur]);
       const minTicketEur = eto.minTicketEur || 0;
       return {
         minTicketEur,
+        minTicketEth: multiplyBigNumbers([minTicketEur, eurPriceEther]),
         gasCostEuro,
         gasCostEth: gasCostEther,
-        minTicketEth: divideBigNumbers(minTicketEur, etherPriceEur),
         totalCostEth: addBigNumbers([gasCostEther, ethValue || "0"]),
         totalCostEur: addBigNumbers([gasCostEuro, euroValue || "0"]),
         isWalletBalanceKnown: !isBankTransfer,
@@ -330,18 +332,6 @@ export const InvestmentSelection: React.SFC = compose<any>(
     },
   ),
   withHandlers<IStateProps & IDispatchProps & IWithProps, IHandlersProps>({
-    investEntireBalance: ({ investmentType, wallets, changeEuroValue, gasCostEuro }) => () => {
-      const wallet = wallets.find(w => w.type === investmentType);
-
-      if (wallet === undefined || wallet.type === EInvestmentType.BankTransfer) {
-        throw new Error("Can't invest wallet entire balance. Wallet not found.");
-      }
-
-      const availableEurBalance = subtractBigNumbers([wallet.balanceEur, gasCostEuro]);
-      const balanceEurFormatted = formatMoney(availableEurBalance, MONEY_DECIMALS);
-
-      changeEuroValue(balanceEurFormatted);
-    },
     investNow: ({ investmentType, sendTransaction, showBankTransferSummary }) => () => {
       if (investmentType !== EInvestmentType.BankTransfer) {
         sendTransaction();

@@ -6,7 +6,7 @@ import { TGlobalDependencies } from "../../di/setupBindings";
 import { ETOCommitment } from "../../lib/contracts/ETOCommitment";
 import { ITxData } from "../../lib/web3/types";
 import { IAppState } from "../../store";
-import { addBigNumbers, compareBigNumbers } from "../../utils/BigNumberUtils";
+import { addBigNumbers, compareBigNumbers, subtractBigNumbers } from "../../utils/BigNumberUtils";
 import { isLessThanNDays } from "../../utils/Date.utils";
 import { convertToBigInt } from "../../utils/Number.utils";
 import { extractNumber } from "../../utils/StringUtils";
@@ -20,7 +20,7 @@ import {
 } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/types";
 import { neuCall } from "../sagasUtils";
-import { selectEtherPriceEur } from "../shared/tokenPrice/selectors";
+import { selectEtherPriceEur, selectEurPriceEther } from "../shared/tokenPrice/selectors";
 import { ETxSenderType } from "../tx/interfaces";
 import { selectTxGasCostEth } from "../tx/sender/selectors";
 import { txValidateSaga } from "../tx/validator/sagas";
@@ -68,7 +68,8 @@ function* processCurrencyValue(action: TAction): any {
 
 function* computeAndSetCurrencies(value: string, currency: EInvestmentCurrency): any {
   const state: IAppState = yield select();
-  const etherPriceEur = selectEtherPriceEur(state.tokenPrice);
+  const etherPriceEur = selectEtherPriceEur(state);
+  const eurPriceEther = selectEurPriceEther(state);
   if (!value) {
     yield put(actions.investmentFlow.setEthValue(""));
     yield put(actions.investmentFlow.setEurValue(""));
@@ -81,11 +82,41 @@ function* computeAndSetCurrencies(value: string, currency: EInvestmentCurrency):
         yield put(actions.investmentFlow.setEurValue(eurVal.toFixed(0, BigNumber.ROUND_UP)));
         return;
       case EInvestmentCurrency.Euro:
-        const ethVal = bignumber.div(etherPriceEur);
+        const ethVal = bignumber.mul(eurPriceEther);
         yield put(actions.investmentFlow.setEthValue(ethVal.toFixed(0, BigNumber.ROUND_UP)));
         yield put(actions.investmentFlow.setEurValue(bignumber.toFixed(0, BigNumber.ROUND_UP)));
         return;
     }
+  }
+}
+
+function* investEntireBalance(): any {
+  const state: IAppState = yield select();
+
+  const type = selectInvestmentType(state);
+
+  let balance = "";
+  switch (type) {
+    case EInvestmentType.ICBMEth:
+      balance = selectLockedEtherBalance(state.wallet);
+      yield computeAndSetCurrencies(balance, EInvestmentCurrency.Ether);
+      break;
+
+    case EInvestmentType.ICBMnEuro:
+      balance = selectLockedEuroTokenBalance(state.wallet);
+      yield computeAndSetCurrencies(balance, EInvestmentCurrency.Euro);
+      break;
+
+    case EInvestmentType.InvestmentWallet:
+      const gasCostEth = selectTxGasCostEth(state);
+      balance = selectLiquidEtherBalance(state.wallet);
+      balance = subtractBigNumbers([balance, gasCostEth]);
+      yield computeAndSetCurrencies(balance, EInvestmentCurrency.Ether);
+      break;
+  }
+
+  if (balance) {
+    yield put(actions.investmentFlow.validateInputs());
   }
 }
 
@@ -286,4 +317,5 @@ export function* investmentFlowSagas(): any {
   yield takeEvery("TOKEN_PRICE_SAVE", recalculateCurrencies);
   yield takeEvery("INVESTMENT_FLOW_BANK_TRANSFER_CHANGE", bankTransferChange);
   yield takeEvery("INVESTMENT_FLOW_SELECT_INVESTMENT_TYPE", resetTxValidations);
+  yield takeEvery("INVESTMENT_FLOW_INVEST_ENTIRE_BALANCE", investEntireBalance);
 }

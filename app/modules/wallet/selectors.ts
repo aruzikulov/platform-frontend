@@ -10,7 +10,7 @@ import { IWalletState } from "./reducer";
  * Simple State Selectors
  */
 export const selectNeuBalanceEuroAmount = (state: IAppState): string =>
-  multiplyBigNumbers([selectNeuPriceEur(state.tokenPrice), selectNeuBalance(state.wallet)]);
+  multiplyBigNumbers([selectNeuPriceEur(state), selectNeuBalance(state.wallet)]);
 
 export const selectNeuBalance = (state: IWalletState): string =>
   (state.data && state.data.neuBalance) || "0";
@@ -31,10 +31,7 @@ export const selectLiquidEtherBalance = (state: IWalletState) =>
   (state.data && addBigNumbers([state.data.etherBalance, state.data.etherTokenBalance])) || "0";
 
 export const selectLiquidEtherBalanceEuroAmount = (state: IAppState) =>
-  multiplyBigNumbers([
-    selectEtherPriceEur(state.tokenPrice),
-    selectLiquidEtherBalance(state.wallet),
-  ]);
+  multiplyBigNumbers([selectEtherPriceEur(state), selectLiquidEtherBalance(state.wallet)]);
 
 export const selectLiquidEuroTokenBalance = (state: IWalletState) =>
   (state.data && state.data.euroTokenBalance) || "0";
@@ -55,10 +52,7 @@ export const selectLockedEtherBalance = (state: IWalletState) =>
   "0";
 
 export const selectLockedEtherBalanceEuroAmount = (state: IAppState) =>
-  multiplyBigNumbers([
-    selectEtherPriceEur(state.tokenPrice),
-    selectLockedEtherBalance(state.wallet),
-  ]);
+  multiplyBigNumbers([selectEtherPriceEur(state), selectLockedEtherBalance(state.wallet)]);
 
 export const selectLockedEuroTokenBalance = (state: IWalletState) =>
   (state.data &&
@@ -85,7 +79,7 @@ export const selectICBMLockedEtherBalance = (state: IAppState): string =>
   "0";
 
 export const selectICBMLockedEtherBalanceEuroAmount = (state: IAppState) =>
-  multiplyBigNumbers([selectEtherPriceEur(state.tokenPrice), selectICBMLockedEtherBalance(state)]);
+  multiplyBigNumbers([selectEtherPriceEur(state), selectICBMLockedEtherBalance(state)]);
 
 export const selectICBMLockedEuroTokenBalance = (state: IAppState) =>
   (state.wallet &&

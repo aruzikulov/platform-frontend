@@ -9,6 +9,7 @@ import {
   EInvestmentType,
 } from "../../../../modules/investment-flow/reducer";
 import { selectInvestmentActiveTypes } from "../../../../modules/investment-flow/selectors";
+import { EValidationState } from "../../../../modules/tx/sender/reducer";
 import {
   selectLiquidEtherBalance,
   selectLiquidEtherBalanceEuroAmount,
@@ -19,12 +20,12 @@ import {
 import { IAppState } from "../../../../store";
 import { Dictionary } from "../../../../types";
 import { formatMoney } from "../../../../utils/Money.utils";
+import { formatThousands } from "../../../../utils/Number.utils";
 import { WalletSelectionData } from "./InvestmentTypeSelector";
 
 import * as ethIcon from "../../../../assets/img/eth_icon2.svg";
 import * as euroIcon from "../../../../assets/img/euro_icon.svg";
 import * as neuroIcon from "../../../../assets/img/neuro_icon.svg";
-import { EValidationState } from "../../../../modules/tx/sender/reducer";
 
 export function createWallets(state: IAppState): WalletSelectionData[] {
   const w = state.wallet;
@@ -48,7 +49,7 @@ export function createWallets(state: IAppState): WalletSelectionData[] {
       type: EInvestmentType.ICBMnEuro,
       name: "ICBM Wallet",
       balanceNEuro: icbmNeuro,
-      balanceEur: selectLockedEuroTokenBalance(w),
+      balanceEur: icbmNeuro,
       icon: neuroIcon,
     },
     [EInvestmentType.ICBMEth]: {
@@ -104,11 +105,19 @@ export function getInvestmentTypeMessages(type?: EInvestmentType): React.ReactNo
 }
 
 export function formatEur(val?: string | BigNumber): string | undefined {
-  return val && formatMoney(val, MONEY_DECIMALS, 0);
+  return val && formatMoney(val, MONEY_DECIMALS, 2);
+}
+
+export function formatEurTsd(val?: string | BigNumber): string | undefined {
+  return formatThousands(formatEur(val));
 }
 
 export function formatEth(val?: string | BigNumber): string | undefined {
   return val && formatMoney(val, MONEY_DECIMALS, 4);
+}
+
+export function formatEthTsd(val?: string | BigNumber): string | undefined {
+  return formatThousands(formatEth(val));
 }
 
 export function formatVaryingDecimals(val?: string | BigNumber): string | undefined {

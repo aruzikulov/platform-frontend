@@ -2,7 +2,7 @@ import { GasModelShape } from "../../lib/api/GasApi";
 import { calculateGasPriceWithOverhead } from "../tx/utils";
 import { IAppState } from "./../../store";
 
-export const selectIsAlreadyLoaded = (state: IAppState): boolean =>
+export const selectIsGasPriceAlreadyLoaded = (state: IAppState): boolean =>
   !state.gas.loading && !!state.gas.gasPrice;
 
 export const selectGasPrice = (state: IAppState): GasModelShape | undefined => state.gas.gasPrice;

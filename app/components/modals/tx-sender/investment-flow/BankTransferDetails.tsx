@@ -46,7 +46,7 @@ type IProps = IStateProps & IDispatchProps & IHandlerProps;
 
 const CopyToClipboardLabel: React.SFC<{ label: string }> = ({ label }) => (
   <>
-    <CopyToClipboard className={cn(styles.copyToClipboard, styles.nonPrintable)} value={label} />{" "}
+    <CopyToClipboard className={cn(styles.copyToClipboard, styles.nonPrintable)} value={label} />
     &nbsp; {label}
   </>
 );

@@ -3,7 +3,6 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Container, Row } from "reactstrap";
 import { compose, setDisplayName } from "recompose";
 
-import { MONEY_DECIMALS } from "../../../../config/constants";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import {
@@ -26,7 +25,6 @@ import {
   divideBigNumbers,
   multiplyBigNumbers,
 } from "../../../../utils/BigNumberUtils";
-import { formatMoney } from "../../../../utils/Money.utils";
 import { formatThousands } from "../../../../utils/Number.utils";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { CustomTooltip } from "../../../shared/CustomTooltip";
@@ -35,7 +33,7 @@ import { Heading } from "../../../shared/modals/Heading";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 import { ITxSummaryDispatchProps } from "../TxSender";
-import { formatEth, formatEur } from "./utils";
+import { formatEthTsd, formatEurTsd } from "./utils";
 
 import * as neuIcon from "../../../../assets/img/neu_icon.svg";
 import * as info from "../../../../assets/img/notifications/info.svg";
@@ -86,21 +84,23 @@ const InvestmentSummaryComponent: React.SFC<IProps> = ({
   const equityTokens = (
     <span>
       {/* TODO: Change to actual custom token icon */}
-      <img src={tokenIcon} /> {data.equityTokens}
+      <img src={tokenIcon} /> {formatThousands(data.equityTokens)}
     </span>
   );
   const estimatedReward = (
     <span>
-      <img src={neuIcon} /> {formatEur(data.estimatedReward)} NEU
+      <img src={neuIcon} /> {formatEurTsd(data.estimatedReward)} NEU
     </span>
   );
-  const investment = `€ ${formatEur(data.investmentEur)} ≈ ${formatEth(data.investmentEth)} ETH`;
+  const investment = `€ ${formatEurTsd(data.investmentEur)} ≈ ${formatEthTsd(
+    data.investmentEth,
+  )} ETH`;
 
   const gasCostEuro = multiplyBigNumbers([gasCostEth, etherPriceEur]);
   const totalCostEth = addBigNumbers([gasCostEth, data.investmentEth]);
   const totalCostEur = addBigNumbers([gasCostEuro, data.investmentEur]);
 
-  const total = `€ ${formatEur(totalCostEur)} ≈ ${formatEth(totalCostEth)} ETH`;
+  const total = `€ ${formatEurTsd(totalCostEur)} ≈ ${formatEthTsd(totalCostEth)} ETH`;
   const tokenPrice = divideBigNumbers(data.investmentEur, data.equityTokens);
 
   return (
@@ -119,7 +119,7 @@ const InvestmentSummaryComponent: React.SFC<IProps> = ({
           />
           <InfoRow
             caption={<FormattedMessage id="investment-flow.summary.token-price" />}
-            value={`${formatMoney(tokenPrice, MONEY_DECIMALS, 4)} €`}
+            value={`${formatEthTsd(tokenPrice)} €`}
           />
           <InfoRow
             caption={<FormattedMessage id="investment-flow.summary.eto-address" />}
@@ -127,12 +127,12 @@ const InvestmentSummaryComponent: React.SFC<IProps> = ({
           />
           <InfoRow
             caption={<FormattedMessage id="investment-flow.summary.your-investment" />}
-            value={formatThousands(investment)}
+            value={investment}
             dataTestId="invest-modal-summary-your-investment"
           />
           <InfoRow
             caption={<FormattedMessage id="investment-flow.summary.transaction-cost" />}
-            value={`${formatEth(gasCostEth)} ETH`}
+            value={`${formatEthTsd(gasCostEth)} ETH`}
           />
           <InfoRow
             caption={<FormattedMessage id="investment-flow.summary.equity-tokens" />}
@@ -191,7 +191,7 @@ const InvestmentSummary = compose<IProps, {}>(
         gasCostEth: selectTxGasCostEth(state),
         equityTokens: selectEquityTokenCountByEtoId(etoId, state) as string,
         estimatedReward: selectNeuRewardUlpsByEtoId(etoId, state) as string,
-        etherPriceEur: selectEtherPriceEur(state.tokenPrice),
+        etherPriceEur: selectEtherPriceEur(state),
         isIcbm: selectIsICBMInvestment(state),
       };
     },
