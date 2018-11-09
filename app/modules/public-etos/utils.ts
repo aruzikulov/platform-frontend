@@ -1,14 +1,16 @@
 import BigNumber from "bignumber.js";
 import { EETOStateOnChain, IEtoTotalInvestment, TEtoStartOfStates } from "./types";
 
-export const convertToEtoTotalInvestment = ([totalEquivEurUlps, totalTokensInt, totalInvestors]: [
-  BigNumber,
-  BigNumber,
-  BigNumber
-]): IEtoTotalInvestment => ({
+export const convertToEtoTotalInvestment = (
+  [totalEquivEurUlps, totalTokensInt, totalInvestors]: [BigNumber, BigNumber, BigNumber],
+  euroTokenBalance: BigNumber,
+  etherTokenBalance: BigNumber,
+): IEtoTotalInvestment => ({
   totalEquivEurUlps,
   totalTokensInt,
   totalInvestors,
+  euroTokenBalance,
+  etherTokenBalance,
 });
 
 const convertToDate = (startOf: BigNumber): Date | undefined => {

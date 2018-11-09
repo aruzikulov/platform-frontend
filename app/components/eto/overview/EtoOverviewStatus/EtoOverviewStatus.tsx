@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Link } from "react-router-dom";
 import { compose } from "recompose";
 
-import { CounterWidget, InvestWidget, TagsWidget, TokenSymbolWidget } from ".";
+import { CounterWidget, TagsWidget } from ".";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { selectIsAuthorized } from "../../../../modules/auth/selectors";
 import { selectIsActionRequiredSettings } from "../../../../modules/notifications/selectors";
@@ -24,10 +24,12 @@ import { EtoWidgetContext } from "../../EtoWidgetView";
 import { InvestmentAmount } from "../../shared/InvestmentAmount";
 import { CampaigningActivatedWidget } from "./CampaigningWidget";
 import { ClaimWidget, RefundWidget } from "./ClaimRefundWidget";
+import { InvestmentWidget } from "./InvestmentWidget";
 import { IWithIsEligibleToPreEto, withIsEligibleToPreEto } from "./withIsEligibleToPreEto";
 
 import * as styles from "./EtoOverviewStatus.module.scss";
 import { RegisterNowWidget } from "./RegisterNowWidget";
+import { TokenSymbolWidget } from "./TokenSymbolWidget";
 
 interface IExternalProps {
   eto: TEtoWithCompanyAndContract;
@@ -104,14 +106,7 @@ const EtoStatusManager = ({
           }
           case EETOStateOnChain.Whitelist: {
             if (isEligibleToPreEto) {
-              return (
-                <InvestWidget
-                  raisedTokens={eto.contract!.totalInvestment.totalTokensInt.toNumber()}
-                  investorsBacked={eto.contract!.totalInvestment.totalInvestors.toNumber()}
-                  tokensGoal={(eto.newSharesToIssue || 1) * (eto.equityTokensPerShare || 1)}
-                  etoId={eto.etoId}
-                />
-              );
+              return <InvestmentWidget eto={eto} />;
             } else {
               return (
                 <CounterWidget
@@ -130,14 +125,7 @@ const EtoStatusManager = ({
                 </ButtonLink>
               );
             } else {
-              return (
-                <InvestWidget
-                  raisedTokens={eto.contract!.totalInvestment.totalTokensInt.toNumber()}
-                  investorsBacked={eto.contract!.totalInvestment.totalInvestors.toNumber()}
-                  tokensGoal={(eto.newSharesToIssue || 1) * (eto.equityTokensPerShare || 1)}
-                  etoId={eto.etoId}
-                />
-              );
+              return <InvestmentWidget eto={eto} />;
             }
           }
 

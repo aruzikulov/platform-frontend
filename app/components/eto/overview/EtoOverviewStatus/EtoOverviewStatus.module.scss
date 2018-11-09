@@ -2,7 +2,7 @@
   background-color: $color-white;
   box-shadow: $shadow-bottom-black;
   color: $color-graphite-light;
-  padding: px-to-rem(8px);
+  padding: px-to-rem(8px) px-to-rem(14px);
   position: relative;
 }
 
@@ -55,7 +55,6 @@
 
 .stage-content-wrapper {
   display: flex;
-  align-items: center;
   justify-content: center;
   flex-direction: column;
 }
@@ -101,11 +100,12 @@
 
     .label {
       @include media-breakpoint-down(md) {
-        font-size: px-to-rem(12px);
+        @include font-label;
+      }
+      @include media-breakpoint-up(md) {
+        @include font-label-small;
       }
 
-      @include font-label;
-      font-size: px-to-rem(8.8px);
       padding-top: px-to-rem(10px);
       padding-bottom: px-to-rem(10px);
       padding-right: px-to-rem(13.6px);

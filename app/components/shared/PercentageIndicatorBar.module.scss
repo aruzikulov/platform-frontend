@@ -25,6 +25,10 @@
   .progress {
     fill: currentColor;
     transition: 500ms ease-in-out transform;
+
+    &--green {
+      color: $color-green-dark;
+    }
   }
 
   .background {

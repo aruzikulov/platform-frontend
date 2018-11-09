@@ -693,7 +693,7 @@
   "shared-component.eto-overview.error.max-pledge": "The amount is above the maximum pledge size of {maxPledge}",
   "shared-component.eto-overview.error.min-pledge": "The amount is below the minimum pledge size of {minPledge}",
   "shared-component.eto-overview.invest-now": "Invest now",
-  "shared-component.eto-overview.investors": "Investors",
+  "shared-component.eto-overview.investors": "{totalInvestors, plural, one {# investor} other {# investors}}",
   "shared-component.eto-overview.investors-backed": "Investors backed",
   "shared-component.eto-overview.or": "or",
   "shared-component.eto-overview.prospectus-approved": "Prospectus approved",
