@@ -1,6 +1,7 @@
 import { assertEtoDashboard, assertEtoDocuments, tid } from "../utils";
 import { fillForm, TFormFixture, uploadDocumentToFieldWithTid } from "../utils/forms";
 import { createAndLoginNewUser } from "../utils/userHelpers";
+import { submitProposal } from "./EtoRegistrationUtils";
 import {
   aboutFormRequired,
   aboutFormSubmit,
@@ -56,6 +57,8 @@ describe("Eto Forms", () => {
         submit: false,
         methods: { document: uploadDocumentToFieldWithTid },
       });
+
+      submitProposal();
     });
   });
 });

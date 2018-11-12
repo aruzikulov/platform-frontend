@@ -64,7 +64,10 @@ const ETOStateLayout: React.SFC<IStateProps & IExternalProps> = ({
   const status = eto.contract ? eto.contract.timedState : eto.state;
 
   return (
-    <div className={cn(styles.projectStatus, stateToClassName[status], size, layout)}>
+    <div
+      className={cn(styles.projectStatus, stateToClassName[status], size, layout)}
+      data-test-id="eto-state"
+    >
       {statusToName[status]}
     </div>
   );
