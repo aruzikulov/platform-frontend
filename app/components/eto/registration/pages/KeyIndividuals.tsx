@@ -1,7 +1,6 @@
 import { connect, FieldArray, FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
@@ -23,11 +22,13 @@ import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
 import { FormSection } from "../../../shared/forms/FormSection";
 import { SOCIAL_PROFILES_PERSON, SocialProfilesEditor } from "../../../shared/SocialProfilesEditor";
 import { EtoFormBase } from "../EtoFormBase";
+import { Section } from "../Shared";
 
 import * as closeIcon from "../../../../assets/img/inline_icons/round_close.svg";
 import * as plusIcon from "../../../../assets/img/inline_icons/round_plus.svg";
 import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
-import * as styles from "./KeyIndividuals.module.scss";
+import * as styles from "../Shared.module.scss";
+import * as localStyles from "./KeyIndividuals.module.scss";
 
 interface IStateProps {
   loadingData: boolean;
@@ -71,7 +72,11 @@ const Individual: React.SFC<IIndividual> = ({
   return (
     <FormHighlightGroup>
       {canRemove && (
-        <ButtonIcon svgIcon={closeIcon} onClick={onRemoveClick} className={styles.removeButton} />
+        <ButtonIcon
+          svgIcon={closeIcon}
+          onClick={onRemoveClick}
+          className={localStyles.removeButton}
+        />
       )}
       <FormField
         name={`${group}.name`}
@@ -162,6 +167,7 @@ class KeyIndividualsGroupLayout extends React.Component<IKeyIndividualsGroup & T
                 layout={EButtonLayout.SECONDARY}
                 svgIcon={plusIcon}
                 onClick={() => arrayHelpers.push(getBlankMember())}
+                className={localStyles.addButton}
               >
                 <FormattedMessage id="eto.form.key-individuals.add" />
               </Button>
@@ -185,47 +191,46 @@ const EtoRegistrationKeyIndividualsComponent = (props: IProps) => {
       title={<FormattedMessage id="eto.form.key-individuals.title" />}
       validator={validator}
     >
-      <KeyIndividualsGroup
-        title={<FormattedMessage id="eto.form.key-individuals.section.team.title" />}
-        name="team"
-      />
-      <KeyIndividualsGroup
-        title={<FormattedMessage id="eto.form.key-individuals.section.advisors.title" />}
-        name="advisors"
-      />
-      <KeyIndividualsGroup
-        title={<FormattedMessage id="eto.form.key-individuals.section.key-alliances.title" />}
-        name="keyAlliances"
-      />
-      <KeyIndividualsGroup
-        title={<FormattedMessage id="eto.form.key-individuals.section.board-members.title" />}
-        name="boardMembers"
-      />
-      <KeyIndividualsGroup
-        title={<FormattedMessage id="eto.form.key-individuals.section.notable-investors.title" />}
-        name="notableInvestors"
-      />
-      <KeyIndividualsGroup
-        title={<FormattedMessage id="eto.form.key-individuals.section.key-customers.title" />}
-        name="keyCustomers"
-      />
-      <KeyIndividualsGroup
-        title={<FormattedMessage id="eto.form.key-individuals.section.partners.title" />}
-        name="partners"
-      />
-      <Col>
-        <Row className="justify-content-end">
-          <Button
-            layout={EButtonLayout.PRIMARY}
-            className="mr-4"
-            type="submit"
-            isLoading={props.savingData}
-            data-test-id="eto-registration-key-individuals-submit"
-          >
-            <FormattedMessage id="form.button.save" />
-          </Button>
-        </Row>
-      </Col>
+      <Section>
+        <KeyIndividualsGroup
+          title={<FormattedMessage id="eto.form.key-individuals.section.team.title" />}
+          name="team"
+        />
+        <KeyIndividualsGroup
+          title={<FormattedMessage id="eto.form.key-individuals.section.advisors.title" />}
+          name="advisors"
+        />
+        <KeyIndividualsGroup
+          title={<FormattedMessage id="eto.form.key-individuals.section.key-alliances.title" />}
+          name="keyAlliances"
+        />
+        <KeyIndividualsGroup
+          title={<FormattedMessage id="eto.form.key-individuals.section.board-members.title" />}
+          name="boardMembers"
+        />
+        <KeyIndividualsGroup
+          title={<FormattedMessage id="eto.form.key-individuals.section.notable-investors.title" />}
+          name="notableInvestors"
+        />
+        <KeyIndividualsGroup
+          title={<FormattedMessage id="eto.form.key-individuals.section.key-customers.title" />}
+          name="keyCustomers"
+        />
+        <KeyIndividualsGroup
+          title={<FormattedMessage id="eto.form.key-individuals.section.partners.title" />}
+          name="partners"
+        />
+      </Section>
+      <Section className={styles.buttonSection}>
+        <Button
+          layout={EButtonLayout.PRIMARY}
+          type="submit"
+          isLoading={props.savingData}
+          data-test-id="eto-registration-key-individuals-submit"
+        >
+          <FormattedMessage id="form.button.save" />
+        </Button>
+      </Section>
     </EtoFormBase>
   );
 };

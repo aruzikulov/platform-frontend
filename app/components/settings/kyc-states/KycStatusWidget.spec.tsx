@@ -16,6 +16,7 @@ describe("<KycStatusWidgetComponent />", () => {
         onGoToWallet={() => {}}
         requestStatus="Accepted"
         isUserEmailVerified={true}
+        backupCodesVerified={true}
         isLoading={false}
         userType={EUserType.INVESTOR}
       />,
@@ -33,6 +34,7 @@ describe("<KycStatusWidgetComponent />", () => {
         onGoToWallet={() => {}}
         requestStatus="Draft"
         isUserEmailVerified={true}
+        backupCodesVerified={true}
         isLoading={false}
         userType={EUserType.INVESTOR}
       />,
@@ -49,6 +51,7 @@ describe("<KycStatusWidgetComponent />", () => {
         onGoToKycHome={() => {}}
         onGoToWallet={() => {}}
         isUserEmailVerified={true}
+        backupCodesVerified={true}
         isLoading={true}
         userType={EUserType.INVESTOR}
       />,

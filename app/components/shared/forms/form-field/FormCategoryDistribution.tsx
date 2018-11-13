@@ -2,16 +2,16 @@ import { connect, FieldArray } from "formik";
 import { get } from "lodash";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Col, Row } from "reactstrap";
 import * as Yup from "yup";
 
 import { CommonHtmlProps, TFormikConnect, TTranslatedString } from "../../../../types";
-import { ButtonIcon } from "../../buttons";
+import { ButtonIcon, ButtonIconPlaceholder } from "../../buttons";
 import { FormInput } from "./FormInput";
-import { FormTransformingField } from "./FormTransformingField";
+import { NumberTransformingField } from "./NumberTransformingField";
 
 import * as closeIcon from "../../../../assets/img/inline_icons/round_close.svg";
 import * as plusIcon from "../../../../assets/img/inline_icons/round_plus.svg";
+import * as styles from "./FormCategoryDistribution.module.scss";
 
 interface IProps {
   disabled?: boolean;
@@ -84,56 +84,59 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
       name,
     } = this.props;
     return (
-      <>
-        <Row>
-          <Col xs={8}>
-            <Row className="justify-content-center">
-              <Col xs={1} className="pt-2">
-                {isLastElement && !disabled && <ButtonIcon svgIcon={plusIcon} onClick={addField} />}
-              </Col>
-              <Col>
-                <FormInput
-                  disabled={disabled}
-                  name={`${name}.${formFieldKeys[0]}`}
-                  placeholder={keyPlaceholder}
-                  onBlur={this.setAllFieldsTouched}
-                  customValidation={this.compoundFieldValidation(
-                    formFieldKeys[0],
-                    `${name}.${formFieldKeys[1]}`,
-                  )}
-                />
-              </Col>
-            </Row>
-          </Col>
-          <Col>
-            <Row>
-              <Col xs={9}>
-                {
-                  <FormTransformingField
-                    disabled={disabled}
-                    min="0"
-                    prefix={prefix}
-                    name={`${name}.${formFieldKeys[1]}`}
-                    ratio={transformRatio}
-                    onBlur={this.setAllFieldsTouched}
-                    placeholder={valuePlaceholder}
-                    customValidation={this.compoundFieldValidation(
-                      formFieldKeys[1],
-                      `${name}.${formFieldKeys[0]}`,
-                    )}
-                  />
-                }
-              </Col>
-              {!isFirstElement && (
-                <span className="pt-2">
-                  {!disabled && <ButtonIcon svgIcon={closeIcon} onClick={removeField} />}
-                </span>
+      <div className={styles.fieldWrapper}>
+        {isLastElement && !disabled ? (
+          <ButtonIcon svgIcon={plusIcon} onClick={addField} />
+        ) : (
+          <ButtonIconPlaceholder />
+        )}
+        <div className={styles.field}>
+          <FormInput
+            disabled={disabled}
+            name={`${name}.${formFieldKeys[0]}`}
+            placeholder={keyPlaceholder}
+            onBlur={this.setAllFieldsTouched}
+            customValidation={this.compoundFieldValidation(
+              formFieldKeys[0],
+              `${name}.${formFieldKeys[1]}`,
+            )}
+          />
+          {transformRatio ? (
+            <NumberTransformingField
+              disabled={disabled}
+              min="0"
+              prefix={prefix}
+              name={`${name}.${formFieldKeys[1]}`}
+              ratio={transformRatio}
+              onBlur={this.setAllFieldsTouched}
+              placeholder={valuePlaceholder}
+              customValidation={this.compoundFieldValidation(
+                formFieldKeys[1],
+                `${name}.${formFieldKeys[0]}`,
               )}
-            </Row>
-          </Col>
-        </Row>
-        <Row />
-      </>
+            />
+          ) : (
+            <FormInput
+              disabled={disabled}
+              min="0"
+              prefix={prefix}
+              name={`${name}.${formFieldKeys[1]}`}
+              onBlur={this.setAllFieldsTouched}
+              placeholder={valuePlaceholder}
+              customValidation={this.compoundFieldValidation(
+                formFieldKeys[1],
+                `${name}.${formFieldKeys[0]}`,
+              )}
+            />
+          )}
+        </div>
+
+        {!isFirstElement && !disabled ? (
+          <ButtonIcon svgIcon={closeIcon} onClick={removeField} />
+        ) : (
+          <ButtonIconPlaceholder />
+        )}
+      </div>
     );
   };
 }
@@ -169,7 +172,7 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
       <FieldArray
         name={name}
         render={arrayHelpers => (
-          <>
+          <div className={styles.fieldArray}>
             {categoryDistribution.map(
               (_: { description: string; percent: number }, index: number) => {
                 const isLastElement = index === categoryDistribution.length - 1;
@@ -178,7 +181,7 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
                 return (
                   <KeyValueCompoundField
                     disabled={disabled}
-                    key={index}
+                    key={index} //TODO fix this
                     formFieldKeys={formFieldKeys}
                     prefix={prefix}
                     name={`${name}.${index}`}
@@ -200,7 +203,7 @@ class ArrayOfKeyValueFieldsBase extends React.Component<
                 );
               },
             )}
-          </>
+          </div>
         )}
       />
     );

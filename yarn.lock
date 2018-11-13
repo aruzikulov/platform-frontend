@@ -5790,7 +5790,7 @@ detect-indent@^4.0.0:
   dependencies:
     repeating "^2.0.0"
 
-detect-libc@^1.0.2:
+detect-libc@^1.0.2, detect-libc@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
   integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
@@ -9614,24 +9614,23 @@ lcid@^1.0.0:
   dependencies:
     invert-kv "^1.0.0"
 
-ledger-wallet-provider@^2.0.1-beta.3:
-  version "2.0.1-beta.3"
-  resolved "https://registry.yarnpkg.com/ledger-wallet-provider/-/ledger-wallet-provider-2.0.1-beta.3.tgz#3774b1dcd988309a900c8b8d3d2268a40c38ca24"
-  integrity sha512-vlJd/+BKKCJc7bQ/1haRKppNlc2IFFOhbmWHNW7lBzaSsrbuTeBEGFnUxDU0SX9BLLd3DjsZHUpSIPu6iSzbfg==
+ledger-wallet-provider@^2.0.1-beta.4:
+  version "2.0.1-beta.4"
+  resolved "https://registry.yarnpkg.com/ledger-wallet-provider/-/ledger-wallet-provider-2.0.1-beta.4.tgz#d83e53f3242c79fba7339512e069b7e93c9ff938"
+  integrity sha512-D826e0XER276bjwsEfr3OfCFg4WF0paWxy45zyueLUp8pnM4iBrpWSVmlbKHjJeGP0Gsa005cVsAOXCMmFc/Kg==
   dependencies:
     babel-runtime "^6.23.0"
     ethereumjs-tx "^1.3.3"
-    ledgerco "^1.2.1"
+    ledgerco Neufund/ledgerjs#tomek/update_hid
     promise-timeout "^1.1.1"
     strip-hex-prefix "^1.0.0"
     web3-provider-engine "^13.3.3"
 
-ledgerco@^1.2.1:
+ledgerco@Neufund/ledgerjs#tomek/update_hid:
   version "1.2.1"
-  resolved "https://registry.yarnpkg.com/ledgerco/-/ledgerco-1.2.1.tgz#a1fdefd7aaf5a8857bf9b47887f5465bdcdf0602"
-  integrity sha1-of3v16r1qIV7+bR4h/VGW9zfBgI=
+  resolved "https://codeload.github.com/Neufund/ledgerjs/tar.gz/6ba988f95dd44e1badd5d8b912d95312372c8548"
   dependencies:
-    node-hid "0.6.0"
+    node-hid "0.7.3"
     u2f-api "0.2.7"
 
 left-pad@^1.2.0:
@@ -10606,7 +10605,7 @@ mute-stream@0.0.7:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
   integrity sha1-MHXOk7whuPq0PhvE2n6BFe0ee6s=
 
-nan@^2.0.5, nan@^2.2.1, nan@^2.6.2:
+nan@^2.0.5, nan@^2.2.1:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
   integrity sha1-7XFfP+neArV6XmJS2QqWZ14fCFo=
@@ -10738,10 +10737,10 @@ no-case@^2.2.0:
   dependencies:
     lower-case "^1.1.1"
 
-node-abi@^2.1.1:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-2.1.2.tgz#4da6caceb6685fcd31e7dd1994ef6bb7d0a9c0b2"
-  integrity sha512-hmUtb8m75RSi7N+zZLYqe75XDvZB+6LyTBPkj2DConvNgQet2e3BIqEwe1LLvqMrfyjabuT5ZOrTioLCH1HTdA==
+node-abi@^2.2.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-2.5.0.tgz#942e1a78bce764bc0c1672d5821e492b9d032052"
+  integrity sha512-9g2twBGSP6wIR5PW7tXvAWnEWKJDH/VskdXp168xsw9VVxpEGov8K4jsP4/VeoC7b2ZAyzckvMCuQuQlw44lXg==
   dependencies:
     semver "^5.4.1"
 
@@ -10800,14 +10799,14 @@ node-gyp@^3.8.0:
     tar "^2.0.0"
     which "1"
 
-node-hid@0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/node-hid/-/node-hid-0.6.0.tgz#336bb29a2c4efdb67c5cb83eedbe4a4b1443ee52"
-  integrity sha512-3fOES92dR7vD5Fb6p28+/hRNmBFYicv/FDMj/d/U2O1Nb4GMpzSf9/HUvewRVVS0JQb6aoLMsxVpAFdIt4U/eA==
+node-hid@0.7.3:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/node-hid/-/node-hid-0.7.3.tgz#736e9a4dee5eec96c20fbe301e0311bb185cb2f4"
+  integrity sha512-LOCqWqcOlng+Kn1Qj/54zrPVfCagg1O7RlSgMmugykBcoYvUud6BswTrJM2aXuBac+bCCm3lA2srRG8YfmyXZQ==
   dependencies:
     bindings "^1.3.0"
-    nan "^2.6.2"
-    prebuild-install "^2.2.2"
+    nan "^2.10.0"
+    prebuild-install "^4.0.0"
 
 node-libs-browser@^2.0.0:
   version "2.1.0"
@@ -12160,25 +12159,26 @@ postcss@^7.0.1:
     source-map "^0.6.1"
     supports-color "^5.5.0"
 
-prebuild-install@^2.2.2:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-2.4.1.tgz#c28ba1d1eedc17fbd6b3229a657ffc0fba479b49"
-  integrity sha512-99TyEFYTTkBWANT+mwSptmLb9ZCLQ6qKIUE36fXSIOtShB0JNprL2hzBD8F1yIuT9btjFrFEwbRHXhqDi1HmRA==
+prebuild-install@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-4.0.0.tgz#206ce8106ce5efa4b6cf062fc8a0a7d93c17f3a8"
+  integrity sha512-7tayxeYboJX0RbVzdnKyGl2vhQRWr6qfClEXDhOkXjuaOKCw2q8aiuFhONRYVsG/czia7KhpykIlI2S2VaPunA==
   dependencies:
+    detect-libc "^1.0.3"
     expand-template "^1.0.2"
     github-from-package "0.0.0"
     minimist "^1.2.0"
     mkdirp "^0.5.1"
-    node-abi "^2.1.1"
+    node-abi "^2.2.0"
     noop-logger "^0.1.1"
     npmlog "^4.0.1"
     os-homedir "^1.0.1"
-    pump "^1.0.1"
+    pump "^2.0.1"
     rc "^1.1.6"
-    simple-get "^1.4.2"
+    simple-get "^2.7.0"
     tar-fs "^1.13.0"
     tunnel-agent "^0.6.0"
-    xtend "4.0.1"
+    which-pm-runs "^1.0.0"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -12397,7 +12397,7 @@ public-encrypt@^4.0.0:
     parse-asn1 "^5.0.0"
     randombytes "^2.0.1"
 
-pump@^1.0.0, pump@^1.0.1:
+pump@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/pump/-/pump-1.0.3.tgz#5dfe8311c33bbf6fc18261f9f34702c47c08a954"
   integrity sha512-8k0JupWme55+9tCVE+FS5ULT3K6AbgqrGa58lTT49RpyfwwcGedHqaC5LlQNdEAumn/wFsu6aPwkuPMioy8kqw==
@@ -14289,15 +14289,6 @@ simple-concat@^1.0.0:
   resolved "https://registry.yarnpkg.com/simple-concat/-/simple-concat-1.0.0.tgz#7344cbb8b6e26fb27d66b2fc86f9f6d5997521c6"
   integrity sha1-c0TLuLbib7J9ZrL8hvn21Zl1IcY=
 
-simple-get@^1.4.2:
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-1.4.3.tgz#e9755eda407e96da40c5e5158c9ea37b33becbeb"
-  integrity sha1-6XVe2kB+ltpAxeUVjJ6jezO+y+s=
-  dependencies:
-    once "^1.3.1"
-    unzip-response "^1.0.0"
-    xtend "^4.0.0"
-
 simple-get@^2.7.0:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-2.8.1.tgz#0e22e91d4575d87620620bc91308d57a77f44b5d"
@@ -15827,11 +15818,6 @@ unset-value@^1.0.0:
     has-value "^0.3.1"
     isobject "^3.0.0"
 
-unzip-response@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/unzip-response/-/unzip-response-1.0.2.tgz#b984f0877fc0a89c2c773cc1ef7b5b232b5b06fe"
-  integrity sha1-uYTwh3/AqJwsdzzB73tbIytbBv4=
-
 unzip-response@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/unzip-response/-/unzip-response-2.0.1.tgz#d2f0f737d16b0615e72a6935ed04214572d56f97"
@@ -16600,6 +16586,11 @@ which-module@^2.0.0:
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-2.0.0.tgz#d9ef07dce77b9902b8a3a8fa4b31c3e3f7e6e87a"
   integrity sha1-2e8H3Od7mQK4o6j6SzHD4/fm6Ho=
 
+which-pm-runs@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/which-pm-runs/-/which-pm-runs-1.0.0.tgz#670b3afbc552e0b55df6b7780ca74615f23ad1cb"
+  integrity sha1-Zws6+8VS4LVd9rd4DKdGFfI60cs=
+
 which@1, which@^1.2.14, which@^1.2.9, which@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/which/-/which-1.3.0.tgz#ff04bdfc010ee547d780bec38e1ac1c2777d253a"
@@ -16802,7 +16793,7 @@ xregexp@4.0.0:
   resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-4.0.0.tgz#e698189de49dd2a18cc5687b05e17c8e43943020"
   integrity sha512-PHyM+sQouu7xspQQwELlGwwd05mXUFqwFYfqPO0cC7x4fxyHnnuetmQr6CjJiafIDoH4MogHb9dOoJzR/Y4rFg==
 
-xtend@4.0.1, xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.0, xtend@~4.0.1:
+xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.0, xtend@~4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
   integrity sha1-pcbVMr5lbiPbgg77lDofBJmNY68=

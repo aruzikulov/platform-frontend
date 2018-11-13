@@ -17,6 +17,21 @@ storiesOf("ICBMWalletModalComponant", module)
     <IcbmWalletBalanceComponent
       isOpen={true}
       isVerificationFullyDone={false}
+      hasMigrationTarget={true}
+      lockedWalletConnected={false}
+      onCancel={() => {}}
+      onGotoWallet={() => {}}
+      ethAddress={dummyEthereumAddress}
+      isLoading={false}
+      neumarksDue="0.0"
+      etherBalance="1.1"
+    />
+  ))
+  .add("Missing Migration", () => (
+    <IcbmWalletBalanceComponent
+      isOpen={true}
+      isVerificationFullyDone={true}
+      hasMigrationTarget={false}
       lockedWalletConnected={false}
       onCancel={() => {}}
       onGotoWallet={() => {}}
@@ -30,6 +45,7 @@ storiesOf("ICBMWalletModalComponant", module)
     <IcbmWalletBalanceComponent
       isOpen={true}
       isVerificationFullyDone={true}
+      hasMigrationTarget={true}
       lockedWalletConnected={false}
       onCancel={() => {}}
       onGotoWallet={() => {}}
@@ -44,6 +60,7 @@ storiesOf("ICBMWalletModalComponant", module)
     <IcbmWalletBalanceComponent
       isOpen={true}
       isVerificationFullyDone={true}
+      hasMigrationTarget={true}
       lockedWalletConnected={false}
       onCancel={() => {}}
       onGotoWallet={() => {}}
@@ -58,6 +75,7 @@ storiesOf("ICBMWalletModalComponant", module)
     <IcbmWalletBalanceComponent
       isOpen={true}
       isVerificationFullyDone={true}
+      hasMigrationTarget={true}
       lockedWalletConnected={true}
       onCancel={() => {}}
       onGotoWallet={() => {}}
@@ -72,6 +90,7 @@ storiesOf("ICBMWalletModalComponant", module)
     <IcbmWalletBalanceComponent
       isOpen={true}
       isVerificationFullyDone={true}
+      hasMigrationTarget={true}
       lockedWalletConnected={false}
       onCancel={() => {}}
       onGotoWallet={() => {}}

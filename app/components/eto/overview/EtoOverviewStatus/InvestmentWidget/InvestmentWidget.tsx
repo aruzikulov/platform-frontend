@@ -15,6 +15,8 @@ import * as styles from "./InvestmentWidget.module.scss";
 
 export interface IInvestmentWidgetProps {
   eto: TEtoWithCompanyAndContract;
+  isAuthorized?: boolean;
+  settingsUpdateRequired?: boolean;
 }
 
 export interface IInvestmentWidgetDispatchProps {
@@ -23,7 +25,12 @@ export interface IInvestmentWidgetDispatchProps {
 
 export type TInvestWidgetProps = IInvestmentWidgetProps & IInvestmentWidgetDispatchProps;
 
-const InvestmentWidgetLayout: React.SFC<TInvestWidgetProps> = ({ startInvestmentFlow, eto }) => {
+const InvestmentWidgetLayout: React.SFC<TInvestWidgetProps> = ({
+  startInvestmentFlow,
+  eto,
+  isAuthorized,
+  settingsUpdateRequired,
+}) => {
   const totalInvestors = eto.contract!.totalInvestment.totalInvestors.toNumber();
 
   return (
@@ -55,6 +62,13 @@ const InvestmentWidgetLayout: React.SFC<TInvestWidgetProps> = ({ startInvestment
             previewCode ? (
               <ButtonLink to={withParams(appRoutes.etoPublicView, { previewCode })} target="_blank">
                 <FormattedMessage id="shared-component.eto-overview.invest-now" />
+              </ButtonLink>
+            ) : isAuthorized && settingsUpdateRequired ? (
+              <ButtonLink
+                to={appRoutes.settings}
+                data-test-id="eto-overview-settings-update-required-to-invest"
+              >
+                <FormattedMessage id="shared-component.eto-overview.settings-update-required" />
               </ButtonLink>
             ) : (
               <Button

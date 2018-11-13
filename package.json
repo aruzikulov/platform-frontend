@@ -196,7 +196,7 @@
     "hex2ascii": "^0.0.3",
     "history": "^4.7.2",
     "inversify": "^4.10.0",
-    "ledger-wallet-provider": "^2.0.1-beta.3",
+    "ledger-wallet-provider": "^2.0.1-beta.4",
     "lodash": "^4.17.11",
     "moment": "^2.21.0",
     "neufund-contracts-tmp": "^1.0.7",

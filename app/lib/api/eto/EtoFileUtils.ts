@@ -3,4 +3,5 @@ export const ignoredTemplates: string[] = [
   "pamphletTemplate",
   "termsheetTemplate",
   "prospectusTemplate",
+  "investmentMemorandumTemplate",
 ];

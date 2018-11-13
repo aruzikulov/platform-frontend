@@ -5,8 +5,8 @@ import { FormGroup, Input } from "reactstrap";
 import { TTranslatedString } from "../../../../types";
 import { isValid } from "./utils";
 
+import { FormError } from "./FormError";
 import * as styles from "./FormFieldDate.module.scss";
-import * as errorStyles from "./FormStyles.module.scss";
 
 interface IProps {
   disabled?: boolean;
@@ -61,9 +61,8 @@ export class FormFieldDate extends React.Component<IProps> {
 
     return (
       <FormikConsumer>
-        {({ touched, errors }) => {
+        {({ touched, errors }: any) => {
           const valid = isValid(touched, errors, name);
-
           return (
             <FormGroup>
               <div className={styles.dateField} data-test-id={dataTestId}>
@@ -71,27 +70,29 @@ export class FormFieldDate extends React.Component<IProps> {
                 <div className={styles.inputsWrapper}>
                   <Field
                     name={name}
-                    render={({ field }: FieldProps) => (
-                      <div className={styles.inputWrapper}>
-                        <Input
-                          {...field}
-                          disabled={disabled}
-                          onChange={e => {
-                            this.onChange("day", e, field.onChange);
-                            // auto advance to next field
-                            const realValue = this.fromValue("day", e.target.value);
-                            if (realValue.length === 2) {
-                              this.monthInput!.focus();
-                            }
-                          }}
-                          value={this.fromValue("day", field.value)}
-                          placeholder="DD"
-                          valid={valid}
-                          maxLength={2}
-                          data-test-id="form-field-date-day"
-                        />
-                      </div>
-                    )}
+                    render={({ field }: FieldProps) => {
+                      return (
+                        <div className={styles.inputWrapper}>
+                          <Input
+                            {...field}
+                            disabled={disabled}
+                            onChange={e => {
+                              this.onChange("day", e, field.onChange);
+                              // auto advance to next field
+                              const realValue = this.fromValue("day", e.target.value);
+                              if (realValue.length === 2) {
+                                this.monthInput!.focus();
+                              }
+                            }}
+                            value={this.fromValue("day", field.value)}
+                            placeholder="DD"
+                            valid={valid}
+                            maxLength={2}
+                            data-test-id="form-field-date-day"
+                          />
+                        </div>
+                      );
+                    }}
                   />
                   {"/"}
                   <Field
@@ -140,10 +141,7 @@ export class FormFieldDate extends React.Component<IProps> {
                   />
                 </div>
               </div>
-              <div className={styles.errorLabel}>
-                {errors[name] &&
-                  touched[name] && <div className={errorStyles.errorLabel}>{errors[name]}</div>}
-              </div>
+              <FormError name={name} />
             </FormGroup>
           );
         }}

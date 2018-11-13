@@ -1,6 +1,7 @@
 import { assertEtoDashboard, assertEtoDocuments, tid } from "../utils";
 import { fillForm, TFormFixture, uploadDocumentToFieldWithTid } from "../utils/forms";
 import { createAndLoginNewUser } from "../utils/userHelpers";
+import { submitProposal } from "./EtoRegistrationUtils";
 import {
   aboutFormRequired,
   aboutFormSubmit,
@@ -45,7 +46,7 @@ describe("Eto Forms", () => {
       assertEtoDocuments();
 
       const documentsForm: TFormFixture = {
-        "form.name.termsheet_template": {
+        "form.name.signed_termsheet": {
           value: "example.pdf",
           method: "document",
           type: "custom",
@@ -56,6 +57,8 @@ describe("Eto Forms", () => {
         submit: false,
         methods: { document: uploadDocumentToFieldWithTid },
       });
+
+      submitProposal();
     });
   });
 });

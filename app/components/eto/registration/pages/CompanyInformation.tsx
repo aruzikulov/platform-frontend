@@ -19,6 +19,7 @@ import { FormSingleFileUpload } from "../../../shared/forms/form-field/FormSingl
 import { EtoTagWidget, generateTagOptions } from "../../shared/EtoTagWidget";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
+import * as styles from "../Shared.module.scss";
 
 interface IStateProps {
   loadingData: boolean;
@@ -105,19 +106,16 @@ const EtoRegistrationTeamAndInvestorsComponent = (
         </Col>
       </Row>
     </Section>
-    <Col>
-      <Row className="justify-content-end">
-        <Button
-          layout={EButtonLayout.PRIMARY}
-          className="mr-4"
-          type="submit"
-          isLoading={props.savingData}
-          data-test-id="eto-registration-company-information-submit"
-        >
-          <FormattedMessage id="form.button.save" />
-        </Button>
-      </Row>
-    </Col>
+    <Section className={styles.buttonSection}>
+      <Button
+        layout={EButtonLayout.PRIMARY}
+        type="submit"
+        isLoading={props.savingData}
+        data-test-id="eto-registration-company-information-submit"
+      >
+        <FormattedMessage id="form.button.save" />
+      </Button>
+    </Section>
   </EtoFormBase>
 );
 

@@ -1,3 +1,4 @@
+import * as cn from "classnames";
 import { FormikConsumer, getIn } from "formik";
 import { get } from "lodash";
 import * as React from "react";
@@ -9,9 +10,10 @@ export interface IProps {
   name: string;
   defaultMessage?: string;
   ignoreTouched?: boolean;
+  className?: string;
 }
 
-const FormError: React.SFC<IProps> = ({ name, defaultMessage, ignoreTouched }) => (
+const FormError: React.SFC<IProps> = ({ name, defaultMessage, ignoreTouched, className }) => (
   <FormikConsumer>
     {({ touched, errors, submitCount }) => {
       const touchedSubmitCountIncluded = {
@@ -20,7 +22,10 @@ const FormError: React.SFC<IProps> = ({ name, defaultMessage, ignoreTouched }) =
       };
       return (
         isNonValid(touchedSubmitCountIncluded, errors, name, ignoreTouched) && (
-          <div data-test-id={`form.${name}.error-message`} className={styles.errorLabel}>
+          <div
+            data-test-id={`form.${name}.error-message`}
+            className={cn(styles.errorLabel, className)}
+          >
             {getIn(errors, name) || defaultMessage}
           </div>
         )

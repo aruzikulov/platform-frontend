@@ -56,7 +56,7 @@ describe("Wallet recover", () => {
 
     assertWaitForLatestEmailSentWithSalt(email);
 
-    cy.contains(tid("my-neu-widget-neumark-balance"), "151848.6894 NEU");
+    cy.contains(tid("my-neu-widget-neumark-balance-large-value"), "151 848.6894 NEU");
 
     cy.contains(tid("my-wallet-widget-eur-token-large-value"), "0.00 nEUR");
     cy.contains(tid("my-wallet-widget-eur-token-value"), "0.00 EUR");
@@ -66,9 +66,6 @@ describe("Wallet recover", () => {
     // cy.contains(tid("my-wallet-widget-eth-token-value"), "483 930 410.24 EUR");
 
     cy.get(tid("authorized-layout-settings-button")).click();
-    cy.get(tid("account-address.your.ether-address.from-div")).then(test => {
-      console.log(test);
-    });
     cy.get(tid("account-address.your.ether-address.from-div")).then(value => {
       expect(value[0].innerText).to.equal(expectedGeneratedAddress);
     });

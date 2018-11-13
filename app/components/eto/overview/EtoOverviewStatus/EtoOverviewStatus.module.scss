@@ -11,6 +11,11 @@
 .status-wrapper,
 .stage-content-wrapper,
 .tags-wrapper {
+  @include media-breakpoint-up(xl) {
+    margin-bottom: 1.25rem;
+    margin-top: 1.25rem;
+  }
+
   margin-bottom: 0;
   margin-top: 0;
   flex-basis: 25%;
@@ -28,6 +33,10 @@
 .tags-wrapper {
   @include media-breakpoint-down(sm) {
     padding: 0;
+  }
+
+  @include media-breakpoint-up(xl) {
+    padding: 20px 0;
   }
 
   display: flex;
@@ -49,6 +58,10 @@
     padding-bottom: px-to-rem(30px);
   }
 
+  @include media-breakpoint-up(xl) {
+    justify-content: space-around;
+  }
+
   display: flex;
   flex-direction: row;
 }
@@ -62,6 +75,11 @@
 .divider {
   @include responsive-size(margin-left, 14px, 30px);
   @include responsive-size(margin-right, 14px, 30px);
+
+  @include media-breakpoint-up(xl) {
+    margin-left: 4%;
+    margin-right: 4%;
+  }
 
   background-color: $color-silver;
   margin-bottom: 10px;

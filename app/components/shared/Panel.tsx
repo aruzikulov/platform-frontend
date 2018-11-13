@@ -1,12 +1,12 @@
 import * as cn from "classnames";
 import * as React from "react";
 
-import { CommonHtmlProps } from "../../types";
+import { CommonHtmlProps, TTranslatedString } from "../../types";
 
 import * as styles from "./Panel.module.scss";
 
 export interface IPanelProps extends CommonHtmlProps {
-  headerText?: string | React.ReactNode;
+  headerText?: TTranslatedString;
   rightComponent?: React.ReactNode;
   icon?: string;
   narrow?: boolean;

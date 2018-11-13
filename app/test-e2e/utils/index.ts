@@ -1,7 +1,11 @@
 import { get } from "lodash";
 import { appRoutes } from "../../components/appRoutes";
 import { walletRegisterRoutes } from "../../components/wallet-selector/walletRoutes";
+import { makeEthereumAddressChecksummed } from "../../modules/web3/utils";
+import { EthereumAddress } from "../../types";
 import { DEFAULT_PASSWORD } from "./userHelpers";
+
+const etoFixtures: any = require("../../../git_modules/platform-contracts-artifacts/localhost/eto_fixtures.json");
 
 export function tid(id: string, rest?: string): string {
   return `[data-test-id="${id}"]` + (rest ? ` ${rest}` : "");
@@ -197,4 +201,16 @@ export const loginWithLightWallet = (email: string, password: string) => {
 export const acceptWallet = () => {
   cy.get(tid("access-light-wallet-password-input")).type(DEFAULT_PASSWORD);
   cy.get(tid("access-light-wallet-confirm")).awaitedClick(1500);
+};
+
+export const etoFixtureByName = (name: string) => {
+  const etoAddress = Object.keys(etoFixtures).find(a => etoFixtures[a].name === name);
+  return etoAddress ? etoFixtures[etoAddress] : undefined;
+};
+
+export const etoFixtureAddressByName = (name: string) => {
+  const address = Object.keys(etoFixtures).find(
+    a => etoFixtures[a].name === name,
+  )! as EthereumAddress;
+  return makeEthereumAddressChecksummed(address);
 };

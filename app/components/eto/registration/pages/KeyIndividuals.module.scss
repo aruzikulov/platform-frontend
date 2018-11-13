@@ -3,3 +3,7 @@
   top: px-to-rem(10px);
   right: px-to-rem(10px);
 }
+
+.add-button {
+  padding-top: 0 !important; // sass-lint:disable-line no-important
+}

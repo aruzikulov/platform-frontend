@@ -1,7 +1,6 @@
 import { FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
@@ -13,9 +12,16 @@ import { appConnect } from "../../../../store";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { ArrayOfKeyValueFields, FormTextArea } from "../../../shared/forms";
 import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
-import { ICompoundField, sanitizeKeyValueCompoundField } from "../../utils";
+import {
+  convert,
+  convertInArray,
+  convertPercentageToFraction,
+  removeEmptyKeyValueFields,
+} from "../../utils";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
+
+import * as styles from "../Shared.module.scss";
 
 interface IStateProps {
   loadingData: boolean;
@@ -141,19 +147,16 @@ const EtoRegistrationPitchComponent = (props: IProps) => {
           name="marketingApproach"
         />
       </Section>
-      <Col>
-        <Row className="justify-content-end">
-          <Button
-            layout={EButtonLayout.PRIMARY}
-            className="mr-4"
-            type="submit"
-            isLoading={props.savingData}
-            data-test-id="eto-registration-product-vision-submit"
-          >
-            Save
-          </Button>
-        </Row>
-      </Col>
+      <Section className={styles.buttonSection}>
+        <Button
+          layout={EButtonLayout.PRIMARY}
+          type="submit"
+          isLoading={props.savingData}
+          data-test-id="eto-registration-product-vision-submit"
+        >
+          Save
+        </Button>
+      </Section>
     </EtoFormBase>
   );
 };
@@ -168,15 +171,10 @@ export const EtoRegistrationPitch = compose<React.SFC>(
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialCompanyEtoData) => {
-        const sanitizedData = {
-          ...data,
-          useOfCapitalList: sanitizeKeyValueCompoundField(
-            data.useOfCapitalList as ICompoundField[],
-          ),
-        };
+        const convertedData = convert(data, fromFormState);
         dispatch(
           actions.etoFlow.saveDataStart({
-            companyData: sanitizedData,
+            companyData: convertedData,
             etoData: {},
           }),
         );
@@ -189,3 +187,10 @@ export const EtoRegistrationPitch = compose<React.SFC>(
     handleSubmit: (values, props) => props.props.saveData(values),
   }),
 )(EtoRegistrationPitchComponent);
+
+const fromFormState = {
+  useOfCapitalList: [
+    removeEmptyKeyValueFields(),
+    convertInArray({ percent: convertPercentageToFraction() }),
+  ],
+};

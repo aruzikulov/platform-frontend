@@ -1,13 +1,11 @@
 import { withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
 import {
   EtoVotingRightsType,
-  TEtoVotingRightsType,
   TPartialEtoSpecData,
 } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
@@ -19,8 +17,11 @@ import { Button, EButtonLayout } from "../../../shared/buttons";
 import { BOOL_TRUE_KEY, FormSelectField } from "../../../shared/forms";
 import { FormLabel } from "../../../shared/forms/form-field/FormLabel";
 import { FormToggle } from "../../../shared/forms/form-field/FormToggle";
-import { applyDefaults } from "../../utils";
+import { applyDefaults, convert, parseStringToFloat } from "../../utils";
 import { EtoFormBase } from "../EtoFormBase";
+import { Section } from "../Shared";
+
+import * as styles from "../Shared.module.scss";
 
 // TODO: this keys will be replaced dynamically by addresses from an API endpoint, once there are more than one
 const TOKEN_HOLDERS_RIGHTS = {
@@ -55,51 +56,53 @@ const EtoVotingRightsComponent: React.SFC<IProps> = ({ readonly, savingData }) =
     title={<FormattedMessage id="eto.form.eto-voting-rights.title" />}
     validator={EtoVotingRightsType.toYup()}
   >
-    <FormSelectField
-      values={TOKEN_HOLDERS_RIGHTS}
-      label={<FormattedMessage id="eto.form.section.token-holders-rights.nominee" />}
-      name="nominee"
-      disabled={readonly}
-    />
-
-    <FormSelectField
-      customOptions={LIQUIDATION_PREFERENCE_VALUES.map(n => (
-        <option key={n} value={n}>
-          {n}
-        </option>
-      ))}
-      label={<FormattedMessage id="eto.form.section.token-holders-rights.liquidation-preference" />}
-      name="liquidationPreferenceMultiplier"
-      disabled={readonly}
-    />
-
-    <div className="form-group">
-      <FormLabel name="generalVotingRule">
-        <FormattedMessage id="eto.form.section.token-holders-rights.voting-rights-enabled" />
-      </FormLabel>
-      <FormToggle
-        name="generalVotingRule"
-        trueValue="positive"
-        falseValue="no_voting_rights"
-        disabledLabel={<FormattedMessage id="form.select.no" />}
-        enabledLabel={<FormattedMessage id="form.select.yes" />}
+    <Section>
+      <FormSelectField
+        values={TOKEN_HOLDERS_RIGHTS}
+        label={<FormattedMessage id="eto.form.section.token-holders-rights.nominee" />}
+        name="nominee"
         disabled={readonly}
       />
-    </div>
+
+      <FormSelectField
+        customOptions={LIQUIDATION_PREFERENCE_VALUES.map(n => (
+          <option key={n} value={n}>
+            {n}
+          </option>
+        ))}
+        label={
+          <FormattedMessage id="eto.form.section.token-holders-rights.liquidation-preference" />
+        }
+        name="liquidationPreferenceMultiplier"
+        disabled={readonly}
+      />
+
+      <div className="form-group">
+        <FormLabel name="generalVotingRule">
+          <FormattedMessage id="eto.form.section.token-holders-rights.voting-rights-enabled" />
+        </FormLabel>
+        <FormToggle
+          name="generalVotingRule"
+          trueValue="positive"
+          falseValue="no_voting_rights"
+          disabledLabel={<FormattedMessage id="form.select.no" />}
+          enabledLabel={<FormattedMessage id="form.select.yes" />}
+          disabled={readonly}
+        />
+      </div>
+    </Section>
 
     {!readonly && (
-      <Col>
-        <Row className="justify-content-center">
-          <Button
-            layout={EButtonLayout.PRIMARY}
-            type="submit"
-            isLoading={savingData}
-            data-test-id="eto-registration-voting-rights-submit"
-          >
-            <FormattedMessage id="form.button.save" />
-          </Button>
-        </Row>
-      </Col>
+      <Section className={styles.buttonSection}>
+        <Button
+          layout={EButtonLayout.PRIMARY}
+          type="submit"
+          isLoading={savingData}
+          data-test-id="eto-registration-voting-rights-submit"
+        >
+          <FormattedMessage id="form.button.save" />
+        </Button>
+      </Section>
     )}
   </EtoFormBase>
 );
@@ -115,12 +118,11 @@ export const EtoVotingRights = compose<React.SFC<IExternalProps>>(
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialEtoSpecData) => {
+        const convertedData = convert(data, fromFormState);
         dispatch(
           actions.etoFlow.saveDataStart({
             companyData: {},
-            etoData: {
-              ...data,
-            },
+            etoData: convertedData,
           }),
         );
       },
@@ -129,13 +131,10 @@ export const EtoVotingRights = compose<React.SFC<IExternalProps>>(
   withFormik<IProps, TPartialEtoSpecData>({
     validationSchema: EtoVotingRightsType.toYup(),
     mapPropsToValues: props => applyDefaults(props.stateValues, defaults),
-    handleSubmit: (values, props) => {
-      return props.props.saveData(dataToCanonicalForm(values));
-    },
+    handleSubmit: (values, props) => props.props.saveData(values),
   }),
 )(EtoVotingRightsComponent);
 
-const dataToCanonicalForm = (values: Partial<TEtoVotingRightsType>) => {
-  values.liquidationPreferenceMultiplier = parseFloat(`${values.liquidationPreferenceMultiplier}`);
-  return values;
+const fromFormState = {
+  liquidationPreferenceMultiplier: parseStringToFloat(),
 };

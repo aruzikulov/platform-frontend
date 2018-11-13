@@ -18,16 +18,18 @@ export interface IEtoGeneratedFile {
 }
 
 export enum EEtoDocumentType {
-  RESERVATION_AND_ACQUISITION_AGREEMENT = "reservation_and_acquisition_agreement",
   COMPANY_TOKEN_HOLDER_AGREEMENT = "company_token_holder_agreement",
-  INVESTMENT_AND_SHAREHOLDER_AGREEMENT = "investment_and_shareholder_agreement",
+  RESERVATION_AND_ACQUISITION_AGREEMENT = "reservation_and_acquisition_agreement",
+  INVESTMENT_AND_SHAREHOLDER_AGREEMENT_TEMPLATE = "investment_and_shareholder_agreement_template",
   PROSPECTUS_TEMPLATE = "prospectus_template",
   PAMPHLET_TEMPLATE = "pamphlet_template",
   TERMSHEET_TEMPLATE = "termsheet_template",
-  APPROVED_PROSPECTUS = "approved_prospectus",
-  APPROVED_PAMPHLET = "approved_pamphlet",
+  INVESTMENT_MEMORANDUM_TEMPLATE = "investment_memorandum_template",
+  // in documents collection
+  SIGNED_TERMSHEET = "signed_termsheet",
+  APPROVED_INVESTOR_OFFERING_DOCUMENT = "approved_investor_offering_document",
+  INVESTMENT_AND_SHAREHOLDER_AGREEMENT = "investment_and_shareholder_agreement",
   SIGNED_INVESTMENT_AND_SHAREHOLDER_AGREEMENT = "signed_investment_and_shareholder_agreement",
-  OTHER = "other",
 }
 
 type TEtoFormType = "document" | "template";
@@ -46,8 +48,7 @@ type TComplextFileInfo = "canDeleteInStates" | "canUploadInStates";
 type TSimpleFileInfo = "requiredTemplates" | "uploadableDocuments";
 
 export interface IEtoFiles {
-  etoTemplates: TEtoDocumentTemplates;
-  uploadedDocuments: TEtoDocumentTemplates;
+  allTemplates: TEtoDocumentTemplates;
   stateInfo?: { [key in TSimpleFileInfo]: EEtoDocumentType[] } &
     { [key in TComplextFileInfo]: { [key in EtoStateToCamelcase]: EEtoDocumentType[] } };
 }
@@ -56,12 +57,15 @@ export type TEtoDocumentTemplates = { [key: string]: IEtoDocument };
 
 export const immutableDocumentName: { [key: string]: string } = {
   company_token_holder_agreement: "Company Token Holder Agreement",
-  investment_and_shareholder_agreement: "Investment and Shareholder Agreement",
+  reservation_and_acquisition_agreement: "Reservation and Acquisition Agreement",
+  investment_and_shareholder_agreement_template: "Investment and Shareholder Agreement Template",
   pamphlet_template: "Pamphlet Template",
   prospectus_template: "Prospectus Template",
-  reservation_and_acquisition_agreement: "Reservation and Acquisition Agreement",
   termsheet_template: "Termsheet Template",
-  approved_prospectus: "Approved Prospectus",
-  approved_pamphlet: "Approved Pamphlet",
+  investment_memorandum_template: "Investment Memorandum Template",
+  // in document collection
+  investment_and_shareholder_agreement: "Investment and Shareholder Agreement",
+  approved_investor_offering_document: "Approved Offering Document",
+  signed_termsheet: "Signed Termsheet",
   signed_investment_and_shareholder_agreement: "Signed Investment and Shareholder Agreement",
 };

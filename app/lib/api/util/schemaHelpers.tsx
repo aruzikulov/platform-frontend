@@ -19,17 +19,21 @@ export const makeAllRequired = (schema: Yup.ObjectSchema<any>): Yup.ObjectSchema
  */
 const DATE_SCHEME = "YYYY-M-D";
 const parse = (s: string) => moment(s, DATE_SCHEME, true);
-export const date = Yup.string()
-  .transform(function(_value: any, originalValue: string): string {
-    const date = parse(originalValue);
-    if (!date.isValid()) {
-      return "";
-    }
-    return date.format(DATE_SCHEME);
-  })
-  .test("is-valid", <FormattedMessage id="form.field.error.invalid-date" /> as any, s => {
-    return parse(s).isValid();
-  });
+
+export const dateSchema = (v: Yup.StringSchema) =>
+  v
+    .transform(function(_value: any, originalValue: string): string {
+      const date = parse(originalValue);
+      if (!date.isValid()) {
+        return "";
+      }
+      return date.format(DATE_SCHEME);
+    })
+    .test("is-valid", <FormattedMessage id="form.field.error.invalid-date" /> as any, s => {
+      return parse(s).isValid();
+    });
+
+export const date = dateSchema(Yup.string());
 
 export const personBirthDate = date
   .test("is-old-enough", <FormattedMessage id="form.field.error.older-than-18" /> as any, s => {

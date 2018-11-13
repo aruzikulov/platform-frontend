@@ -53,27 +53,31 @@ export const AccountBalance: React.SFC<IProps & IMoneySuiteWidgetProps> = ({
             <FormattedMessage id="shared-component.account-balance.upgrade" />
           </Button>
         )}
-        <Button
-          layout={EButtonLayout.SIMPLE}
-          iconPosition="icon-after"
-          theme="graphite"
-          svgIcon={arrowRightIcon}
-          onClick={onWithdrawClick}
-          data-test-id={dataTestId && dataTestId + ".shared-component.withdraw.button"}
-          disabled={withdrawDisabled}
-        >
-          <FormattedMessage id="shared-component.account-balance.withdraw" />
-        </Button>
-        <Button
-          layout={EButtonLayout.SIMPLE}
-          iconPosition="icon-after"
-          theme="graphite"
-          disabled={transferDisabled}
-          svgIcon={arrowRightIcon}
-          onClick={onDepositClick}
-        >
-          <FormattedMessage id="shared-component.account-balance.deposit" />
-        </Button>
+        {onWithdrawClick && (
+          <Button
+            layout={EButtonLayout.SIMPLE}
+            iconPosition="icon-after"
+            theme="graphite"
+            svgIcon={arrowRightIcon}
+            onClick={onWithdrawClick}
+            data-test-id={dataTestId && dataTestId + ".shared-component.withdraw.button"}
+            disabled={withdrawDisabled}
+          >
+            <FormattedMessage id="shared-component.account-balance.withdraw" />
+          </Button>
+        )}
+        {onDepositClick && (
+          <Button
+            layout={EButtonLayout.SIMPLE}
+            iconPosition="icon-after"
+            theme="graphite"
+            disabled={transferDisabled}
+            svgIcon={arrowRightIcon}
+            onClick={onDepositClick}
+          >
+            <FormattedMessage id="shared-component.account-balance.deposit" />
+          </Button>
+        )}
       </div>
     </div>
   );

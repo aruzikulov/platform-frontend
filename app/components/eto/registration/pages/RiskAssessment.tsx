@@ -1,7 +1,6 @@
 import { FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
@@ -17,6 +16,7 @@ import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormCheckbox, FormTextArea } from "../../../shared/forms";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
+import * as styles from "../Shared.module.scss";
 
 interface IStateProps {
   loadingData: boolean;
@@ -95,19 +95,16 @@ const EtoRegistrationRiskAssessmentComponent = (props: IProps) => {
           />
         </div>
       </Section>
-      <Col>
-        <Row className="justify-content-end">
-          <Button
-            layout={EButtonLayout.PRIMARY}
-            className="mr-4"
-            type="submit"
-            isLoading={props.savingData}
-            data-test-id="eto-registration-risk-submit"
-          >
-            <FormattedMessage id="form.button.save" />
-          </Button>
-        </Row>
-      </Col>
+      <Section className={styles.buttonSection}>
+        <Button
+          layout={EButtonLayout.PRIMARY}
+          type="submit"
+          isLoading={props.savingData}
+          data-test-id="eto-registration-risk-submit"
+        >
+          <FormattedMessage id="form.button.save" />
+        </Button>
+      </Section>
     </EtoFormBase>
   );
 };

@@ -2,19 +2,23 @@
   display: flex;
 
   &:global(.light) {
-    :local(.money),
-    :local(.total-money) {
+    .money,
+    .total-money {
       color: $color-white;
     }
   }
 
   &:global(.large) {
-    :local(.money) {
+    .money {
       font-size: px-to-rem(22px);
     }
 
-    :local(.total-money) {
-      font-size: px-to-rem(20px);
+    .total-money {
+      font-size: px-to-rem(15px);
+    }
+
+    .icon {
+      @include rect(43px);
     }
   }
 
@@ -35,7 +39,6 @@
     @include font-tab;
 
     color: $color-silver;
-    margin-left: px-to-rem(10px);
   }
 
   .green {

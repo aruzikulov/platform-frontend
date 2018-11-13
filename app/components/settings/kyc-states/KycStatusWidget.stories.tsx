@@ -6,6 +6,7 @@ import { KycStatusWidgetComponent } from "./KycStatusWidget";
 
 const commonProps = {
   isUserEmailVerified: true,
+  backupCodesVerified: true,
   isLoading: false,
   error: undefined,
   step: 1,
@@ -17,6 +18,14 @@ const commonProps = {
 storiesOf("KYC/StatusWidget", module)
   .add("email-not-verified", () => (
     <KycStatusWidgetComponent {...commonProps} requestStatus="Draft" isUserEmailVerified={false} />
+  ))
+  .add("backup-codes-not-verified", () => (
+    <KycStatusWidgetComponent
+      {...commonProps}
+      requestStatus="Draft"
+      isUserEmailVerified={true}
+      backupCodesVerified={false}
+    />
   ))
   .add("draft", () => <KycStatusWidgetComponent {...commonProps} requestStatus="Draft" />)
   .add("pending", () => <KycStatusWidgetComponent {...commonProps} requestStatus="Pending" />)

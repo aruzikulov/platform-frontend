@@ -147,7 +147,8 @@ describe("Wallet Withdraw", () => {
             expect(from).to.equal(accountAddress.text().toLowerCase());
             expect(txHashObject.text()).to.equal(hash);
             expect(input).to.equal(expectedInput);
-            expect(gas).to.equal(expectedGasLimit);
+            // do not check expected gas limit - any change in the solidity implementation will make test fail
+            // expect(gas).to.equal(expectedGasLimit);
             expect(ethValue).to.equal(Q18.mul(0).toString());
 
             // TODO: Connect artifacts with tests to get deterministic addresses

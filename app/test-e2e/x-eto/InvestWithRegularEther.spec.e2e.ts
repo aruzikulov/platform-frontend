@@ -2,11 +2,11 @@ import { confirmAccessModal } from "./../utils/index";
 import { createAndLoginNewUser } from "../utils/userHelpers";
 import { tid } from "../utils/selectors";
 import { INV_EUR_ICBM_HAS_KYC_SEED } from "../constants";
-
-const PUBLIC_ETO_ID = "0x560687Db44b19Ce8347A2D35873Dd95269dDF6bC";
+import { etoFixtureAddressByName } from "../utils";
 
 describe("Invest with ethereum", () => {
   it("do", () => {
+    const PUBLIC_ETO_ID = etoFixtureAddressByName("ETOInPublicState");
     createAndLoginNewUser({
       type: "investor",
       kyc: "business",

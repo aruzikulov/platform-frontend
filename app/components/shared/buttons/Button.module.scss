@@ -211,6 +211,7 @@ $_active-color: lighten($_hover-color, 20%);
 
 }
 
+
 .button-icon {
   cursor: pointer;
   width: 20px;
@@ -225,4 +226,10 @@ $_active-color: lighten($_hover-color, 20%);
       color: $color-brand;
     }
   }
+}
+
+.button-icon-placeholder {
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
 }

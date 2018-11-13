@@ -34,7 +34,7 @@ export interface IFormInputExternalProps {
 export type FormInputProps = IFormInputExternalProps & FieldAttributes<any> & CommonHtmlProps;
 
 const transform = (value: string, charactersLimit?: number) => {
-  return value === undefined ? "" : computedValue(value, charactersLimit);
+  return value !== undefined ? computedValue(value, charactersLimit) : "";
 };
 
 const transformBack = (value: number | string) => {
@@ -116,7 +116,9 @@ export class FormInput extends React.Component<FormInputProps> {
                           setFieldValue(
                             name,
                             transformBack(
-                              type === "number" ? e.target.valueAsNumber : e.target.value,
+                              type === "number" && e.target.value !== ""
+                                ? e.target.valueAsNumber
+                                : e.target.value,
                             ),
                           );
                         }}

@@ -131,6 +131,8 @@ const ButtonIcon: React.SFC<IButtonIcon> = ({ onClick, className, ...props }) =>
   </button>
 );
 
+const ButtonIconPlaceholder: React.SFC = () => <div className={styles.buttonIconPlaceholder} />;
+
 const ButtonClose: React.SFC<IGeneralButton> = props => (
   <ButtonIcon {...props} svgIcon={closeIcon} />
 );
@@ -144,4 +146,4 @@ const ButtonArrowRight: React.SFC<IButtonProps> = props => (
   />
 );
 
-export { ButtonIcon, ButtonClose, ButtonArrowRight, Button };
+export { ButtonIcon, ButtonIconPlaceholder, ButtonClose, ButtonArrowRight, Button };

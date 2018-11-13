@@ -20,11 +20,11 @@ import {
 } from "../../modules/eto-documents/selectors";
 import {
   selectEtoLoading,
+  selectIssuerEtoDocuments,
   selectIssuerEtoState,
   selectIssuerEtoTemplates,
 } from "../../modules/eto-flow/selectors";
 import { appConnect } from "../../store";
-import { DeepPartial } from "../../types";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { ETOAddDocuments } from "../eto/shared/EtoAddDocument";
 import { EtoFileIpfsModal } from "../eto/shared/EtoFileIpfsModal";
@@ -43,7 +43,8 @@ interface IStateProps {
   loadingData: boolean;
   etoFileLoading: boolean;
   etoState?: EtoState;
-  etoLinks?: DeepPartial<TEtoDocumentTemplates>;
+  etoTemplates: TEtoDocumentTemplates;
+  etoDocuments: TEtoDocumentTemplates;
 }
 
 interface IDispatchProps {
@@ -55,21 +56,29 @@ export const documentTitles: { [key in EEtoDocumentType]: React.ReactNode } = {
   company_token_holder_agreement: (
     <FormattedMessage id="eto.documents.company-token-holder-agreement" />
   ),
-  investment_and_shareholder_agreement: (
-    <FormattedMessage id="eto.documents.investment-and-shareholder-agreement" />
-  ),
-  pamphlet_template: <FormattedMessage id="eto.documents.pamphlet_template" />,
-  prospectus_template: <FormattedMessage id="eto.documents.prospectus-Template" />,
   reservation_and_acquisition_agreement: (
     <FormattedMessage id="eto.documents.reservation-and-acquisition-agreement" />
   ),
-  termsheet_template: <FormattedMessage id="eto.documents.Termsheet-Template" />,
-  approved_prospectus: <FormattedMessage id="eto.documents.Approved-Prospectus" />,
-  approved_pamphlet: <FormattedMessage id="eto.documents.Approved-Pamphlet" />,
+  investment_and_shareholder_agreement_template: (
+    <FormattedMessage id="eto.documents.investment-and-shareholder-agreement-template" />
+  ),
+  pamphlet_template: <FormattedMessage id="eto.documents.pamphlet_template" />,
+  prospectus_template: <FormattedMessage id="eto.documents.prospectus-template" />,
+  termsheet_template: <FormattedMessage id="eto.documents.termsheet-template" />,
+  investment_memorandum_template: (
+    <FormattedMessage id="eto.documents.investment-memorandum-template" />
+  ),
+  // in document collection
+  investment_and_shareholder_agreement: (
+    <FormattedMessage id="eto.documents.investment-and-shareholder-agreement" />
+  ),
   signed_investment_and_shareholder_agreement: (
     <FormattedMessage id="eto.documents.investment-and-shareholder-agreement" />
   ),
-  other: <FormattedMessage id="eto.documents.other" />,
+  approved_investor_offering_document: (
+    <FormattedMessage id="eto.documents.approved-investor-offering-document" />
+  ),
+  signed_termsheet: <FormattedMessage id="eto.documents.signed-termsheet" />,
 };
 
 export const GeneratedDocuments: React.SFC<{
@@ -94,10 +103,11 @@ export const DocumentsComponent: React.SFC<IProps> = ({
   generateTemplate,
   etoFileLoading,
   etoState,
-  etoLinks,
+  etoTemplates,
+  etoDocuments,
   downloadDocumentByType,
 }) => {
-  const { etoTemplates, uploadedDocuments, stateInfo } = etoFilesData;
+  const { allTemplates, stateInfo } = etoFilesData;
   const generalUploadables = stateInfo ? stateInfo.uploadableDocuments : [];
   return (
     <LayoutAuthorized>
@@ -121,7 +131,7 @@ export const DocumentsComponent: React.SFC<IProps> = ({
                   return (
                     <GeneratedDocuments
                       key={index}
-                      document={etoTemplates[key]}
+                      document={allTemplates[key]}
                       generateTemplate={generateTemplate}
                     />
                   );
@@ -146,8 +156,8 @@ export const DocumentsComponent: React.SFC<IProps> = ({
                   stateInfo.canUploadInStates[EtoStateToCamelcase[etoState]].some(
                     fileName => fileName === key,
                   );
-                const isFileUploaded = Object.keys(uploadedDocuments).some(
-                  uploadedKey => uploadedDocuments[uploadedKey].documentType === key,
+                const isFileUploaded = Object.keys(etoDocuments).some(
+                  uploadedKey => etoDocuments[uploadedKey].documentType === key,
                 );
                 return (
                   <Col xs={6} lg={3} key={index} className="mb-2" data-test-id={`form.name.${key}`}>
@@ -176,10 +186,10 @@ export const DocumentsComponent: React.SFC<IProps> = ({
           <Col xs={12} lg={4}>
             <SectionHeader className="my-4" layoutHasDecorator={false} />
             <Row>
-              {etoLinks && (
+              {allTemplates && (
                 <SingleColDocuments
-                  documents={Object.keys(etoLinks).map(key => {
-                    return etoLinks[key] as IEtoDocument;
+                  documents={Object.keys(etoTemplates).map(key => {
+                    return allTemplates[key];
                   })}
                   title={<FormattedMessage id="documents.agreement-and-prospectus-templates" />}
                   className={styles.documents}
@@ -202,7 +212,8 @@ export const Documents = compose<React.SFC>(
       loadingData: selectEtoLoading(state.etoFlow),
       etoFileLoading: selectEtoDocumentLoading(state.etoDocuments),
       etoState: selectIssuerEtoState(state),
-      etoLinks: selectIssuerEtoTemplates(state),
+      etoTemplates: selectIssuerEtoTemplates(state)!,
+      etoDocuments: selectIssuerEtoDocuments(state)!,
     }),
     dispatchToProps: dispatch => ({
       generateTemplate: document => dispatch(actions.etoDocuments.generateTemplate(document)),

@@ -1,7 +1,6 @@
 import { FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
@@ -22,9 +21,16 @@ import {
   FormSelectField,
 } from "../../../shared/forms";
 import { FormHighlightGroup } from "../../../shared/forms/FormHighlightGroup";
-import { ICompoundField, sanitizeKeyValueCompoundField } from "../../utils";
+import {
+  convert,
+  convertInArray,
+  parseStringToFloat,
+  parseStringToInteger,
+  removeEmptyKeyValueFields,
+} from "../../utils";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
+import * as styles from "../Shared.module.scss";
 
 interface IStateProps {
   loadingData: boolean;
@@ -142,19 +148,16 @@ const EtoRegistrationLegalInformationComponent = ({ savingData }: IProps) => {
           />
         </FormHighlightGroup>
       </Section>
-      <Col>
-        <Row className="justify-content-end">
-          <Button
-            type="submit"
-            layout={EButtonLayout.PRIMARY}
-            className="mr-4"
-            isLoading={savingData}
-            data-test-id="eto-registration-legal-information-submit"
-          >
-            <FormattedMessage id="form.button.save" />
-          </Button>
-        </Row>
-      </Col>
+      <Section className={styles.buttonSection}>
+        <Button
+          type="submit"
+          layout={EButtonLayout.PRIMARY}
+          isLoading={savingData}
+          data-test-id="eto-registration-legal-information-submit"
+        >
+          <FormattedMessage id="form.button.save" />
+        </Button>
+      </Section>
     </EtoFormBase>
   );
 };
@@ -169,11 +172,8 @@ export const EtoRegistrationLegalInformation = compose<React.SFC<IExternalProps>
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialCompanyEtoData) => {
-        const sanitizedData = {
-          ...data,
-          shareholders: sanitizeKeyValueCompoundField(data.shareholders as ICompoundField[]),
-        };
-        dispatch(actions.etoFlow.saveDataStart({ companyData: sanitizedData, etoData: {} }));
+        const convertedData = convert(data, fromFormState);
+        dispatch(actions.etoFlow.saveDataStart({ companyData: convertedData, etoData: {} }));
       },
     }),
   }),
@@ -183,3 +183,10 @@ export const EtoRegistrationLegalInformation = compose<React.SFC<IExternalProps>
     handleSubmit: (values, { props }) => props.saveData(values),
   }),
 )(EtoRegistrationLegalInformationComponent);
+
+const fromFormState = {
+  shareholders: [removeEmptyKeyValueFields(), convertInArray({ shares: parseStringToInteger() })],
+  companyShares: parseStringToInteger(),
+  lastFundingSizeEur: parseStringToFloat(),
+  numberOfFounders: parseStringToInteger(),
+};

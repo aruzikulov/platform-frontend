@@ -28,7 +28,7 @@ import { EETOStateOnChain, TEtoWithCompanyAndContract } from "./types";
 import { convertToEtoTotalInvestment, convertToStateStartDate } from "./utils";
 
 export function* loadEtoPreview(
-  { apiEtoService, notificationCenter }: TGlobalDependencies,
+  { apiEtoService, notificationCenter, logger }: TGlobalDependencies,
   action: TAction,
 ): any {
   if (action.type !== "PUBLIC_ETOS_LOAD_ETO_PREVIEW") return;
@@ -59,13 +59,15 @@ export function* loadEtoPreview(
 
     yield put(actions.publicEtos.setPublicEto({ eto, company }));
   } catch (e) {
+    logger.error("Could not load eto by preview code", e);
+
     notificationCenter.error("Could not load ETO preview. Is the preview link correct?");
     yield put(actions.routing.goToDashboard());
   }
 }
 
 export function* loadEto(
-  { apiEtoService, notificationCenter }: TGlobalDependencies,
+  { apiEtoService, notificationCenter, logger }: TGlobalDependencies,
   action: TAction,
 ): any {
   if (action.type !== "PUBLIC_ETOS_LOAD_ETO") return;
@@ -96,6 +98,8 @@ export function* loadEto(
 
     yield put(actions.publicEtos.setPublicEto({ eto, company }));
   } catch (e) {
+    logger.error("Could not load eto by id", e);
+
     notificationCenter.error("Could not load ETO. Is the link correct?");
 
     yield put(actions.routing.goToDashboard());

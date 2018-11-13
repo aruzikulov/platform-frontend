@@ -85,7 +85,13 @@ const CampaigningActivatedInvestorApprovedWidgetLayout: React.SFC<
         >
           <Form className={styles.group}>
             <div className={cn(styles.label, styles.labelNoUppercase)}>
-              <FormInput size={InputSize.SMALL} name="amount" prefix="€" maxLength={8} />
+              <FormInput
+                size={InputSize.SMALL}
+                name="amount"
+                prefix="€"
+                maxLength={8}
+                type="number"
+              />
             </div>
             <div className={styles.value}>
               <Button

@@ -19,7 +19,7 @@ export const Dashboard = () => (
       </Col>
 
       {process.env.NF_EQUITY_TOKEN_OFFERINGS_VISIBLE === "1" &&
-        (process.env.NF_ETO_LOAD_REAL_DATA ? <EtoList /> : <EtoListDummies />)}
+        (process.env.NF_ETO_LOAD_REAL_DATA === "1" ? <EtoList /> : <EtoListDummies />)}
     </Row>
   </LayoutAuthorized>
 );

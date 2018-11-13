@@ -17,6 +17,7 @@ import {
 } from "./interfaces";
 
 const USER_API_ROOT = "/api/user";
+const OOO_TRANSACTION_TYPE = "mempool";
 
 export class UserApiError extends Error {}
 export class UserNotExisting extends UserApiError {}
@@ -136,13 +137,17 @@ export class UsersApi {
       url: "/pending_transactions/me",
       responseSchema: TxWithMetadataListValidator,
     });
-    const pendingTxs: TPendingTxs = {
-      // find transaction with payload
-      pendingTransaction: response.body.find(tx => !!tx.transactionType),
-      // move other transactions to OOO transactions
-      oooTransactions: response.body.filter(tx => !tx.transactionType).map(tx => tx.transaction),
-    };
-    return pendingTxs;
+    if (response.statusCode === 200) {
+      return {
+        // find transaction with payload
+        pendingTransaction: response.body.find(tx => tx.transactionType !== OOO_TRANSACTION_TYPE),
+        // move other transactions to OOO transactions
+        oooTransactions: response.body
+          .filter(tx => tx.transactionType === OOO_TRANSACTION_TYPE)
+          .map(tx => tx.transaction),
+      };
+    }
+    throw new Error();
   }
 
   public async addPendingTx(tx: TxWithMetadata): Promise<void> {

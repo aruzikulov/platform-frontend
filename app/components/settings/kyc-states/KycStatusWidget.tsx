@@ -6,7 +6,11 @@ import { compose } from "redux";
 
 import { TRequestOutsourcedStatus, TRequestStatus } from "../../../lib/api/KycApi.interfaces";
 import { actions } from "../../../modules/actions";
-import { selectIsUserEmailVerified, selectUserType } from "../../../modules/auth/selectors";
+import {
+  selectBackupCodesVerified,
+  selectIsUserEmailVerified,
+  selectUserType,
+} from "../../../modules/auth/selectors";
 import {
   selectExternalKycUrl,
   selectKycRequestOutsourcedStatus,
@@ -28,6 +32,7 @@ import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
 import * as successIcon from "../../../assets/img/notifications/Success_small.svg";
 import * as warningIcon from "../../../assets/img/notifications/warning.svg";
 import { EUserType } from "../../../lib/api/users/interfaces";
+import { selectIsLightWallet } from "../../../modules/web3/selectors";
 import * as styles from "./KycStatusWidget.module.scss";
 
 interface IStateProps {
@@ -35,6 +40,7 @@ interface IStateProps {
   requestOutsourcedStatus?: TRequestOutsourcedStatus;
   isUserEmailVerified: boolean;
   isLoading: boolean;
+  backupCodesVerified: boolean;
   error?: string;
   externalKycUrl?: string;
   userType: EUserType;
@@ -112,6 +118,7 @@ const ActionButton = ({
   externalKycUrl,
   userType,
   onGoToWallet,
+  backupCodesVerified,
 }: IKycStatusWidgetProps) => {
   if (requestStatus === "Accepted" && userType === EUserType.INVESTOR) {
     return (
@@ -127,7 +134,21 @@ const ActionButton = ({
     );
   }
 
-  if (requestStatus === "Draft" || requestStatus === "Pending") {
+  if (requestStatus === "Draft") {
+    return (
+      <Button
+        layout={EButtonLayout.SECONDARY}
+        iconPosition="icon-after"
+        svgIcon={arrowRight}
+        onClick={onGoToKycHome}
+        disabled={!isUserEmailVerified || !backupCodesVerified}
+      >
+        <FormattedMessage id="settings.kyc-status-widget.start-kyc-process" />
+      </Button>
+    );
+  }
+
+  if (requestStatus === "Pending") {
     return (
       <Button
         layout={EButtonLayout.SECONDARY}
@@ -136,11 +157,7 @@ const ActionButton = ({
         onClick={onGoToKycHome}
         disabled={!isUserEmailVerified}
       >
-        {requestStatus === "Draft" ? (
-          <FormattedMessage id="settings.kyc-status-widget.start-kyc-process" />
-        ) : (
-          <FormattedMessage id="settings.kyc-status-widget.submit-additional-documents" />
-        )}
+        <FormattedMessage id="settings.kyc-status-widget.submit-additional-documents" />
       </Button>
     );
   }
@@ -219,6 +236,7 @@ export const KycStatusWidget = compose<React.ComponentClass<IOwnProps>>(
     stateToProps: s => ({
       isUserEmailVerified: selectIsUserEmailVerified(s.auth),
       userType: selectUserType(s.auth)!,
+      backupCodesVerified: selectBackupCodesVerified(s.auth) || !selectIsLightWallet(s.web3),
       requestStatus: selectKycRequestStatus(s.kyc),
       requestOutsourcedStatus: selectKycRequestOutsourcedStatus(s.kyc),
       externalKycUrl: selectExternalKycUrl(s.kyc),

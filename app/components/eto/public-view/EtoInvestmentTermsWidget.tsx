@@ -132,6 +132,7 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
                   newSharesToIssueInWhitelist={etoData.newSharesToIssueInWhitelist}
                   fixedSlotsMaximumDiscountFraction={etoData.fixedSlotsMaximumDiscountFraction}
                   whitelistDiscountFraction={etoData.whitelistDiscountFraction}
+                  publicDiscountFraction={etoData.publicDiscountFraction}
                   existingCompanyShares={etoData.existingCompanyShares}
                   preMoneyValuationEur={etoData.preMoneyValuationEur}
                   minimumNewSharesToIssue={etoData.minimumNewSharesToIssue}
@@ -139,11 +140,11 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
               }
               data-test-id="eto-public-view-investment-amount"
             />
-            {etoData.templates.investmentAndShareholderAgreement && (
+            {etoData.templates.investmentAndShareholderAgreementTemplate && (
               <DocumentTemplateButton
                 title={<FormattedMessage id="eto.documents.investment-and-shareholder-agreement" />}
                 onClick={() =>
-                  downloadDocument(etoData.templates.investmentAndShareholderAgreement)
+                  downloadDocument(etoData.templates.investmentAndShareholderAgreementTemplate)
                 }
               />
             )}

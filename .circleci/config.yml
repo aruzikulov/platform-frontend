@@ -60,7 +60,7 @@ jobs:
       image: circleci/classic:edge
       docker_layer_caching: true
 
-    parallelism: 5
+    parallelism: 3
 
     working_directory: /home/circleci/app
 
@@ -73,7 +73,9 @@ jobs:
           - v13-deps-
       - run: source /opt/circleci/.nvm/nvm.sh && yarn prepare
 
-      - run: source /opt/circleci/.nvm/nvm.sh && yarn test:e2e
+      - run:
+          command: source /opt/circleci/.nvm/nvm.sh && yarn test:e2e
+          no_output_timeout: 15m
 
   danger-ci:
     docker:

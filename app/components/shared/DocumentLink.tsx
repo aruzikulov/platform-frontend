@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { TTranslatedString } from "../../types";
-import { Button, EButtonLayout } from "./buttons";
+import { Button, ButtonTextPosition, EButtonLayout } from "./buttons";
 import { Document } from "./Document";
 
 import * as styles from "./DocumentLink.module.scss";
@@ -13,12 +13,22 @@ export interface IDocumentLinkProps {
 }
 
 const DocumentLink: React.SFC<IDocumentLinkProps> = ({ url, name, altIcon }) => {
-  return (
-    <a href={url} className={styles.documentLink} target="_blank">
+  const contents = (
+    <>
       {altIcon || <Document extension={url} />}
       {name}
-    </a>
+    </>
   );
+
+  if (url === "") {
+    return <span className={styles.documentLink}>{contents}</span>;
+  } else {
+    return (
+      <a href={url} className={styles.documentLink} target="_blank">
+        {contents}
+      </a>
+    );
+  }
 };
 
 export interface IDocumentTemplateButtonProps {
@@ -33,7 +43,12 @@ const DocumentTemplateButton: React.SFC<IDocumentTemplateButtonProps> = ({
   altIcon,
 }) => {
   return (
-    <Button layout={EButtonLayout.INLINE} onClick={onClick} className={styles.documentButton}>
+    <Button
+      layout={EButtonLayout.INLINE}
+      onClick={onClick}
+      className={styles.documentButton}
+      textPosition={ButtonTextPosition.LEFT}
+    >
       {altIcon || <Document extension="pdf" />}
       {title}
     </Button>

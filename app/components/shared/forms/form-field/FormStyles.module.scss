@@ -3,6 +3,10 @@
   text-align: right;
 }
 
+.error-label-align-left {
+  text-align: left;
+}
+
 .note-label {
   min-height: px-to-rem(21px);
   padding: px-to-rem(5px) px-to-rem(5px) 0;
@@ -62,4 +66,10 @@
   &::placeholder {
     color: $color-black;
   }
+}
+
+// sass-lint:disable no-important
+// this is needed for backward compatibility of FormGroup
+.key-value-field {
+  margin-bottom: 0 !important;
 }

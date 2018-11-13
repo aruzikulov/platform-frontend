@@ -12,7 +12,10 @@ import {
   selectWalletMigrationData,
 } from "../../modules/icbm-wallet-balance-modal/selectors";
 import { SelectIsVerificationFullyDone } from "../../modules/selectors";
-import { selectLockedWalletConnected } from "../../modules/wallet/selectors";
+import {
+  selectIsEtherUpgradeTargetSet,
+  selectLockedWalletConnected,
+} from "../../modules/wallet/selectors";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
 import { ConfettiEthereum } from "../landing/parts/ConfettiEthereum";
@@ -38,6 +41,7 @@ interface IStateProps {
   isLoading: boolean;
   walletMigrationData?: IWalletMigrationData;
   isVerificationFullyDone: boolean;
+  hasMigrationTarget: boolean;
   lockedWalletConnected: boolean;
 }
 
@@ -181,20 +185,21 @@ const MigrateBody: React.SFC<{
   );
 };
 
-const BalanceFooter: React.SFC<{ startMigration: () => void; disabled?: boolean }> = ({
-  startMigration,
-  disabled,
-}) => {
+const BalanceFooter: React.SFC<{
+  startMigration: () => void;
+  userNotVerified?: boolean;
+  migrationDisabled?: boolean;
+}> = ({ startMigration, userNotVerified, migrationDisabled }) => {
   return (
     <div className="d-flex flex-column justify-content-center">
-      {disabled && (
+      {userNotVerified && (
         <p className="text-center">
           <FormattedMessage id="settings.modal.icbm-wallet-balance.warning-message" />
         </p>
       )}
       <Button
         onClick={startMigration}
-        disabled={disabled}
+        disabled={userNotVerified || migrationDisabled}
         layout={EButtonLayout.SECONDARY}
         data-test-id="modals.icbm-balance-modal.balance-footer.generate-transaction"
       >
@@ -259,6 +264,7 @@ export class IcbmWalletBalanceComponent extends React.Component<
       onCancel,
       onGotoWallet,
       isVerificationFullyDone,
+      hasMigrationTarget,
       lockedWalletConnected,
       walletMigrationData,
     } = this.props;
@@ -302,7 +308,8 @@ export class IcbmWalletBalanceComponent extends React.Component<
               )
             ) : (
               <BalanceFooter
-                disabled={!isVerificationFullyDone}
+                userNotVerified={!isVerificationFullyDone}
+                migrationDisabled={!hasMigrationTarget}
                 startMigration={this.startMigration}
               />
             )}
@@ -321,6 +328,7 @@ export const IcbmWalletBalanceModal = appConnect<IStateProps, IDispatchProps>({
     neumarksDue: selectAllNeumakrsDueIcbmModal(state.icbmWalletBalanceModal),
     etherBalance: selectEtherBalanceIcbmModal(state.icbmWalletBalanceModal),
     isVerificationFullyDone: SelectIsVerificationFullyDone(state),
+    hasMigrationTarget: selectIsEtherUpgradeTargetSet(state),
     walletMigrationData: selectWalletMigrationData(state.icbmWalletBalanceModal),
     lockedWalletConnected: selectLockedWalletConnected(state.wallet),
   }),

@@ -19,6 +19,8 @@ import { Tooltip } from "../../../shared/Tooltip";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
 
+import * as styles from "../Shared.module.scss";
+
 interface IStateProps {
   loadingData: boolean;
   savingData: boolean;
@@ -103,19 +105,16 @@ const EtoRegistrationMediaComponent = ({ savingData }: IProps) => (
         blankField={{ url: "", title: "" }}
       />
     </Section>
-    <Col>
-      <Row className="justify-content-end">
-        <Button
-          layout={EButtonLayout.PRIMARY}
-          className="mr-4"
-          type="submit"
-          isLoading={savingData}
-          data-test-id="eto-registration-media-submit"
-        >
-          <FormattedMessage id="form.button.save" />
-        </Button>
-      </Row>
-    </Col>
+    <Section className={styles.buttonSection}>
+      <Button
+        layout={EButtonLayout.PRIMARY}
+        type="submit"
+        isLoading={savingData}
+        data-test-id="eto-registration-media-submit"
+      >
+        <FormattedMessage id="form.button.save" />
+      </Button>
+    </Section>
   </EtoFormBase>
 );
 

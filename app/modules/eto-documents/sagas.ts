@@ -75,12 +75,10 @@ export function* loadEtoFileData({
   try {
     yield put(actions.etoFlow.loadIssuerEto());
     const stateInfo = yield apiEtoFileService.getEtoFileStateInfo();
-    const uploadedDocuments = yield apiEtoFileService.getAllEtoDocuments();
-    const etoTemplates = yield apiEtoFileService.getAllEtoTemplates();
+    const allTemplates = yield apiEtoFileService.getAllEtoTemplates();
     yield put(
       actions.etoDocuments.loadEtoFileData({
-        etoTemplates,
-        uploadedDocuments,
+        allTemplates,
         stateInfo,
       }),
     );

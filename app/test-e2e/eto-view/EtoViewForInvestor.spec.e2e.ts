@@ -2,12 +2,15 @@ import { tid } from "../../../test/testUtils";
 import { appRoutes } from "../../components/appRoutes";
 import { withParams } from "../../utils/withParams";
 import { createAndLoginNewUser } from "../utils/userHelpers";
+import { etoFixtureAddressByName } from "../utils";
 import { assertEtoView } from "./EtoViewUtils";
 
-const ETO_ID = "0x0d69BfC43EB3500A8A747Df979C22e3609B62A20";
-
 describe("Eto Investor View", () => {
-  beforeEach(() => createAndLoginNewUser({ type: "investor", kyc: "business" }));
+  let ETO_ID: string;
+  beforeEach(() => {
+    createAndLoginNewUser({ type: "investor", kyc: "business" });
+    ETO_ID = etoFixtureAddressByName("ETONoStartDate")!;
+  });
 
   it("should load empty Eto", () => {
     cy.visit(withParams(appRoutes.etoPublicViewById, { etoId: ETO_ID }));
@@ -38,8 +41,8 @@ describe("Eto Investor View", () => {
     // TOKEN HOLDER RIGHTS section
     cy.get(tid("eto-public-view-nominee")).should("contain", "Neumini UG");
     cy.get(tid("eto-public-view-public-offer-duration")).should("contain", "14 Days");
-    cy.get(tid("eto-public-view-token-tradability")).should("contain", "Enabled");
+    cy.get(tid("eto-public-view-token-tradability")).should("contain", "Disabled");
     cy.get(tid("eto-public-view-voting-rights")).should("contain", "Yes");
-    cy.get(tid("eto-public-view-liquidation-preference")).should("contain", "0x");
+    cy.get(tid("eto-public-view-liquidation-preference")).should("contain", "0.5x");
   });
 });

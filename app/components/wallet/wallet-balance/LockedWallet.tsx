@@ -4,6 +4,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { AccountBalance } from "../../shared/AccountBalance";
 import { HorizontalLine } from "../../shared/HorizontalLine";
 import { IPanelProps } from "../../shared/Panel";
+import { isWalletNotEmpty } from "./utils";
 import { IWalletValues, WalletBalanceContainer } from "./WalletBalance";
 
 import * as ethIcon from "../../../assets/img/eth_icon.svg";
@@ -25,23 +26,26 @@ export const LockedWallet: React.SFC<ILockedWallet> = ({ data, className, header
         <h4 className={styles.title}>
           <FormattedMessage id="shared-component.wallet-balance.title.account-balance" />
         </h4>
-        <AccountBalance
-          icon={neuroIcon}
-          currency="eur_token"
-          currencyTotal="eur"
-          largeNumber={data.neuroAmount}
-          value={data.neuroEuroAmount}
-        />
-
-        <HorizontalLine className="my-3" />
-
-        <AccountBalance
-          icon={ethIcon}
-          currency="eth"
-          currencyTotal="eur"
-          largeNumber={data.ethAmount}
-          value={data.ethEuroAmount}
-        />
+        {isWalletNotEmpty(data.neuroEuroAmount) && (
+          <AccountBalance
+            icon={neuroIcon}
+            currency="eur_token"
+            currencyTotal="eur"
+            largeNumber={data.neuroAmount}
+            value={data.neuroEuroAmount}
+          />
+        )}
+        {isWalletNotEmpty(data.neuroAmount) &&
+          isWalletNotEmpty(data.ethAmount) && <HorizontalLine className="my-3" />}
+        {isWalletNotEmpty(data.ethAmount) && (
+          <AccountBalance
+            icon={ethIcon}
+            currency="eth"
+            currencyTotal="eur"
+            largeNumber={data.ethAmount}
+            value={data.ethEuroAmount}
+          />
+        )}
       </section>
     </WalletBalanceContainer>
   );

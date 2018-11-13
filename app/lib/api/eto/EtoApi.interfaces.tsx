@@ -1,10 +1,11 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { NumberSchema } from "yup";
+import { NumberSchema, StringSchema } from "yup";
 
 import { PlatformTerms, Q18 } from "../../../config/constants";
 import { DeepPartial } from "../../../types";
 import * as YupTS from "../../yup-ts";
+import { dateSchema } from "../util/schemaHelpers";
 import { TEtoDocumentTemplates } from "./EtoFileApi.interfaces";
 
 /** COMPANY ETO RELATED INTERFACES
@@ -24,7 +25,7 @@ const EtoCapitalListType = YupTS.object({
   description: YupTS.string().optional(),
   percent: YupTS.number()
     .optional()
-    .enhance(v => v.max(1, "value cannot exceed 100%")),
+    .enhance(v => v.max(100, "value cannot exceed 100%")),
 }).optional();
 
 export const EtoCompanyInformationType = YupTS.object({
@@ -34,7 +35,7 @@ export const EtoCompanyInformationType = YupTS.object({
   companyDescription: YupTS.string(),
   keyQuoteFounder: YupTS.string(),
   keyQuoteInvestor: YupTS.string().optional(),
-  categories: YupTS.array(tagsType),
+  categories: YupTS.array(tagsType).optional(),
   companyLogo: YupTS.string().optional(),
   companyBanner: YupTS.string().optional(),
 });
@@ -116,7 +117,8 @@ export const EtoLegalInformationType = YupTS.object({
   country: YupTS.string(),
   vatNumber: YupTS.string().optional(),
   registrationNumber: YupTS.string(),
-  foundingDate: YupTS.string(),
+  foundingDate: YupTS.string().enhance((v: StringSchema) => dateSchema(v)),
+
   numberOfEmployees: YupTS.string().optional(),
   companyStage: YupTS.string().optional(),
   numberOfFounders: YupTS.number().optional(),
@@ -204,8 +206,7 @@ export enum EtoStateToCamelcase {
 
 export const EtoTermsType = YupTS.object({
   currencies: YupTS.array(YupTS.string()),
-  prospectusLanguage: YupTS.string().optional(),
-  publicDurationDays: YupTS.number(),
+  prospectusLanguage: YupTS.string(),
   minTicketEur: YupTS.number().enhance((v: NumberSchema) => {
     const minTicketEur = PlatformTerms.MIN_TICKET_EUR_ULPS.div(Q18).toNumber();
 
@@ -227,9 +228,11 @@ export const EtoTermsType = YupTS.object({
     ),
   enableTransferOnSuccess: YupTS.boolean(),
   notUnderCrowdfundingRegulations: YupTS.onlyTrue(),
+  allowRetailInvestors: YupTS.boolean(),
   whitelistDurationDays: YupTS.number(),
-  additionalTerms: YupTS.string().optional(),
+  publicDurationDays: YupTS.number(),
   signingDurationDays: YupTS.number(),
+  additionalTerms: YupTS.string().optional(),
 });
 
 export type TEtoTermsType = YupTS.TypeOf<typeof EtoTermsType>;
@@ -260,6 +263,7 @@ export const EtoInvestmentTermsType = YupTS.object({
   minimumNewSharesToIssue: YupTS.number(),
   newSharesToIssueInWhitelist: YupTS.number().optional(),
   whitelistDiscountFraction: YupTS.number().optional(),
+  publicDiscountFraction: YupTS.number().optional(),
   newSharesToIssueInFixedSlots: YupTS.number().optional(),
   fixedSlotsMaximumDiscountFraction: YupTS.number().optional(),
   discountScheme: YupTS.string().optional(),

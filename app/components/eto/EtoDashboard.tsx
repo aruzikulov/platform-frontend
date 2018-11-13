@@ -12,15 +12,12 @@ import {
   selectVerifiedUserEmail,
 } from "../../modules/auth/selectors";
 import {
-  selectIsPamphletSubmitted,
-  selectIsProspectusSubmitted,
-  selectIsTermSheetSubmitted,
-} from "../../modules/eto-documents/selectors";
-import {
   selectCanEnableBookBuilding,
   selectCombinedEtoCompanyData,
+  selectIsOfferingDocumentSubmitted,
   selectIssuerEtoPreviewCode,
   selectIssuerEtoState,
+  selectIsTermSheetSubmitted,
   selectShouldEtoDataLoad,
 } from "../../modules/eto-flow/selectors";
 import { calculateGeneralEtoData } from "../../modules/eto-flow/utils";
@@ -35,7 +32,6 @@ import { BookBuildingWidget } from "./dashboard/bookBuildingWidget/BookBuildingW
 import { ChoosePreEtoDateWidget } from "./dashboard/choosePreEtoDateWidget/ChoosePreEtoDateWidget";
 import { ETOFormsProgressSection } from "./dashboard/ETOFormsProgressSection";
 import { SubmitProposalWidget } from "./dashboard/submitProposalWidget/SubmitProposalWidget";
-import { UploadPamphletWidget } from "./dashboard/UploadPamphletWidget";
 import { UploadProspectusWidget } from "./dashboard/UploadProspectusWidget";
 import { UploadTermSheetWidget } from "./dashboard/UploadTermSheetWidget";
 import { DashboardSection } from "./shared/DashboardSection";
@@ -53,8 +49,7 @@ interface IStateProps {
   canEnableBookbuilding: boolean;
   etoFormProgress?: number;
   isTermSheetSubmitted?: boolean;
-  isPamphletSubmitted?: boolean;
-  isProspectusSubmitted?: boolean;
+  isOfferingDocumentSubmitted?: boolean;
 }
 
 interface IDispatchProps {
@@ -98,8 +93,7 @@ interface IEtoStateRender {
   etoState?: EtoState;
   shouldViewSubmissionSection?: boolean;
   isTermSheetSubmitted?: boolean;
-  isPamphletSubmitted?: boolean;
-  isProspectusSubmitted?: boolean;
+  isOfferingDocumentSubmitted?: boolean;
   canEnableBookbuilding: boolean;
   previewCode?: string;
 }
@@ -108,8 +102,7 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
   etoState,
   shouldViewSubmissionSection,
   isTermSheetSubmitted,
-  isPamphletSubmitted,
-  isProspectusSubmitted,
+  isOfferingDocumentSubmitted,
   canEnableBookbuilding,
   previewCode,
 }) => {
@@ -161,14 +154,9 @@ const EtoStateViewRender: React.SFC<IEtoStateRender> = ({
               <BookBuildingWidget />
             </Col>
           )}
-          {!isPamphletSubmitted && (
+          {!isOfferingDocumentSubmitted && (
             <Col lg={4} xs={12}>
               <UploadProspectusWidget />
-            </Col>
-          )}
-          {!isProspectusSubmitted && (
-            <Col lg={4} xs={12}>
-              <UploadPamphletWidget />
             </Col>
           )}
           <Col xs={12}>
@@ -262,8 +250,7 @@ class EtoDashboardComponent extends React.Component<IProps> {
       etoFormProgress,
       isTermSheetSubmitted,
       shouldEtoDataLoad,
-      isPamphletSubmitted,
-      isProspectusSubmitted,
+      isOfferingDocumentSubmitted,
       previewCode,
     } = this.props;
 
@@ -272,7 +259,6 @@ class EtoDashboardComponent extends React.Component<IProps> {
       (backupCodesVerified || !isLightWallet) &&
       requestStatus === "Accepted"
     );
-
     const shouldViewSubmissionSection = !!(
       etoFormProgress && etoFormProgress >= SUBMIT_PROPOSAL_THRESHOLD
     );
@@ -294,8 +280,7 @@ class EtoDashboardComponent extends React.Component<IProps> {
           {shouldEtoDataLoad ? (
             <EtoStateViewRender
               isTermSheetSubmitted={isTermSheetSubmitted}
-              isPamphletSubmitted={isPamphletSubmitted}
-              isProspectusSubmitted={isProspectusSubmitted}
+              isOfferingDocumentSubmitted={isOfferingDocumentSubmitted}
               shouldViewSubmissionSection={shouldViewSubmissionSection}
               etoState={etoState}
               canEnableBookbuilding={canEnableBookbuilding}
@@ -323,9 +308,8 @@ export const EtoDashboard = compose<React.SFC>(
       etoState: selectIssuerEtoState(s),
       previewCode: selectIssuerEtoPreviewCode(s.etoFlow),
       canEnableBookbuilding: selectCanEnableBookBuilding(s),
-      isTermSheetSubmitted: selectIsTermSheetSubmitted(s.etoDocuments),
-      isPamphletSubmitted: selectIsPamphletSubmitted(s.etoDocuments),
-      isProspectusSubmitted: selectIsProspectusSubmitted(s.etoDocuments),
+      isTermSheetSubmitted: selectIsTermSheetSubmitted(s),
+      isOfferingDocumentSubmitted: selectIsOfferingDocumentSubmitted(s),
       etoFormProgress: calculateGeneralEtoData(selectCombinedEtoCompanyData(s)),
     }),
     dispatchToProps: dispatch => ({

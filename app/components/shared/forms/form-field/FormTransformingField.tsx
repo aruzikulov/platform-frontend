@@ -67,7 +67,7 @@ export class FormTransformingField extends React.Component<FieldGroupProps> {
           } as any;
 
           return (
-            <FormGroup>
+            <FormGroup className={styles.keyValueField}>
               {label && <FormLabel name={name}>{label}</FormLabel>}
               <Field
                 name={name}

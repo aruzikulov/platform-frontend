@@ -14,8 +14,7 @@ export const etoFlowInitialState: IEtoDocumentState = {
   loading: false,
   saving: false,
   etoFileData: {
-    etoTemplates: {},
-    uploadedDocuments: {},
+    allTemplates: {},
   },
   showIpfsModal: false,
 };

@@ -19,21 +19,21 @@ const marketingLinks: TCompanyEtoData["marketingLinks"] = [
 
 const documents: TEtoDocumentTemplates = {
   QmRnodXSfXVpMV2PTtJFU5wyNGi1Q8gCt8JKZAU1L2bZ6u: {
-    documentType: EEtoDocumentType.APPROVED_PAMPHLET,
+    documentType: EEtoDocumentType.SIGNED_INVESTMENT_AND_SHAREHOLDER_AGREEMENT,
     form: "document",
     ipfsHash: "QmRnodXSfXVpMV2PTtJFU5wyNGi1Q8gCt8JKZAU1L2bZ6u",
     mimeType: "application/pdf",
     name: "./dev_fixtures/eto_fixtures/ETOInPublicState/bafin_approved_pamphlet.pdf",
   },
   QmWKa6zVZjZu3x2CtJnSNTHUwWMeAcyfv9iZDnoawmULeT: {
-    documentType: EEtoDocumentType.APPROVED_PROSPECTUS,
+    documentType: EEtoDocumentType.APPROVED_INVESTOR_OFFERING_DOCUMENT,
     form: "document",
     ipfsHash: "QmWKa6zVZjZu3x2CtJnSNTHUwWMeAcyfv9iZDnoawmULeT",
     mimeType: "application/pdf",
     name: "./dev_fixtures/eto_fixtures/ETOInPublicState/bafin_approved_prospectus.pdf",
   },
   Qmc4rZUXQKkvRahSUHS6qaeRq2voqDiMXbiHwhZTfwXUdK: {
-    documentType: EEtoDocumentType.TERMSHEET_TEMPLATE,
+    documentType: EEtoDocumentType.SIGNED_TERMSHEET,
     form: "document",
     ipfsHash: "Qmc4rZUXQKkvRahSUHS6qaeRq2voqDiMXbiHwhZTfwXUdK",
     mimeType: "application/pdf",
@@ -49,19 +49,12 @@ const templates: TEtoDocumentTemplates = {
     mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     name: "company_token_holder_agreement",
   },
-  investmentAndShareholderAgreement: {
-    documentType: EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT,
+  investmentAndShareholderAgreementTemplate: {
+    documentType: EEtoDocumentType.INVESTMENT_AND_SHAREHOLDER_AGREEMENT_TEMPLATE,
     form: "template",
     ipfsHash: "QmdMTU4Z58cvaDAKWChLCH5DaYFvNWG9Qo1cvkzzzLMZ16",
     mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    name: "investment_and_shareholder_agreement",
-  },
-  pamphletTemplate: {
-    documentType: EEtoDocumentType.PAMPHLET_TEMPLATE,
-    form: "template",
-    ipfsHash: "QmUbU1jFuJdpArXuPPPQBde2vg3p6LPy6CPK3e3Rw5ACoC",
-    mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    name: "pamphlet_template_de",
+    name: "investment_and_shareholder_agreement_template",
   },
   prospectusTemplate: {
     documentType: EEtoDocumentType.PROSPECTUS_TEMPLATE,

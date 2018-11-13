@@ -30,7 +30,7 @@ export function* generateEuroUpgradeTransaction({
   const txData = contractsService.icbmEuroLock.migrateTx().getData();
 
   const txInitialDetails = {
-    to: contractsService.icbmEtherLock.address,
+    to: contractsService.icbmEuroLock.address,
     from: userAddress,
     data: txData,
     value: addHexPrefix("0"),

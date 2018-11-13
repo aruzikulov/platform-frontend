@@ -1,19 +1,16 @@
+import * as cn from "classnames";
 import * as React from "react";
-import { Col, Row } from "reactstrap";
-
 import { HorizontalLine } from "../../shared/HorizontalLine";
+import * as styles from "./Shared.module.scss";
 
 interface ISectionProps {
   line?: boolean;
+  className?: string;
 }
 
-export const Section: React.SFC<ISectionProps> = ({ line, children }) => (
+export const Section: React.SFC<ISectionProps> = ({ line, className, children }) => (
   <>
-    <Row className="justify-content-center">
-      <Col xs={12} lg={10} xl={10}>
-        {children}
-      </Col>
-    </Row>
+    <div className={cn(styles.section, className)}>{children}</div>
     {line && <HorizontalLine className="mb-5" />}
   </>
 );

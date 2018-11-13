@@ -6,7 +6,6 @@ import { compose } from "redux";
 
 import { actions } from "../../../../modules/actions";
 import { appConnect } from "../../../../store";
-import { IIntlProps, injectIntlHelpers } from "../../../../utils/injectIntlHelpers";
 import { ButtonArrowRight } from "../../../shared/buttons";
 import { Panel } from "../../../shared/Panel";
 
@@ -16,18 +15,17 @@ interface IDispatchProps {
   submitProposal: () => void;
 }
 
-export const SubmitProposalWidgetComponent: React.SFC<IDispatchProps & IIntlProps> = ({
-  submitProposal,
-  intl: { formatIntlMessage },
-}) => {
+export const SubmitProposalWidgetComponent: React.SFC<IDispatchProps> = ({ submitProposal }) => {
   return (
-    <Panel headerText={formatIntlMessage("settings.submit-your-proposal.header")}>
+    <Panel headerText={<FormattedMessage id="settings.submit-your-proposal.header" />}>
       <div className={styles.content}>
         <p className={cn(styles.text, "pt-2")}>
           <FormattedMessage id="settings.submit-proposal-widget.completed-fields" />
         </p>
         <Col className="d-flex justify-content-center">
-          <ButtonArrowRight onClick={submitProposal}>Submit</ButtonArrowRight>
+          <ButtonArrowRight data-test-id="eto-dashboard-submit-proposal" onClick={submitProposal}>
+            Submit
+          </ButtonArrowRight>
         </Col>
       </div>
     </Panel>
@@ -40,5 +38,4 @@ export const SubmitProposalWidget = compose<React.SFC>(
       submitProposal: () => dispatch(actions.etoFlow.submitDataStart()),
     }),
   }),
-  injectIntlHelpers,
 )(SubmitProposalWidgetComponent);

@@ -66,7 +66,6 @@ export function setupBindings(config: IConfig): Container {
   } else {
     container.bind<ILogger>(symbols.logger).toConstantValue(new DevConsoleLogger());
   }
-
   // classes
   container
     .bind<IHttpClient>(symbols.jsonHttpClient)

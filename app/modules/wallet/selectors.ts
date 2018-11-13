@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js";
 import * as Web3Utils from "web3-utils";
+import { ETHEREUM_ZERO_ADDRESS } from "../../../app/config/constants";
 import { IAppState } from "../../store";
 import { addBigNumbers, multiplyBigNumbers, subtractBigNumbers } from "../../utils/BigNumberUtils";
 import { selectEtherPriceEur, selectNeuPriceEur } from "../shared/tokenPrice/selectors";
@@ -156,10 +157,14 @@ export const selectIsLoading = (state: IWalletState): boolean => state.loading;
 export const selectWalletError = (state: IWalletState): string | undefined => state.error;
 
 export const selectIsEtherUpgradeTargetSet = (state: IAppState): boolean =>
-  state.wallet.data && Web3Utils.isAddress(state.wallet.data.etherTokenUpgradeTarget);
+  state.wallet.data &&
+  Web3Utils.isAddress(state.wallet.data.etherTokenUpgradeTarget) &&
+  state.wallet.data.etherTokenUpgradeTarget! !== ETHEREUM_ZERO_ADDRESS;
 
 export const selectIsEuroUpgradeTargetSet = (state: IAppState): boolean =>
-  state.wallet.data && Web3Utils.isAddress(state.wallet.data.euroTokenUpgradeTarget);
+  state.wallet.data &&
+  Web3Utils.isAddress(state.wallet.data.euroTokenUpgradeTarget) &&
+  state.wallet.data.euroTokenUpgradeTarget! !== ETHEREUM_ZERO_ADDRESS;
 
 /**General State Selectors */
 export const selectMaxAvailableEther = (state: IAppState): string =>
