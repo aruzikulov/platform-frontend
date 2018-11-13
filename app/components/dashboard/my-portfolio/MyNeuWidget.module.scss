@@ -1,6 +1,6 @@
 .background {
   background: $neu-pale-blue;
-  padding: px-to-rem(15px) px-to-rem(10px);
+  padding: px-to-rem(15px);
 }
 
 .icon {
@@ -31,6 +31,5 @@
 }
 
 .neu {
-  color: $neu-greyish-brown;
-  font-size: $extra-bigger-font-size;
+  margin-bottom: px-to-rem(10px);
 }

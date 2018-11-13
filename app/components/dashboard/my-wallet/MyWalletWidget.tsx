@@ -65,7 +65,6 @@ export const MyWalletWidgetComponentBody: React.SFC<StateProps> = props => {
               currency="eth"
               largeNumber={ethAmount}
               icon={ethIcon}
-              className={cn(styles.borderLeft, "pl-sm-2 pl-md-0")}
               value={ethEuroAmount}
               currencyTotal="eur"
               data-test-id="my-wallet-widget-eth-token"
