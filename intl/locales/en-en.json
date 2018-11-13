@@ -473,7 +473,7 @@
   "kyc.personal.instant-id.manual-verification-description": "<b>Manual Verification</b>: If you do not wish to get instantly verified you can choose the manual process. Therefore you have to upload your documents manually. The process may take up to 1 business day.",
   "kyc.personal.politically-exposed.disclaimer": "You will be asked to provide more details about your situation at a later stage.",
   "kyc.personal.politically-exposed.question": "Are you a Politically Exposed Person?",
-  "kyc.personal.politically-exposed.tooltip": "<p>A Politically Exposed Person (PEP) is:</p><ol><li> is an individual who is or has been entrusted with a prominent function. Many PEPs hold positions that can be abused for the purpose of laundering illicit funds or other predicate offences such as corruption or bribery.</li></ol>",
+  "kyc.personal.politically-exposed.tooltip": "<p>Politically Exposed Person means a natural person who is or who has been entrusted with prominent public functions and includes the following:</p><ul><li>heads of State, heads of government, ministers and deputy or assistant ministers</li><li>members of parliament or of similar legislative bodies</li><li>members of the governing bodies of political parties</li>",
   "kyc.personal.uploadId.description": "Please upload a colored copy of your passport or both sides of your ID card for verification.",
   "kyc.personal.us-citizen.disclaimer": "Due to regulatory uncertainties in the US we can currently not accept any US American citizens. Since US law also operates outside of its geographical borders we cannot make an exception even if you are based overseas",
   "kyc.personal.us-citizen.question": "Are you a US citizen?",
