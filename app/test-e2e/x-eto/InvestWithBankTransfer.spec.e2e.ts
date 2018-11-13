@@ -16,31 +16,24 @@ describe("Invest with full icbm wallet", () => {
       // click invest now button
       cy.get(tid("eto-invest-now-button-" + PUBLIC_ETO_ID)).click();
       cy.get(tid("investment-type.selector.BANK_TRANSFER")).check({ force: true });
-      cy.wait(1000);
-
       cy.get(tid("invest-modal-eur-field"))
         .clear()
         .type("123");
       cy.wait(1000);
 
-      cy.get(tid("invest-modal-gas-cost")).should($e => {
-        expect($e.text()).to.contain("ETH 0.0000"); // no gas cost on bank transfer
-      });
+      // no gas cost on bank transfer
+      cy.get(tid("invest-modal-gas-cost")).should("contain", "ETH 0.0000");
       cy.get(tid("invest-modal-invest-now-button")).click();
 
-      cy.get(tid("invest-modal-bank-transfer-summary-amount")).should($m => {
-        expect($m.text())
-          .to.contain("123")
-          .and.to.contain("€");
-      });
+      cy.get(tid("invest-modal-bank-transfer-summary-amount")).should($e =>
+        expect($e.text().trim()).to.match(/123[\.|,]00/),
+      );
 
       cy.get(tid("invest-modal-summary-confirm-button")).click();
       cy.get(tid("invest-modal-bank-transfer-details-title"));
-      cy.get(tid("invest-modal-bank-transfer-details-amount")).should($m => {
-        expect($m.text().trim())
-          .to.contain("123")
-          .and.length(6); // 123.00 or 123,00
-      });
+      cy.get(tid("invest-modal-bank-transfer-details-amount")).should($e =>
+        expect($e.text().trim()).to.match(/123[\.|,]00/),
+      );
     });
   });
 });
