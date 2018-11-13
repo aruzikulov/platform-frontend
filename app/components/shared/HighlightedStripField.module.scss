@@ -1,0 +1,75 @@
+.content {
+  max-width: 400px;
+  margin: 0 auto;
+
+  :global(.button) {
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+.value {
+  font-size: 10px;
+  word-break: break-all;
+  text-align: right;
+}
+
+.label {
+  font-size: px-to-rem(12px);
+}
+
+.header {
+  @include font-label;
+  margin-bottom: $spacing-vertical-lg-1;
+}
+
+.footer {
+  font-size: 12px;
+  letter-spacing: -.2px;
+  text-align: center;
+}
+
+.highlighted-field {
+  background-color: $neu-pale-blue;
+  color: $color-graphite;
+  font-size: 15px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.white-background {
+  background-color: $neu-white-two;
+}
+
+.highlighted-header {
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.icon {
+  margin-right: 6px;
+  width: 15px;
+  height: 15px;
+  vertical-align: middle;
+}
+
+.description {
+  font-size: px-to-rem(12px);
+  letter-spacing: px-to-rem(-.2px);
+}
+
+.animated-ethereum {
+  transform: scale(.3);
+  height: 110px !important; // sass-lint:disable-line no-important
+  width: 60px !important; // sass-lint:disable-line no-important
+}
+
+.footer-success,
+.footer-waiting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}

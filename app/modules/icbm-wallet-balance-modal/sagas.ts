@@ -9,9 +9,10 @@ import { actions, TAction } from "../actions";
 import { neuCall, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
 import { ILockedWallet, IWalletStateData } from "../wallet/reducer";
 import { loadWalletDataAsync } from "../wallet/sagas";
+import { selectLockedWalletConnected } from "../wallet/selectors";
 import { selectEthereumAddressWithChecksum } from "../web3/selectors";
 import { IWalletMigrationData } from "./reducer";
-import { selectIcbmWalletEthAddress } from "./selectors";
+import { selectIcbmModalIsFirstTransactionDone, selectIcbmWalletEthAddress } from "./selectors";
 
 const BLOCK_MINING_TIME_DELAY = 12000;
 class IcbmWalletError extends Error {}
@@ -43,6 +44,8 @@ function* loadIcbmWalletMigrationTransactionSaga({
     const icbmEthAddress: string = yield select((s: IAppState) =>
       selectIcbmWalletEthAddress(s.icbmWalletBalanceModal),
     );
+    const isFirstTxDone: boolean = yield select(selectIcbmModalIsFirstTransactionDone);
+
     const investorMigrationWallet: [
       string[],
       BigNumber[]
@@ -51,26 +54,28 @@ function* loadIcbmWalletMigrationTransactionSaga({
     const etherLockAddress = yield contractsService.etherLock.address;
     const icbmEtherLockAddress = yield contractsService.icbmEtherLock.address;
 
-    const walletMigrationData: IWalletMigrationData = didUserConductFirstTransaction(
-      investorMigrationWallet,
-      currentEthAddress,
+    const walletMigrationData: IWalletMigrationData[] = [
+      {
+        migrationInputData: contractsService.etherLock
+          .setInvestorMigrationWalletTx(currentEthAddress)
+          .getData(),
+        smartContractAddress: toChecksumAddress(etherLockAddress),
+        gasLimit: "400000",
+        value: "0",
+      },
+      {
+        migrationInputData: contractsService.icbmEtherLock.migrateTx().getData(),
+        smartContractAddress: toChecksumAddress(icbmEtherLockAddress),
+        gasLimit: "400000",
+        value: "0",
+      },
+    ];
+
+    if (
+      didUserConductFirstTransaction(investorMigrationWallet, currentEthAddress) &&
+      !isFirstTxDone
     )
-      ? {
-          migrationInputData: contractsService.icbmEtherLock.migrateTx().getData(),
-          migrationStep: 2,
-          smartContractAddress: toChecksumAddress(icbmEtherLockAddress),
-          gasLimit: "400000",
-          value: "0",
-        }
-      : {
-          migrationInputData: contractsService.etherLock
-            .setInvestorMigrationWalletTx(currentEthAddress)
-            .getData(),
-          migrationStep: 1,
-          smartContractAddress: toChecksumAddress(etherLockAddress),
-          gasLimit: "400000",
-          value: "0",
-        };
+      yield put(actions.icbmWalletBalanceModal.setFirstTxDone());
 
     yield put(actions.icbmWalletBalanceModal.loadIcbmMigrationData(walletMigrationData));
   } catch (e) {
@@ -95,7 +100,6 @@ function* loadIcbmWalletMigrationSaga(
     const isIcbmUser = hasIcbmWallet(migrationWalletData.etherTokenICBMLockedWallet);
     if (!isIcbmUser) throw new NoIcbmWalletError();
 
-    yield put(actions.icbmWalletBalanceModal.showIcbmWalletBalanceModal());
     yield put(
       actions.icbmWalletBalanceModal.loadIcbmWalletData(
         migrationWalletData.etherTokenICBMLockedWallet,
@@ -119,18 +123,34 @@ function* icbmWalletMigrationTransactionWatcher({ contractsService }: TGlobalDep
     selectIcbmWalletEthAddress(s.icbmWalletBalanceModal),
   );
   if (currentEthAddress === icbmEthAddress) return;
+  let isFirstRun = true;
 
   while (true) {
-    const investorMigrationWallet: [
-      string[],
-      BigNumber[]
-    ] = yield contractsService.etherLock.getInvestorMigrationWallets(icbmEthAddress);
+    // Check for first migration transaction
+    const investorMigrationWallet = yield contractsService.etherLock.getInvestorMigrationWallets(
+      icbmEthAddress,
+    );
+    // Check for second migration transaction
+    const isLockedWalletConnected = yield select(selectLockedWalletConnected);
 
-    if (didUserConductFirstTransaction(investorMigrationWallet, currentEthAddress)) {
-      yield put(actions.icbmWalletBalanceModal.getWalletData(icbmEthAddress));
-      return;
+    if (isFirstRun) {
+      // Second Transaction already done no need for watching transactions
+      if (isLockedWalletConnected) return;
+      // First Transaction Done, Go Directly to Second Step
+      if (didUserConductFirstTransaction(investorMigrationWallet, currentEthAddress)) {
+        yield put(actions.icbmWalletBalanceModal.startMigrationFlow());
+        yield put(actions.icbmWalletBalanceModal.setMigrationStepToNextStep());
+      }
+      isFirstRun = false;
+    } else {
+      if (didUserConductFirstTransaction(investorMigrationWallet, currentEthAddress)) {
+        yield put(actions.icbmWalletBalanceModal.setFirstTxDone());
+        yield put(actions.icbmWalletBalanceModal.getWalletData(icbmEthAddress));
+      }
+      if (isLockedWalletConnected) yield put(actions.icbmWalletBalanceModal.setSecondTxDone());
+
+      yield delay(BLOCK_MINING_TIME_DELAY);
     }
-    yield delay(BLOCK_MINING_TIME_DELAY);
   }
 }
 

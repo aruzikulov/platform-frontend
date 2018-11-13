@@ -106,7 +106,7 @@ export const Settings = compose<React.SFC>(
       kycRequestStatus: selectKycRequestStatus(s.kyc),
       kycRequestType: selectKycRequestType(s.kyc),
       isIcbmWalletConnected: selectIcbmWalletConnected(s.wallet),
-      isLockedWalletConnected: selectLockedWalletConnected(s.wallet),
+      isLockedWalletConnected: selectLockedWalletConnected(s),
     }),
   }),
   onEnterAction({

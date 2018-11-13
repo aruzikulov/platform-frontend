@@ -146,10 +146,10 @@ export const selectIcbmWalletConnected = (state: IWalletState): boolean =>
     (state.data && state.data.euroTokenICBMLockedWallet.unlockDate !== "0")
   );
 
-export const selectLockedWalletConnected = (state: IWalletState): boolean =>
+export const selectLockedWalletConnected = (state: IAppState): boolean =>
   !!(
-    (state.data && state.data.etherTokenLockedWallet.unlockDate !== "0") ||
-    (state.data && state.data.euroTokenLockedWallet.unlockDate !== "0")
+    (state.wallet.data && state.wallet.data.etherTokenLockedWallet.unlockDate !== "0") ||
+    (state.wallet.data && state.wallet.data.euroTokenLockedWallet.unlockDate !== "0")
   );
 
 export const selectIsLoading = (state: IWalletState): boolean => state.loading;

@@ -2,24 +2,32 @@ import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 import { ILockedWallet } from "./../wallet/reducer";
 
+export type TWalletMigrationSteps = 1 | 2;
 export interface IWalletMigrationData {
   smartContractAddress: string;
   migrationInputData: string;
-  migrationStep: 1 | 2;
   gasLimit: string;
   value: string;
 }
 export interface IIcbmWalletBalanceModal {
   isOpen: boolean;
   loading: boolean;
-  ethAddress?: string;
+  icbmWalletEthAddress?: string;
   lockedWallet?: ILockedWallet;
-  walletMigrationData?: IWalletMigrationData;
+  walletMigrationData?: IWalletMigrationData[];
+  currentMigrationStep: TWalletMigrationSteps;
+  isMigrating: boolean;
+  firstTransactionDone: boolean;
+  secondTransactionDone: boolean;
 }
 
 const initialState: IIcbmWalletBalanceModal = {
   isOpen: false,
   loading: false,
+  isMigrating: false,
+  firstTransactionDone: false,
+  secondTransactionDone: false,
+  currentMigrationStep: 1,
 };
 
 export const icbmWalletBalanceModalReducer: AppReducer<IIcbmWalletBalanceModal> = (
@@ -40,8 +48,7 @@ export const icbmWalletBalanceModalReducer: AppReducer<IIcbmWalletBalanceModal> 
     case "ICBM_WALLET_BALANCE_MODAL_GET_WALLET_DATA":
       return {
         ...state,
-        ethAddress: action.payload.ethAddress,
-        loading: true,
+        icbmWalletEthAddress: action.payload.icbmWalletEthAddress,
       };
     case "ICBM_WALLET_BALANCE_MODAL_LOAD_WALLET_DATA":
       return {
@@ -53,7 +60,27 @@ export const icbmWalletBalanceModalReducer: AppReducer<IIcbmWalletBalanceModal> 
       return {
         ...state,
         loading: false,
-        walletMigrationData: action.payload.data,
+        walletMigrationData: action.payload.walletMigrationData,
+      };
+    case "ICBM_WALLET_BALANCE_MODAL_START_MIGRATION":
+      return {
+        ...state,
+        isMigrating: true,
+      };
+    case "ICBM_WALLET_BALANCE_MODAL_FIRST_TRANSACTION_DONE":
+      return {
+        ...state,
+        firstTransactionDone: true,
+      };
+    case "ICBM_WALLET_BALANCE_MODAL_SECOND_TRANSACTION_DONE":
+      return {
+        ...state,
+        secondTransactionDone: true,
+      };
+    case "ICBM_WALLET_BALANCE_MODAL_SET_MIGRATION_STEP_TO_NEXT":
+      return {
+        ...state,
+        currentMigrationStep: 2,
       };
     default:
       return state;

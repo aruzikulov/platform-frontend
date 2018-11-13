@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 
 import { ButtonIcon } from "./buttons";
 
+import * as cn from "classnames";
 import { FormattedMessage } from "react-intl-phraseapp";
 import * as clipboardIcon from "../../assets/img/inline_icons/icon-clipboard.svg";
 import * as styles from "./CopyToClipboard.module.scss";
@@ -33,7 +34,7 @@ class CopyToClipboard extends React.Component<IProps> {
     return (
       <>
         <input
-          className={styles.hiddenInput}
+          className={cn(styles.hiddenInput)}
           ref={this.inputRef}
           value={value as string}
           readOnly

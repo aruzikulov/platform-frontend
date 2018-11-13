@@ -119,6 +119,6 @@ export const MyPortfolioWidget = appConnect<IStateProps, {}, TOwnProps>({
     balanceNeu: selectNeuBalance(s.wallet),
     balanceEur: selectNeuBalanceEuroAmount(s),
     isIcbmWalletConnected: selectIcbmWalletConnected(s.wallet),
-    isLockedWalletConnected: selectLockedWalletConnected(s.wallet),
+    isLockedWalletConnected: selectLockedWalletConnected(s),
   }),
 })(MyPortfolioWidgetComponent);

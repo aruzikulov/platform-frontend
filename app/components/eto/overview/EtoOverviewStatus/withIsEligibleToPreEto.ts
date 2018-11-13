@@ -20,7 +20,7 @@ export const withIsEligibleToPreEto = <T extends IWithIsEligibleToPreEto>(
     appConnect<IWithIsEligibleToPreEto, {}, IExternalProps>({
       stateToProps: (state, props) => {
         const wallet = state.wallet;
-        const isLockedWalletConnected = !!wallet && selectLockedWalletConnected(wallet);
+        const isLockedWalletConnected = !!wallet && selectLockedWalletConnected(state);
 
         const isWhitelisted = selectIsWhitelisted(props.etoId, state);
 

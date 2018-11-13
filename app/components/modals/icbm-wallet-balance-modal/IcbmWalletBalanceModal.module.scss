@@ -1,27 +1,5 @@
-.content {
-  max-width: 400px;
-  margin: 0 auto;
-
-  :global(.button) {
-    display: block;
-    margin: 0 auto;
-  }
-}
-
 .wrapper {
   margin-bottom: $spacing-vertical-lg-1;
-}
-
-.header {
-  @include font-label;
-
-  margin-bottom: $spacing-vertical-lg-1;
-}
-
-.footer {
-  font-size: 12px;
-  letter-spacing: -.2px;
-  text-align: center;
 }
 
 .highlighted-field {
@@ -43,6 +21,28 @@
   @include rect(20px);
 
   margin-right: 6px;
+}
+
+.content {
+  max-width: 400px;
+  margin: 0 auto;
+
+  :global(.button) {
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+.header {
+  @include font-label;
+
+  margin-bottom: $spacing-vertical-lg-1;
+}
+
+.footer {
+  font-size: 12px;
+  letter-spacing: -.2px;
+  text-align: center;
 }
 
 .description {
