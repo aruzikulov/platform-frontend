@@ -47,7 +47,10 @@ export const LoginHelp: React.SFC<void> = () => (
           <FormattedMessage id="wallet-selector.recover.help.ledger-lost" />
         </h5>
         <Col xs={12} md={4}>
-          <ButtonLink to="/">
+          <ButtonLink
+            to="https://support.ledgerwallet.com/hc/en-us/articles/360000609933-Lost-device-PIN-code-or-recovery-phrase"
+            target="_blank"
+          >
             <FormattedMessage id="wallet-selector.recover.help.ledger-lost-btn" />
           </ButtonLink>
         </Col>
@@ -58,7 +61,7 @@ export const LoginHelp: React.SFC<void> = () => (
         <Link to={loginWalletRoutes.light}>
           <i className="fa fa-lg fa-angle-left mr-1" /> BACK
         </Link>
-        <a href="https://support.neufund.org/support/home">
+        <a href="https://support.neufund.org/support/home" target="_blank">
           <FormattedMessage id="wallet-selector.recover.help.contact-for-help" />{" "}
           <i className="fa fa-lg fa-angle-right ml-1" />
         </a>
