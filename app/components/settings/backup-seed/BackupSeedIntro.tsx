@@ -10,7 +10,7 @@ import { StepCard } from "../../shared/StepCard";
 
 interface IBackupSeedIntroProps {
   onNext: () => void;
-  onBack: string;
+  onBack: () => void;
 }
 
 export const BackupSeedIntro: React.SFC<IBackupSeedIntroProps> = ({ onBack, onNext }) => (
@@ -42,7 +42,7 @@ export const BackupSeedIntro: React.SFC<IBackupSeedIntroProps> = ({ onBack, onNe
           layout={EButtonLayout.SECONDARY}
           iconPosition="icon-before"
           svgIcon={arrowLeft}
-          onClick={() => onBack}
+          onClick={onBack}
         >
           <FormattedMessage id="form.button.back" />
         </Button>

@@ -92,3 +92,5 @@ export type OmitKeys<T, K> = Pick<T, Exclude<keyof T, K>>;
 export type TFormikConnect = {
   formik: FormikContext<any>;
 };
+
+export type TElementRef<T> = null | T;

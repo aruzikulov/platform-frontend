@@ -9,11 +9,13 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import Select from "react-virtualized-select";
 import { Col, Row } from "reactstrap";
 
+import { TElementRef } from "../../../types";
 import { Button } from "../../shared/buttons";
 import { HeaderProgressStepper } from "../../shared/HeaderProgressStepper";
 
 export const SEED_LENGTH = 24;
 const WORDS_PER_VIEW = 4;
+
 const wordsOptions = Mnemonic.Words.ENGLISH.map((word: string) => ({ value: word, label: word }));
 
 interface ISeedRecoveryProps {
@@ -31,20 +33,26 @@ export class WalletLightSeedRecoveryComponent extends React.Component<
   ISeedRecoveryProps,
   ISeedRecoveryState
 > {
+  verificationSelectRefs: TElementRef<Select>[] = [];
+  nextButtonRef = React.createRef<HTMLButtonElement>();
+
   state = {
     words: Array(SEED_LENGTH).fill(null),
     page: 0,
   };
 
-  updateValueFactory = (wordNumber: number) => (newValue: any): void => {
+  updateValueFactory = (wordNumber: number, index: number) => (newValue: any): void => {
     const words = this.state.words;
     words[wordNumber] = newValue;
-    this.setState({
-      words,
-    });
+    this.setState(
+      state => ({
+        words: state.words.map((word, number) => (number === wordNumber ? newValue : word)),
+      }),
+      () => this.focusNext(index),
+    );
   };
 
-  generateSelect = (wordNumber: number): React.ReactNode => (
+  generateSelect = (wordNumber: number, index: number): React.ReactNode => (
     <div data-test-id={`seed-recovery-word-${wordNumber}`}>
       <Select
         options={wordsOptions}
@@ -52,18 +60,58 @@ export class WalletLightSeedRecoveryComponent extends React.Component<
         clearable={true}
         matchPos="start"
         matchProp="value"
+        ref={(ref: Select | null) => (this.verificationSelectRefs[index] = ref)}
         value={this.state.words[wordNumber]}
-        onChange={this.updateValueFactory(wordNumber)}
+        onChange={this.updateValueFactory(wordNumber, index)}
         placeholder={(wordNumber + 1).toString(10) + ". Word"}
         noResultsText="No matching word"
       />
     </div>
   );
 
+  getCurrentWordsSlice = () => {
+    const startIndex = this.state.page * WORDS_PER_VIEW;
+    const endIndex = startIndex + WORDS_PER_VIEW;
+
+    return this.state.words.slice(startIndex, endIndex);
+  };
+
+  focusNext = (current: number) => {
+    if (current + 1 < WORDS_PER_VIEW) {
+      this.focusSelect(current + 1);
+    } else if (this.nextButtonRef.current) {
+      this.nextButtonRef.current.focus();
+    }
+  };
+
+  focusSelect = (index: number) => {
+    const selectRef = this.verificationSelectRefs[index];
+
+    if (selectRef) {
+      // Typings are not up to date. Below is the link to method in case of any error.
+      // https://github.com/bvaughn/react-virtualized-select/blob/b24fb1d59777d0d50cdb77b41a72cca1b58e0c00/source/VirtualizedSelect/VirtualizedSelect.js#L44
+      (selectRef as any).focus();
+    }
+  };
+
   handleNextView = () => {
-    this.setState(s => ({
-      page: s.page + 1,
-    }));
+    this.setState(
+      s => ({
+        page: s.page + 1,
+      }),
+      () => {
+        const startIndex = this.state.page * WORDS_PER_VIEW;
+        const endIndex = startIndex + WORDS_PER_VIEW;
+
+        const firstEmpty = this.state.words
+          .slice(startIndex, endIndex)
+          .findIndex(word => word === null);
+
+        if (firstEmpty !== -1) {
+          this.focusSelect(firstEmpty);
+        }
+      },
+    );
   };
 
   handlePreviousView = () => {
@@ -82,15 +130,9 @@ export class WalletLightSeedRecoveryComponent extends React.Component<
     const startIndex = this.state.page * WORDS_PER_VIEW;
     const endIndex = startIndex + WORDS_PER_VIEW;
 
-    const canAdvance = this.state.words
-      .slice(startIndex, endIndex)
-      .reduce((acc: boolean, value: string): boolean => {
-        return acc && value !== null;
-      }, true);
+    const canAdvance = this.state.words.slice(startIndex, endIndex).every(word => word !== null);
 
-    const canSubmit = this.state.words.reduce((acc: boolean, value: string): boolean => {
-      return acc && value !== null;
-    }, true);
+    const canSubmit = this.state.words.every(word => word !== null);
 
     return (
       <>
@@ -108,9 +150,9 @@ export class WalletLightSeedRecoveryComponent extends React.Component<
           </Col>
         </Row>
         <Row>
-          {range(startIndex, endIndex).map(num => (
+          {range(startIndex, endIndex).map((num, i) => (
             <Col xs={{ size: 6, offset: 3 }} sm={{ size: 3, offset: 0 }} key={num} className="my-3">
-              {this.generateSelect(num)}
+              {this.generateSelect(num, i)}
             </Col>
           ))}
         </Row>
@@ -123,7 +165,12 @@ export class WalletLightSeedRecoveryComponent extends React.Component<
             <FormattedMessage id="wallet-selector.recovery.seed.previous-words" />
           </Button>
           {this.state.page + 1 < SEED_LENGTH / WORDS_PER_VIEW && (
-            <Button data-test-id="btn-next" disabled={!canAdvance} onClick={this.handleNextView}>
+            <Button
+              data-test-id="btn-next"
+              disabled={!canAdvance}
+              onClick={this.handleNextView}
+              ref={this.nextButtonRef}
+            >
               <FormattedMessage
                 id="wallet-selector.recovery.seed.next-words"
                 values={{ words: `${endIndex} / ${SEED_LENGTH}` }}

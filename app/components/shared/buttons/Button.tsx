@@ -74,46 +74,54 @@ const buttonThemeClassNames: Record<TButtonTheme, string> = {
   graphite: styles.buttonGraphite,
 };
 
-const Button: React.SFC<IButtonProps> = ({
-  children,
-  layout,
-  theme,
-  disabled,
-  svgIcon,
-  className,
-  iconPosition,
-  size,
-  width,
-  isLoading,
-  type,
-  textPosition,
-  ...props
-}) => (
-  <button
-    className={cn(
-      styles.button,
-      buttonLayoutClassNames[layout!],
+const Button: React.ComponentType<
+  IButtonProps & React.ClassAttributes<HTMLButtonElement>
+> = React.forwardRef(
+  (
+    {
+      children,
+      layout,
+      theme,
+      disabled,
+      svgIcon,
+      className,
       iconPosition,
-      { [buttonThemeClassNames[theme!]]: layout !== EButtonLayout.INLINE },
       size,
       width,
-    )}
-    disabled={disabled || isLoading}
-    type={type}
-    {...props}
-  >
-    <div className={cn(styles.content, className, textPosition)} tabIndex={-1}>
-      {isLoading ? (
-        <LoadingIndicator light />
-      ) : (
-        <>
-          {iconPosition === "icon-before" && <InlineIcon svgIcon={svgIcon || ""} />}
-          {children}
-          {iconPosition === "icon-after" && <InlineIcon svgIcon={svgIcon || ""} />}
-        </>
+      isLoading,
+      type,
+      textPosition,
+      ...props
+    },
+    ref,
+  ) => (
+    <button
+      ref={ref}
+      className={cn(
+        styles.button,
+        buttonLayoutClassNames[layout!],
+        iconPosition,
+        { [buttonThemeClassNames[theme!]]: layout !== EButtonLayout.INLINE },
+        size,
+        width,
       )}
-    </div>
-  </button>
+      disabled={disabled || isLoading}
+      type={type}
+      {...props}
+    >
+      <div className={cn(styles.content, className, textPosition)} tabIndex={-1}>
+        {isLoading ? (
+          <LoadingIndicator light />
+        ) : (
+          <>
+            {iconPosition === "icon-before" && <InlineIcon svgIcon={svgIcon || ""} />}
+            {children}
+            {iconPosition === "icon-after" && <InlineIcon svgIcon={svgIcon || ""} />}
+          </>
+        )}
+      </div>
+    </button>
+  ),
 );
 
 Button.defaultProps = {
