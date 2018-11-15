@@ -12,7 +12,7 @@ import {
 import { IAppState } from "../../store";
 import { hasValidPermissions } from "../../utils/JWTUtils";
 import { accessWalletAndRunEffect } from "../access-wallet/sagas";
-import { actions } from "../actions";
+import { actions, TAction } from "../actions";
 import { loadKycRequestData } from "../kyc/sagas";
 import { selectRedirectURLFromQueryString } from "../routing/selectors";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
@@ -125,7 +125,7 @@ export async function updateUserPromise(
 
 export function* loadOrCreateUser(userType: EUserType): Iterator<any> {
   const user: IUser = yield neuCall(loadOrCreateUserPromise, userType);
-  yield effects.put(actions.auth.loadUser(user));
+  yield effects.put(actions.auth.setUser(user));
 
   yield neuCall(loadKycRequestData);
 }
@@ -139,7 +139,7 @@ export async function createUserPromise(
 
 export function* createUser(newUser: IUserInput): Iterator<any> {
   const user: IUser = yield neuCall(createUserPromise, newUser);
-  yield effects.put(actions.auth.loadUser(user));
+  yield effects.put(actions.auth.setUser(user));
 
   yield neuCall(loadKycRequestData);
 }
@@ -147,7 +147,7 @@ export function* createUser(newUser: IUserInput): Iterator<any> {
 export function* loadUser(): Iterator<any> {
   const user: IUser = yield neuCall(loadUserPromise);
   yield neuCall(loadPreviousWallet, user.type);
-  yield effects.put(actions.auth.loadUser(user));
+  yield effects.put(actions.auth.setUser(user));
 
   yield neuCall(loadKycRequestData);
 }
@@ -158,20 +158,35 @@ export async function loadUserPromise({ apiUserService }: TGlobalDependencies): 
 
 export function* updateUser(updatedUser: IUserInput): Iterator<any> {
   const user: IUser = yield neuCall(updateUserPromise, updatedUser);
-  yield effects.put(actions.auth.loadUser(user));
+  yield effects.put(actions.auth.setUser(user));
+}
+
+function* setUser({ logger }: TGlobalDependencies, action: TAction): Iterator<any> {
+  if (action.type !== "AUTH_SET_USER") return;
+
+  const user = action.payload.user;
+
+  logger.setUser({ id: user.userId, type: user.type });
 }
 
 function* logoutWatcher(
-  { web3Manager, jwtStorage }: TGlobalDependencies,
-  { payload: { userType } }: any,
+  { web3Manager, jwtStorage, logger }: TGlobalDependencies,
+  action: TAction,
 ): Iterator<any> {
+  if (action.type !== "AUTH_LOGOUT") return;
+
   jwtStorage.clear();
   yield web3Manager.unplugPersonalWallet();
-  userType === "investor"
-    ? yield effects.put(actions.routing.goHome())
-    : yield effects.put(actions.routing.goEtoHome());
+
+  if (action.payload.userType === EUserType.INVESTOR) {
+    yield effects.put(actions.routing.goHome());
+  } else {
+    yield effects.put(actions.routing.goEtoHome());
+  }
 
   yield effects.put(actions.init.start("appInit"));
+
+  logger.setUser(null);
 }
 
 export function* signInUser({ walletStorage, web3Manager }: TGlobalDependencies): Iterator<any> {
@@ -315,6 +330,7 @@ export function* ensurePermissionsArePresent(
 
 export const authSagas = function*(): Iterator<effects.Effect> {
   yield fork(neuTakeEvery, "AUTH_LOGOUT", logoutWatcher);
+  yield fork(neuTakeEvery, "AUTH_SET_USER", setUser);
   yield fork(neuTakeEvery, "AUTH_VERIFY_EMAIL", verifyUserEmail);
   yield fork(neuTakeEvery, "WALLET_SELECTOR_CONNECTED", handleSignInUser);
 };

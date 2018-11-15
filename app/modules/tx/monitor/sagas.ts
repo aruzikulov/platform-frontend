@@ -54,5 +54,5 @@ function* txMonitor({ logger, notificationCenter }: TGlobalDependencies): any {
 }
 
 export function* txMonitorSagas(): any {
-  yield neuTakeUntil("AUTH_LOAD_USER", "AUTH_LOGOUT", txMonitor);
+  yield neuTakeUntil("AUTH_SET_USER", "AUTH_LOGOUT", txMonitor);
 }

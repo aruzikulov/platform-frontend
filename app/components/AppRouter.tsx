@@ -35,24 +35,20 @@ export const AppRouter: React.SFC = () => (
       render={({ match }) => <EtoPublicView previewCode={match.params.previewCode} />}
       exact
     />
-
     <Route
       path={appRoutes.etoPublicViewById}
       render={({ match }) => <EtoPublicViewByContractId etoId={match.params.etoId} />}
       exact
     />
-
     <Route
       path={appRoutes.etoWidgetView}
       render={({ match }) => <EtoWidgetView previewCode={match.params.previewCode} />}
       exact
     />
-
     <OnlyPublicRoute path={appRoutes.root} component={Landing} exact />
     <OnlyPublicRoute path={appRoutes.register} component={WalletSelector} />
     <OnlyPublicRoute path={appRoutes.login} component={WalletSelector} />
     <OnlyPublicRoute path={appRoutes.restore} component={WalletRecoverMain} />
-
     {process.env.NF_ISSUERS_ENABLED === "1" && [
       <OnlyPublicRoute
         key={appRoutes.etoLanding}
@@ -75,17 +71,14 @@ export const AppRouter: React.SFC = () => (
         component={WalletRecoverMain}
       />,
     ]}
-
     {/* only investors routes */}
     {process.env.NF_PORTFOLIO_PAGE_VISIBLE === "1" && (
       <OnlyAuthorizedRoute path={appRoutes.portfolio} investorComponent={Portfolio} />
     )}
-
     {/* only issuer routes */}
     <OnlyAuthorizedRoute path={appRoutes.documents} issuerComponent={Documents} />
     <OnlyAuthorizedRoute path={appRoutes.etoRegister} issuerComponent={EtoRegister} />
     <OnlyAuthorizedRoute path={appRoutes.etoIssuerView} issuerComponent={EtoIssuerView} exact />
-
     {/* common routes for both investors and issuers */}
     <OnlyAuthorizedRoute
       path={appRoutes.wallet}
@@ -116,7 +109,6 @@ export const AppRouter: React.SFC = () => (
       exact
     />
     <OnlyAuthorizedRoute path={appRoutes.kyc} investorComponent={Kyc} issuerComponent={Kyc} />
-
     <Redirect to={appRoutes.root} />
   </SwitchConnected>
 );
