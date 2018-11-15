@@ -106,13 +106,13 @@ workflows:
             - install
       - test:
           requires:
-            - install
+            - lint
       - test-e2e:
           requires:
-            - install
+            - lint
       - danger-ci:
           requires:
-            - install
+            - lint
 
   nightly:
     triggers:
