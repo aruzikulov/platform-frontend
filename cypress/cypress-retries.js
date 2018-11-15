@@ -10,7 +10,7 @@ const _ = require("lodash");
 // This script was taken from issue 1313 in Cypress
 // https://github.com/cypress-io/cypress/issues/1313
 
-const MAX_NUM_RUNS = 2;
+const MAX_NUM_RUNS = 3;
 
 const DEFAULT_CONFIG = {
   // you can omit 'spec' if you just want all your tests to run

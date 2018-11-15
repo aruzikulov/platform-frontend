@@ -51,6 +51,7 @@ interface IDispatchProps {
   onGotoWallet: () => void;
   startWalletMigration: () => void;
   goToNextStep: () => void;
+  downloadICBMAgreement: () => void;
 }
 type IProps = IStateProps &
   IDispatchProps & {
@@ -75,6 +76,7 @@ const IcbmWalletBalanceComponent: React.SFC<IProps> = ({
   isSecondTxDone,
   currentMigrationStep,
   goToNextStep,
+  downloadICBMAgreement,
 }) => {
   return (
     <Modal isOpen={isOpen} toggle={onCancel}>
@@ -101,6 +103,7 @@ const IcbmWalletBalanceComponent: React.SFC<IProps> = ({
               ethAddress={ethAddress}
               neumarksDue={neumarksDue}
               etherBalance={etherBalance}
+              downloadICBMAgreement={downloadICBMAgreement}
             />
           )}
         </div>
@@ -134,6 +137,8 @@ const IcbmWalletBalanceModal = compose<any, any>(
       },
       startWalletMigration: () => dispatch(actions.icbmWalletBalanceModal.startMigrationFlow()),
       goToNextStep: () => dispatch(actions.icbmWalletBalanceModal.setMigrationStepToNextStep()),
+      downloadICBMAgreement: () =>
+        dispatch(actions.icbmWalletBalanceModal.downloadICBMWalletAgreement()),
     }),
   }),
 )(IcbmWalletBalanceComponent);

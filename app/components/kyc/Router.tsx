@@ -11,7 +11,7 @@ import { KYCBeneficialOwners } from "./business/BeneficialOwners";
 import { KycBusinessData } from "./business/BusinessData";
 import { KycLegalRepresentative } from "./business/LegalRepresentative";
 import { KycBusinessStart } from "./business/Start";
-import { KycPersonalInstantId } from "./personal/InstantId";
+import { KycPersonalDocumentVerification } from "./personal/DocumentVerification";
 import { KYCPersonalStart } from "./personal/Start";
 import { KYCPersonalUpload } from "./personal/Upload";
 import { KYCStart } from "./start/Start";
@@ -26,7 +26,10 @@ export const NormalKycRouter: React.SFC = () => (
 
     {/* Personal */}
     <Route path={kycRoutes.individualStart} component={KYCPersonalStart} />
-    <Route path={kycRoutes.individualInstantId} component={KycPersonalInstantId} />
+    <Route
+      path={kycRoutes.individualDocumentVerification}
+      component={KycPersonalDocumentVerification}
+    />
     <Route path={kycRoutes.individualUpload} component={KYCPersonalUpload} />
 
     {/* Business */}

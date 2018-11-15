@@ -1,9 +1,6 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Col, Row } from "reactstrap";
 import { compose } from "redux";
-
-import { KycRouter } from "./Router";
 
 import { TKycRequestType, TRequestStatus } from "../../lib/api/KycApi.interfaces";
 import { EUserType } from "../../lib/api/users/interfaces";
@@ -19,6 +16,7 @@ import { onEnterAction } from "../../utils/OnEnterAction";
 import { LayoutAuthorized } from "../layouts/LayoutAuthorized";
 import { Button, EButtonLayout } from "../shared/buttons";
 import { KycPanel } from "./KycPanel";
+import { KycRouter } from "./Router";
 import { KYCAddDocuments } from "./shared/AddDocuments";
 
 import * as arrowLeft from "../../assets/img/inline_icons/arrow_left.svg";
@@ -165,7 +163,6 @@ class RequestStateInfo extends React.Component<IProps> {
           testId="kyc-panel-outsourced"
           description={<FormattedMessage id="kyc.request-state.outsourced.description" />}
         >
-          {" "}
           <div className="p-4 text-center">
             <a href={this.props.redirectUrl}>
               <FormattedMessage id="kyc.request-state.click-here-to-continue" />
@@ -179,16 +176,12 @@ class RequestStateInfo extends React.Component<IProps> {
 }
 
 export const KycComponent: React.SFC<IProps> = props => {
-  const router = props.requestStatus === "Draft" ? <KycRouter /> : <div />;
+  const router = props.requestStatus === "Draft" ? <KycRouter /> : null;
 
   return (
     <LayoutAuthorized>
-      <Row>
-        <Col xs={12} lg={{ size: 8, offset: 2 }}>
-          <RequestStateInfo {...props} />
-          {router}
-        </Col>
-      </Row>
+      <RequestStateInfo {...props} />
+      {router}
     </LayoutAuthorized>
   );
 };

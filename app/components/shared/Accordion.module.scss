@@ -42,5 +42,7 @@
 .content {
   $_border-color: rgba($neu-black, .1);
   border-bottom: 1px solid $_border-color;
+  // Fix #1759 (subpixeling issue)
+  padding-bottom: 1px;
   overflow: hidden;
 }

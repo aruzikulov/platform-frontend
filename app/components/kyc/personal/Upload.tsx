@@ -7,7 +7,7 @@ import { appConnect } from "../../../store";
 import { actions } from "../../../modules/actions";
 
 import { IKycFileInfo, TKycRequestType } from "../../../lib/api/KycApi.interfaces";
-import { injectIntlHelpers } from "../../../utils/injectIntlHelpers";
+import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button } from "../../shared/buttons";
 import { HorizontalLine } from "../../shared/HorizontalLine";
@@ -49,8 +49,11 @@ interface IProps {
   layout: TKycRequestType;
 }
 
-export const KYCUploadComponent = injectIntlHelpers<IProps & IStateProps & IDispatchProps>(
-  ({ intl: { formatIntlMessage }, ...props }) => (
+export const KYCUploadComponent = ({
+  intl: { formatIntlMessage },
+  ...props
+}: IProps & IStateProps & IDispatchProps & IIntlProps) => {
+  return (
     <KycPanel
       steps={personalSteps}
       description={formatIntlMessage("kyc.personal.uploadId.description")}
@@ -78,8 +81,8 @@ export const KYCUploadComponent = injectIntlHelpers<IProps & IStateProps & IDisp
         </Button>
       </div>
     </KycPanel>
-  ),
-);
+  );
+};
 
 export const KYCPersonalUpload = compose<React.SFC>(
   appConnect<IStateProps, IDispatchProps>({
@@ -96,4 +99,5 @@ export const KYCPersonalUpload = compose<React.SFC>(
   onEnterAction({
     actionCreator: dispatch => dispatch(actions.kyc.kycLoadIndividualDocumentList()),
   }),
+  injectIntlHelpers,
 )(KYCUploadComponent);
