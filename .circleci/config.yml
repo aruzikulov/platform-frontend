@@ -60,7 +60,7 @@ jobs:
       image: circleci/classic:edge
       docker_layer_caching: true
 
-    parallelism: 2
+    parallelism: 4
 
     working_directory: /home/circleci/app
 
