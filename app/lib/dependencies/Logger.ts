@@ -7,6 +7,7 @@ import {
   withScope,
 } from "@sentry/browser";
 import { injectable } from "inversify";
+
 import { EUserType } from "../api/users/interfaces";
 
 type LogArg = string | object;
@@ -32,8 +33,8 @@ export interface ILogger {
   info(...args: LogArg[]): void;
   verbose(...args: LogArg[]): void;
   debug(...args: LogArg[]): void;
-  warn(...args: LogArg[]): void;
-  error(...args: LogArg[]): void;
+  warn(...args: ErrorArgs[]): void;
+  error(...args: ErrorArgs[]): void;
   setUser(user: TUser | null): void;
 }
 
@@ -81,28 +82,28 @@ export class SentryLogger implements ILogger {
     });
   }
 
-  info(...args: (string | object)[]): void {
+  info(...args: LogArg[][]): void {
     addBreadcrumb({
       category: "logger",
       data: { ...args },
       level: Severity.Info,
     });
   }
-  verbose(...args: (string | object)[]): void {
+  verbose(...args: LogArg[][]): void {
     addBreadcrumb({
       category: "logger",
       data: { ...args },
       level: Severity.Log,
     });
   }
-  debug(...args: (string | object)[]): void {
+  debug(...args: LogArg[][]): void {
     addBreadcrumb({
       category: "logger",
       data: { ...args },
       level: Severity.Debug,
     });
   }
-  warn(...args: (string | object | Error)[]): void {
+  warn(...args: ErrorArgs[]): void {
     withScope(scope => {
       addBreadcrumb({
         category: "logger",
@@ -117,7 +118,7 @@ export class SentryLogger implements ILogger {
       captureException(error);
     });
   }
-  error(...args: (string | object | Error)[]): void {
+  error(...args: ErrorArgs[]): void {
     addBreadcrumb({
       category: "logger",
       data: { ...args.filter(arg => !(arg instanceof Error)) },
