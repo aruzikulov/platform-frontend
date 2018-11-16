@@ -87,7 +87,7 @@ function startupApp(history: any): { store: Store<IAppState>; container: Contain
       routerMiddleware(history),
       createInjectMiddleware(container, customizerContainerWithMiddlewareApi),
       sagaMiddleware,
-      reduxLogger(logger),
+      process.env.NODE_ENV === "production" && reduxLogger(logger),
     ]),
   );
 
