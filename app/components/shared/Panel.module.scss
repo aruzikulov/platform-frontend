@@ -45,9 +45,8 @@
 }
 
 .content {
-  @include rect(100%);
-
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
 }
 
