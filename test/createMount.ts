@@ -14,6 +14,6 @@ export function createMount(node: ReactElement<{}>): ReactWrapper<any, any> {
 }
 
 export function autoUnmountEnzymeComponentsHook(): void {
-  mountedComponents.forEach(c => c.unmount());
+  mountedComponents.filter(c => c.exists()).forEach(c => c.unmount());
   mountedComponents.length = 0;
 }

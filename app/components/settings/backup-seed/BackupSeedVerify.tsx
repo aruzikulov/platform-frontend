@@ -89,7 +89,11 @@ class BackupSeedVerify extends React.Component<IBackupSeedVerifyProps, IBackupSe
     if (current + 1 < WORDS_TO_VERIFY) {
       // Typings are not up to date. Below is the link to method in case of any error.
       // https://github.com/bvaughn/react-virtualized-select/blob/b24fb1d59777d0d50cdb77b41a72cca1b58e0c00/source/VirtualizedSelect/VirtualizedSelect.js#L44
-      (this.verificationSelectRefs[current + 1] as any).focus();
+      const nextSelectRef = this.verificationSelectRefs[current + 1] as any;
+
+      if (nextSelectRef) {
+        nextSelectRef.focus();
+      }
     }
   };
 
@@ -112,7 +116,7 @@ class BackupSeedVerify extends React.Component<IBackupSeedVerifyProps, IBackupSe
   };
 
   isValid = (): boolean => {
-    return this.state.verificationWords.some(word => !!word.isValid);
+    return this.state.verificationWords.every(word => !!word.isValid);
   };
 
   generateSelect = (wordOnPageNumber: number): React.ReactNode => (
@@ -123,7 +127,7 @@ class BackupSeedVerify extends React.Component<IBackupSeedVerifyProps, IBackupSe
         clearable={true}
         matchPos="start"
         matchProp="value"
-        ref={(ref: Select | null) => (this.verificationSelectRefs[wordOnPageNumber] = ref)}
+        ref={(ref: TElementRef<Select>) => (this.verificationSelectRefs[wordOnPageNumber] = ref)}
         value={this.state.verificationWords[wordOnPageNumber].word}
         onChange={this.updateValueFactory(wordOnPageNumber)}
         placeholder={<FormattedMessage id="settings.backup-seed-verify.enter-word" />}
