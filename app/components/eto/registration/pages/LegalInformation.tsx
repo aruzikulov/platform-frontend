@@ -134,7 +134,6 @@ const EtoRegistrationLegalInformationComponent = ({ savingData }: IProps) => {
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.number-of-existing-shares" />}
           type="number"
-          min="0"
           name="companyShares"
         />
         <FormHighlightGroup

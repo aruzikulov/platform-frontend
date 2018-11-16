@@ -1,6 +1,9 @@
-import { Field, FieldProps } from "formik";
+import { connect, Field, FieldProps } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
+
+import { findMax, findMin } from "../../../../lib/api/eto/EtoApiUtils";
+import { TFormikConnect } from "../../../../types";
 
 import * as styles from "./FormRange.module.scss";
 
@@ -8,8 +11,8 @@ type TStep = "any" | number;
 type TUnit = string | React.ReactNode | undefined;
 
 interface IProps {
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
   name: string;
   unit?: TUnit;
   unitMin?: TUnit;
@@ -19,6 +22,8 @@ interface IProps {
 }
 
 interface IInternalProps {
+  min: number;
+  max: number;
   value: number;
   onChange: (e: React.ChangeEvent<any>) => any;
 }
@@ -78,16 +83,24 @@ export const RangeComponent: React.SFC<IProps & IInternalProps> = ({
   </div>
 );
 
-export class FormRange extends React.Component<IProps> {
-  render(): React.ReactNode {
-    const { name } = this.props;
+const FormRangeBase: React.SFC<IProps & TFormikConnect> = ({
+  name,
+  formik: { validationSchema },
+  ...props
+}) => {
+  const schema = validationSchema && validationSchema().fields[name];
+  const min = props.min !== undefined ? props.min : findMin(schema);
+  const max = props.max !== undefined ? props.max : findMax(schema);
 
-    return (
-      // TODO: add here form label + form validation if needed
-      <Field
-        name={name}
-        render={({ field }: FieldProps) => <RangeComponent {...this.props} {...field} />}
-      />
-    );
-  }
-}
+  return (
+    // TODO: add here form label + form validation if needed
+    <Field
+      name={name}
+      render={({ field }: FieldProps) => {
+        return <RangeComponent {...props} min={min} max={max} {...field} />;
+      }}
+    />
+  );
+};
+
+export const FormRange = connect<IProps, any>(FormRangeBase);

@@ -79,7 +79,7 @@ export function* addNewEmail(
       );
     else notificationCenter.error(formatIntlMessage("modules.settings.sagas.add-new-email.error"));
   } finally {
-    yield effects.call(loadUser);
+    yield loadUser();
     yield effects.put(actions.verifyEmail.freeVerifyEmailButton());
   }
 }

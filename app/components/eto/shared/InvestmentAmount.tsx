@@ -21,7 +21,7 @@ const InvestmentAmount: React.SFC<TExternalProps> = ({
   existingCompanyShares,
   newSharesToIssue,
   whitelistDiscountFraction,
-  publicDiscountFraction, // tslint:disable-line no-unused-variable
+  publicDiscountFraction,
   fixedSlotsMaximumDiscountFraction,
   minimumNewSharesToIssue,
   newSharesToIssueInWhitelist,
@@ -36,6 +36,7 @@ const InvestmentAmount: React.SFC<TExternalProps> = ({
     fixedSlotsMaximumDiscountFraction,
     whitelistDiscountFraction,
     existingCompanyShares,
+    publicDiscountFraction,
   });
 
   const value = (

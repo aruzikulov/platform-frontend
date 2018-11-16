@@ -1,5 +1,5 @@
 import { createAction, createSimpleAction } from "../actionsUtils";
-import { ILockedWallet } from "./../wallet/reducer";
+import { ILockedWallet } from "../wallet/reducer";
 import { IWalletMigrationData } from "./reducer";
 
 export const icbmWalletBalanceModalActions = {
@@ -22,4 +22,6 @@ export const icbmWalletBalanceModalActions = {
     createSimpleAction("ICBM_WALLET_BALANCE_MODAL_SET_MIGRATION_STEP_TO_NEXT"),
   // Flow
   startMigrationFlow: () => createSimpleAction("ICBM_WALLET_BALANCE_MODAL_START_MIGRATION"),
+  downloadICBMWalletAgreement: () =>
+    createSimpleAction("ICBM_WALLET_BALANCE_MODAL_DOWNLOAD_AGREEMENT"),
 };

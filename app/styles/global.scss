@@ -46,17 +46,15 @@ body {
   min-height: 100%;
   max-width: 100%;
   flex: 1;
-  padding-bottom: px-to-rem(266px);
+  padding-bottom: $footer-dots-height;
   padding-left: $authorized-layout-horizontal-padding-sm;
   padding-right: $authorized-layout-horizontal-padding-sm;
   -webkit-overflow-scrolling: touch; // sass-lint:disable-line no-vendor-prefixes
-  background-image: url("../assets/img/footer-dots.png");
-  background-repeat: repeat-x;
-  background-position: bottom;
+  background: url("../assets/img/footer-dots.png") repeat-x bottom;
 }
 
 .row-gutter-top {
-  & > div {
+  &>div {
     margin-top: $grid-gutter-width;
   }
 }

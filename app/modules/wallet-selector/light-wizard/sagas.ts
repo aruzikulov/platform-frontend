@@ -264,7 +264,7 @@ export function* lightWalletBackupWatch({
       formatIntlMessage("modules.wallet-selector.light-wizard.sagas.backup-recovery"),
       formatIntlMessage("modules.wallet-selector.light-wizard.sagas.successfully.backed-up"),
     );
-    yield effects.call(loadUser);
+    yield loadUser();
     yield effects.put(actions.routing.goToSettings());
   } catch (e) {
     yield put(

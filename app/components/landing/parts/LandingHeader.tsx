@@ -48,7 +48,7 @@ export const LandingHeader: React.SFC = () => (
             </p>
             <p className={styles.heroDescription}>The future of fundraising is launching now.</p>
 
-            <JoinCta />
+            <JoinCta data-test-id="landing-header-join-cta" />
           </div>
         </Col>
         <Col lg={6} className="d-none d-lg-block">

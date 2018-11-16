@@ -207,6 +207,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
           {isWalletBalanceKnown && (
             <a
               className={styles.investAll}
+              data-test-id="invest-modal-full-balance-btn"
               href="#"
               onClick={e => {
                 e.preventDefault();
@@ -252,7 +253,7 @@ export const InvestmentSelectionComponent: React.SFC<IProps> = ({
         <Col className={styles.summary}>
           <div>
             + <FormattedMessage id="investment-flow.estimated-gas-cost" />:{" "}
-            <span className={styles.orange}>
+            <span className={styles.orange} data-test-id="invest-modal-gas-cost">
               {formatEur(gasCostEuro)} € ≈ ETH {formatEth(gasCostEth)}
             </span>
           </div>

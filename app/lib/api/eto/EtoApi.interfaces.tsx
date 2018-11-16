@@ -2,10 +2,23 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
 import { NumberSchema, StringSchema } from "yup";
 
-import { PlatformTerms, Q18 } from "../../../config/constants";
+import {
+  MIN_COMPANY_SHARES,
+  MIN_EXISTING_COMPANY_SHARES,
+  MIN_NEW_SHARES_TO_ISSUE,
+  MIN_PRE_MONEY_VALUATION_EUR,
+  MIN_SHARE_NOMINAL_VALUE_EUR,
+  NEW_SHARES_TO_ISSUE_IN_FIXED_SLOTS,
+  NEW_SHARES_TO_ISSUE_IN_WHITELIST,
+  PlatformTerms,
+  PUBLIC_DURATION_DAYS,
+  Q18,
+  SIGNING_DURATION_DAYS,
+  WHITELIST_DURATION_DAYS,
+} from "../../../config/constants";
 import { DeepPartial } from "../../../types";
 import * as YupTS from "../../yup-ts";
-import { dateSchema } from "../util/schemaHelpers";
+import { dateSchema, percentage } from "../util/schemaHelpers";
 import { TEtoDocumentTemplates } from "./EtoFileApi.interfaces";
 
 /** COMPANY ETO RELATED INTERFACES
@@ -25,7 +38,7 @@ const EtoCapitalListType = YupTS.object({
   description: YupTS.string().optional(),
   percent: YupTS.number()
     .optional()
-    .enhance(v => v.max(100, "value cannot exceed 100%")),
+    .enhance(() => percentage),
 }).optional();
 
 export const EtoCompanyInformationType = YupTS.object({
@@ -123,7 +136,7 @@ export const EtoLegalInformationType = YupTS.object({
   companyStage: YupTS.string().optional(),
   numberOfFounders: YupTS.number().optional(),
   lastFundingSizeEur: YupTS.number().optional(),
-  companyShares: YupTS.number(),
+  companyShares: YupTS.number().enhance(v => v.min(MIN_COMPANY_SHARES)),
   shareholders: YupTS.array(
     YupTS.object({
       fullName: YupTS.string().optional(),
@@ -154,11 +167,11 @@ const companyNewsType = YupTS.array(
 export const EtoMediaType = YupTS.object({
   companyVideo: YupTS.object({
     title: YupTS.string().optional(), // optional in contrast to swagger, because filled in programmatically.
-    url: YupTS.url(),
+    url: YupTS.url().optional(),
   }).optional(),
   companySlideshare: YupTS.object({
     title: YupTS.string().optional(), // optional in contrast to swagger, because filled in programmatically.
-    url: YupTS.url(),
+    url: YupTS.url().optional(),
   }).optional(),
 
   socialChannels: socialChannelsType.optional(),
@@ -229,9 +242,15 @@ export const EtoTermsType = YupTS.object({
   enableTransferOnSuccess: YupTS.boolean(),
   notUnderCrowdfundingRegulations: YupTS.onlyTrue(),
   allowRetailInvestors: YupTS.boolean(),
-  whitelistDurationDays: YupTS.number(),
-  publicDurationDays: YupTS.number(),
-  signingDurationDays: YupTS.number(),
+  whitelistDurationDays: YupTS.number().enhance(v =>
+    v.min(WHITELIST_DURATION_DAYS.min).max(WHITELIST_DURATION_DAYS.max),
+  ),
+  publicDurationDays: YupTS.number().enhance(v =>
+    v.min(PUBLIC_DURATION_DAYS.min).max(PUBLIC_DURATION_DAYS.max),
+  ),
+  signingDurationDays: YupTS.number().enhance(v =>
+    v.min(SIGNING_DURATION_DAYS.min).max(SIGNING_DURATION_DAYS.max),
+  ),
   additionalTerms: YupTS.string().optional(),
 });
 
@@ -255,16 +274,26 @@ export type TEtoVotingRightsType = YupTS.TypeOf<typeof EtoVotingRightsType>;
 
 export const EtoInvestmentTermsType = YupTS.object({
   equityTokensPerShare: YupTS.number(),
-  shareNominalValueEur: YupTS.number(),
-  preMoneyValuationEur: YupTS.number(),
-  existingCompanyShares: YupTS.number(),
+  shareNominalValueEur: YupTS.number().enhance(v => v.min(MIN_SHARE_NOMINAL_VALUE_EUR)),
+  preMoneyValuationEur: YupTS.number().enhance(v => v.min(MIN_PRE_MONEY_VALUATION_EUR)),
+  existingCompanyShares: YupTS.number().enhance(v => v.min(MIN_EXISTING_COMPANY_SHARES)),
   authorizedCapitalShares: YupTS.number().optional(),
-  newSharesToIssue: YupTS.number(),
-  minimumNewSharesToIssue: YupTS.number(),
-  newSharesToIssueInWhitelist: YupTS.number().optional(),
+  newSharesToIssue: YupTS.number().enhance(v =>
+    v.when("minimumNewSharesToIssue", (value: number) =>
+      v.min(value, (
+        <FormattedMessage id="eto.form.section.investment-terms.error.maximum-new-shares-to-issue-less-than-minimum" />
+      ) as any),
+    ),
+  ),
+  minimumNewSharesToIssue: YupTS.number().enhance(v => v.min(MIN_NEW_SHARES_TO_ISSUE)),
+  newSharesToIssueInWhitelist: YupTS.number()
+    .optional()
+    .enhance(v => v.min(NEW_SHARES_TO_ISSUE_IN_WHITELIST)),
   whitelistDiscountFraction: YupTS.number().optional(),
   publicDiscountFraction: YupTS.number().optional(),
-  newSharesToIssueInFixedSlots: YupTS.number().optional(),
+  newSharesToIssueInFixedSlots: YupTS.number()
+    .optional()
+    .enhance(v => v.min(NEW_SHARES_TO_ISSUE_IN_FIXED_SLOTS)),
   fixedSlotsMaximumDiscountFraction: YupTS.number().optional(),
   discountScheme: YupTS.string().optional(),
 });

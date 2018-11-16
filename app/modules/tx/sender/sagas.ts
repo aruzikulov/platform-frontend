@@ -1,11 +1,12 @@
 import { BigNumber } from "bignumber.js";
 import { addHexPrefix } from "ethereumjs-util";
-import { END, eventChannel } from "redux-saga";
 import { call, put, race, select, take } from "redux-saga/effects";
-import * as Web3 from "web3";
 
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { TPendingTxs, TxWithMetadata } from "../../../lib/api/users/interfaces";
+import { BrowserWalletError } from "../../../lib/web3/BrowserWallet";
+import { LedgerContractsDisabledError, LedgerError } from "../../../lib/web3/LedgerWallet";
+import { LightError } from "../../../lib/web3/LightWallet";
 import { ITxData } from "../../../lib/web3/types";
 import {
   InvalidChangeIdError,
@@ -14,18 +15,22 @@ import {
   LowNonceError,
   NotEnoughEtherForGasError,
   OutOfGasError,
-  RevertedTransactionError,
   UnknownEthNodeError,
 } from "../../../lib/web3/Web3Adapter";
+import { SignerError, SignerRejectConfirmationError } from "../../../lib/web3/Web3Manager";
 import { IAppState } from "../../../store";
-import { delay } from "../../../utils/delay";
 import { connectWallet } from "../../access-wallet/sagas";
 import { actions } from "../../actions";
 import { IGasState } from "../../gas/reducer";
 import { selectGasPrice } from "../../gas/selectors";
 import { neuCall, neuRepeatIf } from "../../sagasUtils";
 import { ETxSenderType } from "../interfaces";
-import { updateTxs } from "../monitor/sagas";
+import {
+  createWatchTxChannel,
+  EEventEmitterChannelEvents,
+  TEventEmitterChannelEvents,
+  updateTxs,
+} from "../monitor/sagas";
 import { validateGas } from "../validator/sagas";
 import { ETransactionErrorType } from "./reducer";
 import { selectTxDetails, selectTxType } from "./selectors";
@@ -92,11 +97,17 @@ export function* txSendProcess(
       return yield put(actions.txSender.txSenderError(ETransactionErrorType.INVALID_RLP_TX));
     } else if (error instanceof InvalidChangeIdError) {
       return yield put(actions.txSender.txSenderError(ETransactionErrorType.INVALID_CHAIN_ID));
-    } else if (error instanceof UnknownEthNodeError) {
-      return yield put(actions.txSender.txSenderError(ETransactionErrorType.TX_WAS_REJECTED));
     } else if (error instanceof NotEnoughEtherForGasError) {
       return yield put(
         actions.txSender.txSenderError(ETransactionErrorType.NOT_ENOUGH_ETHER_FOR_GAS),
+      );
+    } else if (error instanceof UnknownEthNodeError) {
+      return yield put(actions.txSender.txSenderError(ETransactionErrorType.UNKNOWN_ERROR));
+    } else if (error instanceof SignerRejectConfirmationError) {
+      return yield put(actions.txSender.txSenderError(ETransactionErrorType.TX_WAS_REJECTED));
+    } else if (error instanceof LedgerContractsDisabledError) {
+      return yield put(
+        actions.txSender.txSenderError(ETransactionErrorType.LEDGER_CONTRACTS_DISABLED),
       );
     } else {
       return yield put(actions.txSender.txSenderError(ETransactionErrorType.UNKNOWN_ERROR));
@@ -124,11 +135,13 @@ function* ensureNoPendingTx({ logger }: TGlobalDependencies, type: ETxSenderType
       return;
     }
 
-    yield put(actions.txSender.txSenderWatchPendingTxs());
-
-    // here we can just wait
-    logger.info(`Waiting for out of bound transactions: ${txs.oooTransactions.length}`);
-    yield delay(3000);
+    if (txs.oooTransactions.length) {
+      const txHash = txs.oooTransactions[1].hash;
+      // go to miner
+      yield put(actions.txSender.txSenderWatchPendingTxs(txHash));
+      logger.info(`Waiting for out of bound transactions: ${txs.oooTransactions.length}`);
+      yield neuCall(watchPendingOOOTxSubSaga, txHash);
+    }
   }
 }
 
@@ -167,6 +180,15 @@ function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): a
 
     return txHash;
   } catch (error) {
+    if (
+      error instanceof LedgerError ||
+      error instanceof LightError ||
+      error instanceof BrowserWalletError ||
+      error instanceof SignerError
+    ) {
+      throw error;
+    }
+
     // @see https://github.com/paritytech/parity-ethereum/blob/61f4534e2a5f9c947661af0eaf4af5b76456efe0/rpc/src/v1/helpers/errors.rs#L304
     if (
       error.code === -32010 &&
@@ -174,6 +196,7 @@ function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): a
     ) {
       return yield put(actions.txSender.txSenderError(ETransactionErrorType.NOT_ENOUGH_FUNDS));
     }
+
     if (
       (error.code === -32000 && error.message === "intrinsic gas too low") ||
       (error.code === -32010 &&
@@ -186,20 +209,41 @@ function* sendTxSubSaga({ web3Manager, apiUserService }: TGlobalDependencies): a
     if (error.code === -32010 && error.message.startsWith("Transaction nonce is too low")) {
       throw new LowNonceError();
     }
+
     if (
       error.code === -32010 &&
       error.message.startsWith("There are too many transactions in the queue")
     ) {
       throw new LongTransactionQueError();
     }
+
     if (error.code === -32010 && error.message.startsWith("Invalid RLP data")) {
       throw new InvalidRlpDataError();
     }
+
     if (error.code === -32010 && error.message.startsWith("Invalid chain id")) {
       throw new InvalidChangeIdError();
     }
+
+    throw new UnknownEthNodeError();
   }
-  throw new UnknownEthNodeError();
+}
+
+function* watchPendingOOOTxSubSaga({ logger }: TGlobalDependencies, txHash: string): any {
+  const watchTxChannel = yield neuCall(createWatchTxChannel, txHash);
+  try {
+    while (true) {
+      const result: TEventEmitterChannelEvents = yield take(watchTxChannel);
+      if (result.type === EEventEmitterChannelEvents.NEW_BLOCK) {
+        yield put(actions.txSender.txSenderReportBlock(result.blockId));
+      } else {
+        return;
+      }
+    }
+  } finally {
+    watchTxChannel.close();
+    logger.info("Stopped Watching for TX", txHash);
+  }
 }
 
 function* watchTxSubSaga({ logger }: TGlobalDependencies, txHash: string): any {
@@ -208,20 +252,20 @@ function* watchTxSubSaga({ logger }: TGlobalDependencies, txHash: string): any {
     while (true) {
       const result: TEventEmitterChannelEvents = yield take(watchTxChannel);
       switch (result.type) {
-        case EventEmitterChannelEvents.NEW_BLOCK:
+        case EEventEmitterChannelEvents.NEW_BLOCK:
           yield put(actions.txSender.txSenderReportBlock(result.blockId));
           break;
-        case EventEmitterChannelEvents.TX_MINED:
+        case EEventEmitterChannelEvents.TX_MINED:
           return yield put(actions.txSender.txSenderTxMined());
-        case EventEmitterChannelEvents.ERROR:
+        case EEventEmitterChannelEvents.ERROR:
           logger.error("Error while tx watching: ", result.error);
           return yield put(
             actions.txSender.txSenderError(ETransactionErrorType.ERROR_WHILE_WATCHING_TX),
           );
-        case EventEmitterChannelEvents.OUT_OF_GAS:
+        case EEventEmitterChannelEvents.OUT_OF_GAS:
           logger.error("Error Transaction Reverted: ", result.error);
           return yield put(actions.txSender.txSenderError(ETransactionErrorType.OUT_OF_GAS));
-        case EventEmitterChannelEvents.REVERTED_TRANSACTION:
+        case EEventEmitterChannelEvents.REVERTED_TRANSACTION:
           logger.error("Error Transaction Reverted: ", result.error);
           return yield put(actions.txSender.txSenderError(ETransactionErrorType.REVERTED_TX));
       }
@@ -231,57 +275,3 @@ function* watchTxSubSaga({ logger }: TGlobalDependencies, txHash: string): any {
     logger.info("Stopped Watching for TXs");
   }
 }
-
-enum EventEmitterChannelEvents {
-  NEW_BLOCK = "NEW_BLOCK",
-  TX_MINED = "TX_MINED",
-  ERROR = "ERROR",
-  REVERTED_TRANSACTION = "REVERTED_TRANSACTION",
-  OUT_OF_GAS = "OUT_OF_GAS",
-}
-type TEventEmitterChannelEvents =
-  | {
-      type: EventEmitterChannelEvents.NEW_BLOCK;
-      blockId: number;
-    }
-  | {
-      type: EventEmitterChannelEvents.TX_MINED;
-      tx: Web3.Transaction;
-    }
-  | {
-      type: EventEmitterChannelEvents.ERROR;
-      error: any;
-    }
-  | {
-      type: EventEmitterChannelEvents.REVERTED_TRANSACTION;
-      error: any;
-    }
-  | {
-      type: EventEmitterChannelEvents.OUT_OF_GAS;
-      error: any;
-    };
-
-const createWatchTxChannel = ({ web3Manager }: TGlobalDependencies, txHash: string) =>
-  eventChannel<TEventEmitterChannelEvents>(emitter => {
-    web3Manager.internalWeb3Adapter
-      .waitForTx({
-        txHash,
-        onNewBlock: async blockId => {
-          emitter({ type: EventEmitterChannelEvents.NEW_BLOCK, blockId });
-        },
-      })
-      .then(tx => emitter({ type: EventEmitterChannelEvents.TX_MINED, tx }))
-      .catch(error => {
-        if (error instanceof RevertedTransactionError) {
-          emitter({ type: EventEmitterChannelEvents.REVERTED_TRANSACTION, error });
-        } else if (error instanceof OutOfGasError) {
-          emitter({ type: EventEmitterChannelEvents.OUT_OF_GAS, error });
-        } else {
-          emitter({ type: EventEmitterChannelEvents.ERROR, error });
-        }
-      })
-      .then(() => emitter(END));
-    return () => {
-      // @todo missing unsubscribe
-    };
-  });

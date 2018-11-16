@@ -115,7 +115,7 @@ const CampaigningActivatedInvestorApprovedWidget = compose<
         savePledge(newPledge);
       }
     },
-    backNow: ({ savePledge, consentToRevealEmail, moveToView }) => (amountEur: number) => {
+    backNow: ({ savePledge, consentToRevealEmail }) => (amountEur: number) => {
       const newPledge: IPledge = {
         amountEur,
         consentToRevealEmail,
@@ -123,7 +123,6 @@ const CampaigningActivatedInvestorApprovedWidget = compose<
       };
 
       savePledge(newPledge);
-      moveToView();
     },
     changePledge: ({ moveToEdit }) => moveToEdit,
   }),

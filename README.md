@@ -87,6 +87,10 @@ yarn
 If somebody else committed a new version of the submodules, just run yarn, and everything will be
 updated
 
+Take into account when pushing a PR that contains updated submodules. You will need to add
+#with-artifacts in the title of the pull request. Any pull request that contains contract artifacts
+without `#with-artifacts` as a title will get rejected by Danger in our CI pipeline
+
 ### Docs
 
 - [Component Development Guidelines](./docs/component-development-guidelines.md)

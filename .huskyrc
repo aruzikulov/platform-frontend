@@ -1,5 +1,5 @@
 {
   "hooks": {
-    "pre-commit": "yarn lint:fix"
+    "pre-commit": ["concurrently -p \"[{name}]\" -n \"TSC,LINT-STAGED\" -c \"bgYellow.bold,bgMagenta.bold\" \"yarn tsc\" \"lint-staged\""]
   }
 }

@@ -28,7 +28,7 @@ describe("Eto Investor View", () => {
     cy.get(tid("eto-public-view-new-shares-to-issue-in-whitelist")).should("contain", "1534");
     cy.get(tid("eto-public-view-new-share-price")).should("contain", "€3 237.6189");
     cy.get(tid("eto-public-view-whitelist-discount")).should("contain", "30%");
-    cy.get(tid("eto-public-view-investment-amount")).should("contain", "€2.2 - 9.6 millions");
+    cy.get(tid("eto-public-view-investment-amount")).should("contain", "€2.2 - 9.6");
 
     // TOKEN SALE section
     cy.get(tid("eto-public-view-tokens-per-share")).should("contain", "10 000");

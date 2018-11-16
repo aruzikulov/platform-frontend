@@ -40,6 +40,7 @@ storiesOf("ICBMWalletModalComponant", module)
       currentMigrationStep={1}
       goToNextStep={() => {}}
       walletMigrationData={walletMigrationMockData}
+      downloadICBMAgreement={() => {}}
     />
   ))
   .add("Missing Migration Target", () => (
@@ -61,6 +62,7 @@ storiesOf("ICBMWalletModalComponant", module)
       currentMigrationStep={1}
       walletMigrationData={{ ...walletMigrationMockData }}
       goToNextStep={() => {}}
+      downloadICBMAgreement={() => {}}
     />
   ))
   .add("Balance Modal All verifications done", () => (
@@ -82,6 +84,7 @@ storiesOf("ICBMWalletModalComponant", module)
       currentMigrationStep={1}
       walletMigrationData={{ ...walletMigrationMockData }}
       goToNextStep={() => {}}
+      downloadICBMAgreement={() => {}}
     />
   ))
   .add("With All verifications Step 1", () => (
@@ -104,6 +107,7 @@ storiesOf("ICBMWalletModalComponant", module)
       isSecondTxDone={false}
       startWalletMigration={() => {}}
       goToNextStep={() => {}}
+      downloadICBMAgreement={() => {}}
     />
   ))
   .add("With All verifications Step 1 Success", () => (
@@ -127,6 +131,7 @@ storiesOf("ICBMWalletModalComponant", module)
       isSecondTxDone={false}
       startWalletMigration={() => {}}
       goToNextStep={() => {}}
+      downloadICBMAgreement={() => {}}
     />
   ))
   .add("With All verifications Step 2", () => (
@@ -149,6 +154,7 @@ storiesOf("ICBMWalletModalComponant", module)
       isSecondTxDone={false}
       startWalletMigration={() => {}}
       goToNextStep={() => {}}
+      downloadICBMAgreement={() => {}}
     />
   ))
   .add("With All verifications Success", () => (
@@ -172,6 +178,7 @@ storiesOf("ICBMWalletModalComponant", module)
       isSecondTxDone={true}
       startWalletMigration={() => {}}
       goToNextStep={() => {}}
+      downloadICBMAgreement={() => {}}
     />
   ))
   .add("Wallet Loading", () => (
@@ -193,5 +200,6 @@ storiesOf("ICBMWalletModalComponant", module)
       startWalletMigration={() => {}}
       currentMigrationStep={2}
       goToNextStep={() => {}}
+      downloadICBMAgreement={() => {}}
     />
   ));

@@ -1,6 +1,7 @@
 import { IAppState } from "../../store";
 import { addBigNumbers, compareBigNumbers } from "../../utils/BigNumberUtils";
 import { convertToBigInt } from "../../utils/Number.utils";
+import { selectIsAccountFrozen, selectIsClaimsVerified } from "../kyc/selectors";
 import { selectEtoOnChainStateById } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/types";
 import { EValidationState } from "../tx/sender/reducer";
@@ -96,3 +97,6 @@ export const selectBankTransferAmount = (state: IAppState) => {
   const eur = selectInvestmentEurValueUlps(state);
   return selectIsBankTransferGasStipend(state) ? addBigNumbers([GAS_STIPEND_PRICE, eur]) : eur;
 };
+
+export const selectIsAllowedToInvest = (state: IAppState) =>
+  selectIsClaimsVerified(state) && !selectIsAccountFrozen(state);

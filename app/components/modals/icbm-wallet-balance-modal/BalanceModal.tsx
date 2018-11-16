@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Button } from "../../shared/buttons";
-import { EButtonLayout } from "../../shared/buttons/Button";
+import { Button, EButtonLayout } from "../../shared/buttons";
+import { DocumentTemplateButton } from "../../shared/DocumentLink";
 import { HighlightedField } from "../../shared/HighlightedField";
 import { Money } from "../../shared/Money";
 import { SectionHeader } from "../../shared/SectionHeader";
@@ -17,17 +17,27 @@ interface IBalanceModal {
   ethAddress: string;
   neumarksDue: string;
   etherBalance: string;
+  downloadICBMAgreement: () => void;
 }
 
-const BalanceFooter: React.SFC<{ startMigration: () => void; disabled?: boolean }> = ({
-  startMigration,
-  disabled,
-}) => {
+const BalanceFooter: React.SFC<{
+  startMigration: () => void;
+  disabled?: boolean;
+  downloadICBMAgreement: () => void;
+}> = ({ startMigration, disabled, downloadICBMAgreement }) => {
   return (
     <div className="d-flex flex-column justify-content-center">
       {disabled && (
         <p className="text-center">
           <FormattedMessage id="settings.modal.icbm-wallet-balance.warning-message" />
+        </p>
+      )}
+      {!disabled && (
+        <p className="text-center">
+          <DocumentTemplateButton
+            onClick={() => downloadICBMAgreement()}
+            title={<FormattedMessage id="wallet.icbm.reservation-agreement" />}
+          />
         </p>
       )}
       <Button
@@ -48,6 +58,7 @@ export const BalanceModal: React.SFC<IBalanceModal> = ({
   ethAddress = "",
   neumarksDue = "0",
   etherBalance = "0",
+  downloadICBMAgreement,
 }) => {
   return (
     <>
@@ -70,7 +81,11 @@ export const BalanceModal: React.SFC<IBalanceModal> = ({
         value={<Money value={etherBalance} currency="eth" />}
         icon={iconEth}
       />
-      <BalanceFooter disabled={!isVerificationFullyDone} startMigration={startMigration} />
+      <BalanceFooter
+        disabled={!isVerificationFullyDone}
+        startMigration={startMigration}
+        downloadICBMAgreement={downloadICBMAgreement}
+      />
     </>
   );
 };

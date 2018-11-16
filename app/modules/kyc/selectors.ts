@@ -1,3 +1,4 @@
+import { createSelector } from "reselect";
 import {
   TKycRequestType,
   TRequestOutsourcedStatus,
@@ -89,3 +90,19 @@ export const selectClientCountry = (state: IKycState) =>
   (state.individualData && state.individualData.country);
 
 export const selectClaims = (state: IAppState) => state.kyc.claims;
+
+export const selectIsClaimsVerified = createSelector(selectClaims, claims => {
+  if (claims) {
+    return claims.isVerified;
+  }
+
+  return false;
+});
+
+export const selectIsAccountFrozen = createSelector(selectClaims, claims => {
+  if (claims) {
+    return claims.isAccountFrozen;
+  }
+
+  return false;
+});

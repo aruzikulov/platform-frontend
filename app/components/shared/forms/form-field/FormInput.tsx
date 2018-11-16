@@ -1,7 +1,6 @@
 import * as cn from "classnames";
 import { Field, FieldAttributes, FieldProps, FormikConsumer } from "formik";
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
 
 import { CommonHtmlProps, InputType } from "../../../../types";
@@ -148,20 +147,6 @@ export class FormInput extends React.Component<FormInputProps> {
                       ignoreTouched={ignoreTouched}
                     />
                     {charactersLimit && <div>{countedCharacters(val, charactersLimit)}</div>}
-
-                    {min &&
-                      parseInt(field.value, 10) < parseInt(min, 10) && (
-                        <div className={styles.errorLabel}>
-                          <FormattedMessage id="form.field.error.number.min" values={{ min }} />
-                        </div>
-                      )}
-
-                    {max &&
-                      parseInt(field.value, 10) > parseInt(max, 10) && (
-                        <div className={styles.errorLabel}>
-                          <FormattedMessage id="form.field.error.number.max" values={{ max }} />
-                        </div>
-                      )}
                   </>
                 );
               }}

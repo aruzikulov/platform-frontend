@@ -8,9 +8,10 @@ import { compose, withHandlers } from "recompose";
 
 import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
-import { selectIsVerifiedInvestor, selectUserType } from "../../modules/auth/selectors";
+import { selectUserType } from "../../modules/auth/selectors";
 import { selectShouldEtoDataLoad } from "../../modules/eto-flow/selectors";
 import { selectGenericModalIsOpen } from "../../modules/generic-modal/reducer";
+import { selectIsClaimsVerified } from "../../modules/kyc/selectors";
 import { selectIsActionRequiredSettings } from "../../modules/notifications/selectors";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
@@ -55,7 +56,7 @@ interface IMenuEntryDisabled {
 }
 
 interface IStateProps {
-  isVerifiedInvestor: boolean;
+  isClaimsVerified: boolean;
   userType?: EUserType;
   actionRequiredSettings: boolean;
   shouldEtoDataLoad: boolean;
@@ -153,7 +154,7 @@ const InvestorMenu: React.SFC<IStateProps & IDispatchProps & IWithProps> = ({
   openIdentityModal,
   isLinkActive,
   isIdentityModalOpened,
-  isVerifiedInvestor,
+  isClaimsVerified,
 }) => (
   <div className={styles.menu}>
     <div className={styles.menuItems}>
@@ -193,7 +194,7 @@ const InvestorMenu: React.SFC<IStateProps & IDispatchProps & IWithProps> = ({
         isActive={isLinkActive}
       />
       <MenuEntryButton
-        disabled={!isVerifiedInvestor}
+        disabled={!isClaimsVerified}
         svgString={iconFingerprint}
         onClick={openIdentityModal}
         menuName={<FormattedMessage id="menu.identity" />}
@@ -269,7 +270,7 @@ export const LayoutAuthorizedMenu = compose<IStateProps & IDispatchProps & IWith
       actionRequiredSettings: selectIsActionRequiredSettings(state),
       shouldEtoDataLoad: selectShouldEtoDataLoad(state),
       isIdentityModalOpened: selectGenericModalIsOpen(state.genericModal),
-      isVerifiedInvestor: selectIsVerifiedInvestor(state),
+      isClaimsVerified: selectIsClaimsVerified(state),
     }),
     dispatchToProps: dispatch => ({
       openIdentityModal: () => dispatch(actions.genericModal.showModal(IdentityModal)),

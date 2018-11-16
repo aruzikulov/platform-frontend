@@ -49,6 +49,7 @@ const getMaxInvestmentAmountWithDiscount = ({
   newSharesToIssueInWhitelist = 0,
   fixedSlotsMaximumDiscountFraction = 0,
   whitelistDiscountFraction = 0,
+  publicDiscountFraction = 0,
 }) => {
   if (sharePrice === 0 || shares === 0) {
     return 0;
@@ -71,7 +72,7 @@ const getMaxInvestmentAmountWithDiscount = ({
   }
 
   if (shares > 0) {
-    amount += shares * sharePrice;
+    amount += shares * sharePrice * (1 - publicDiscountFraction);
   }
 
   return amount;

@@ -8,7 +8,6 @@ import { compose } from "recompose";
 import { CounterWidget, TagsWidget } from ".";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { selectIsAuthorized } from "../../../../modules/auth/selectors";
-import { selectIsActionRequiredSettings } from "../../../../modules/notifications/selectors";
 import {
   EETOStateOnChain,
   TEtoWithCompanyAndContract,
@@ -40,7 +39,6 @@ interface IStatusOfEto {
 
 interface IStateProps {
   isAuthorized: boolean;
-  settingsUpdateRequired: boolean;
 }
 
 const StatusOfEto: React.SFC<IStatusOfEto> = ({ previewCode }) => {
@@ -69,7 +67,6 @@ const EtoStatusManager = ({
   eto,
   isAuthorized,
   isEligibleToPreEto,
-  settingsUpdateRequired,
 }: IExternalProps & IStateProps & IWithIsEligibleToPreEto) => {
   // It's possible for contract to be undefined if eto is not on chain yet
   const timedState = eto.contract ? eto.contract.timedState : EETOStateOnChain.Setup;
@@ -110,13 +107,7 @@ const EtoStatusManager = ({
     }
 
     case EETOStateOnChain.Public: {
-      return (
-        <InvestmentWidget
-          eto={eto}
-          settingsUpdateRequired={settingsUpdateRequired}
-          isAuthorized={isAuthorized}
-        />
-      );
+      return <InvestmentWidget eto={eto} />;
     }
 
     case EETOStateOnChain.Claim:
@@ -144,7 +135,7 @@ const EtoStatusManager = ({
 
 const EtoOverviewStatusLayout: React.SFC<
   IExternalProps & CommonHtmlProps & IWithIsEligibleToPreEto & IStateProps
-> = ({ eto, className, isAuthorized, isEligibleToPreEto, settingsUpdateRequired }) => {
+> = ({ eto, className, isAuthorized, isEligibleToPreEto }) => {
   const smartContractOnChain = !!eto.contract;
 
   const documentsByType = keyBy(eto.documents, document => document.documentType);
@@ -261,7 +252,6 @@ const EtoOverviewStatusLayout: React.SFC<
                 eto={eto}
                 isAuthorized={isAuthorized}
                 isEligibleToPreEto={isEligibleToPreEto}
-                settingsUpdateRequired={settingsUpdateRequired}
               />
             </div>
           </div>
@@ -279,7 +269,6 @@ export const EtoOverviewStatus = compose<
   appConnect<IStateProps, {}, IExternalProps>({
     stateToProps: state => ({
       isAuthorized: selectIsAuthorized(state.auth),
-      settingsUpdateRequired: selectIsActionRequiredSettings(state),
     }),
   }),
   withIsEligibleToPreEto,

@@ -43,15 +43,15 @@ export const AccessWalletContainerComponent: React.SFC<
   IStateProps & IDispatchProps & IOwnProps
 > = props => (
   <div className="text-center">
-    <h1>{props.title}</h1>
-    <p>{props.message}</p>
+    {props.title && <h1>{props.title}</h1>}
+    {props.message && <p>{props.message}</p>}
     <img src={lockIcon} className="mb-3" />
     {props.isLightWallet ? (
       <AccessLightWalletPrompt {...props} />
     ) : (
       <GenericSignPrompt onCancel={props.onCancel} />
     )}
-    <p className={cn("mt-3", styles.error)}>{props.errorMsg}</p>
+    {props.errorMsg && <p className={cn("mt-3", styles.error)}>{props.errorMsg}</p>}
   </div>
 );
 

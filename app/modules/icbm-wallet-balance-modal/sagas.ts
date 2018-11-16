@@ -6,6 +6,7 @@ import { fork, put, select } from "redux-saga/effects";
 import { TGlobalDependencies } from "../../di/setupBindings";
 import { IAppState } from "../../store";
 import { actions, TAction } from "../actions";
+import { downloadLink } from "../immutable-file/sagas";
 import { neuCall, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
 import { ILockedWallet, IWalletStateData } from "../wallet/reducer";
 import { loadWalletDataAsync } from "../wallet/sagas";
@@ -154,6 +155,35 @@ function* icbmWalletMigrationTransactionWatcher({ contractsService }: TGlobalDep
   }
 }
 
+function* downloadICBMWalletAgreement(
+  {
+    contractsService,
+    apiImmutableStorage,
+    intlWrapper: {
+      intl: { formatIntlMessage },
+    },
+  }: TGlobalDependencies,
+  action: TAction,
+): any {
+  if (action.type !== "ICBM_WALLET_BALANCE_MODAL_DOWNLOAD_AGREEMENT") return;
+
+  const [, , agreementUrl] = yield contractsService.euroLock.currentAgreement();
+  const fileUri = agreementUrl.replace("ipfs:", "");
+
+  const generatedDocument = yield apiImmutableStorage.getFile({
+    ipfsHash: fileUri,
+    mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    asPdf: true,
+  });
+
+  yield neuCall(
+    downloadLink,
+    generatedDocument,
+    formatIntlMessage("wallet.icbm.reservation-agreement"),
+    ".pdf",
+  );
+}
+
 export function* icbmWalletGetDataSagas(): any {
   yield fork(
     neuTakeEvery,
@@ -164,5 +194,10 @@ export function* icbmWalletGetDataSagas(): any {
     "ICBM_WALLET_BALANCE_MODAL_SHOW",
     "ICBM_WALLET_BALANCE_MODAL_HIDE",
     icbmWalletMigrationTransactionWatcher,
+  );
+  yield fork(
+    neuTakeEvery,
+    "ICBM_WALLET_BALANCE_MODAL_DOWNLOAD_AGREEMENT",
+    downloadICBMWalletAgreement,
   );
 }

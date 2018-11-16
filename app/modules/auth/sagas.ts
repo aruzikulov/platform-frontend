@@ -17,6 +17,7 @@ import { loadKycRequestData } from "../kyc/sagas";
 import { selectRedirectURLFromQueryString } from "../routing/selectors";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectUrlUserType } from "../wallet-selector/selectors";
+import { loadPreviousWallet } from "../web3/sagas";
 import {
   selectActivationCodeFromQueryString,
   selectEmailFromQueryString,
@@ -145,6 +146,7 @@ export function* createUser(newUser: IUserInput): Iterator<any> {
 
 export function* loadUser(): Iterator<any> {
   const user: IUser = yield neuCall(loadUserPromise);
+  yield neuCall(loadPreviousWallet, user.type);
   yield effects.put(actions.auth.loadUser(user));
 
   yield neuCall(loadKycRequestData);
@@ -238,7 +240,7 @@ function* verifyUserEmail(): Iterator<any> {
 
   const verifiedEmail = yield select((s: IAppState) => selectVerifiedUserEmail(s.auth));
   yield neuCall(verifyUserEmailPromise, userCode, urlEmail, verifiedEmail);
-  yield neuCall(loadUser);
+  yield loadUser();
   yield effects.put(actions.routing.goToSettings());
 }
 

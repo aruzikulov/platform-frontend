@@ -12,7 +12,6 @@ import { selectUserType } from "../auth/selectors";
 import { initializeContracts } from "../contracts/sagas";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { detectUserAgent } from "../user-agent/sagas";
-import { loadPreviousWallet } from "../web3/sagas";
 
 function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any {
   try {
@@ -42,9 +41,7 @@ function* initApp({ logger }: TGlobalDependencies): any {
           if (yield checkIfSmartcontractsInitNeeded()) {
             yield neuCall(initSmartcontracts);
           }
-
           yield loadUser();
-          yield neuCall(loadPreviousWallet);
         } catch (e) {
           yield cleanupAndLogoutSaga();
           logger.error(

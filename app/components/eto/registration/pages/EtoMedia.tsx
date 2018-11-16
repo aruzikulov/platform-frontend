@@ -1,7 +1,6 @@
 import { FormikProps, withFormik } from "formik";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { Col, Row } from "reactstrap";
 import { setDisplayName } from "recompose";
 import { compose } from "redux";
 
@@ -16,6 +15,7 @@ import { FormCheckbox, FormField } from "../../../shared/forms";
 import { MediaLinksEditor } from "../../../shared/MediaLinksEditor";
 import { SOCIAL_PROFILES_ICONS, SocialProfilesEditor } from "../../../shared/SocialProfilesEditor";
 import { Tooltip } from "../../../shared/Tooltip";
+import { convert, removeEmptyKeyValueField, removeEmptyKeyValueFields } from "../../utils";
 import { EtoFormBase } from "../EtoFormBase";
 import { Section } from "../Shared";
 
@@ -40,69 +40,51 @@ const EtoRegistrationMediaComponent = ({ savingData }: IProps) => (
     progressOptions={etoMediaProgressOptions}
   >
     <Section>
-      <div className="offset-1 mb-2 font-weight-bold">
+      <div className="mb-1 mt-3 font-weight-bold text-uppercase">
         <FormattedMessage id="eto.form.eto-media.youtube-video" />
       </div>
+      <FormField placeholder="url" name="companyVideo.url" />
 
-      <Row>
-        <Col className="offset-1" xs={10}>
-          <FormField name="companyVideo.url" placeholder="url" />
-        </Col>
-      </Row>
-
-      <div className="offset-1 mb-2 font-weight-bold">
+      <div className="mb-1 mt-3 font-weight-bold text-uppercase">
         <FormattedMessage id="eto.form.eto-media.slideshare" />
         <Tooltip content={<FormattedMessage id="eto.form.eto-media.slide-share.tooltip" />} />
       </div>
+      <FormField placeholder="url" name="companySlideshare.url" />
 
-      <Row>
-        <Col className="offset-1" xs={10}>
-          <FormField name="companySlideshare.url" placeholder="url" />
-        </Col>
-      </Row>
-
-      <div className="offset-1 mb-2 font-weight-bold">
+      <div className="mb-2 mt-3 font-weight-bold">
         <FormattedMessage id="eto.form.eto-media.social-channels" />
       </div>
-      <Row>
-        <Col className="offset-1 mt-3">
-          <FormCheckbox
-            name="disableTwitterFeed"
-            label={<FormattedMessage id="eto.form.eto-media.enable-twitter-feed" />}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col className="offset-1" xs={10}>
-          <SocialProfilesEditor
-            profiles={SOCIAL_PROFILES_ICONS}
-            name="socialChannels"
-            className="mt-4"
-          />
-        </Col>
-      </Row>
+      <FormCheckbox
+        name="disableTwitterFeed"
+        label={<FormattedMessage id="eto.form.eto-media.enable-twitter-feed" />}
+      />
+      <SocialProfilesEditor
+        profiles={SOCIAL_PROFILES_ICONS}
+        name="socialChannels"
+        className="mt-4"
+      />
 
-      <div className="offset-1 mb-1 mt-3 font-weight-bold text-uppercase">
+      <div className="mb-1 mt-3 font-weight-bold text-uppercase">
         <FormattedMessage id="eto.form.eto-media.media-links" />
       </div>
-      <p className="offset-1 mb-3">
+      <p className="mb-3">
         <FormattedMessage id="eto.form.eto-media.media-links-description" />
       </p>
       <MediaLinksEditor
         name="companyNews"
         placeholder="Media Link"
-        blankField={{ publication: "", url: "", title: "" }}
+        blankField={{ publication: undefined, url: undefined, title: undefined }}
       />
-      <div className="offset-1 mb-1 mt-3 font-weight-bold text-uppercase">
+      <div className=" mb-1 mt-3 font-weight-bold text-uppercase">
         <FormattedMessage id="eto.form.eto-media.campaigning-links" />
       </div>
-      <p className="offset-1 mb-3">
+      <p className=" mb-3">
         <FormattedMessage id="eto.form.eto-media.campaigning-links-description" />
       </p>
       <MediaLinksEditor
         name="marketingLinks"
         placeholder="Document Link"
-        blankField={{ url: "", title: "" }}
+        blankField={{ url: undefined, title: undefined }}
       />
     </Section>
     <Section className={styles.buttonSection}>
@@ -128,25 +110,31 @@ export const EtoRegistrationMedia = compose<React.SFC>(
     }),
     dispatchToProps: dispatch => ({
       saveData: (data: TPartialCompanyEtoData) => {
-        dispatch(actions.etoFlow.saveDataStart({ companyData: data, etoData: {} }));
+        const convertedData = convert(data, fromFormState);
+        dispatch(actions.etoFlow.saveDataStart({ companyData: convertedData, etoData: {} }));
       },
     }),
   }),
   withFormik<IProps, TPartialCompanyEtoData>({
     validationSchema: EtoMediaType.toYup(),
-    mapPropsToValues: props => {
-      const values = props.stateValues;
-      // set initial values to prevent server errors on saving without filled out video
-      values.companyVideo = {
-        url: (values.companyVideo && values.companyVideo.url) || "",
-        title: (values.companyVideo && values.companyVideo.title) || "",
-      };
-      values.companySlideshare = {
-        url: (values.companySlideshare && values.companySlideshare.url) || "",
-        title: (values.companySlideshare && values.companySlideshare.title) || "",
-      };
-      return values;
-    },
+    mapPropsToValues: props => props.stateValues,
     handleSubmit: (values, props) => props.props.saveData(values),
   }),
 )(EtoRegistrationMediaComponent);
+
+//adhoc validation, no need to move it to utils
+const addTitleIfUrlNotEmpty = (data: any) => {
+  if (data.url !== undefined) {
+    return { ...data, title: "" };
+  } else {
+    return removeEmptyKeyValueField()(data);
+  }
+};
+
+const fromFormState = {
+  companyVideo: addTitleIfUrlNotEmpty,
+  companySlideshare: addTitleIfUrlNotEmpty,
+  socialChannels: removeEmptyKeyValueFields(),
+  companyNews: removeEmptyKeyValueFields(),
+  marketingLinks: removeEmptyKeyValueFields(),
+};

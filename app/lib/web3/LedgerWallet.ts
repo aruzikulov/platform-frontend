@@ -90,7 +90,20 @@ export class LedgerWallet implements IPersonalWallet {
   }
 
   public async sendTransaction(data: Web3.TxData): Promise<string> {
-    return this.web3Adapter.sendTransaction(data);
+    try {
+      return await this.web3Adapter.sendTransaction(data);
+    } catch (e) {
+      const ledgerError = parseLedgerError(e);
+      if (ledgerError instanceof LedgerConfirmationRejectedError) {
+        throw new SignerRejectConfirmationError();
+      } else if (ledgerError instanceof LedgerTimeoutError) {
+        throw new SignerTimeoutError();
+      } else {
+        throw ledgerError;
+      }
+    } finally {
+      this.waitingForCommand = false;
+    }
   }
 }
 

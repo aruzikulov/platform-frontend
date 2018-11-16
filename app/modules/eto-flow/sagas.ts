@@ -39,7 +39,7 @@ export function* loadIssuerEto({ apiEtoService, notificationCenter }: TGlobalDep
 }
 
 export function* changeBookBuildingStatus(
-  { apiEtoService, notificationCenter, logger }: TGlobalDependencies,
+  { apiEtoService, notificationCenter, logger, intlWrapper }: TGlobalDependencies,
   action: TAction,
 ): any {
   if (action.type !== "ETO_FLOW_CHANGE_BOOK_BUILDING_STATES") return;
@@ -47,7 +47,7 @@ export function* changeBookBuildingStatus(
     yield neuCall(
       ensurePermissionsArePresent,
       [DO_BOOK_BUILDING],
-      "Confirm Changing your book building",
+      intlWrapper.intl.formatIntlMessage("eto.modal.change-bookbuilding-status"),
     );
     yield apiEtoService.changeBookBuildingState(action.payload.status);
   } catch (e) {
@@ -63,6 +63,7 @@ function stripEtoDataOptionalFields(data: TPartialEtoSpecData): TPartialEtoSpecD
   // formik will pass empty strings into numeric fields that are optional, see
   // https://github.com/jaredpalmer/formik/pull/827
   // todo: we should probably enumerate Yup schema and clean up all optional numbers
+  //todo: we strip these things on form save now, need to move it there -- at
   if (!data.maxTicketEur) {
     data.maxTicketEur = undefined;
   }
@@ -77,7 +78,6 @@ export function* saveEtoData(
   try {
     const currentCompanyData: TCompanyEtoData = yield effects.select(selectIssuerCompany);
     const currentEtoData: TEtoSpecsData = yield effects.select(selectIssuerEto);
-
     yield apiEtoService.putCompany({
       ...currentCompanyData,
       ...action.payload.data.companyData,
@@ -94,9 +94,7 @@ export function* saveEtoData(
   } catch (e) {
     logger.error("Failed to send ETO data", e);
     notificationCenter.error("Failed to send ETO data");
-  } finally {
-    yield put(actions.etoFlow.loadIssuerEto());
-    yield put(actions.routing.goToDashboard());
+    yield put(actions.etoFlow.loadDataStop());
   }
 }
 
@@ -120,12 +118,11 @@ export function* submitEtoData(
     );
     yield apiEtoService.submitCompanyAndEto();
     notificationCenter.info("ETO Successfully submitted");
+    yield put(actions.etoFlow.loadIssuerEto());
+    yield put(actions.routing.goToDashboard());
   } catch (e) {
     logger.error("Failed to send ETO data", e);
     notificationCenter.error("Failed to send ETO data");
-  } finally {
-    yield put(actions.etoFlow.loadIssuerEto());
-    yield put(actions.routing.goToDashboard());
   }
 }
 

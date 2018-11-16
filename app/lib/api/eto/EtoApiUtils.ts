@@ -10,3 +10,16 @@ export const etoFormIsReadonly = (formName: EEtoFormTypes, etoState?: EtoState) 
   ];
   return etoState !== EtoState.PREVIEW && readOnlyForms.includes(formName);
 };
+
+const findSchemaConstraint = (schema: any, constraintName: string) => {
+  const schemaTest = schema.tests.find((test: any) => test.TEST_NAME === constraintName);
+  return schemaTest.TEST.params[constraintName];
+};
+
+export const findMin = (schema: any) => {
+  return findSchemaConstraint(schema, "min");
+};
+
+export const findMax = (schema: any) => {
+  return findSchemaConstraint(schema, "max");
+};

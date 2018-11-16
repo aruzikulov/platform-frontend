@@ -2,7 +2,7 @@ import * as cn from "classnames";
 import * as queryString from "query-string";
 import * as React from "react";
 
-import { CommonHtmlProps } from "../../../types";
+import { CommonHtmlProps, TDataTestId } from "../../../types";
 import { appRoutes } from "../../appRoutes";
 import { ButtonLink } from "../../shared/buttons";
 
@@ -16,7 +16,7 @@ interface IState {
 
 type TSubscribeStatus = "success" | "invalid_timestamp" | "invalid_hmac" | "error";
 
-export class JoinCta extends React.Component<CommonHtmlProps, IState> {
+export class JoinCta extends React.Component<CommonHtmlProps & TDataTestId, IState> {
   state: IState = {
     loading: false,
   };
@@ -46,6 +46,7 @@ export class JoinCta extends React.Component<CommonHtmlProps, IState> {
     });
 
     this.emailInput.value = "";
+
     if (response.status !== 200) {
       return this.setState({
         loading: false,
@@ -60,8 +61,9 @@ export class JoinCta extends React.Component<CommonHtmlProps, IState> {
   };
 
   render(): React.ReactNode {
-    const htmlProps = this.props;
+    const { className, style, "data-test-id": dataTestId } = this.props;
     const { loading, error, success } = this.state;
+
     const subscribe: TSubscribeStatus | undefined = (
       queryString.parse(window.location.search) || {}
     ).subscribe;
@@ -71,7 +73,7 @@ export class JoinCta extends React.Component<CommonHtmlProps, IState> {
 
     return (
       <div id="newsletter">
-        <div className={cn(styles.joinCta, htmlProps.className)} style={htmlProps.style}>
+        <div className={cn(styles.joinCta, className)} style={style}>
           <ButtonLink theme="brand" to={appRoutes.register} className={styles.registerNow}>
             Register NOW
           </ButtonLink>
@@ -80,25 +82,46 @@ export class JoinCta extends React.Component<CommonHtmlProps, IState> {
 
           <form className={cn("form-inline", styles.email)} onSubmit={this.onSubmit}>
             <input
+              data-test-id={dataTestId && `${dataTestId}-newsletter-email`}
               type="text"
               className={styles.emailInput}
               placeholder="Email me updates"
               ref={this.setEmailInputRef}
             />
 
-            <button type="submit" className={styles.emailBtn} disabled={loading}>
+            <button
+              data-test-id={dataTestId && `${dataTestId}-newsletter-subscribe`}
+              type="submit"
+              className={styles.emailBtn}
+              disabled={loading}
+            >
               Subscribe
             </button>
           </form>
         </div>
         <div className="text-center">
-          {success && <p className="my-3">Check your email for the confirmation link!</p>}
-          {error && <p className="my-3">Ups, something went wrong!</p>}
+          {success && (
+            <p className="my-3" data-test-id={dataTestId && `${dataTestId}-newsletter-check-email`}>
+              Check your email for the confirmation link!
+            </p>
+          )}
+          {error && (
+            <p className="my-3" data-test-id={dataTestId && `${dataTestId}-newsletter-error`}>
+              Ups, something went wrong!
+            </p>
+          )}
           {subscribeSuccessful && (
-            <p className="my-3">You were successfully added to our newsletter!</p>
+            <p className="my-3" data-test-id={dataTestId && `${dataTestId}-newsletter-subscribed`}>
+              You were successfully added to our newsletter!
+            </p>
           )}
           {subscribeFailed && (
-            <p className="my-3">There was an error while subscribing to the newsletter!</p>
+            <p
+              className="my-3"
+              data-test-id={dataTestId && `${dataTestId}-newsletter-failed-to-subscribe`}
+            >
+              There was an error while subscribing to the newsletter!
+            </p>
           )}
         </div>
       </div>

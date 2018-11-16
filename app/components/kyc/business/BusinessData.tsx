@@ -11,7 +11,7 @@ import {
 } from "../../../lib/api/KycApi.interfaces";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
-import { injectIntlHelpers } from "../../../utils/injectIntlHelpers";
+import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button } from "../../shared/buttons";
 import { FormField, FormSelectCountryField } from "../../shared/forms";
@@ -151,32 +151,33 @@ const FileUploadList: React.SFC<IProps & { dataValid: boolean }> = props => {
   );
 };
 
-export const KycBusinessDataComponent = injectIntlHelpers<IProps>(
-  ({ intl: { formatIntlMessage }, ...props }) => {
-    const dataValid = KycBusinessDataSchema.isValidSync(props.currentValues);
-    return (
-      <KycPanel
-        steps={businessSteps}
-        description={formatIntlMessage("kyc.business.business-data.description")}
-        backLink={kycRoutes.businessStart}
-      >
-        <KycDisclaimer className="pb-5" />
-        <KYCEnhancedForm {...props} />
-        <FileUploadList {...props} dataValid={dataValid} />
-        <div className="p-4 text-center">
-          <Button
-            data-test-id="kyc-company-business-supporting-continue"
-            type="submit"
-            disabled={!props.currentValues || props.files.length === 0}
-            onClick={props.submit}
-          >
-            <FormattedMessage id="form.button.continue" />
-          </Button>
-        </div>
-      </KycPanel>
-    );
-  },
-);
+export const KycBusinessDataComponent = ({
+  intl: { formatIntlMessage },
+  ...props
+}: IProps & IIntlProps) => {
+  const dataValid = KycBusinessDataSchema.isValidSync(props.currentValues);
+  return (
+    <KycPanel
+      steps={businessSteps}
+      description={formatIntlMessage("kyc.business.business-data.description")}
+      backLink={kycRoutes.businessStart}
+    >
+      <KycDisclaimer className="pb-5" />
+      <KYCEnhancedForm {...props} />
+      <FileUploadList {...props} dataValid={dataValid} />
+      <div className="p-4 text-center">
+        <Button
+          data-test-id="kyc-company-business-supporting-continue"
+          type="submit"
+          disabled={!props.currentValues || props.files.length === 0}
+          onClick={props.submit}
+        >
+          <FormattedMessage id="form.button.continue" />
+        </Button>
+      </div>
+    </KycPanel>
+  );
+};
 
 export const KycBusinessData = compose<React.SFC>(
   appConnect<IStateProps, IDispatchProps>({
@@ -199,4 +200,5 @@ export const KycBusinessData = compose<React.SFC>(
       dispatch(actions.kyc.kycLoadBusinessDocumentList());
     },
   }),
+  injectIntlHelpers,
 )(KycBusinessDataComponent);

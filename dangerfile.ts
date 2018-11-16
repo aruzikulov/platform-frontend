@@ -1,4 +1,4 @@
-import { danger, fail, message } from "danger";
+import { contains, danger, fail, message } from "danger";
 
 const currentCommitSHA = danger.git.commits[danger.git.commits.length - 1].sha;
 
@@ -8,6 +8,22 @@ function checkPackageLock() {
 
   if (hasPackageLock) {
     fail("Detected package-lock.json, failing build. Do not use npm, use yarn instead.");
+  }
+}
+
+function checkSmartContractGitModules() {
+  const updatesContracts = (danger.github.pr.body + danger.github.pr.title).includes(
+    "#with-contracts",
+  );
+
+  const hasContractSubmodule = danger.git.modified_files.some(p =>
+    p.includes("platform-contracts-artifacts/"),
+  );
+
+  if (hasContractSubmodule && !updatesContracts) {
+    fail(
+      "Detected platform-contracts-artifacts in your PR, most likely this is by mistake please push alone",
+    );
   }
 }
 
@@ -29,4 +45,5 @@ function reportVisualRegression() {
 }
 
 checkPackageLock();
+checkSmartContractGitModules();
 reportVisualRegression();

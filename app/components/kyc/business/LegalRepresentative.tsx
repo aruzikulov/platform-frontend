@@ -30,7 +30,7 @@ import {
   IKycLegalRepresentative,
   KycLegalRepresentativeSchemaRequired,
 } from "../../../lib/api/KycApi.interfaces";
-import { injectIntlHelpers } from "../../../utils/injectIntlHelpers";
+import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button } from "../../shared/buttons";
 import { individualRequirements, MultiFileUpload } from "../../shared/MultiFileUpload";
@@ -194,38 +194,38 @@ const FileUploadList: React.SFC<IProps & { lrDataValid: boolean }> = props => {
 
 const BeneficialOwners: React.SFC<IProps & { lrDataValid: boolean }> = props => {
   if (!props.lrDataValid || props.files.length === 0) return null;
-
   if (!(props.businessData && props.businessData.legalFormType === "corporate")) return null;
 
   return <KYCBeneficialOwners />;
 };
 
-export const KycLegalRepresentativeComponent = injectIntlHelpers<IProps>(
-  ({ intl: { formatIntlMessage }, ...props }) => {
-    const lrDataValid = KycLegalRepresentativeSchemaRequired.isValidSync(props.legalRepresentative);
-    return (
-      <KycPanel
-        steps={businessSteps}
-        description={formatIntlMessage("kyc.business.legal-representative.description")}
-        backLink={kycRoutes.businessData}
-      >
-        <KYCEnhancedForm {...props} />
-        <FileUploadList {...props} lrDataValid={lrDataValid} />
-        <BeneficialOwners {...props} lrDataValid={lrDataValid} />
-        <div className="p-4 text-center">
-          <Button
-            data-test-id="kyc-company-legal-representative-upload-and-submit"
-            type="submit"
-            disabled={!props.legalRepresentative || props.files.length === 0}
-            onClick={props.onContinue}
-          >
-            <FormattedMessage id="form.button.submit-request" />
-          </Button>
-        </div>
-      </KycPanel>
-    );
-  },
-);
+export const KycLegalRepresentativeComponent = ({
+  intl: { formatIntlMessage },
+  ...props
+}: IProps & IIntlProps) => {
+  const lrDataValid = KycLegalRepresentativeSchemaRequired.isValidSync(props.legalRepresentative);
+  return (
+    <KycPanel
+      steps={businessSteps}
+      description={formatIntlMessage("kyc.business.legal-representative.description")}
+      backLink={kycRoutes.businessData}
+    >
+      <KYCEnhancedForm {...props} />
+      <FileUploadList {...props} lrDataValid={lrDataValid} />
+      <BeneficialOwners {...props} lrDataValid={lrDataValid} />
+      <div className="p-4 text-center">
+        <Button
+          data-test-id="kyc-company-legal-representative-upload-and-submit"
+          type="submit"
+          disabled={!props.legalRepresentative || props.files.length === 0}
+          onClick={props.onContinue}
+        >
+          <FormattedMessage id="form.button.submit-request" />
+        </Button>
+      </div>
+    </KycPanel>
+  );
+};
 
 export const KycLegalRepresentative = compose<React.SFC>(
   appConnect<IStateProps, IDispatchProps>({
@@ -251,4 +251,5 @@ export const KycLegalRepresentative = compose<React.SFC>(
       dispatch(actions.kyc.kycLoadLegalRepresentativeDocumentList());
     },
   }),
+  injectIntlHelpers,
 )(KycLegalRepresentativeComponent);

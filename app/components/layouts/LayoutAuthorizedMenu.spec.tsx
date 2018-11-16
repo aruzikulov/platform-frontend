@@ -13,7 +13,7 @@ describe("<LayoutAuthorizedMenuComponent />", () => {
     openIdentityModal: () => {},
     isLinkActive: () => true,
     isIdentityButtonActive: () => true,
-    isVerifiedInvestor: false,
+    isClaimsVerified: false,
     actionRequiredSettings: false,
   };
 

@@ -99,6 +99,7 @@ const BankTransferSummaryComponent: React.SFC<IProps> = ({
                 <FormattedMessage id="investment-flow.bank-transfer-summary.estimated-investment" />
               }
               value={`${formatEurTsd(investmentEur)} €`}
+              dataTestId="invest-modal-bank-transfer-summary-amount"
             />
             <InfoRow
               caption={
@@ -122,7 +123,12 @@ const BankTransferSummaryComponent: React.SFC<IProps> = ({
       </Row>
 
       <Row className="justify-content-center mb-0 mt-0">
-        <Button layout={EButtonLayout.PRIMARY} type="button" onClick={onAccept}>
+        <Button
+          layout={EButtonLayout.PRIMARY}
+          type="button"
+          onClick={onAccept}
+          data-test-id="invest-modal-summary-confirm-button"
+        >
           <FormattedMessage id="investment-flow.confirm" />
         </Button>
         <Button

@@ -20,7 +20,8 @@ export const txSenderActions = {
   txSenderReportBlock: (blockId: number) => createAction("TX_SENDER_REPORT_BLOCK", blockId),
   txSenderTxMined: () => createSimpleAction("TX_SENDER_TX_MINED"),
   // Pending transaction related actions
-  txSenderWatchPendingTxs: () => createSimpleAction("TX_SENDER_WATCH_PENDING_TXS"),
+  txSenderWatchPendingTxs: (txHash: string) =>
+    createAction("TX_SENDER_WATCH_PENDING_TXS", { txHash }),
   txSenderWatchPendingTxsDone: (type: ETxSenderType) =>
     createAction("TX_SENDER_WATCH_PENDING_TXS_DONE", { type }),
   // Error Actions
