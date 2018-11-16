@@ -37,9 +37,11 @@ export function* txValidateSaga({ logger }: TGlobalDependencies, action: TAction
     yield validateGas(generatedTxDetails as ITxData);
     yield put(actions.txValidator.setValidationState(EValidationState.VALIDATION_OK));
   } catch (error) {
-    logger.error(error);
     if (error instanceof NotEnoughEtherForGasError) {
+      logger.info(error);
       yield put(actions.txValidator.setValidationState(EValidationState.NOT_ENOUGH_ETHER_FOR_GAS));
+    } else {
+      logger.error(error);
     }
   }
 

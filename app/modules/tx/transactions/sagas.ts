@@ -18,7 +18,7 @@ export function* withdrawSaga({ logger }: TGlobalDependencies): any {
     });
     logger.info("Withdrawing successful");
   } catch (e) {
-    logger.warn("Withdrawing cancelled", e);
+    logger.info("Withdrawing cancelled", e);
   }
 }
 
@@ -36,7 +36,7 @@ export function* upgradeSaga({ logger }: TGlobalDependencies, action: TAction): 
 
     logger.info("Upgrading successful");
   } catch (e) {
-    logger.warn("Upgrading cancelled", e);
+    logger.info("Upgrading cancelled", e);
   }
 }
 
@@ -50,7 +50,7 @@ export function* investSaga({ logger }: TGlobalDependencies): any {
   } catch (e) {
     // Add clean up functions here ...
     yield onInvestmentTxModalHide();
-    logger.warn("Investment cancelled", e);
+    logger.info("Investment cancelled", e);
   }
 }
 
