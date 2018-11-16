@@ -60,7 +60,7 @@ jobs:
       image: circleci/classic:edge
       docker_layer_caching: true
 
-    parallelism: 2
+    parallelism: 4
 
     working_directory: /home/circleci/app
 
@@ -106,13 +106,13 @@ workflows:
             - install
       - test:
           requires:
-            - install
+            - lint
       - test-e2e:
           requires:
-            - install
+            - lint
       - danger-ci:
           requires:
-            - install
+            - lint
 
   nightly:
     triggers:

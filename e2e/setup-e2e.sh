@@ -83,7 +83,11 @@ if lsof -Pi :5001 -sTCP:LISTEN -t > /dev/null ; then
     echo "Detected already started backend..."
 else
     echo "Starting up backend..."
-    run_backend
+    until run_backend 
+    do
+        echo "Try again"
+    done
+
 fi
 
 if lsof -Pi :9090 -sTCP:LISTEN -t > /dev/null ; then
