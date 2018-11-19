@@ -5,6 +5,8 @@ import { makeEthereumAddressChecksummed } from "../../modules/web3/utils";
 import { EthereumAddress } from "../../types";
 import { DEFAULT_PASSWORD } from "./userHelpers";
 
+export const LONG_WAIT_TIME = 60000;
+
 export function tid(id: string, rest?: string): string {
   return `[data-test-id="${id}"]` + (rest ? ` ${rest}` : "");
 }
