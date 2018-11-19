@@ -8,7 +8,7 @@ interface IProps {
 }
 
 const NumberFormat: React.SFC<IProps> = ({ value }) => {
-  return <>{formatThousands(`${value}`)}</>;
+  return <>{formatThousands(value.toString())}</>;
 };
 
 export { NumberFormat };

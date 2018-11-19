@@ -13,6 +13,8 @@ import { EtoOverviewStatus } from "../../eto/overview/EtoOverviewStatus";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { SectionHeader } from "../../shared/SectionHeader";
 
+import * as styles from "./EtoList.module.scss";
+
 interface IStateProps {
   etos: TEtoWithCompanyAndContract[] | undefined;
 }
@@ -23,6 +25,11 @@ const EtoListComponent: React.SFC<IStateProps> = ({ etos }) => (
       <SectionHeader>
         <FormattedMessage id="dashboard.eto-opportunities" />
       </SectionHeader>
+    </Col>
+    <Col xs={12}>
+      <p className={styles.opportunitiesDescription}>
+        <FormattedMessage id="dashboard.eto-opportunities.description" />
+      </p>
     </Col>
     <Col xs={12}>
       {etos ? (

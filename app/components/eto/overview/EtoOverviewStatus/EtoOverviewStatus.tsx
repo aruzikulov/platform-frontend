@@ -18,16 +18,17 @@ import { withParams } from "../../../../utils/withParams";
 import { appRoutes } from "../../../appRoutes";
 import { ETOState } from "../../../shared/ETOState";
 import { ECurrencySymbol, EMoneyFormat, Money } from "../../../shared/Money";
+import { NumberFormat } from "../../../shared/NumberFormat";
 import { EtoWidgetContext } from "../../EtoWidgetView";
 import { InvestmentAmount } from "../../shared/InvestmentAmount";
 import { CampaigningActivatedWidget } from "./CampaigningWidget";
 import { ClaimWidget, RefundWidget } from "./ClaimRefundWidget";
 import { InvestmentWidget } from "./InvestmentWidget";
+import { RegisterNowWidget } from "./RegisterNowWidget";
+import { TokenSymbolWidget } from "./TokenSymbolWidget";
 import { IWithIsEligibleToPreEto, withIsEligibleToPreEto } from "./withIsEligibleToPreEto";
 
 import * as styles from "./EtoOverviewStatus.module.scss";
-import { RegisterNowWidget } from "./RegisterNowWidget";
-import { TokenSymbolWidget } from "./TokenSymbolWidget";
 
 interface IExternalProps {
   eto: TEtoWithCompanyAndContract;
@@ -224,7 +225,9 @@ const EtoOverviewStatusLayout: React.SFC<
                 <span className={styles.label}>
                   <FormattedMessage id="shared-component.eto-overview-status.new-shares-generated" />
                 </span>
-                <span className={styles.value}>{eto.newSharesToIssue}</span>
+                <span className={styles.value}>
+                  <NumberFormat value={eto.newSharesToIssue} />
+                </span>
               </div>
               <div className={styles.group}>
                 <span className={styles.label}>
