@@ -2,7 +2,7 @@
 set -e
 cd "$(dirname "$0")"
 
-BACKEND_SHA=da3ad54598033fae1fe08b8a27b063dca376399e
+BACKEND_SHA=91ec913a58785c1421c56888cf8e2b58119e9ec4
 
 # we tag images with shorter SHA
 BACKEND_SHORT_SHA=${BACKEND_SHA:0:7}
@@ -83,7 +83,7 @@ if lsof -Pi :5001 -sTCP:LISTEN -t > /dev/null ; then
     echo "Detected already started backend..."
 else
     echo "Starting up backend..."
-    until run_backend 
+    until run_backend
     do
         echo "Try again"
     done
