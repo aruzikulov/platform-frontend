@@ -55,7 +55,7 @@ export interface IEtoFiles {
 
 export type TEtoDocumentTemplates = { [key: string]: IEtoDocument };
 
-export const immutableDocumentName: { [key: string]: string } = {
+export const immutableDocumentName: { [key in EEtoDocumentType]: string } = {
   company_token_holder_agreement: "Company Token Holder Agreement",
   reservation_and_acquisition_agreement: "Reservation and Acquisition Agreement",
   investment_and_shareholder_agreement_template: "Investment and Shareholder Agreement Template",

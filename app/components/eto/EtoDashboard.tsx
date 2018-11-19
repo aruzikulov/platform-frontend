@@ -305,7 +305,7 @@ export const EtoDashboard = compose<React.SFC>(
       shouldEtoDataLoad: selectShouldEtoDataLoad(s),
       requestStatus: selectKycRequestStatus(s.kyc),
       etoState: selectIssuerEtoState(s),
-      previewCode: selectIssuerEtoPreviewCode(s.etoFlow),
+      previewCode: selectIssuerEtoPreviewCode(s),
       canEnableBookbuilding: selectCanEnableBookBuilding(s),
       isTermSheetSubmitted: selectIsTermSheetSubmitted(s),
       isOfferingDocumentSubmitted: selectIsOfferingDocumentSubmitted(s),

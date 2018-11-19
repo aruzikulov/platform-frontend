@@ -6,7 +6,7 @@ import Select from "react-virtualized-select";
 
 import { CommonHtmlProps } from "../../../types";
 import { FormError } from "../../shared/forms";
-import { Tag } from "../../shared/Tag";
+import { ETagSize, Tag } from "../../shared/Tag";
 
 import * as checkIcon from "../../../assets/img/inline_icons/close_no_border.svg";
 import * as styles from "./EtoTagWidget.module.scss";
@@ -72,7 +72,7 @@ const TagsFormEditor: React.SFC<ICombinedProps & IInternalProps> = ({
             text={tag}
             className={cn(styles.tag, "ml-1")}
             svgIcon={checkIcon}
-            size="small"
+            size={ETagSize.SMALL}
             key={tag}
             placeSvgInEnd
           />

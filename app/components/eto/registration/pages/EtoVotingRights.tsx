@@ -107,7 +107,7 @@ const EtoVotingRightsComponent: React.SFC<IProps> = ({ readonly, savingData }) =
   </EtoFormBase>
 );
 
-export const EtoVotingRights = compose<React.SFC<IExternalProps>>(
+const EtoVotingRights = compose<React.SFC<IExternalProps>>(
   setDisplayName(EEtoFormTypes.EtoVotingRights),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
@@ -138,3 +138,5 @@ export const EtoVotingRights = compose<React.SFC<IExternalProps>>(
 const fromFormState = {
   liquidationPreferenceMultiplier: parseStringToFloat(),
 };
+
+export { EtoVotingRightsComponent, EtoVotingRights };

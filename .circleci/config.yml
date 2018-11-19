@@ -75,7 +75,7 @@ jobs:
 
       - run:
           command: source /opt/circleci/.nvm/nvm.sh && yarn test:e2e
-          no_output_timeout: 15m
+          no_output_timeout: 30m
 
   danger-ci:
     docker:

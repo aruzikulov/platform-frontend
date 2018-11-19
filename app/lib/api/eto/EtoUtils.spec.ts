@@ -1,22 +1,33 @@
 import { expect } from "chai";
 
-import { getInvestmentAmount, getSharePrice } from "./EtoUtils";
+import { getInvestmentAmount, getShareAndTokenPrice } from "./EtoUtils";
 
 describe("EtoUtils", () => {
-  describe("getSharePrice", () => {
-    it("should return correct sharePrice", () => {
-      expect(getSharePrice({ preMoneyValuationEur: 1000, existingCompanyShares: 100 })).to.equal(
-        10,
-      );
+  describe("getShareAndTokenPrice", () => {
+    it("should return correct sharePrice and TokenPrice", () => {
+      expect(
+        getShareAndTokenPrice({
+          preMoneyValuationEur: 1000,
+          existingCompanyShares: 100,
+          equityTokensPerShare: 100,
+        }),
+      ).to.deep.equal({ sharePrice: 10, tokenPrice: 0.1 });
     });
 
-    it("should return sharePrice as 0 when one of argument is undefined", () => {
+    it("should return sharePrice as 0 when one of argument is undefined or 0", () => {
       expect(
-        getSharePrice({ preMoneyValuationEur: 100, existingCompanyShares: undefined }),
-      ).to.equal(0);
+        getShareAndTokenPrice({ preMoneyValuationEur: 100, existingCompanyShares: undefined }),
+      ).to.deep.equal({ sharePrice: 0, tokenPrice: 0 });
       expect(
-        getSharePrice({ preMoneyValuationEur: undefined, existingCompanyShares: 100 }),
-      ).to.equal(0);
+        getShareAndTokenPrice({ preMoneyValuationEur: undefined, existingCompanyShares: 100 }),
+      ).to.deep.equal({ sharePrice: 0, tokenPrice: 0 });
+      expect(
+        getShareAndTokenPrice({
+          preMoneyValuationEur: undefined,
+          existingCompanyShares: 100,
+          equityTokensPerShare: 100,
+        }),
+      ).to.deep.equal({ sharePrice: 0, tokenPrice: 0 });
     });
   });
 

@@ -79,11 +79,22 @@ const templates: TEtoDocumentTemplates = {
   },
 };
 
-storiesOf("DocumentsWidget/Layout", module).add("default", () => (
-  <DocumentsWidgetLayout
-    etoTemplates={templates}
-    etoDocuments={documents}
-    companyMarketingLinks={marketingLinks}
-    downloadDocument={action("download document")}
-  />
-));
+storiesOf("Document/DocumentsWidget", module)
+  .add("default", () => (
+    <DocumentsWidgetLayout
+      etoTemplates={templates}
+      etoDocuments={documents}
+      companyMarketingLinks={marketingLinks}
+      downloadDocument={action("download document")}
+      isRetailEto={false}
+    />
+  ))
+  .add("retail ETO", () => (
+    <DocumentsWidgetLayout
+      etoTemplates={templates}
+      etoDocuments={documents}
+      companyMarketingLinks={marketingLinks}
+      downloadDocument={action("download document")}
+      isRetailEto={true}
+    />
+  ));

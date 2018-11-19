@@ -23,7 +23,7 @@ import { selectUserType } from "../auth/selectors";
 import { neuCall, neuFork, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
 import { etoInProgressPoolingDelay, etoNormalPoolingDelay } from "./constants";
 import { InvalidETOStateError } from "./errors";
-import { selectEtoById, selectEtoWithCompanyAndContract } from "./selectors";
+import { selectEtoWithCompanyAndContract, selectPublicEtoById } from "./selectors";
 import { EETOStateOnChain, TEtoWithCompanyAndContract } from "./types";
 import { convertToEtoTotalInvestment, convertToStateStartDate } from "./utils";
 
@@ -238,7 +238,7 @@ function* downloadDocument(_: TGlobalDependencies, action: TAction): any {
 function* downloadTemplateByType(_: TGlobalDependencies, action: TAction): any {
   if (action.type !== "PUBLIC_ETOS_DOWNLOAD_TEMPLATE_BY_TYPE") return;
   const state: IAppState = yield select();
-  const eto = selectEtoById(state.publicEtos, action.payload.etoId);
+  const eto = selectPublicEtoById(state, action.payload.etoId);
   if (eto) {
     yield download(eto.templates[camelCase(action.payload.documentType)]);
   }

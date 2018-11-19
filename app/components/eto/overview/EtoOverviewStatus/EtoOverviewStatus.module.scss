@@ -1,12 +1,29 @@
+$divider-margin: 3%;
+
 .eto-overview-status {
+  @include media-breakpoint-down(sm) {
+    padding-right: $divider-margin;
+    padding-left: $divider-margin;
+  }
+
   background-color: $color-white;
   box-shadow: $shadow-bottom-black;
   color: $color-graphite-light;
-  padding: px-to-rem(8px) px-to-rem(14px);
+  padding: px-to-rem(8px) $divider-margin px-to-rem(8px) px-to-rem(14px);
   position: relative;
 }
 
 // wrappers
+
+.status-wrapper,
+.stage-content-wrapper,
+.tags-wrapper,
+.group-wrapper {
+  @include media-breakpoint-down(md) {
+    margin-left: $divider-margin;
+    margin-right: $divider-margin;
+  }
+}
 
 .status-wrapper,
 .stage-content-wrapper,
@@ -72,26 +89,13 @@
   flex-direction: column;
 }
 
-.divider {
-  @include responsive-size(margin-left, 14px, 30px);
-  @include responsive-size(margin-right, 14px, 30px);
-
-  @include media-breakpoint-up(xl) {
-    margin-left: 4%;
-    margin-right: 4%;
+.group-wrapper {
+  @include media-breakpoint-up(md) {
+    margin-top: px-to-rem(12px);
+    margin-bottom: px-to-rem(12px);
   }
 
-  background-color: $color-silver;
-  margin-bottom: 10px;
-  margin-top: 10px;
-  min-width: 1px;
-  min-height: 1px;
-}
-
-.group-wrapper {
   display: table;
-  margin-top: px-to-rem(12px);
-  margin-bottom: px-to-rem(12px);
 
   &.campaign-wrapper {
     @include media-breakpoint-only(md) {
@@ -141,6 +145,17 @@
   }
 }
 
+.divider {
+  @include media-breakpoint-down(md) {
+    margin: 20px 0;
+  }
+
+  border-left: thin $color-silver solid;
+  border-bottom: thin $color-silver solid;
+
+  margin: 10px $divider-margin;
+}
+
 // widgets
 
 @mixin pledge-actions-button($color) {
@@ -168,10 +183,7 @@
 }
 
 .quote {
-  font-size: 16px;
-  line-height: 1.06;
-  letter-spacing: -.2px;
-  font-style: italic;
+  @include blockquote;
 }
 
 .status-of-eto {

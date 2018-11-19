@@ -1,5 +1,13 @@
 @import "../variables";
 
+@mixin font-default {
+  font-family: $headings-font-family;
+  font-size: px-to-rem(14px);
+  line-height: 1.64;
+}
+
+// Headline
+
 @mixin headline-huge {
   font-family: $headings-font-family;
   font-size: px-to-rem(48px);
@@ -19,16 +27,26 @@
 }
 
 @mixin font-headline-medium {
-  @include font-headline;
-
+  font-family: $headings-font-family;
   font-size: px-to-rem(18px);
+  letter-spacing: px-to-rem(-.3px);
 }
 
 @mixin font-headline-small {
-  @include font-headline;
-
+  font-family: $headings-font-family;
   font-size: px-to-rem(16px);
+  letter-spacing: px-to-rem(-.3px);
 }
+
+// Quote
+
+@mixin blockquote {
+  @include font-headline-small;
+
+  font-style: italic;
+}
+
+// Button
 
 @mixin font-button-default {
   font-family: $headings-font-family;
@@ -41,17 +59,15 @@
   font-size: px-to-rem(10px);
 }
 
-@mixin font-default {
-  font-family: $headings-font-family;
-  font-size: px-to-rem(14px);
-  line-height: 1.64;
-}
+// Tab
 
 @mixin font-tab {
   font-family: $headings-font-family;
   font-size: px-to-rem(13px);
   letter-spacing: px-to-rem(-.02px);
 }
+
+// Label
 
 @mixin font-label {
   font-family: $headings-font-family;
@@ -72,6 +88,8 @@
   font-size: px-to-rem(6px);
   text-transform: uppercase;
 }
+
+// Typography utils
 
 @mixin line-clamp ($lines, $line-height: false) {
   overflow: hidden;

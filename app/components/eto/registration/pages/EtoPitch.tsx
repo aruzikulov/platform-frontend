@@ -161,7 +161,7 @@ const EtoRegistrationPitchComponent = (props: IProps) => {
   );
 };
 
-export const EtoRegistrationPitch = compose<React.SFC>(
+const EtoRegistrationPitch = compose<React.SFC>(
   setDisplayName(EEtoFormTypes.ProductVision),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
@@ -194,3 +194,5 @@ const fromFormState = {
     convertInArray({ percent: convertPercentageToFraction() }),
   ],
 };
+
+export { EtoRegistrationPitch, EtoRegistrationPitchComponent };

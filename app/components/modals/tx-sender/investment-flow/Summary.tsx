@@ -3,6 +3,7 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Container, Row } from "reactstrap";
 import { compose, setDisplayName } from "recompose";
 
+import { TEtoSpecsData } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { actions } from "../../../../modules/actions";
 import {
@@ -33,16 +34,17 @@ import { Heading } from "../../../shared/modals/Heading";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 import { ITxSummaryDispatchProps } from "../TxSender";
-import { formatEthTsd, formatEurTsd } from "./utils";
+import { formatEth, formatEthTsd, formatEurTsd } from "./utils";
 
 import * as neuIcon from "../../../../assets/img/neu_icon.svg";
 import * as info from "../../../../assets/img/notifications/info.svg";
 import * as tokenIcon from "../../../../assets/img/token_icon.svg";
+import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import * as styles from "./Summary.module.scss";
 
 interface IStateProps {
   companyName: string;
-  etoAddress: string;
+  eto: TEtoSpecsData;
   investmentEur: string;
   investmentEth: string;
   gasCostEth: string;
@@ -72,6 +74,15 @@ const NeuRewardCaption: React.SFC<{ isIcbm?: boolean }> = ({ isIcbm }) => {
   return isIcbm ? icbmMsg : neuMsg;
 };
 
+const formatTokenPrice = (fullTokenPrice: number, actualTokenPrice: number) => {
+  const discount = Math.round((1 - actualTokenPrice / fullTokenPrice) * 100);
+  let priceString = "€ " + formatThousands(actualTokenPrice.toString());
+  if (discount >= 1) {
+    priceString += ` (-${discount}%)`;
+  }
+  return priceString;
+};
+
 const InvestmentSummaryComponent: React.SFC<IProps> = ({
   onAccept,
   onChange,
@@ -79,6 +90,7 @@ const InvestmentSummaryComponent: React.SFC<IProps> = ({
   gasCostEth,
   etherPriceEur,
   isIcbm,
+  eto,
   ...data
 }) => {
   const equityTokens = (
@@ -101,7 +113,9 @@ const InvestmentSummaryComponent: React.SFC<IProps> = ({
   const totalCostEur = addBigNumbers([gasCostEuro, data.investmentEur]);
 
   const total = `€ ${formatEurTsd(totalCostEur)} ≈ ${formatEthTsd(totalCostEth)} ETH`;
-  const tokenPrice = divideBigNumbers(data.investmentEur, data.equityTokens);
+  const actualTokenPrice = formatEth(divideBigNumbers(data.investmentEur, data.equityTokens))!;
+  const { tokenPrice: fullTokenPrice } = getShareAndTokenPrice(eto);
+  const formattedTokenPrice = formatTokenPrice(fullTokenPrice, parseFloat(actualTokenPrice));
 
   return (
     <Container className={styles.container}>
@@ -118,12 +132,13 @@ const InvestmentSummaryComponent: React.SFC<IProps> = ({
             value={data.companyName}
           />
           <InfoRow
+            dataTestId="investment-summary-token-price"
             caption={<FormattedMessage id="investment-flow.summary.token-price" />}
-            value={`${formatEthTsd(tokenPrice)} €`}
+            value={formattedTokenPrice}
           />
           <InfoRow
             caption={<FormattedMessage id="investment-flow.summary.eto-address" />}
-            value={data.etoAddress}
+            value={eto.etoId}
           />
           <InfoRow
             caption={<FormattedMessage id="investment-flow.summary.your-investment" />}
@@ -148,7 +163,7 @@ const InvestmentSummaryComponent: React.SFC<IProps> = ({
 
       <Row className="justify-content-center">
         <DocumentTemplateButton
-          onClick={() => downloadAgreement(data.etoAddress)}
+          onClick={() => downloadAgreement(eto.etoId)}
           title={<FormattedMessage id="investment-flow.summary.download-agreement" />}
         />
       </Row>
@@ -184,13 +199,14 @@ const InvestmentSummary = compose<IProps, {}>(
       const eto = selectEtoWithCompanyAndContractById(state, etoId)!;
 
       return {
+        eto,
         companyName: eto.company.name,
-        etoAddress: eto.etoId,
         investmentEth: selectInvestmentEthValueUlps(state),
         investmentEur: selectInvestmentEurValueUlps(state),
         gasCostEth: selectTxGasCostEth(state),
-        equityTokens: selectEquityTokenCountByEtoId(etoId, state) as string,
-        estimatedReward: selectNeuRewardUlpsByEtoId(etoId, state) as string,
+        // tslint:disable: no-useless-cast
+        equityTokens: selectEquityTokenCountByEtoId(etoId, state)!,
+        estimatedReward: selectNeuRewardUlpsByEtoId(etoId, state)!,
         etherPriceEur: selectEtherPriceEur(state),
         isIcbm: selectIsICBMInvestment(state),
       };

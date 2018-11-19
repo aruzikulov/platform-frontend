@@ -100,7 +100,7 @@ const EtoRegistrationMediaComponent = ({ savingData }: IProps) => (
   </EtoFormBase>
 );
 
-export const EtoRegistrationMedia = compose<React.SFC>(
+const EtoRegistrationMedia = compose<React.SFC>(
   setDisplayName(EEtoFormTypes.EtoMedia),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
@@ -138,3 +138,5 @@ const fromFormState = {
   companyNews: removeEmptyKeyValueFields(),
   marketingLinks: removeEmptyKeyValueFields(),
 };
+
+export { EtoRegistrationMediaComponent, EtoRegistrationMedia };

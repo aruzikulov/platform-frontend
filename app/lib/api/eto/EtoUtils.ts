@@ -1,56 +1,47 @@
 import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
-import { FirstParameterType, OmitKeys } from "../../../types";
-import { TEtoSpecsData } from "./EtoApi.interfaces";
+import { TEtoSpecsData, TPartialEtoSpecData } from "./EtoApi.interfaces";
 
-type TInvestmentAmountOwnArguments = {
-  newSharesToIssue: number | undefined;
-  minimumNewSharesToIssue: number | undefined;
-};
-
-type TInvestmentAmount = TInvestmentAmountOwnArguments &
-  FirstParameterType<typeof getSharePrice> &
-  OmitKeys<FirstParameterType<typeof getMaxInvestmentAmountWithDiscount>, "shares" | "sharePrice">;
-
-export const getInvestmentAmount = ({
-  newSharesToIssue = 0,
-  minimumNewSharesToIssue = 0,
-  preMoneyValuationEur,
-  existingCompanyShares,
-  ...rest
-}: TInvestmentAmount) => {
-  const sharePrice = getSharePrice({ preMoneyValuationEur, existingCompanyShares });
+export const getInvestmentAmount = (eto: TPartialEtoSpecData) => {
+  const { sharePrice } = getShareAndTokenPrice(eto);
 
   return {
-    minInvestmentAmount: getMaxInvestmentAmountWithDiscount({
-      shares: minimumNewSharesToIssue,
+    minInvestmentAmount: getMaxInvestmentAmountWithDiscount(
+      eto,
       sharePrice,
-      ...rest,
-    }),
-    maxInvestmentAmount: getMaxInvestmentAmountWithDiscount({
-      shares: newSharesToIssue,
-      sharePrice,
-      ...rest,
-    }),
+      eto.minimumNewSharesToIssue,
+    ),
+    maxInvestmentAmount: getMaxInvestmentAmountWithDiscount(eto, sharePrice, eto.newSharesToIssue),
   };
 };
 
-export const getSharePrice = ({ preMoneyValuationEur = 0, existingCompanyShares = 0 }) => {
-  if (existingCompanyShares === 0 || preMoneyValuationEur === 0) {
-    return 0;
+export const getShareAndTokenPrice = ({
+  preMoneyValuationEur = 0,
+  existingCompanyShares = 0,
+  equityTokensPerShare = 1,
+}: TPartialEtoSpecData) => {
+  let sharePrice = 0;
+  let tokenPrice = 0;
+  if (existingCompanyShares !== 0 && preMoneyValuationEur !== 0) {
+    sharePrice = preMoneyValuationEur / existingCompanyShares;
+    tokenPrice = sharePrice / equityTokensPerShare;
   }
-
-  return preMoneyValuationEur / existingCompanyShares;
+  return {
+    sharePrice,
+    tokenPrice,
+  };
 };
 
-const getMaxInvestmentAmountWithDiscount = ({
+const getMaxInvestmentAmountWithDiscount = (
+  {
+    newSharesToIssueInFixedSlots = 0,
+    newSharesToIssueInWhitelist = 0,
+    fixedSlotsMaximumDiscountFraction = 0,
+    whitelistDiscountFraction = 0,
+    publicDiscountFraction = 0,
+  }: TPartialEtoSpecData,
   sharePrice = 0,
   shares = 0,
-  newSharesToIssueInFixedSlots = 0,
-  newSharesToIssueInWhitelist = 0,
-  fixedSlotsMaximumDiscountFraction = 0,
-  whitelistDiscountFraction = 0,
-  publicDiscountFraction = 0,
-}) => {
+) => {
   if (sharePrice === 0 || shares === 0) {
     return 0;
   }
