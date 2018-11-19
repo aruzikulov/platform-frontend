@@ -820,6 +820,7 @@
   "wallet-selector.light.icbm-info.read-more-here": "Read more here",
   "wallet-selector.login": "Login",
   "wallet-selector.login.help-link": "Having trouble with logging in?",
+  "wallet-selector.neuwallet.email-error": "Please enter a valid email address",
   "wallet-selector.neuwallet.login-instructions": "To login, please click on the Access Link you received after creating your Light Wallet",
   "wallet-selector.neuwallet.login-link-text": "Do you have an account?",
   "wallet-selector.neuwallet.login.prompt": "Sign in to your Light Wallet.",
