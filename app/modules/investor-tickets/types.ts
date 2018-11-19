@@ -16,6 +16,7 @@ export interface IInvestorTicket {
 
 export interface ICalculatedContribution {
   isWhitelisted: boolean;
+  isEligible: boolean;
   minTicketEurUlps: BigNumber;
   maxTicketEurUlps: BigNumber;
   equityTokenInt: BigNumber;
