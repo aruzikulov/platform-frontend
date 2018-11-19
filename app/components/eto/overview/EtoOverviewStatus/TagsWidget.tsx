@@ -8,7 +8,7 @@ import { appConnect } from "../../../../store";
 import { withParams } from "../../../../utils/withParams";
 import { appRoutes } from "../../../appRoutes";
 import { EtherscanAddressLink } from "../../../shared/EtherscanLink";
-import { Tag } from "../../../shared/Tag";
+import { ETagSize, Tag } from "../../../shared/Tag";
 import { EtoWidgetContext } from "../../EtoWidgetView";
 
 export interface ITagsWidget {
@@ -43,14 +43,14 @@ const TagsWidgetLayout: React.SFC<TLayoutProps> = ({
               onClick={() => downloadDocument(termSheet)}
               to={previewCode ? withParams(appRoutes.etoPublicView, { previewCode }) : undefined}
               target={previewCode ? "_blank" : undefined}
-              size="small"
+              size={ETagSize.SMALL}
               theme="green"
               layout="ghost"
               text={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
             />
           ) : (
             <Tag
-              size="small"
+              size={ETagSize.SMALL}
               theme="silver"
               layout="ghost"
               text={<FormattedMessage id="shared-component.eto-overview.term-sheet" />}
@@ -61,14 +61,14 @@ const TagsWidgetLayout: React.SFC<TLayoutProps> = ({
               onClick={() => downloadDocument(prospectusApproved)}
               to={previewCode ? withParams(appRoutes.etoPublicView, { previewCode }) : undefined}
               target={previewCode ? "_blank" : undefined}
-              size="small"
+              size={ETagSize.SMALL}
               theme="green"
               layout="ghost"
               text={<FormattedMessage id="shared-component.eto-overview.prospectus-approved" />}
             />
           ) : (
             <Tag
-              size="small"
+              size={ETagSize.SMALL}
               theme="silver"
               layout="ghost"
               text={<FormattedMessage id="shared-component.eto-overview.prospectus-approved" />}
@@ -80,14 +80,14 @@ const TagsWidgetLayout: React.SFC<TLayoutProps> = ({
               componentProps={{ address: etoId }}
               to={previewCode ? withParams(appRoutes.etoPublicView, { previewCode }) : undefined}
               target={previewCode ? "_blank" : undefined}
-              size="small"
+              size={ETagSize.SMALL}
               theme="green"
               layout="ghost"
               text={<FormattedMessage id="shared-component.eto-overview.smart-contract-on-chain" />}
             />
           ) : (
             <Tag
-              size="small"
+              size={ETagSize.SMALL}
               theme="silver"
               layout="ghost"
               text={<FormattedMessage id="shared-component.eto-overview.smart-contract-on-chain" />}

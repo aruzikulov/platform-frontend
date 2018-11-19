@@ -22,6 +22,14 @@
     }
   }
 
+  &.small {
+    @include font-button-small;
+
+    font-weight: normal;
+    padding-bottom: px-to-rem(2px);
+    padding-top: px-to-rem(2px);
+  }
+
   &:global(.ghost-bold) {
     @include media-breakpoint-down(xs) {
       font-size: .6rem;
@@ -46,11 +54,6 @@
     border: 1px solid currentColor;
     border-radius: 0;
     background-color: transparent;
-  }
-
-  &:global(.small) {
-    padding-bottom: px-to-rem(2px);
-    padding-top: px-to-rem(2px);
   }
 
   &:global(.green) {
