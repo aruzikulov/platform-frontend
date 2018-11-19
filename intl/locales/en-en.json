@@ -822,7 +822,6 @@
   "wallet-selector.light.icbm-info.message": "Are you new to the world of blockchain? Then the Light Wallet is a good starting point. For enhanced security we strongly suggest registering with a Ledger Nano.<br/><br/>Are you an ICBM investor? Please create your account using the wallet with which you made your ICBM commitment.<br/><br/>If you decide to create a Light Wallet keep in mind that only you control this wallet. You are fully responsible for its security, including your private key or phrase. Neufund never sees any private keys, nor signs and doesn’t execute any transactions. Neither do we provide recovery services.",
   "wallet-selector.light.icbm-info.read-more-here": "Read more here",
   "wallet-selector.login": "Login",
-  "wallet-selector.login.help-link": "Having trouble with logging in?",
   "wallet-selector.login.help-link": "Wallet recovery",
   "wallet-selector.neuwallet.email-error": "Please enter a valid email address",
   "wallet-selector.neuwallet.login-instructions": "To login with your Light Wallet, please click on the access link we sent to your email address after you created your Light Wallet. Having trouble finding the link? You can also recover your wallet using your recovery phrase here",
