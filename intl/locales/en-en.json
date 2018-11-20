@@ -573,7 +573,7 @@
   "modules.wallet-selector.light-wizard.sagas.successfully.backed-up": "You have successfully backed up your recovery phrase. Please ensure that you store your recovery phrase in a safe place.",
   "modules.web3.flows.web3-error.browser": "Your Browser Wallet was disconnected",
   "modules.web3.flows.web3-error.ledger": "Your Ledger Wallet was disconnected",
-  "notifications.complete-request": "You will not be able to INVEST until you complete required steps in Settings.",
+  "notifications.complete-request": "Please complete your Profile in order to begin investing. By clicking anywhere within this banner, you’ll be redirected to your Profile.",
   "notifications.update-account": "Please update your account before proceeding. Head to Settings now.",
   "off-to-on-chain.footer": "<strong>OFF-CHAIN</strong> company",
   "off-to-on-chain.header": "<strong>ON-CHAIN</strong> company",

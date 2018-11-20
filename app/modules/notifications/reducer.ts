@@ -71,7 +71,7 @@ export const notificationsReducer: AppReducer<INotificationsState> = (
 export const settingsNotification = () => ({
   id: Date.now(),
   type: NotificationType.WARNING,
-  text: NotificationText.COMPLETE_REQUEST_NOTIFICATION,
+  text: NotificationText.COMPLETE_UPDATE_ACCOUNT,
   actionLinkText: "Go to settings",
   onClickAction: routingActions.goToSettings(),
 });
@@ -79,7 +79,7 @@ export const settingsNotification = () => ({
 export const settingsNotificationInvestor = () => ({
   id: Date.now(),
   type: NotificationType.WARNING,
-  text: NotificationText.COMPLETE_UPDATE_ACCOUNT,
+  text: NotificationText.COMPLETE_REQUEST_NOTIFICATION,
   onClickAction: routingActions.goToSettings(),
   clickable: true,
 });
