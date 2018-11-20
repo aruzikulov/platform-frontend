@@ -191,7 +191,8 @@ export function* icbmWalletGetDataSagas(): any {
     "ICBM_WALLET_BALANCE_MODAL_GET_WALLET_DATA",
     loadIcbmWalletMigrationSaga,
   );
-  yield neuTakeUntil(
+  yield fork(
+    neuTakeUntil,
     "ICBM_WALLET_BALANCE_MODAL_SHOW",
     "ICBM_WALLET_BALANCE_MODAL_HIDE",
     icbmWalletMigrationTransactionWatcher,
