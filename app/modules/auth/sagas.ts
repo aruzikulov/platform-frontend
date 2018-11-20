@@ -221,10 +221,13 @@ function* handleSignInUser({
   intlWrapper: {
     intl: { formatIntlMessage },
   },
+  logger,
 }: TGlobalDependencies): Iterator<any> {
   try {
     yield neuCall(signInUser);
   } catch (e) {
+    // TODO: Move all text errors to UX Component
+    logger.error("User Sign in error", e);
     if (e instanceof SignerRejectConfirmationError) {
       yield effects.put(
         actions.walletSelector.messageSigningError(

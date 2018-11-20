@@ -1,43 +1,16 @@
 import * as React from "react";
 
+import { TPartialEtoSpecData } from "../../../lib/api/eto/EtoApi.interfaces";
 import { getInvestmentAmount } from "../../../lib/api/eto/EtoUtils";
 import { ECurrencySymbol, EMoneyFormat, Money } from "../../shared/Money";
 import { ToHumanReadableForm } from "../../shared/ToHumanReadableForm";
 
 type TExternalProps = {
-  preMoneyValuationEur: number | undefined;
-  existingCompanyShares: number | undefined;
-  newSharesToIssue: number | undefined;
-  minimumNewSharesToIssue: number | undefined;
-  newSharesToIssueInFixedSlots: number | undefined;
-  newSharesToIssueInWhitelist: number | undefined;
-  fixedSlotsMaximumDiscountFraction: number | undefined;
-  whitelistDiscountFraction: number | undefined;
-  publicDiscountFraction: number | undefined;
+  etoData: TPartialEtoSpecData;
 };
 
-const InvestmentAmount: React.SFC<TExternalProps> = ({
-  preMoneyValuationEur,
-  existingCompanyShares,
-  newSharesToIssue,
-  whitelistDiscountFraction,
-  publicDiscountFraction,
-  fixedSlotsMaximumDiscountFraction,
-  minimumNewSharesToIssue,
-  newSharesToIssueInWhitelist,
-  newSharesToIssueInFixedSlots,
-}) => {
-  const { minInvestmentAmount, maxInvestmentAmount } = getInvestmentAmount({
-    minimumNewSharesToIssue,
-    newSharesToIssue,
-    newSharesToIssueInFixedSlots,
-    newSharesToIssueInWhitelist,
-    preMoneyValuationEur,
-    fixedSlotsMaximumDiscountFraction,
-    whitelistDiscountFraction,
-    existingCompanyShares,
-    publicDiscountFraction,
-  });
+const InvestmentAmount: React.SFC<TExternalProps> = ({ etoData }) => {
+  const { minInvestmentAmount, maxInvestmentAmount } = getInvestmentAmount(etoData);
 
   const value = (
     <ToHumanReadableForm number={minInvestmentAmount}>

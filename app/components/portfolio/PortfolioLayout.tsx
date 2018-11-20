@@ -12,7 +12,7 @@ import { IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { TETOWithInvestorTicket } from "../../modules/investor-tickets/types";
 import { EETOStateOnChain } from "../../modules/public-etos/types";
 import { withParams } from "../../utils/withParams";
-import { documentTitles } from "../documents/Documents";
+import { getDocumentTitles } from "../documents/Documents";
 import { externalRoutes } from "../externalRoutes";
 import { AssetPortfolio } from "../shared/AssetPortfolio";
 import { Document } from "../shared/Document";
@@ -33,6 +33,7 @@ export type TPortfolioLayoutProps = {
   myNeuBalanceEuroAmount: string;
   neuPrice: string;
   walletAddress: string;
+  isRetailEto: boolean;
 };
 
 const getNeuReward = (equityTokenInt: BigNumber, equivEurUlps: BigNumber): string => {
@@ -54,6 +55,7 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({
   myNeuBalanceEuroAmount,
   neuPrice,
   walletAddress,
+  isRetailEto,
 }) => (
   <>
     {process.env.NF_ASSETS_PORTFOLIO_COMPONENT_VISIBLE === "1" && (
@@ -242,7 +244,7 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({
                         <span key={document.ipfsHash} className={styles.documentLink}>
                           <Document extension="pdf" />
                           <a href={document.name} download>
-                            {documentTitles[document.documentType]}
+                            {getDocumentTitles(isRetailEto)[document.documentType]}
                           </a>
                         </span>
                       ),

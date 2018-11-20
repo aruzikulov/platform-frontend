@@ -16,7 +16,11 @@ import { loadEtoContact } from "../public-etos/sagas";
 import { neuCall, neuTakeEvery } from "../sagasUtils";
 import { selectIssuerCompany, selectIssuerEto } from "./selectors";
 
-export function* loadIssuerEto({ apiEtoService, notificationCenter }: TGlobalDependencies): any {
+export function* loadIssuerEto({
+  apiEtoService,
+  notificationCenter,
+  logger,
+}: TGlobalDependencies): any {
   try {
     const companyResponse: IHttpResponse<TCompanyEtoData> = yield apiEtoService.getCompany();
     const company = companyResponse.body;
@@ -31,6 +35,7 @@ export function* loadIssuerEto({ apiEtoService, notificationCenter }: TGlobalDep
 
     yield put(actions.etoFlow.setIssuerEtoPreviewCode(eto.previewCode));
   } catch (e) {
+    logger.error("Failed to load Issuer ETO", e);
     notificationCenter.error(
       "Could not access ETO data. Make sure you have completed KYC and email verification process.",
     );
@@ -51,7 +56,7 @@ export function* changeBookBuildingStatus(
     );
     yield apiEtoService.changeBookBuildingState(action.payload.status);
   } catch (e) {
-    logger.error("Failed to send ETO data", e);
+    logger.error("Failed to change book-building status", e);
     notificationCenter.error("Failed to send ETO data");
   } finally {
     yield put(actions.etoFlow.loadIssuerEto());
@@ -121,7 +126,7 @@ export function* submitEtoData(
     yield put(actions.etoFlow.loadIssuerEto());
     yield put(actions.routing.goToDashboard());
   } catch (e) {
-    logger.error("Failed to send ETO data", e);
+    logger.error("Failed to Submit ETO data", e);
     notificationCenter.error("Failed to send ETO data");
   }
 }

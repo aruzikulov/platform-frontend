@@ -82,7 +82,7 @@ export const selectBankTransferReferenceCode = (state: IAppState) => {
     code += " G";
   }
 
-  const etoState = selectEtoOnChainStateById(state.publicEtos, selectInvestmentEtoId(state));
+  const etoState = selectEtoOnChainStateById(state, selectInvestmentEtoId(state));
   if (etoState === EETOStateOnChain.Whitelist) {
     code += " WL";
   }

@@ -19,12 +19,14 @@ import {
   selectEtoDocumentLoading,
 } from "../../modules/eto-documents/selectors";
 import {
-  selectEtoLoading,
   selectIssuerEtoDocuments,
+  selectIssuerEtoIsRetail,
+  selectIssuerEtoLoading,
   selectIssuerEtoState,
   selectIssuerEtoTemplates,
 } from "../../modules/eto-flow/selectors";
 import { appConnect } from "../../store";
+import { TTranslatedString } from "../../types";
 import { onEnterAction } from "../../utils/OnEnterAction";
 import { ETOAddDocuments } from "../eto/shared/EtoAddDocument";
 import { EtoFileIpfsModal } from "../eto/shared/EtoFileIpfsModal";
@@ -45,6 +47,8 @@ interface IStateProps {
   etoState?: EtoState;
   etoTemplates: TEtoDocumentTemplates;
   etoDocuments: TEtoDocumentTemplates;
+  documentTitles: TDocumentTitles;
+  isRetailEto: boolean;
 }
 
 interface IDispatchProps {
@@ -52,7 +56,9 @@ interface IDispatchProps {
   downloadDocumentByType: (documentType: EEtoDocumentType) => void;
 }
 
-export const documentTitles: { [key in EEtoDocumentType]: React.ReactNode } = {
+export type TDocumentTitles = { [key in EEtoDocumentType]: TTranslatedString };
+
+export const getDocumentTitles = (isRetailEto: boolean) => ({
   company_token_holder_agreement: (
     <FormattedMessage id="eto.documents.company-token-holder-agreement" />
   ),
@@ -75,22 +81,25 @@ export const documentTitles: { [key in EEtoDocumentType]: React.ReactNode } = {
   signed_investment_and_shareholder_agreement: (
     <FormattedMessage id="eto.documents.investment-and-shareholder-agreement" />
   ),
-  approved_investor_offering_document: (
-    <FormattedMessage id="eto.documents.approved-investor-offering-document" />
+  approved_investor_offering_document: isRetailEto ? (
+    <FormattedMessage id="eto.documents.approved-investor-prospectus-document" />
+  ) : (
+    <FormattedMessage id="eto.documents.approved-investment-memorandum-document" />
   ),
   signed_termsheet: <FormattedMessage id="eto.documents.signed-termsheet" />,
-};
+});
 
 export const GeneratedDocuments: React.SFC<{
   document: IEtoDocument;
   generateTemplate: (document: IEtoDocument) => void;
-}> = ({ document, generateTemplate }) => {
+  documentTitle?: TTranslatedString;
+}> = ({ document, generateTemplate, documentTitle }) => {
   return (
     <Col xs={6} lg={3} key={"url"} className="mb-4">
       <ClickableDocumentTile
         document={document}
         generateTemplate={generateTemplate}
-        title={documentTitles[document.documentType]}
+        title={documentTitle}
         extension={".doc"}
       />
     </Col>
@@ -106,6 +115,8 @@ export const DocumentsComponent: React.SFC<IProps> = ({
   etoTemplates,
   etoDocuments,
   downloadDocumentByType,
+  documentTitles,
+  isRetailEto,
 }) => {
   const { allTemplates, stateInfo } = etoFilesData;
   const generalUploadables = stateInfo ? stateInfo.uploadableDocuments : [];
@@ -133,6 +144,7 @@ export const DocumentsComponent: React.SFC<IProps> = ({
                       key={index}
                       document={allTemplates[key]}
                       generateTemplate={generateTemplate}
+                      documentTitle={documentTitles[allTemplates[key].documentType]}
                     />
                   );
                 })}
@@ -193,6 +205,7 @@ export const DocumentsComponent: React.SFC<IProps> = ({
                   })}
                   title={<FormattedMessage id="documents.agreement-and-prospectus-templates" />}
                   className={styles.documents}
+                  isRetailEto={isRetailEto}
                 />
               )}
             </Row>
@@ -207,14 +220,19 @@ export const Documents = compose<React.SFC>(
   setDisplayName("Documents"),
   onEnterAction({ actionCreator: d => d(actions.etoDocuments.loadFileDataStart()) }),
   appConnect<IStateProps, IDispatchProps>({
-    stateToProps: state => ({
-      etoFilesData: selectEtoDocumentData(state.etoDocuments),
-      loadingData: selectEtoLoading(state.etoFlow),
-      etoFileLoading: selectEtoDocumentLoading(state.etoDocuments),
-      etoState: selectIssuerEtoState(state),
-      etoTemplates: selectIssuerEtoTemplates(state)!,
-      etoDocuments: selectIssuerEtoDocuments(state)!,
-    }),
+    stateToProps: state => {
+      const isRetailEto = selectIssuerEtoIsRetail(state);
+      return {
+        etoFilesData: selectEtoDocumentData(state.etoDocuments),
+        loadingData: selectIssuerEtoLoading(state),
+        etoFileLoading: selectEtoDocumentLoading(state.etoDocuments),
+        etoState: selectIssuerEtoState(state),
+        etoTemplates: selectIssuerEtoTemplates(state)!,
+        etoDocuments: selectIssuerEtoDocuments(state)!,
+        documentTitles: getDocumentTitles(isRetailEto),
+        isRetailEto,
+      };
+    },
     dispatchToProps: dispatch => ({
       generateTemplate: document => dispatch(actions.etoDocuments.generateTemplate(document)),
       downloadDocumentByType: documentType =>

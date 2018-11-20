@@ -119,13 +119,13 @@ export async function setupLightWalletPromise(
     await web3Manager.plugPersonalWallet(lightWallet);
     return lightWallet.getMetadata() as ILightWalletMetadata;
   } catch (e) {
-    logger.warn("Error while trying to connect with light wallet: ", e.message);
+    logger.warn("Error while trying to connect with light wallet: ", e);
     throw e;
   }
 }
 
 export function* lightWalletRegisterWatch(
-  { intlWrapper }: TGlobalDependencies,
+  { intlWrapper, logger }: TGlobalDependencies,
   action: TAction,
 ): Iterator<any> {
   try {
@@ -152,6 +152,7 @@ export function* lightWalletRegisterWatch(
         ),
       );
     else {
+      logger.error("Light wallet Register Error", e);
       if (e instanceof LightError)
         yield put(
           actions.genericModal.showErrorModal("Error", mapLightWalletErrorToErrorMessage(e)),
@@ -178,7 +179,7 @@ async function checkEmailPromise(
 }
 
 export function* lightWalletRecoverWatch(
-  { intlWrapper }: TGlobalDependencies,
+  { intlWrapper, logger }: TGlobalDependencies,
   action: TAction,
 ): Iterator<any> {
   try {
@@ -234,11 +235,12 @@ export function* lightWalletRecoverWatch(
         ),
       );
     else {
+      logger.error("Light wallet recovery error", e);
       if (e instanceof LightError)
         yield put(
           actions.genericModal.showErrorModal("Error", mapLightWalletErrorToErrorMessage(e)),
         );
-      else
+      else {
         yield put(
           actions.genericModal.showErrorModal(
             "Error",
@@ -247,6 +249,7 @@ export function* lightWalletRecoverWatch(
             ),
           ),
         );
+      }
     }
   }
 }
@@ -268,7 +271,7 @@ export function* lightWalletBackupWatch({
     yield loadUser();
     yield effects.put(actions.routing.goToSettings());
   } catch (e) {
-    logger.error("Light Wallet connection error", e);
+    logger.error("Light Wallet Backup Error", e);
     yield put(
       actions.walletSelector.lightWalletConnectionError(mapLightWalletErrorToErrorMessage(e)),
     );
@@ -289,10 +292,11 @@ export function* loadSeedFromWallet({ web3Manager }: TGlobalDependencies): Itera
   }
 }
 
-export function* loadSeedFromWalletWatch(): Iterator<any> {
+export function* loadSeedFromWalletWatch({ logger }: TGlobalDependencies): Iterator<any> {
   try {
     yield neuCall(loadSeedFromWallet);
   } catch (e) {
+    logger.error("Load seed from wallet", e);
     yield put(
       actions.walletSelector.lightWalletConnectionError(mapLightWalletErrorToErrorMessage(e)),
     );
@@ -300,7 +304,7 @@ export function* loadSeedFromWalletWatch(): Iterator<any> {
 }
 
 export function* lightWalletLoginWatch(
-  { web3Manager, lightWalletConnector }: TGlobalDependencies,
+  { web3Manager, lightWalletConnector, logger }: TGlobalDependencies,
   action: TAction,
 ): Iterator<any> {
   if (action.type !== "LIGHT_WALLET_LOGIN") {
@@ -334,6 +338,7 @@ export function* lightWalletLoginWatch(
     yield web3Manager.plugPersonalWallet(wallet);
     yield neuCall(signInUser);
   } catch (e) {
+    logger.error("Light Wallet login error", e);
     yield effects.put(actions.walletSelector.reset());
     yield put(
       actions.walletSelector.lightWalletConnectionError(mapLightWalletErrorToErrorMessage(e)),

@@ -1,3 +1,4 @@
+import * as cn from "classnames";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "reactstrap";
@@ -25,7 +26,7 @@ interface IDispatchProps {
 }
 
 export const HeaderComponent: React.SFC<IStateProps & IDispatchProps> = props => (
-  <Navbar dark className={styles.bar}>
+  <Navbar dark className={cn(styles.bar, "flex-nowrap")}>
     <Link to={appRoutes.root} className={styles.logo}>
       <img src={logo} className={styles.logoImage} />
       <img src={logoText} alt="NEUFUND" className={styles.logoText} />
@@ -45,13 +46,18 @@ export const HeaderComponent: React.SFC<IStateProps & IDispatchProps> = props =>
           <>
             <ButtonLink
               theme="white"
-              className={styles.registerButton}
+              className={cn(styles.registerButton, styles.resizableButton)}
               data-test-id="Header-register-eto"
               to={appRoutes.registerEto}
             >
               REGISTER
             </ButtonLink>
-            <ButtonLink theme="white" data-test-id="Header-login-eto" to={appRoutes.loginEto}>
+            <ButtonLink
+              theme="white"
+              className={styles.resizableButton}
+              data-test-id="Header-login-eto"
+              to={appRoutes.loginEto}
+            >
               LOGIN
             </ButtonLink>
           </>
@@ -59,13 +65,18 @@ export const HeaderComponent: React.SFC<IStateProps & IDispatchProps> = props =>
           <>
             <ButtonLink
               theme="white"
-              className={styles.registerButton}
+              className={cn(styles.registerButton, styles.resizableButton)}
               data-test-id="Header-register"
               to={walletRegisterRoutes.light}
             >
               REGISTER
             </ButtonLink>
-            <ButtonLink theme="white" data-test-id="Header-login" to={loginWalletRoutes.light}>
+            <ButtonLink
+              theme="white"
+              className={styles.resizableButton}
+              data-test-id="Header-login"
+              to={loginWalletRoutes.light}
+            >
               LOGIN
             </ButtonLink>
           </>

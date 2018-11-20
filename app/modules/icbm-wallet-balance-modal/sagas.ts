@@ -104,7 +104,7 @@ function* loadIcbmWalletMigrationSaga(
     );
     yield neuCall(loadIcbmWalletMigrationTransactionSaga);
   } catch (e) {
-    logger.error("Error: ", e);
+    logger.error("Load ICBM migration wallet", e);
     // todo: all texts to text resources
     if (e instanceof NoIcbmWalletError)
       return notificationCenter.error("ICBM Wallet not found for given Ethereum address");
@@ -153,6 +153,8 @@ function* downloadICBMWalletAgreement(
   {
     contractsService,
     apiImmutableStorage,
+    logger,
+    notificationCenter,
     intlWrapper: {
       intl: { formatIntlMessage },
     },
@@ -164,18 +166,23 @@ function* downloadICBMWalletAgreement(
   const [, , agreementUrl] = yield contractsService.euroLock.currentAgreement();
   const fileUri = agreementUrl.replace("ipfs:", "");
 
-  const generatedDocument = yield apiImmutableStorage.getFile({
-    ipfsHash: fileUri,
-    mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    asPdf: true,
-  });
+  try {
+    const generatedDocument = yield apiImmutableStorage.getFile({
+      ipfsHash: fileUri,
+      mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      asPdf: true,
+    });
 
-  yield neuCall(
-    downloadLink,
-    generatedDocument,
-    formatIntlMessage("wallet.icbm.reservation-agreement"),
-    ".pdf",
-  );
+    yield neuCall(
+      downloadLink,
+      generatedDocument,
+      formatIntlMessage("wallet.icbm.reservation-agreement"),
+      ".pdf",
+    );
+  } catch (e) {
+    logger.error("Failed to download ICBM wallet agreement", e);
+    notificationCenter.error("Failed to download ICBM Wallet Agreement");
+  }
 }
 
 export function* icbmWalletGetDataSagas(): any {

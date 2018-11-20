@@ -44,7 +44,7 @@ export function* generateTemplate(
     });
     yield neuCall(downloadLink, generatedDocument, document.name, ".doc");
   } catch (e) {
-    logger.error(e);
+    logger.error("Failed to generate ETO template", e);
     notificationCenter.error("Failed to download file from IPFS");
   }
 }
@@ -63,7 +63,7 @@ export function* downloadDocumentByType(
     });
     yield neuCall(downloadLink, downloadedDocument, matchingDocument.name, "");
   } catch (e) {
-    logger.error(e);
+    logger.error("Download document by type failed", e);
     notificationCenter.error("Failed to download file");
   }
 }
@@ -71,6 +71,7 @@ export function* downloadDocumentByType(
 export function* loadEtoFileData({
   notificationCenter,
   apiEtoFileService,
+  logger,
 }: TGlobalDependencies): any {
   try {
     yield put(actions.etoFlow.loadIssuerEto());
@@ -83,6 +84,7 @@ export function* loadEtoFileData({
       }),
     );
   } catch (e) {
+    logger.error("Load ETO data failed", e);
     notificationCenter.error(
       "Could not access ETO files data. Make sure you have completed KYC and email verification process.",
     );
@@ -130,11 +132,12 @@ function* uploadEtoFile(
     yield apiEtoFileService.uploadEtoDocument(file, documentType);
     notificationCenter.info(formatIntlMessage("eto.modal.file-uploaded"));
   } catch (e) {
-    logger.error("Failed to send ETO data", e);
-
-    if (e instanceof FileAlreadyExists)
+    if (e instanceof FileAlreadyExists) {
       notificationCenter.error(formatIntlMessage("eto.modal.file-already-exists"));
-    else notificationCenter.error(formatIntlMessage("eto.modal.file-upload-failed"));
+    } else {
+      logger.error("Failed to send ETO data", e);
+      notificationCenter.error(formatIntlMessage("eto.modal.file-upload-failed"));
+    }
   } finally {
     yield put(actions.etoDocuments.loadFileDataStart());
   }

@@ -21,11 +21,12 @@
   $_space-between-tabs-layout-small: 10px;
   $_space-between-tabs-layout-large: 60px;
 
+  border-bottom: 2px solid transparent;
   color: $color-black;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
   display: inline-block;
   flex-shrink: 0;
+  text-decoration: none;
   text-transform: uppercase;
   user-select: none;
 

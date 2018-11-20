@@ -9,7 +9,7 @@ import { ignoredTemplates } from "../../../lib/api/eto/EtoFileUtils";
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { CommonHtmlProps } from "../../../types";
-import { documentTitles } from "../../documents/Documents";
+import { getDocumentTitles } from "../../documents/Documents";
 import { DocumentLink, DocumentTemplateButton } from "../../shared/DocumentLink";
 import { InlineIcon } from "../../shared/InlineIcon";
 import { Panel } from "../../shared/Panel";
@@ -21,6 +21,7 @@ type TExternalProps = {
   companyMarketingLinks: TCompanyEtoData["marketingLinks"];
   etoTemplates: TEtoDocumentTemplates;
   etoDocuments: TEtoDocumentTemplates;
+  isRetailEto: boolean;
 };
 
 type TDispatchProps = {
@@ -33,7 +34,9 @@ const DocumentsWidgetLayout: React.SFC<TDispatchProps & TExternalProps & CommonH
   etoDocuments,
   etoTemplates,
   className,
+  isRetailEto,
 }) => {
+  const documentTitles = getDocumentTitles(isRetailEto);
   return (
     <Panel className={className}>
       <section className={styles.group}>

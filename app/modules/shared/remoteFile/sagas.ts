@@ -6,7 +6,7 @@ import { TAction } from "../../actions";
 import { neuTakeEvery } from "../../sagasUtils";
 
 function* getRemoteFile(
-  { fileStorageApi, notificationCenter }: TGlobalDependencies,
+  { fileStorageApi, notificationCenter, logger }: TGlobalDependencies,
   action: TAction,
 ): any {
   if (action.type !== "REMOTE_FILE_GET") return;
@@ -17,7 +17,8 @@ function* getRemoteFile(
 
     onDone(undefined, fileData.body);
   } catch (e) {
-    notificationCenter.error("Error occured getting remote file details");
+    logger.error("get remote file error", e);
+    notificationCenter.error("Error occurred getting remote file details");
     onDone(e, undefined);
   }
 }

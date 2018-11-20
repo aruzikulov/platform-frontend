@@ -6,7 +6,7 @@ import { ContractsService } from "../../../../lib/web3/ContractsService";
 import { ITxData } from "../../../../lib/web3/types";
 import { IAppState } from "../../../../store";
 import { selectStandardGasPriceWithOverHead } from "../../../gas/selectors";
-import { selectEtoById } from "../../../public-etos/selectors";
+import { selectPublicEtoById } from "../../../public-etos/selectors";
 import { selectEthereumAddressWithChecksum } from "../../../web3/selectors";
 import { calculateGasLimitWithOverhead } from "../../utils";
 import { compareBigNumbers } from "./../../../../utils/BigNumberUtils";
@@ -91,7 +91,7 @@ function getEtherTokenTransaction(
 export function* generateInvestmentTransaction({ contractsService }: TGlobalDependencies): any {
   const state: IAppState = yield select();
   const investmentState = state.investmentFlow;
-  const eto = selectEtoById(state.publicEtos, investmentState.etoId)!;
+  const eto = selectPublicEtoById(state, investmentState.etoId)!;
 
   switch (investmentState.investmentType) {
     case EInvestmentType.InvestmentWallet:

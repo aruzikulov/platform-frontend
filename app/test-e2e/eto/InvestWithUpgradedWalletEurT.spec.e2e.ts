@@ -1,7 +1,7 @@
 import { createAndLoginNewUser } from "../utils/userHelpers";
 import { tid } from "../utils/selectors";
 import { INV_ETH_EUR_ICBM_HAS_KYC } from "../constants";
-import { confirmAccessModal } from "../utils/index";
+import { confirmAccessModal, LONG_WAIT_TIME } from "../utils/index";
 import { etoFixtureAddressByName } from "../utils";
 
 describe("Invest with euro token", () => {
@@ -15,7 +15,7 @@ describe("Invest with euro token", () => {
     }).then(() => {
       cy.visit("/dashboard");
       // click invest now button
-      cy.get(tid("eto-invest-now-button-" + PUBLIC_ETO_ID)).click();
+      cy.get(tid("eto-invest-now-button-" + PUBLIC_ETO_ID), { timeout: LONG_WAIT_TIME }).click();
       // select euro from icbm wallet
       cy.wait(1000);
       cy.get(tid("investment-type.selector.ICBM_NEURO")).check({ force: true });

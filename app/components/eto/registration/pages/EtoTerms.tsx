@@ -11,6 +11,7 @@ import { actions } from "../../../../modules/actions";
 import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { appConnect } from "../../../../store";
+import { TTranslatedString } from "../../../../types";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import {
   FormCheckbox,
@@ -57,6 +58,8 @@ const CURRENCIES: ICurrencies = {
   eur_t: "nEUR",
 };
 
+const MIN_NON_RETAIL_TICKET = 100000;
+
 const currencies = Object.keys(CURRENCIES);
 
 const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData }) => {
@@ -66,16 +69,26 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
       validator={EtoTermsType.toYup()}
     >
       <Section>
-        <FormLabel name="currencies">
-          <FormattedMessage id="eto.form.section.eto-terms.fundraising-currency" />
-        </FormLabel>
-
         <div className="form-group">
-          <FormCheckbox
-            disabled={readonly}
-            name="allowRetailInvestors"
-            label={<FormattedMessage id="eto.form.section.eto-terms.is-retail-eto-temp" />}
-          />
+          <FormLabel name="allowRetailInvestors">
+            <FormattedMessage id="eto.form.section.eto-terms.allow-retail-label" />
+          </FormLabel>
+          <div>
+            <FormRadioButton
+              disabled={readonly}
+              name="allowRetailInvestors"
+              label={<FormattedMessage id="eto.form.section.eto-terms.is-hnwi-eto" />}
+              value={false}
+            />
+          </div>
+          <div>
+            <FormRadioButton
+              disabled={readonly}
+              name="allowRetailInvestors"
+              label={<FormattedMessage id="eto.form.section.eto-terms.is-retail-eto" />}
+              value={true}
+            />
+          </div>
         </div>
 
         <div className="form-group">
@@ -85,6 +98,10 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
             label={<FormattedMessage id="eto.form.section.eto-terms.is-not-crowdfunding" />}
           />
         </div>
+
+        <FormLabel name="currencies">
+          <FormattedMessage id="eto.form.section.eto-terms.fundraising-currency" />
+        </FormLabel>
 
         <div className="form-group">
           <FormFieldCheckboxGroup name="currencies">
@@ -220,7 +237,7 @@ const EtoRegistrationTermsComponent: React.SFC<IProps> = ({ readonly, savingData
   );
 };
 
-export const EtoRegistrationTerms = compose<React.SFC<IExternalProps>>(
+const EtoRegistrationTerms = compose<React.SFC<IExternalProps>>(
   setDisplayName(EEtoFormTypes.EtoTerms),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
@@ -245,6 +262,26 @@ export const EtoRegistrationTerms = compose<React.SFC<IExternalProps>>(
     validationSchema: EtoTermsType.toYup(),
     mapPropsToValues: props => props.stateValues,
     handleSubmit: (values, props) => props.props.saveData(values),
+    validate: values => {
+      const errors: { [key in keyof (typeof values)]: TTranslatedString } = {};
+
+      if (values.allowRetailInvestors && values.enableTransferOnSuccess) {
+        errors.enableTransferOnSuccess = (
+          <FormattedMessage id="eto.form.eto-terms.errors.transfer-not-allowed-for-retail-eto" />
+        );
+      }
+
+      if (!values.allowRetailInvestors && (values.minTicketEur || 0) < MIN_NON_RETAIL_TICKET) {
+        errors.minTicketEur = (
+          <FormattedMessage
+            id="eto.form.eto-terms.errors.to-low-min-ticket-for-non-retail-eto"
+            values={{ minTicket: MIN_NON_RETAIL_TICKET }}
+          />
+        );
+      }
+
+      return errors;
+    },
   }),
 )(EtoRegistrationTermsComponent);
 
@@ -253,3 +290,5 @@ const fromFormState = {
   signingDurationDays: parseStringToInteger(),
   whitelistDurationDays: parseStringToInteger(),
 };
+
+export { EtoRegistrationTerms, EtoRegistrationTermsComponent };

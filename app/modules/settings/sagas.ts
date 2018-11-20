@@ -20,6 +20,7 @@ import { EWalletType } from "../web3/types";
 export function* addNewEmail(
   {
     notificationCenter,
+    logger,
     intlWrapper: {
       intl: { formatIntlMessage },
     },
@@ -77,7 +78,10 @@ export function* addNewEmail(
       notificationCenter.error(
         formatIntlMessage("modules.auth.sagas.sign-in-user.email-already-exists"),
       );
-    else notificationCenter.error(formatIntlMessage("modules.settings.sagas.add-new-email.error"));
+    else {
+      logger.error("Failed to Add new email", e);
+      notificationCenter.error(formatIntlMessage("modules.settings.sagas.add-new-email.error"));
+    }
   } finally {
     yield loadUser();
     yield effects.put(actions.verifyEmail.freeVerifyEmailButton());
@@ -90,6 +94,7 @@ export function* resendEmail(
     intlWrapper: {
       intl: { formatIntlMessage },
     },
+    logger,
   }: TGlobalDependencies,
   action: TAction,
 ): Iterator<any> {
@@ -112,7 +117,8 @@ export function* resendEmail(
     );
     yield effects.call(updateUser, { ...user, new_email: email, salt: salt });
     notificationCenter.info(formatIntlMessage("modules.settings.sagas.resend-email.sent"));
-  } catch {
+  } catch (e) {
+    logger.error("Failed to resend email", e);
     notificationCenter.error(formatIntlMessage("modules.settings.sagas.resend-email.failed"));
   }
 }
@@ -121,6 +127,7 @@ export function* loadSeedOrReturnToSettings({
   intlWrapper: {
     intl: { formatIntlMessage },
   },
+  logger,
 }: TGlobalDependencies): Iterator<any> {
   // unlock wallet
   try {
@@ -131,7 +138,8 @@ export function* loadSeedOrReturnToSettings({
       formatIntlMessage("modules.settings.sagas.load-seed-return-settings.access-recovery-phrase"),
       "",
     );
-  } catch {
+  } catch (e) {
+    logger.error("Failed to load seed", e);
     yield put(actions.routing.goToSettings());
   }
 }

@@ -12,7 +12,6 @@ function* ensureGasApiDataSaga({ gasApi, logger }: TGlobalDependencies): any {
     yield put(actions.gas.gasApiLoaded({ data: gasValue.body }));
   } catch (e) {
     logger.error("Error while loading GAS api data.", e);
-
     yield put(actions.gas.gasApiLoaded({ error: e }));
   }
 }

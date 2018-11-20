@@ -62,10 +62,6 @@
   &:disabled {
     color: $color-silver;
   }
-
-  &::placeholder {
-    color: $color-black;
-  }
 }
 
 // sass-lint:disable no-important

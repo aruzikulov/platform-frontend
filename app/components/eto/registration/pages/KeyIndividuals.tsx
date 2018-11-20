@@ -235,7 +235,7 @@ const EtoRegistrationKeyIndividualsComponent = (props: IProps) => {
   );
 };
 
-export const EtoRegistrationKeyIndividuals = compose<React.SFC>(
+const EtoRegistrationKeyIndividuals = compose<React.SFC>(
   setDisplayName(EEtoFormTypes.KeyIndividuals),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
@@ -255,3 +255,5 @@ export const EtoRegistrationKeyIndividuals = compose<React.SFC>(
     handleSubmit: (values, props) => props.props.saveData(values),
   }),
 )(EtoRegistrationKeyIndividualsComponent);
+
+export { EtoRegistrationKeyIndividualsComponent, EtoRegistrationKeyIndividuals };

@@ -14,9 +14,9 @@ import { actions, TAction } from "../actions";
 import { loadComputedContributionFromContract } from "../investor-tickets/sagas";
 import { selectCalculatedContribution, selectIsWhitelisted } from "../investor-tickets/selectors";
 import {
-  selectEtoById,
   selectEtoOnChainStateById,
   selectEtoWithCompanyAndContractById,
+  selectPublicEtoById,
 } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/types";
 import { neuCall } from "../sagasUtils";
@@ -174,7 +174,7 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
   yield delay(300);
 
   let state: IAppState = yield select();
-  const eto = selectEtoById(state.publicEtos, state.investmentFlow.etoId);
+  const eto = selectPublicEtoById(state, state.investmentFlow.etoId);
   const value = state.investmentFlow.euroValueUlps;
   if (value && eto) {
     const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
@@ -221,7 +221,7 @@ function* getActiveInvestmentTypes(): any {
   const state: IAppState = yield select();
   const etoId = selectInvestmentEtoId(state);
   const eto = selectEtoWithCompanyAndContractById(state, etoId);
-  const etoState = selectEtoOnChainStateById(state.publicEtos, etoId);
+  const etoState = selectEtoOnChainStateById(state, etoId);
 
   let activeTypes: EInvestmentType[] = [
     EInvestmentType.InvestmentWallet,

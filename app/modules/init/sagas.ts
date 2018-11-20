@@ -24,7 +24,7 @@ function* initSmartcontracts({ web3Manager, logger }: TGlobalDependencies): any 
     yield put(
       actions.init.error("smartcontractsInit", "Error while connecting with Ethereum blockchain"),
     );
-    logger.error("Error: ", e);
+    logger.error("Smart Contract Init Error", e);
   }
 }
 
@@ -50,14 +50,14 @@ function* initApp({ logger }: TGlobalDependencies): any {
         }
       } else {
         yield cleanupAndLogoutSaga();
-        logger.error("JTW expiring too soon.");
+        logger.warn("JTW expiring too soon.");
       }
     }
 
     yield put(actions.init.done("appInit"));
   } catch (e) {
     yield put(actions.init.error("appInit", e.message || "Unknown error"));
-    logger.error("Error: ", e);
+    logger.error("App init error", e);
   }
 }
 
@@ -113,6 +113,6 @@ export function* initSmartcontractsDelayed(): any {
 
 export const initSagas = function*(): Iterator<effects.Effect> {
   yield fork(neuTakeEvery, "INIT_START", initStartSaga);
-
+  // Smart Contracts are only initialized once during the whole life cycle of the app
   yield fork(initSmartcontractsDelayed);
 };
