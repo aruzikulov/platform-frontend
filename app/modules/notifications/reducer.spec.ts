@@ -2,14 +2,19 @@ import { expect } from "chai";
 
 import { actions } from "../actions";
 import { INewNotification } from "./actions";
-import { notificationsInitState, notificationsReducer, NotificationType } from "./reducer";
+import {
+  notificationsInitState,
+  notificationsReducer,
+  NotificationText,
+  NotificationType,
+} from "./reducer";
 
 describe("notifications > reducer", () => {
   it("should act on NOTIFICATIONS_ADD", () => {
     const notification: INewNotification = {
       id: 123,
       actionLinkText: "actionLinkText",
-      text: "text",
+      text: NotificationText.TEST_NOTIFICATION,
       type: NotificationType.WARNING,
     };
     const action = actions.notifications.notificationAdd(notification);
@@ -24,7 +29,7 @@ describe("notifications > reducer", () => {
     const notification = {
       id: 123,
       actionLinkText: "actionLinkText",
-      text: "text",
+      text: NotificationText.TEST_NOTIFICATION,
       type: NotificationType.WARNING,
     };
     const actionAdd = actions.notifications.notificationAdd(notification);

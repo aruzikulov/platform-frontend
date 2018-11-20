@@ -8,10 +8,16 @@ export enum NotificationType {
   WARNING = "warning",
 }
 
+export enum NotificationText {
+  COMPLETE_REQUEST_NOTIFICATION = "completeRequestNotification",
+  COMPLETE_UPDATE_ACCOUNT = "completeUpdateAccount",
+  TEST_NOTIFICATION = "testNotification",
+}
+
 export interface INotification {
   id: number;
   type: NotificationType;
-  text: string;
+  text: NotificationText;
   onClickAction: AppActionTypes;
   actionLinkText?: string;
   clickable?: boolean;
@@ -65,7 +71,7 @@ export const notificationsReducer: AppReducer<INotificationsState> = (
 export const settingsNotification = () => ({
   id: Date.now(),
   type: NotificationType.WARNING,
-  text: "Please update your account before proceeding. Head to Settings now. ",
+  text: NotificationText.COMPLETE_REQUEST_NOTIFICATION,
   actionLinkText: "Go to settings",
   onClickAction: routingActions.goToSettings(),
 });
@@ -73,10 +79,7 @@ export const settingsNotification = () => ({
 export const settingsNotificationInvestor = () => ({
   id: Date.now(),
   type: NotificationType.WARNING,
-  text: "You will not be able to INVEST until you complete required steps in Settings.",
-  actionLinkText: "Go to settings",
+  text: NotificationText.COMPLETE_UPDATE_ACCOUNT,
   onClickAction: routingActions.goToSettings(),
   clickable: true,
 });
-
-//TODO: Add Translation
