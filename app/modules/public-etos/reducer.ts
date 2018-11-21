@@ -8,6 +8,7 @@ export interface IPublicEtoState {
   companies: { [companyId: string]: TCompanyEtoData | undefined };
   contracts: { [previewCode: string]: IEtoContractData };
   displayOrder: string[] | undefined;
+  maxCapExceeded: { [previewCode: string]: boolean | undefined };
 }
 
 export const etoFlowInitialState: IPublicEtoState = {
@@ -15,6 +16,7 @@ export const etoFlowInitialState: IPublicEtoState = {
   companies: {},
   contracts: {},
   displayOrder: undefined,
+  maxCapExceeded: {},
 };
 
 export const publicEtosReducer: AppReducer<IPublicEtoState> = (

@@ -33,7 +33,7 @@ import {
 import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button } from "../../shared/buttons";
-import { individualRequirements, MultiFileUpload } from "../../shared/MultiFileUpload";
+import { MultiFileUpload } from "../../shared/MultiFileUpload";
 import { Tooltip } from "../../shared/Tooltip";
 import { KycPanel } from "../KycPanel";
 import { kycRoutes } from "../routes";
@@ -186,7 +186,6 @@ const FileUploadList: React.SFC<IProps & { lrDataValid: boolean }> = props => {
         onDropFile={props.onDropFile}
         files={props.files}
         fileUploading={props.fileUploading}
-        requirements={individualRequirements}
       />
     </div>
   );
@@ -194,8 +193,6 @@ const FileUploadList: React.SFC<IProps & { lrDataValid: boolean }> = props => {
 
 const BeneficialOwners: React.SFC<IProps & { lrDataValid: boolean }> = props => {
   if (!props.lrDataValid || props.files.length === 0) return null;
-  if (!(props.businessData && props.businessData.legalFormType === "corporate")) return null;
-
   return <KYCBeneficialOwners />;
 };
 
@@ -206,6 +203,7 @@ export const KycLegalRepresentativeComponent = ({
   const lrDataValid = KycLegalRepresentativeSchemaRequired.isValidSync(props.legalRepresentative);
   return (
     <KycPanel
+      title={<FormattedMessage id="kyc.panel.business-verification" />}
       steps={businessSteps}
       description={formatIntlMessage("kyc.business.legal-representative.description")}
       backLink={kycRoutes.businessData}

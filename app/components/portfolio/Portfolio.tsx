@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { branch, compose, renderComponent } from "recompose";
 
 import { actions } from "../../modules/actions";
@@ -19,14 +20,17 @@ export const Portfolio = compose<TPortfolioLayoutProps, {}>(
     actionCreator: dispatch => dispatch(actions.publicEtos.loadEtos()),
   }),
   appConnect<TStateProps>({
-    stateToProps: state => ({
-      myAssets: selectMyAssets(state),
-      pendingAssets: selectMyPendingAssets(state),
-      myNeuBalance: selectNeuBalance(state.wallet),
-      myNeuBalanceEuroAmount: selectNeuBalanceEuroAmount(state),
-      neuPrice: selectNeuPriceEur(state),
-      walletAddress: selectEthereumAddressWithChecksum(state),
-    }),
+    stateToProps: state => {
+      const neuPrice = selectNeuPriceEur(state);
+      return {
+        myAssets: selectMyAssets(state),
+        pendingAssets: selectMyPendingAssets(state),
+        myNeuBalance: selectNeuBalance(state.wallet),
+        myNeuBalanceEuroAmount: selectNeuBalanceEuroAmount(state),
+        neuPrice: neuPrice && new BigNumber(neuPrice).toFixed(8),
+        walletAddress: selectEthereumAddressWithChecksum(state),
+      };
+    },
   }),
   withContainer(LayoutAuthorized),
   branch(

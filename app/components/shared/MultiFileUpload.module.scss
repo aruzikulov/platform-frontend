@@ -11,15 +11,12 @@ $_dropzone-size-sm: 120px;
 
   .title {
     @include font-default;
-
-    color: $color-graphite-light;
-    text-transform: uppercase;
+    color: $color-graphite;
   }
 
   .hint {
     @include font-default;
-
-    color: $color-gray;
+    color: $color-graphite-light;
   }
 
   .upload-informations-wrapper {
@@ -49,7 +46,6 @@ $_dropzone-size-sm: 120px;
 
 
 .multi-file-upload {
-  display: flex;
 
   &:global(.horizontal) {
     flex-direction: row;
@@ -76,9 +72,7 @@ $_dropzone-size-sm: 120px;
 }
 
 .title {
-  @include font-label;
-
-  color: $color-graphite-light;
+  color: $color-graphite;
 }
 
 .file-info {
@@ -123,6 +117,7 @@ $_dropzone-size-sm: 120px;
 }
 
 .requirements-title {
+  @include font-default;
   margin-bottom: 4px;
 }
 

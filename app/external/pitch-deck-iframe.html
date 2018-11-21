@@ -3,16 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Neufund Twitter Iframe</title>
+    <title>Neufund Pitch Deck Iframe</title>
+    <style>
+      html,
+      body,
+      iframe {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
   </head>
   <body>
-    <a
-      id="twitter"
-      class="twitter-timeline"
-      data-chrome="noheader nofooter noborders transparent"
-    ></a>
+    <iframe id="pitch" allowfullscreen width="100%" height="100%"></iframe>
+
     <script>
-      const a = document.getElementById("twitter");
+      const iframe = document.getElementById("pitch");
       const search = location.search.substring(1);
       const query = JSON.parse(
         '{"' +
@@ -22,9 +29,7 @@
             .replace(/=/g, '":"') +
           '"}',
       );
-      a.href = query.url;
-      a.innerText = "Tweets by " + query.user;
+      iframe.src = query.url;
     </script>
-    <script src="https://platform.twitter.com/widgets.js"></script>
   </body>
 </html>

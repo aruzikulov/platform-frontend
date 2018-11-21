@@ -68,14 +68,12 @@ export const KycBusinessDataSchema = Yup.object<any>().shape({
   name: Yup.string().required(),
   registrationNumber: Yup.string(),
   legalForm: Yup.string().required(),
-  legalFormType: Yup.string().required(),
+  legalFormType: Yup.string(),
   street: Yup.string().required(),
   city: Yup.string().required(),
   zipCode: Yup.string().required(),
   country: restrictedCountry.required(),
-  jurisdiction: Yup.string()
-    .required()
-    .default("de"),
+  jurisdiction: Yup.string().default("de"),
 });
 
 // legal representative (same as base person)

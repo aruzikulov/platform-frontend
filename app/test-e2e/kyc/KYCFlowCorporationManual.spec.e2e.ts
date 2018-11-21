@@ -15,7 +15,6 @@ describe("KYC Small Business flow with manual verification", () => {
       // go to corporate start page
       cy.visit(kycRoutes.start);
       cy.get(tid("kyc-start-go-to-company")).awaitedClick();
-      cy.get(tid("kyc-start-business-go-to-corporation")).awaitedClick();
 
       // fill out and submit business form
       fillForm(kycCorporateCompanyForm);

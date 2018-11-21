@@ -3,7 +3,9 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Container, Row } from "reactstrap";
 import { compose, setDisplayName } from "recompose";
 
+import { TEtoSpecsData } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { actions } from "../../../../modules/actions";
 import {
   selectInvestmentEtoId,
@@ -16,14 +18,13 @@ import {
 import { selectEtoWithCompanyAndContractById } from "../../../../modules/public-etos/selectors";
 import { ETxSenderType } from "../../../../modules/tx/interfaces";
 import { appConnect } from "../../../../store";
-import { divideBigNumbers } from "../../../../utils/BigNumberUtils";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { DocumentTemplateButton } from "../../../shared/DocumentLink";
 import { Heading } from "../../../shared/modals/Heading";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 import { ITxSummaryDispatchProps } from "../TxSender";
-import { formatEurTsd } from "./utils";
+import { formatEurTsd, formatSummaryTokenPrice, getActualTokenPriceEur } from "./utils";
 
 import * as neuIcon from "../../../../assets/img/neu_icon.svg";
 import * as tokenIcon from "../../../../assets/img/token_icon.svg";
@@ -34,36 +35,43 @@ interface IDispatchProps extends ITxSummaryDispatchProps {
 }
 
 interface IStateProps {
+  eto: TEtoSpecsData;
   companyName: string;
   investmentEur: string;
   equityTokens: string;
   estimatedReward: string;
-  etoAddress: string;
 }
 
 type IProps = IStateProps & IDispatchProps;
 
 const BankTransferSummaryComponent: React.SFC<IProps> = ({
+  eto,
   investmentEur,
   companyName,
   downloadAgreement,
   onAccept,
   onChange,
-  ...data
+  equityTokens,
+  estimatedReward,
 }) => {
-  const equityTokens = (
+  const equityTokensValue = (
     <span>
       {/* TODO: Change to actual custom token icon */}
-      <img src={tokenIcon} /> {data.equityTokens}
+      <img src={tokenIcon} /> {equityTokens}
     </span>
   );
-  const estimatedReward = (
+  const estimatedRewardValue = (
     <span>
-      <img src={neuIcon} /> {formatEurTsd(data.estimatedReward)} NEU
+      <img src={neuIcon} /> {formatEurTsd(estimatedReward)} NEU
     </span>
   );
 
-  const tokenPrice = divideBigNumbers(investmentEur, data.equityTokens);
+  const actualTokenPrice = getActualTokenPriceEur(investmentEur, equityTokens);
+  const { tokenPrice: fullTokenPrice } = getShareAndTokenPrice(eto);
+  const formattedTokenPrice = `€ ${formatSummaryTokenPrice(
+    fullTokenPrice,
+    parseFloat(actualTokenPrice),
+  )}`;
 
   return (
     <Container className={styles.container}>
@@ -92,7 +100,7 @@ const BankTransferSummaryComponent: React.SFC<IProps> = ({
             />
             <InfoRow
               caption={<FormattedMessage id="investment-flow.summary.token-price" />}
-              value={`${formatEurTsd(tokenPrice)} €`}
+              value={formattedTokenPrice}
             />
             <InfoRow
               caption={
@@ -105,11 +113,11 @@ const BankTransferSummaryComponent: React.SFC<IProps> = ({
               caption={
                 <FormattedMessage id="investment-flow.bank-transfer-summary.equity-tokens" />
               }
-              value={equityTokens}
+              value={equityTokensValue}
             />
             <InfoRow
               caption={<FormattedMessage id="investment-flow.bank-transfer-summary.neu-reward" />}
-              value={estimatedReward}
+              value={estimatedRewardValue}
             />
           </InfoList>
         </Col>
@@ -117,7 +125,7 @@ const BankTransferSummaryComponent: React.SFC<IProps> = ({
 
       <Row className="justify-content-center">
         <DocumentTemplateButton
-          onClick={() => downloadAgreement(data.etoAddress)}
+          onClick={() => downloadAgreement(eto.etoId)}
           title={<FormattedMessage id="investment-flow.summary.download-agreement" />}
         />
       </Row>
@@ -152,7 +160,7 @@ const BankTransferSummary = compose<IProps, {}>(
       // eto and computed values are guaranteed to be present at investment summary state
       const eto = selectEtoWithCompanyAndContractById(state, etoId)!;
       return {
-        etoAddress: eto.etoId,
+        eto,
         companyName: eto.company.name,
         investmentEur: selectInvestmentEurValueUlps(state),
         // tslint:disable: no-useless-cast

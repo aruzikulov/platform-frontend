@@ -45,15 +45,17 @@ const DocumentsWidgetLayout: React.SFC<TDispatchProps & TExternalProps & CommonH
         </div>
         <Row>
           {companyMarketingLinks &&
-            companyMarketingLinks.map((link, i) => (
-              <Col sm="6" md="12" lg="6" key={i} className={styles.document}>
-                <DocumentLink
-                  url={link.url || ""}
-                  name={link.title || ""}
-                  altIcon={<InlineIcon svgIcon={icon_link} />}
-                />
-              </Col>
-            ))}
+            companyMarketingLinks.map((link, i) => {
+              return link.url && link.url !== "" ? (
+                <Col sm="6" md="12" lg="6" key={i} className={styles.document}>
+                  <DocumentLink
+                    url={link.url || ""}
+                    name={link.title || ""}
+                    altIcon={<InlineIcon svgIcon={icon_link} />}
+                  />
+                </Col>
+              ) : null;
+            })}
         </Row>
       </section>
       <section className={styles.group}>

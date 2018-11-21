@@ -46,6 +46,12 @@ export const selectIsLightWallet = (state: IWeb3State): boolean => {
   );
 };
 
+export const selectIsExternalWallet = (state: IWeb3State): boolean => {
+  const walletType = selectWalletType(state);
+
+  return walletType === EWalletType.LEDGER || walletType === EWalletType.BROWSER;
+};
+
 export const selectWalletSubType = (state: IWeb3State): EWalletSubType | undefined =>
   state.connected
     ? (state.wallet.walletType === EWalletType.BROWSER && state.wallet.walletSubType) || undefined

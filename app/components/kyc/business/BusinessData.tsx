@@ -15,7 +15,7 @@ import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers"
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button } from "../../shared/buttons";
 import { FormField, FormSelectCountryField } from "../../shared/forms";
-import { businessRequirements, MultiFileUpload } from "../../shared/MultiFileUpload";
+import { MultiFileUpload } from "../../shared/MultiFileUpload";
 import { KycPanel } from "../KycPanel";
 import { kycRoutes } from "../routes";
 import { KycDisclaimer } from "../shared/KycDisclaimer";
@@ -98,14 +98,11 @@ const KYCForm = injectIntlHelpers<FormikProps<IKycBusinessData> & IProps>(
         label={formatIntlMessage("form.label.country")}
         name="country"
       />
-      {props.currentValues &&
-        props.currentValues.legalFormType === "corporate" && (
-          <FormSelectCountryField
-            data-test-id="kyc-company-business-data-jurisdiction"
-            label={formatIntlMessage("form.label.jurisdiction")}
-            name="jurisdiction"
-          />
-        )}
+      <FormSelectCountryField
+        data-test-id="kyc-company-business-data-jurisdiction"
+        label={formatIntlMessage("form.label.jurisdiction")}
+        name="jurisdiction"
+      />
       <div className="p-4 text-center">
         <Button
           data-test-id="kyc-company-business-data-save"
@@ -138,11 +135,11 @@ const FileUploadList: React.SFC<IProps & { dataValid: boolean }> = props => {
       <br />
       <FormattedMessage id="kyc.business.business-data.upload-documents" />
       <br />
+      <br />
       <MultiFileUpload
         uploadType="business"
         acceptedFiles="image/*,application/pdf"
         data-test-id="kyc-company-business-supporting-documents"
-        requirements={businessRequirements}
         onDropFile={props.onDropFile}
         files={props.files}
         fileUploading={props.fileUploading}
@@ -159,8 +156,9 @@ export const KycBusinessDataComponent = ({
   return (
     <KycPanel
       steps={businessSteps}
+      title={<FormattedMessage id="kyc.panel.business-verification" />}
       description={formatIntlMessage("kyc.business.business-data.description")}
-      backLink={kycRoutes.businessStart}
+      backLink={kycRoutes.start}
     >
       <KycDisclaimer className="pb-5" />
       <KYCEnhancedForm {...props} />

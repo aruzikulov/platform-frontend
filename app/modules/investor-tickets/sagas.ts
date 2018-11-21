@@ -54,7 +54,9 @@ export function* loadInvestorTicket(
     ),
   );
 
-  yield neuCall(loadComputedContributionFromContract, action.payload.eto);
+  const contribution = yield neuCall(loadComputedContributionFromContract, action.payload.eto);
+
+  yield put(actions.investorEtoTicket.setInitialCalculatedContribution(etoId, contribution));
 }
 
 export function* loadComputedContributionFromContract(
@@ -76,18 +78,13 @@ export function* loadComputedContributionFromContract(
 
     // TODO: check whether typechain but still is not fixed
     // sorry no typechain, typechain has a bug with boolean casting
-    const calculation = yield promisify(etoContract.rawWeb3Contract.calculateContribution, [
+    const contribution = yield promisify(etoContract.rawWeb3Contract.calculateContribution, [
       from,
       isICBM,
       newInvestorContributionEurUlps,
     ]);
 
-    yield put(
-      actions.investorEtoTicket.setCalculatedContribution(
-        eto.etoId,
-        convertToCalculatedContribution(calculation),
-      ),
-    );
+    return convertToCalculatedContribution(contribution);
   }
 }
 

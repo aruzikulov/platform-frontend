@@ -204,7 +204,12 @@ const KYCEnhancedForm = withFormik<IStateProps & IDispatchProps, IKycIndividualD
 
 export const KYCPersonalStartComponent: React.SFC<IStateProps & IDispatchProps> = props => {
   return (
-    <KycPanel steps={personalSteps} backLink={kycRoutes.start} isMaxWidth={false}>
+    <KycPanel
+      steps={personalSteps}
+      backLink={kycRoutes.start}
+      isMaxWidth={false}
+      title={<FormattedMessage id="kyc.panel.individual-verification" />}
+    >
       <KycDisclaimer className="pb-5" />
       <KYCEnhancedForm {...props} />
     </KycPanel>

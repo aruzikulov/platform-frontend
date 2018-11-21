@@ -5,6 +5,7 @@ import { compose, setDisplayName } from "recompose";
 
 import { TEtoSpecsData } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { actions } from "../../../../modules/actions";
 import {
   selectInvestmentEthValueUlps,
@@ -21,11 +22,7 @@ import { selectEtherPriceEur } from "../../../../modules/shared/tokenPrice/selec
 import { ETxSenderType } from "../../../../modules/tx/interfaces";
 import { selectTxGasCostEth } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
-import {
-  addBigNumbers,
-  divideBigNumbers,
-  multiplyBigNumbers,
-} from "../../../../utils/BigNumberUtils";
+import { addBigNumbers, multiplyBigNumbers } from "../../../../utils/BigNumberUtils";
 import { formatThousands } from "../../../../utils/Number.utils";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { CustomTooltip } from "../../../shared/CustomTooltip";
@@ -34,12 +31,16 @@ import { Heading } from "../../../shared/modals/Heading";
 import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 import { ITxSummaryDispatchProps } from "../TxSender";
-import { formatEth, formatEthTsd, formatEurTsd } from "./utils";
+import {
+  formatEthTsd,
+  formatEurTsd,
+  formatSummaryTokenPrice,
+  getActualTokenPriceEur,
+} from "./utils";
 
 import * as neuIcon from "../../../../assets/img/neu_icon.svg";
 import * as info from "../../../../assets/img/notifications/info.svg";
 import * as tokenIcon from "../../../../assets/img/token_icon.svg";
-import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import * as styles from "./Summary.module.scss";
 
 interface IStateProps {
@@ -74,15 +75,6 @@ const NeuRewardCaption: React.SFC<{ isIcbm?: boolean }> = ({ isIcbm }) => {
   return isIcbm ? icbmMsg : neuMsg;
 };
 
-const formatTokenPrice = (fullTokenPrice: number, actualTokenPrice: number) => {
-  const discount = Math.round((1 - actualTokenPrice / fullTokenPrice) * 100);
-  let priceString = "€ " + formatThousands(actualTokenPrice.toString());
-  if (discount >= 1) {
-    priceString += ` (-${discount}%)`;
-  }
-  return priceString;
-};
-
 const InvestmentSummaryComponent: React.SFC<IProps> = ({
   onAccept,
   onChange,
@@ -91,31 +83,36 @@ const InvestmentSummaryComponent: React.SFC<IProps> = ({
   etherPriceEur,
   isIcbm,
   eto,
-  ...data
+  equityTokens,
+  investmentEth,
+  investmentEur,
+  estimatedReward,
+  companyName,
 }) => {
-  const equityTokens = (
+  const equityTokensValue = (
     <span>
       {/* TODO: Change to actual custom token icon */}
-      <img src={tokenIcon} /> {formatThousands(data.equityTokens)}
+      <img src={tokenIcon} /> {formatThousands(equityTokens)}
     </span>
   );
-  const estimatedReward = (
+  const estimatedRewardValue = (
     <span>
-      <img src={neuIcon} /> {formatEurTsd(data.estimatedReward)} NEU
+      <img src={neuIcon} /> {formatEurTsd(estimatedReward)} NEU
     </span>
   );
-  const investment = `€ ${formatEurTsd(data.investmentEur)} ≈ ${formatEthTsd(
-    data.investmentEth,
-  )} ETH`;
+  const investment = `€ ${formatEurTsd(investmentEur)} ≈ ${formatEthTsd(investmentEth)} ETH`;
 
   const gasCostEuro = multiplyBigNumbers([gasCostEth, etherPriceEur]);
-  const totalCostEth = addBigNumbers([gasCostEth, data.investmentEth]);
-  const totalCostEur = addBigNumbers([gasCostEuro, data.investmentEur]);
+  const totalCostEth = addBigNumbers([gasCostEth, investmentEth]);
+  const totalCostEur = addBigNumbers([gasCostEuro, investmentEur]);
 
   const total = `€ ${formatEurTsd(totalCostEur)} ≈ ${formatEthTsd(totalCostEth)} ETH`;
-  const actualTokenPrice = formatEth(divideBigNumbers(data.investmentEur, data.equityTokens))!;
+  const actualTokenPrice = getActualTokenPriceEur(investmentEur, equityTokens);
   const { tokenPrice: fullTokenPrice } = getShareAndTokenPrice(eto);
-  const formattedTokenPrice = formatTokenPrice(fullTokenPrice, parseFloat(actualTokenPrice));
+  const formattedTokenPrice = `€ ${formatSummaryTokenPrice(
+    fullTokenPrice,
+    parseFloat(actualTokenPrice),
+  )}`;
 
   return (
     <Container className={styles.container}>
@@ -129,7 +126,7 @@ const InvestmentSummaryComponent: React.SFC<IProps> = ({
         <InfoList>
           <InfoRow
             caption={<FormattedMessage id="investment-flow.summary.company" />}
-            value={data.companyName}
+            value={companyName}
           />
           <InfoRow
             dataTestId="investment-summary-token-price"
@@ -151,9 +148,9 @@ const InvestmentSummaryComponent: React.SFC<IProps> = ({
           />
           <InfoRow
             caption={<FormattedMessage id="investment-flow.summary.equity-tokens" />}
-            value={equityTokens}
+            value={equityTokensValue}
           />
-          <InfoRow caption={<NeuRewardCaption isIcbm={isIcbm} />} value={estimatedReward} />
+          <InfoRow caption={<NeuRewardCaption isIcbm={isIcbm} />} value={estimatedRewardValue} />
           <InfoRow
             caption={<FormattedMessage id="investment-flow.summary.transaction-value" />}
             value={total}

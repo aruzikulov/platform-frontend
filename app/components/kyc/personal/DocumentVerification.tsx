@@ -48,6 +48,7 @@ export const KycPersonalDocumentVerificationComponent: React.SFC<
   IProps & IStateProps & IDispatchProps
 > = ({ ...props }) => (
   <KycPanel
+    title={<FormattedMessage id="kyc.panel.individual-verification" />}
     steps={personalSteps}
     backLink={kycRoutes.individualStart}
     isMaxWidth={false}

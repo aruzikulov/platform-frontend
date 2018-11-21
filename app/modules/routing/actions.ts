@@ -24,7 +24,6 @@ export const routingActions = {
     createRoutingAction(kycRoutes.individualDocumentVerification),
   goToKYCIndividualUpload: () => createRoutingAction(kycRoutes.individualUpload),
 
-  goToKYCBusinessStart: () => createRoutingAction(kycRoutes.businessStart),
   goToKYCLegalRepresentative: () => createRoutingAction(kycRoutes.legalRepresentative),
   goToKYCBusinessData: () => createRoutingAction(kycRoutes.businessData),
   goToKYCBeneficialOwners: () => createRoutingAction(kycRoutes.beneficialOwners),

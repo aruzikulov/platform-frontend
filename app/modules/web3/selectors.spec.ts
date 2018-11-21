@@ -1,10 +1,15 @@
 import { expect } from "chai";
 import { RouterState } from "react-router-redux";
 import { dummyEthereumAddress } from "../../../test/fixtures";
-import { getDummyLightWalletMetadata } from "./fixtures";
+import {
+  getDummyBrowserWalletMetadata,
+  getDummyLedgerWalletMetadata,
+  getDummyLightWalletMetadata,
+} from "./fixtures";
 import { IWeb3State } from "./reducer";
 import {
   selectActivationCodeFromQueryString,
+  selectIsExternalWallet,
   selectIsLightWallet,
   selectLightWalletEmailFromQueryString,
   selectLightWalletFromQueryString,
@@ -54,6 +59,44 @@ describe("web3 > selectors", () => {
       const isLightWallet = selectIsLightWallet(state);
 
       expect(isLightWallet).to.be.true;
+    });
+  });
+
+  describe("selectIsExternalWallet", () => {
+    it("should return true for Ledger wallet", () => {
+      const state: IWeb3State = {
+        connected: true,
+        isUnlocked: false,
+        wallet: getDummyLedgerWalletMetadata(),
+      };
+
+      const isExternalWallet = selectIsExternalWallet(state);
+
+      expect(isExternalWallet).to.be.true;
+    });
+
+    it("should return true for Browser wallet", () => {
+      const state: IWeb3State = {
+        connected: true,
+        isUnlocked: false,
+        wallet: getDummyBrowserWalletMetadata(),
+      };
+
+      const isExternalWallet = selectIsExternalWallet(state);
+
+      expect(isExternalWallet).to.be.true;
+    });
+
+    it("should return false for Light wallet", () => {
+      const state: IWeb3State = {
+        connected: true,
+        isUnlocked: false,
+        wallet: getDummyLightWalletMetadata(),
+      };
+
+      const isExternalWallet = selectIsExternalWallet(state);
+
+      expect(isExternalWallet).to.be.false;
     });
   });
 

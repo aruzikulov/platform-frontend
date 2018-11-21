@@ -15,4 +15,6 @@ export const investorEtoTicketActions = {
     createAction("INVESTOR_TICKET_SET", { etoId, ticket }),
   setCalculatedContribution: (etoId: string, contribution: ICalculatedContribution) =>
     createAction("INVESTOR_TICKET_SET_CALCULATED_CONTRIBUTION", { etoId, contribution }),
+  setInitialCalculatedContribution: (etoId: string, contribution: ICalculatedContribution) =>
+    createAction("INVESTOR_TICKET_SET_INITIAL_CALCULATED_CONTRIBUTION", { etoId, contribution }),
 };

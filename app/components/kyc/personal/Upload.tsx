@@ -11,7 +11,7 @@ import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers"
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button } from "../../shared/buttons";
 import { HorizontalLine } from "../../shared/HorizontalLine";
-import { individualRequirements, MultiFileUpload } from "../../shared/MultiFileUpload";
+import { MultiFileUpload } from "../../shared/MultiFileUpload";
 import { KycPanel } from "../KycPanel";
 import { kycRoutes } from "../routes";
 
@@ -55,6 +55,7 @@ export const KYCUploadComponent = ({
 }: IProps & IStateProps & IDispatchProps & IIntlProps) => {
   return (
     <KycPanel
+      title={<FormattedMessage id="kyc.panel.individual-verification" />}
       steps={personalSteps}
       description={formatIntlMessage("kyc.personal.uploadId.description")}
       backLink={kycRoutes.individualStart}
@@ -66,7 +67,6 @@ export const KYCUploadComponent = ({
         files={props.files}
         fileUploading={props.fileUploading}
         data-test-id="kyc-personal-upload-dropzone"
-        requirements={individualRequirements}
         layout="vertical"
       />
 
@@ -77,7 +77,7 @@ export const KYCUploadComponent = ({
           disabled={!props.files || props.files.length === 0}
           data-test-id="kyc-personal-upload-submit"
         >
-          <FormattedMessage id="form.button.submit" />
+          <FormattedMessage id="form.button.submit-request" />
         </Button>
       </div>
     </KycPanel>

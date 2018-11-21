@@ -37,14 +37,8 @@ const AccessLightWalletForm = (formikBag: FormikProps<IFormValues> & IProps) => 
         disabled={!formikBag.values.password}
         data-test-id="access-light-wallet-confirm"
       >
-        {" "}
         <FormattedMessage id="modal.light-wallet.button.accept" />
       </Button>
-      {formikBag.onCancel && (
-        <Button layout={EButtonLayout.SECONDARY} onClick={formikBag.onCancel}>
-          <FormattedMessage id="modal.light-wallet.button.reject" />
-        </Button>
-      )}
     </div>
   </Form>
 );
@@ -57,14 +51,11 @@ export const AccessLightWalletPrompt: React.SFC<IProps> = props =>
   props.isUnlocked ? (
     <div className="mt-3">
       <Button
-        onClick={() => props.onAccept()}
+        onClick={props.onAccept}
         layout={EButtonLayout.SECONDARY}
         data-test-id="access-light-wallet-prompt-accept-button"
       >
         <FormattedMessage id="modal.light-wallet.button.accept" />
-      </Button>
-      <Button layout={EButtonLayout.SECONDARY} onClick={props.onCancel}>
-        <FormattedMessage id="modal.light-wallet.button.reject" />
       </Button>
     </div>
   ) : (

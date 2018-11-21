@@ -44,6 +44,7 @@ export const investmentFlowInitialState: IInvestmentFlowState = {
   investmentType: EInvestmentType.InvestmentWallet,
   activeInvestmentTypes: [],
   isValidatedInput: false,
+  bankTransferGasStipend: true,
 };
 
 export const investmentFlowReducer: AppReducer<IInvestmentFlowState> = (

@@ -14,15 +14,6 @@ const files = [
   },
 ];
 
-const IndividualRequirements = [
-  "Colored photo",
-  "Full name",
-  "Date of birth",
-  "Valid expiration date",
-  "Official document number",
-  "High quality, coloured .png, .jpg or pdf files only",
-];
-
 storiesOf("Upload/MultiFileUpload", module)
   .add("individual", () => (
     <MultiFileUpload
@@ -30,7 +21,6 @@ storiesOf("Upload/MultiFileUpload", module)
       acceptedFiles="image/*,application/pdf"
       onDropFile={() => {}}
       files={[]}
-      requirements={IndividualRequirements}
       fileUploading={false}
       layout="vertical"
     />
@@ -42,7 +32,6 @@ storiesOf("Upload/MultiFileUpload", module)
       onDropFile={() => {}}
       files={[]}
       layout="vertical"
-      requirements={IndividualRequirements}
       fileUploading={false}
     />
   ))
@@ -53,7 +42,6 @@ storiesOf("Upload/MultiFileUpload", module)
       onDropFile={() => {}}
       files={[]}
       layout="horizontal"
-      requirements={IndividualRequirements}
       fileUploading={false}
     />
   ))
@@ -63,7 +51,6 @@ storiesOf("Upload/MultiFileUpload", module)
       acceptedFiles="image/*,application/pdf"
       onDropFile={() => {}}
       files={[]}
-      requirements={IndividualRequirements}
       fileUploading={true}
     />
   ))
@@ -73,7 +60,6 @@ storiesOf("Upload/MultiFileUpload", module)
       acceptedFiles="image/*,application/pdf"
       onDropFile={() => {}}
       files={files}
-      requirements={IndividualRequirements}
       fileUploading={false}
     />
   ));

@@ -11,7 +11,6 @@ export const kycRoutes = {
   individualDocumentVerification: parentRoutePath + "/personal/document-verification",
 
   // company
-  businessStart: parentRoutePath + "/business/start",
   legalRepresentative: parentRoutePath + "/business/legal-representative",
   businessData: parentRoutePath + "/business/data",
   beneficialOwners: parentRoutePath + "/business/beneficial-owners",

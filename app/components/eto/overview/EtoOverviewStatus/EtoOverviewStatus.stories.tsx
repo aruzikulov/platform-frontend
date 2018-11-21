@@ -39,7 +39,12 @@ storiesOf("ETO/EtoOverviewStatus", module)
   )
   .add("default", () => (
     <EtoWidgetContext.Provider value={eto.previewCode}>
-      <EtoOverviewStatusLayout eto={eto} isAuthorized={true} isEligibleToPreEto={true} />
+      <EtoOverviewStatusLayout
+        eto={eto}
+        isAuthorized={true}
+        isEligibleToPreEto={true}
+        maxCapExceeded={false}
+      />
     </EtoWidgetContext.Provider>
   ))
   .add("with whitelist discount", () => (
@@ -49,6 +54,7 @@ storiesOf("ETO/EtoOverviewStatus", module)
         isAuthorized={true}
         isEligibleToPreEto={true}
         isPreEto={true}
+        maxCapExceeded={false}
       />
     </EtoWidgetContext.Provider>
   ))
@@ -58,6 +64,7 @@ storiesOf("ETO/EtoOverviewStatus", module)
         eto={{ ...eto, publicDiscountFraction: 0 }}
         isAuthorized={true}
         isEligibleToPreEto={true}
+        maxCapExceeded={false}
       />
     </EtoWidgetContext.Provider>
   ));

@@ -1,13 +1,14 @@
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
+import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "redux";
 
 import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
-
 import { injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { KycPanel } from "../KycPanel";
 import { Panels } from "../shared/Panels";
+
+import * as styles from "../KycPanel.module.scss";
 
 export const personalSteps = [
   {
@@ -36,6 +37,9 @@ interface IProps {
 export const KYCStartComponent = injectIntlHelpers<IProps>(
   ({ intl: { formatIntlMessage }, ...props }) => (
     <KycPanel steps={personalSteps} title={formatIntlMessage("kyc.start.title")} isMaxWidth={true}>
+      <p className={styles.textFieldNarrow}>
+        <FormattedHTMLMessage tagName="span" id="kyc.start.description" />
+      </p>
       <Panels
         panels={[
           {
@@ -60,7 +64,7 @@ export const KYCStart = compose<React.SFC>(
   appConnect<IProps>({
     dispatchToProps: dispatch => ({
       goToPerson: () => dispatch(actions.routing.goToKYCIndividualStart()),
-      goToCompany: () => dispatch(actions.routing.goToKYCBusinessStart()),
+      goToCompany: () => dispatch(actions.routing.goToKYCBusinessData()),
     }),
   }),
 )(KYCStartComponent);

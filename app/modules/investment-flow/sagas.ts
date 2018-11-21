@@ -186,7 +186,10 @@ function* validateAndCalculateInputs({ contractsService }: TGlobalDependencies):
     const etoContract: ETOCommitment = yield contractsService.getETOCommitmentContract(eto.etoId);
     if (etoContract) {
       const isICBM = selectIsICBMInvestment(state);
-      yield neuCall(loadComputedContributionFromContract, eto, value, isICBM);
+      const contribution = yield neuCall(loadComputedContributionFromContract, eto, value, isICBM);
+
+      yield put(actions.investorEtoTicket.setCalculatedContribution(eto.etoId, contribution));
+
       state = yield select();
       yield put(actions.investmentFlow.setErrorState(validateInvestment(state)));
 

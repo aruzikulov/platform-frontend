@@ -9,7 +9,10 @@ import { CounterWidget, TagsWidget } from ".";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
 import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { selectIsAuthorized } from "../../../../modules/auth/selectors";
-import { selectIsEligibleToPreEto } from "../../../../modules/investor-tickets/selectors";
+import {
+  selectInitialMaxCapExceeded,
+  selectIsEligibleToPreEto,
+} from "../../../../modules/investor-tickets/selectors";
 import { selectEtoOnChainStateById } from "../../../../modules/public-etos/selectors";
 import {
   EETOStateOnChain,
@@ -17,6 +20,7 @@ import {
 } from "../../../../modules/public-etos/types";
 import { appConnect } from "../../../../store";
 import { CommonHtmlProps } from "../../../../types";
+import { formatFlexiPrecision } from "../../../../utils/Number.utils";
 import { withParams } from "../../../../utils/withParams";
 import { appRoutes } from "../../../appRoutes";
 import { ETOState } from "../../../shared/ETOState";
@@ -27,6 +31,7 @@ import { EtoWidgetContext } from "../../EtoWidgetView";
 import { InvestmentAmount } from "../../shared/InvestmentAmount";
 import { CampaigningActivatedWidget } from "./CampaigningWidget";
 import { ClaimWidget, RefundWidget } from "./ClaimRefundWidget";
+import { EtoMaxCapExceededWidget } from "./EtoMaxCapExceeded";
 import { InvestmentWidget } from "./InvestmentWidget";
 import { RegisterNowWidget } from "./RegisterNowWidget";
 import { TokenSymbolWidget } from "./TokenSymbolWidget";
@@ -45,6 +50,7 @@ interface IStateProps {
   isAuthorized: boolean;
   isEligibleToPreEto: boolean;
   isPreEto?: boolean;
+  maxCapExceeded: boolean;
 }
 
 const StatusOfEto: React.SFC<IStatusOfEto> = ({ previewCode }) => {
@@ -73,9 +79,17 @@ const EtoStatusManager = ({
   eto,
   isAuthorized,
   isEligibleToPreEto,
+  maxCapExceeded,
 }: IExternalProps & IStateProps) => {
   // It's possible for contract to be undefined if eto is not on chain yet
   const timedState = eto.contract ? eto.contract.timedState : EETOStateOnChain.Setup;
+  const isEtoActive =
+    (isEligibleToPreEto && timedState === EETOStateOnChain.Whitelist) ||
+    timedState === EETOStateOnChain.Public;
+
+  if (maxCapExceeded && isEtoActive) {
+    return <EtoMaxCapExceededWidget eto={eto} />;
+  }
 
   switch (timedState) {
     case EETOStateOnChain.Setup: {
@@ -149,6 +163,7 @@ const EtoOverviewStatusLayout: React.SFC<IExternalProps & CommonHtmlProps & ISta
   isAuthorized,
   isEligibleToPreEto,
   isPreEto,
+  maxCapExceeded,
 }) => {
   const smartContractOnChain = !!eto.contract;
 
@@ -251,10 +266,7 @@ const EtoOverviewStatusLayout: React.SFC<IExternalProps & CommonHtmlProps & ISta
                 </span>
                 <span className={styles.value}>
                   <Money
-                    value={tokenPrice.toLocaleString(undefined, {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 8,
-                    })}
+                    value={formatFlexiPrecision(tokenPrice, 8)}
                     currency="eur"
                     format={EMoneyFormat.FLOAT}
                     currencySymbol={ECurrencySymbol.SYMBOL}
@@ -284,6 +296,7 @@ const EtoOverviewStatusLayout: React.SFC<IExternalProps & CommonHtmlProps & ISta
                 eto={eto}
                 isAuthorized={isAuthorized}
                 isEligibleToPreEto={isEligibleToPreEto}
+                maxCapExceeded={maxCapExceeded}
               />
             </div>
           </div>
@@ -303,6 +316,7 @@ const EtoOverviewStatus = compose<
       isAuthorized: selectIsAuthorized(state.auth),
       isEligibleToPreEto: selectIsEligibleToPreEto(props.eto.etoId, state),
       isPreEto: selectEtoOnChainStateById(state, props.eto.etoId) === EETOStateOnChain.Whitelist,
+      maxCapExceeded: selectInitialMaxCapExceeded(props.eto.etoId, state),
     }),
   }),
 )(EtoOverviewStatusLayout);

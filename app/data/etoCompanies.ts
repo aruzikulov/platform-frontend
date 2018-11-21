@@ -37,7 +37,7 @@ export type EtoData = { data: IEtoOfferingProps };
 export const etoCompaniesCards: Array<EtoData> = [
   {
     data: {
-      roundName: "series b",
+      roundName: "series a+",
       tags: [
         {
           text: "blockchain",

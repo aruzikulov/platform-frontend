@@ -27,13 +27,23 @@
 
 .content {
   padding-top: px-to-rem(72px);
+  display: flex;
+  flex-direction: column;
 }
 
 .content-narrow {
   align-self: center;
+  flex-direction: column;
   width: 100%;
   max-width: px-to-rem(630px);
   padding-top: px-to-rem(72px);
+  display: flex;
+}
+
+.text-field-narrow {
+  align-self: center;
+  width: 100%;
+  max-width: px-to-rem(630px);
 }
 
 .no-top-padding {

@@ -158,14 +158,6 @@ export class KYCBeneficialOwnerComponent extends React.Component<IProps> {
           uploadType="individual"
           acceptedFiles="image/*,application/pdf"
           layout="vertical"
-          requirements={[
-            "Colored photo",
-            "Full name",
-            "Date of birth",
-            "Valid expiration date",
-            "Official document number",
-            "High quality, coloured .png, .jpg or .pdf files only",
-          ]}
           onDropFile={this.props.onDropFile}
           files={this.props.files}
           fileUploading={this.props.fileUploading}

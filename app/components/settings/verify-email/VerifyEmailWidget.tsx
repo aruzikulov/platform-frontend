@@ -177,9 +177,7 @@ const UnVerifiedUser: React.SFC<{
       <>
         <Col xs={12} className="d-flex justify-content-center">
           <p className="mb-0 text-center">
-            <b>
-              <FormattedMessage id="settings.verify-email-widget.unverified-email" />:{" "}
-            </b>{" "}
+            <FormattedMessage id="settings.verify-email-widget.unverified-email" />:{" "}
             {unverifiedEmail}
           </p>
         </Col>

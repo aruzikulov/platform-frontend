@@ -11,7 +11,6 @@ import { KYCBeneficialOwnerComponent } from "./business/BeneficialOwner";
 import { KYCBeneficialOwnersComponent } from "./business/BeneficialOwners";
 import { KycBusinessDataComponent } from "./business/BusinessData";
 import { KycLegalRepresentativeComponent } from "./business/LegalRepresentative";
-import { KycBusinessStartComponent } from "./business/Start";
 import { KycPersonalDocumentVerificationComponent } from "./personal/DocumentVerification";
 import { KYCPersonalStartComponent } from "./personal/Start";
 import { KYCUploadComponent } from "./personal/Upload";
@@ -70,14 +69,6 @@ storiesOf("KYC/process", module).add("personal/uploads", () => {
     intl: dummyIntl,
   };
   return <KYCUploadComponent {...props} />;
-});
-
-storiesOf("KYC/process", module).add("business/start", () => {
-  const props = {
-    loading: false,
-    setBusinessType: () => {},
-  };
-  return <KycBusinessStartComponent {...props} />;
 });
 
 storiesOf("KYC/process", module).add("business/legalRepresentative", () => {
