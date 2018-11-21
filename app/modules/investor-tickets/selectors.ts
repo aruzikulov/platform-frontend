@@ -3,7 +3,7 @@ import { IAppState } from "../../store";
 import { selectPublicEtos } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/types";
 import { selectLockedWalletConnected } from "../wallet/selectors";
-import { TETOWithInvestorTicket } from "./types";
+import { ICalculatedContribution, TETOWithInvestorTicket } from "./types";
 
 const selectInvestorTicketsState = (state: IAppState) => state.investorTickets;
 
@@ -68,7 +68,27 @@ export const selectMyPendingAssets = (state: IAppState): TETOWithInvestorTicket[
 export const selectCalculatedContribution = (etoId: string, state: IAppState) => {
   const investorState = selectInvestorTicketsState(state);
 
-  return investorState.calculatedContributions[etoId];
+  return (
+    investorState.calculatedContributions[etoId] ||
+    selectInitialCalculatedContribution(etoId, state)
+  );
+};
+
+export const selectInitialCalculatedContribution = (
+  etoId: string,
+  state: IAppState,
+): ICalculatedContribution | undefined => {
+  const investorState = selectInvestorTicketsState(state);
+
+  return investorState.initialCalculatedContributions[etoId];
+};
+
+export const selectInitialMaxCapExceeded = (etoId: string, state: IAppState): boolean => {
+  const initialCalculatedContribution = selectInitialCalculatedContribution(etoId, state);
+
+  if (!initialCalculatedContribution) return false;
+
+  return initialCalculatedContribution.maxCapExceeded;
 };
 
 export const selectEquityTokenCountByEtoId = (etoId: string, state: IAppState) => {

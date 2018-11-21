@@ -1,5 +1,7 @@
 import { cloneDeep, flow, get, set } from "lodash";
 
+import { formatFlexiPrecision } from "../../utils/Number.utils";
+
 export interface ICompoundField {
   [x: string]: string | number | undefined;
 }
@@ -97,12 +99,7 @@ export const parseStringToInteger = () => (data: string | number | undefined) =>
 
 export const convertToPrecision = (precision: number) => (data: number) => {
   if (data && !Number.isNaN(data)) {
-    return parseFloat(
-      data.toLocaleString(undefined, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: precision,
-      }),
-    );
+    return parseFloat(formatFlexiPrecision(data, precision));
   } else {
     return undefined;
   }

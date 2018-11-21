@@ -43,27 +43,29 @@ const InvestmentWidgetLayout: React.SFC<TInvestWidgetProps> = ({
 
   return (
     <div className={styles.investmentWidget}>
-      <div className={styles.header}>
-        <div>
-          <Money
-            value={eto.contract!.totalInvestment.etherTokenBalance}
-            currency="eth"
-            className={styles.amount}
-          />
-          <Money
-            value={eto.contract!.totalInvestment.euroTokenBalance}
-            currency="eur_token"
-            className={styles.amount}
-          />
+      <div>
+        <div className={styles.header}>
+          <div>
+            <Money
+              value={eto.contract!.totalInvestment.etherTokenBalance}
+              currency="eth"
+              className={styles.amount}
+            />
+            <Money
+              value={eto.contract!.totalInvestment.euroTokenBalance}
+              currency="eur_token"
+              className={styles.amount}
+            />
+          </div>
+          <div>
+            <FormattedMessage
+              id="shared-component.eto-overview.investors"
+              values={{ totalInvestors }}
+            />
+          </div>
         </div>
-        <div>
-          <FormattedMessage
-            id="shared-component.eto-overview.investors"
-            values={{ totalInvestors }}
-          />
-        </div>
+        <InvestmentProgress eto={eto} />
       </div>
-      <InvestmentProgress eto={eto} />
       <EtoWidgetContext.Consumer>
         {previewCode =>
           (isInvestor || previewCode) && (

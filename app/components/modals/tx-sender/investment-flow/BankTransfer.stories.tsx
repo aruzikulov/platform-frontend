@@ -1,7 +1,17 @@
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
+
+import { TEtoSpecsData } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { BankTransferDetailsComponent } from "./BankTransferDetails";
 import { BankTransferSummaryComponent } from "./BankTransferSummary";
+
+// tslint:disable-next-line:no-object-literal-type-assertion
+const eto = {
+  etoId: "0xfufu",
+  preMoneyValuationEur: 10000,
+  existingCompanyShares: 10,
+  equityTokensPerShare: 10,
+} as TEtoSpecsData;
 
 const detailsData = {
   accountName: "fufu name",
@@ -16,11 +26,11 @@ const detailsData = {
 };
 
 const summaryData = {
+  eto,
   companyName: "fufu company",
   investmentEur: "10000000000000000000000",
   equityTokens: "1234",
   estimatedReward: "3456123412341231234123412344",
-  etoAddress: "0xfufu",
   onAccept: () => {},
   downloadAgreement: () => {},
 };
