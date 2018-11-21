@@ -28,6 +28,9 @@ export const UnlockedWallet: React.SFC<IUnlockedWallet> = ({
 }) => {
   return (
     <WalletBalanceContainer {...{ className, headerText }}>
+      <section className={styles.message}>
+        <FormattedMessage id={"shared-component.wallet-balance.explanation"} />
+      </section>
       <section>
         <h4 className={styles.title}>
           <FormattedMessage id="shared-component.wallet-balance.title.account-address" />

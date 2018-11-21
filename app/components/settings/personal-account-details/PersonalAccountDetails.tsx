@@ -1,9 +1,11 @@
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
+import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 import { compose } from "redux";
 
+import { actions } from "../../../modules/actions";
 import { appConnect } from "../../../store";
 import { TTranslatedString } from "../../../types";
+import { onEnterAction } from "../../../utils/OnEnterAction";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { Panel } from "../../shared/Panel";
 import { ResponsiveImage } from "../../shared/ResponsiveImage";
@@ -102,6 +104,13 @@ class AccountDetailsComponent extends React.Component<IStateProps, IOwnState> {
                 />
               </>
             )}
+            <div className={styles.explanation}>
+              <FormattedHTMLMessage
+                tagName="span"
+                id="settings.account-details.explanation"
+                values={{ href: "https://support.neufund.org/support/home" }}
+              />
+            </div>
           </div>
           <div>
             <Button layout={EButtonLayout.SECONDARY} onClick={this.toggleDataVisibility}>
@@ -123,5 +132,8 @@ export const PersonalAccountDetails = compose<React.SFC>(
     stateToProps: s => ({
       personalData: s.kyc.individualData || {},
     }),
+  }),
+  onEnterAction({
+    actionCreator: dispatch => dispatch(actions.kyc.kycLoadIndividualData()),
   }),
 )(AccountDetailsComponent);

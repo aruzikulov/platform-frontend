@@ -4,13 +4,23 @@ import { ICalculatedContribution, IInvestorTicket } from "./types";
 
 export const convertToCalculatedContribution = ([
   isWhitelisted,
+  isEligible,
   minTicketEurUlps,
   maxTicketEurUlps,
   equityTokenInt,
   neuRewardUlps,
   maxCapExceeded,
-]: [boolean, BigNumber, BigNumber, BigNumber, BigNumber, boolean]): ICalculatedContribution => ({
+]: [
+  boolean,
+  boolean,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  boolean
+]): ICalculatedContribution => ({
   isWhitelisted,
+  isEligible,
   minTicketEurUlps,
   maxTicketEurUlps,
   equityTokenInt,

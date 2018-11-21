@@ -4,6 +4,7 @@ import { Container } from "reactstrap";
 
 import { ETxSenderType } from "../../../../modules/tx/interfaces";
 import { ITxPendingProps, TxPending } from "./TxPending";
+import { WatchPendingTxs } from "./WatchPeningTxs";
 
 const txData: ITxPendingProps = {
   blockId: 4623487932,
@@ -11,8 +12,14 @@ const txData: ITxPendingProps = {
   type: ETxSenderType.WITHDRAW,
 };
 
-storiesOf("TxPending", module).add("default", () => (
-  <Container>
-    <TxPending {...txData} />
-  </Container>
-));
+storiesOf("TxPending", module)
+  .add("default", () => (
+    <Container>
+      <TxPending {...txData} />
+    </Container>
+  ))
+  .add("watching pending", () => (
+    <Container>
+      <WatchPendingTxs {...txData} />
+    </Container>
+  ));

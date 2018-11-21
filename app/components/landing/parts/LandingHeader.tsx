@@ -24,6 +24,9 @@ import * as foundersbankImage3x from "../../../assets/img/landing/foundersbank@3
 import * as myswooopImage from "../../../assets/img/landing/myswooop.png";
 import * as myswooopImage2x from "../../../assets/img/landing/myswooop@2x.png";
 import * as myswooopImage3x from "../../../assets/img/landing/myswooop@3x.png";
+import * as neufundImage from "../../../assets/img/landing/neufund.png";
+import * as neufundImage2x from "../../../assets/img/landing/neufund@2x.png";
+import * as neufundImage3x from "../../../assets/img/landing/neufund@3x.png";
 import * as unitiImage from "../../../assets/img/landing/uniti.png";
 import * as unitiImage2x from "../../../assets/img/landing/uniti@2x.png";
 import * as unitiImage3x from "../../../assets/img/landing/uniti@3x.png";
@@ -48,7 +51,7 @@ export const LandingHeader: React.SFC = () => (
             </p>
             <p className={styles.heroDescription}>The future of fundraising is launching now.</p>
 
-            <JoinCta />
+            <JoinCta data-test-id="landing-header-join-cta" />
           </div>
         </Col>
         <Col lg={6} className="d-none d-lg-block">
@@ -61,40 +64,46 @@ export const LandingHeader: React.SFC = () => (
 
 const CompanyImages: React.SFC = () => (
   <div className={styles.images}>
-    <a href="#eto-card-2" className={styles.companyImage}>
+    <a href="#eto-card-3" className={styles.companyImage}>
       <ResponsiveImage
         srcSet={{ "1x": myswooopImage, "2x": myswooopImage2x, "3x": myswooopImage3x }}
         alt="MySwoop"
       />
     </a>
     {process.env.NF_FOUNDERS_BANK_VISIBLE ? (
-      <a href="#eto-card-6" className={styles.companyImage}>
+      <a href="#eto-card-7" className={styles.companyImage}>
         <ResponsiveImage
           srcSet={{ "1x": foundersbankImage, "2x": foundersbankImage2x, "3x": foundersbankImage3x }}
           alt="Founders bank"
         />
       </a>
     ) : (
-      <a href="#eto-card-4" className={styles.companyImage}>
+      <a href="#eto-card-5" className={styles.companyImage}>
         <ResponsiveImage
           srcSet={{ "1x": emfluxImage, "2x": emfluxImage2x, "3x": emfluxImage3x }}
           alt="Emflux"
         />
       </a>
     )}
-    <a href="#eto-card-5" className={styles.companyImage}>
+    <a href="#eto-card-6" className={styles.companyImage}>
       <ResponsiveImage
         srcSet={{ "1x": blockstateImage, "2x": blockstateImage2x, "3x": blockstateImage3x }}
         alt="Blockstate"
       />
     </a>
-    <a href="#eto-card-0" className={styles.companyImage}>
+    <a href="#eto-card-1" className={styles.companyImage}>
       <ResponsiveImage srcSet={{ "1x": brilleImage, "2x": brilleImage2x }} alt="Brille24" />
     </a>
-    <a href="#eto-card-3" className={styles.companyImage}>
+    <a href="#eto-card-4" className={styles.companyImage}>
       <ResponsiveImage srcSet={{ "1x": btImage, "2x": btImage2x, "3x": btImage3x }} alt="BT" />
     </a>
-    <a href="#eto-card-1" className={styles.companyImage}>
+    <a href="#eto-card-0" className={styles.companyImage}>
+      <ResponsiveImage
+        srcSet={{ "1x": neufundImage, "2x": neufundImage2x, "3x": neufundImage3x }}
+        alt="Uniti"
+      />
+    </a>
+    <a href="#eto-card-2" className={styles.companyImage}>
       <ResponsiveImage
         srcSet={{ "1x": unitiImage, "2x": unitiImage2x, "3x": unitiImage3x }}
         alt="Uniti"

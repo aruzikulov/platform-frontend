@@ -43,9 +43,9 @@ interface IExternalProps {
 class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps & TFormikConnect> {
   name = this.props.name;
 
-  setAllFieldsTouched = (event: any, isTouched?: boolean) => {
-    if (event.target.value !== undefined) {
-      return Object.keys(get(this.props.formik.values, this.name)).map(key => {
+  setAllFieldsTouched = (_: Event, isTouched: boolean = true) => {
+    if (this.props.validationSchema) {
+      return Object.keys(this.props.validationSchema.fields).map(key => {
         this.props.formik.setFieldTouched(`${this.name}.${key}`, isTouched);
       });
     }
@@ -95,7 +95,7 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
             disabled={disabled}
             name={`${name}.${formFieldKeys[0]}`}
             placeholder={keyPlaceholder}
-            onBlur={this.setAllFieldsTouched}
+            customOnBlur={this.setAllFieldsTouched}
             customValidation={this.compoundFieldValidation(
               formFieldKeys[0],
               `${name}.${formFieldKeys[1]}`,
@@ -108,7 +108,7 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
               prefix={prefix}
               name={`${name}.${formFieldKeys[1]}`}
               ratio={transformRatio}
-              onBlur={this.setAllFieldsTouched}
+              customOnBlur={this.setAllFieldsTouched}
               placeholder={valuePlaceholder}
               customValidation={this.compoundFieldValidation(
                 formFieldKeys[1],
@@ -121,7 +121,7 @@ class KeyValueCompoundFieldBase extends React.Component<IProps & IInternalProps 
               min="0"
               prefix={prefix}
               name={`${name}.${formFieldKeys[1]}`}
-              onBlur={this.setAllFieldsTouched}
+              customOnBlur={this.setAllFieldsTouched}
               placeholder={valuePlaceholder}
               customValidation={this.compoundFieldValidation(
                 formFieldKeys[1],

@@ -10,7 +10,7 @@ import { SignatureAuthApi } from "../lib/api/SignatureAuthApi";
 import { UsersApi } from "../lib/api/users/UsersApi";
 import { VaultApi } from "../lib/api/vault/VaultApi";
 import { cryptoRandomString, CryptoRandomString } from "../lib/dependencies/cryptoRandomString";
-import { DevConsoleLogger, ILogger, noopLogger } from "../lib/dependencies/Logger";
+import { ILogger, resolveLogger } from "../lib/dependencies/Logger";
 import { NotificationCenter } from "../lib/dependencies/NotificationCenter";
 import { Storage } from "../lib/persistence/Storage";
 import { BrowserWalletConnector } from "../lib/web3/BrowserWallet";
@@ -38,7 +38,7 @@ import { ObjectStorage } from "../lib/persistence/ObjectStorage";
 import { TWalletMetadata } from "../lib/persistence/WalletMetadataObjectStorage";
 import { WalletStorage } from "../lib/persistence/WalletStorage";
 import { ContractsService } from "../lib/web3/ContractsService";
-import { IEthereumNetworkConfig } from "./../lib/web3/types";
+import { IEthereumNetworkConfig } from "../lib/web3/types";
 import { symbols } from "./symbols";
 
 export type NavigateTo = (path: string) => void;
@@ -60,12 +60,11 @@ export function setupBindings(config: IConfig): Container {
     .toConstantValue(config.ethereumNetwork);
   container.bind<IConfig>(symbols.config).toConstantValue(config);
 
-  // @todo different logger could be injected to each class with additional info like name of the file etc.
-  if (process.env.NODE_ENV === "production") {
-    container.bind(symbols.logger).toConstantValue(noopLogger);
-  } else {
-    container.bind<ILogger>(symbols.logger).toConstantValue(new DevConsoleLogger());
-  }
+  container
+    .bind(symbols.logger)
+    .toDynamicValue(resolveLogger)
+    .inSingletonScope();
+
   // classes
   container
     .bind<IHttpClient>(symbols.jsonHttpClient)

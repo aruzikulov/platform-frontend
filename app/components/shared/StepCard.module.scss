@@ -1,0 +1,11 @@
+.step-card {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  align-self: start;
+
+  span {
+    text-align: center;
+  }
+}

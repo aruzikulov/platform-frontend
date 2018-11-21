@@ -41,7 +41,7 @@ export class UsersApi {
   ) {}
 
   public async createAccount(newUser?: IUserInput): Promise<IUser> {
-    this.logger.info("Creating account for email: ", newUser && newUser.newEmail);
+    this.logger.info("Creating account");
     // Backend expects walletType and walletSubType values as lower case
     const modifiedNewUser = newUser
       ? {

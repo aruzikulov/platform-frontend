@@ -15,7 +15,7 @@
   grid-template: 1fr 1fr / 1fr;
   grid-gap: .5rem;
   width: 100%;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 @media (min-width: 730px) {

@@ -1,0 +1,6 @@
+{
+  "app/**/*.{ts,tsx,js}": ["tslint --project . --format stylish --fix", "git add"],
+  "app/**/*.spec.{ts,tsx}": ["tslint --project . --format stylish --fix --config ./tslint.spec.json", "git add"],
+  "**/*.{ts,tsx,js,json,md,gql}": ["prettier --write", "git add"],
+  "**/*.{sass,scss,css}": ["yarn sasslint"]
+}

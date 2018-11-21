@@ -298,7 +298,6 @@ class EtoDashboardComponent extends React.Component<IProps> {
 export const EtoDashboard = compose<React.SFC>(
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
-      kycStatus: selectKycRequestStatus(s.kyc),
       isEmailVerified: selectIsUserEmailVerified(s.auth),
       isLightWallet: selectIsLightWallet(s.web3),
       verifiedEmail: selectVerifiedUserEmail(s.auth),
@@ -306,7 +305,7 @@ export const EtoDashboard = compose<React.SFC>(
       shouldEtoDataLoad: selectShouldEtoDataLoad(s),
       requestStatus: selectKycRequestStatus(s.kyc),
       etoState: selectIssuerEtoState(s),
-      previewCode: selectIssuerEtoPreviewCode(s.etoFlow),
+      previewCode: selectIssuerEtoPreviewCode(s),
       canEnableBookbuilding: selectCanEnableBookBuilding(s),
       isTermSheetSubmitted: selectIsTermSheetSubmitted(s),
       isOfferingDocumentSubmitted: selectIsOfferingDocumentSubmitted(s),

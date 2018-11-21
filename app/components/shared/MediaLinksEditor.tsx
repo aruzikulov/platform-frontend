@@ -1,13 +1,13 @@
 import { connect, FieldArray } from "formik";
 import * as React from "react";
-import { Col, Row } from "reactstrap";
 
 import { CommonHtmlProps, TFormikConnect } from "../../types";
-import { ButtonIcon } from "./buttons";
+import { ButtonIcon, ButtonIconPlaceholder } from "./buttons";
 import { FormField } from "./forms";
 
 import * as closeIcon from "../../assets/img/inline_icons/round_close.svg";
 import * as plusIcon from "../../assets/img/inline_icons/round_plus.svg";
+import * as styles from "./MediaLinksEditor.module.scss";
 
 interface ISingleMediaLinkFieldInternalProps {
   isLastElement?: boolean;
@@ -34,11 +34,13 @@ const SingleMediaLinkField: React.SFC<
   } = props;
 
   return (
-    <Row className="my-4">
-      <Col xs={1}>
-        {isLastElement && <ButtonIcon className="mt-2" svgIcon={plusIcon} onClick={onAddClick} />}
-      </Col>
-      <Col xs={10}>
+    <div className={styles.singleMediaLinkFieldWrapper}>
+      {isLastElement ? (
+        <ButtonIcon className="mt-2" svgIcon={plusIcon} onClick={onAddClick} />
+      ) : (
+        <ButtonIconPlaceholder />
+      )}
+      <div className={isFirstElement ? styles.singleMediaLinkFieldLong : null}>
         {blankField &&
           Object.keys(blankField).map(fieldName => {
             const isFieldWithCharactersLimit = fieldName === "title";
@@ -58,15 +60,11 @@ const SingleMediaLinkField: React.SFC<
               />
             );
           })}
-      </Col>
+      </div>
       {!isFirstElement && (
-        <Col xs={1}>
-          <span className="pt-2">
-            <ButtonIcon className="mt-2" svgIcon={closeIcon} onClick={onRemoveClick} />
-          </span>
-        </Col>
+        <ButtonIcon className="mt-2" svgIcon={closeIcon} onClick={onRemoveClick} />
       )}
-    </Row>
+    </div>
   );
 };
 

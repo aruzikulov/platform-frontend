@@ -6,6 +6,7 @@ import { actions } from "../../../../modules/actions";
 import { selectTxGasCostEth, selectTxSummaryData } from "../../../../modules/tx/sender/selectors";
 import { appConnect } from "../../../../store";
 import { Button } from "../../../shared/buttons";
+import { DocumentTemplateButton } from "../../../shared/DocumentLink";
 import { Heading } from "../../../shared/modals/Heading";
 import { Money } from "../../../shared/Money";
 import { InfoList } from "../shared/InfoList";
@@ -16,6 +17,8 @@ export const WithdrawSummaryComponent: React.SFC<TSummaryComponentProps> = ({
   txData,
   txCost,
   onAccept,
+  downloadICBMAgreement,
+  upgrade,
 }) => (
   <Container>
     <Row className="mb-4">
@@ -43,7 +46,17 @@ export const WithdrawSummaryComponent: React.SFC<TSummaryComponentProps> = ({
         </InfoList>
       </Col>
     </Row>
-
+    {downloadICBMAgreement &&
+      upgrade && (
+        <Row>
+          <Col className="my-3 text-center">
+            <DocumentTemplateButton
+              onClick={() => downloadICBMAgreement()}
+              title={<FormattedMessage id="wallet.icbm.reservation-agreement" />}
+            />
+          </Col>
+        </Row>
+      )}
     <Row>
       <Col className="text-center">
         <Button
@@ -65,5 +78,6 @@ export const WithdrawSummary = appConnect<ITxSummaryStateProps, ITxSummaryDispat
   }),
   dispatchToProps: d => ({
     onAccept: () => d(actions.txSender.txSenderAccept()),
+    downloadICBMAgreement: () => d(actions.icbmWalletBalanceModal.downloadICBMWalletAgreement()),
   }),
 })(WithdrawSummaryComponent);

@@ -55,7 +55,8 @@ const PlaceholderTableRow: React.SFC<IPlaceholderTableRow> = ({ children, number
 );
 
 const NewTable: React.SFC<TProps> = ({ titles, children, className, placeholder, keepRhythm }) => {
-  const isEmpty = React.Children.count(children) === 0;
+  // We have to filter empty nodes in case of any conditional rendering inside table
+  const isEmpty = React.Children.toArray(children).filter(React.isValidElement).length === 0;
 
   return (
     <Panel>

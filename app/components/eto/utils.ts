@@ -39,23 +39,36 @@ const convertField = (input: any, f: any) => {
   }
 };
 
-export const convertInArray = (conversionSpec: any) => (arr: any[]) => {
-  return arr.map(element => {
-    return convert(element, conversionSpec);
-  });
+export const convertInArray = (conversionSpec: any) => (data: any[]) => {
+  if (Array.isArray(data)) {
+    return data.map(element => {
+      return convert(element, conversionSpec);
+    });
+  } else {
+    return data;
+  }
+};
+
+const findNonEmptyKeyValueField = (data: any) => {
+  if (data !== undefined && data !== null) {
+    const keys = Object.keys(data);
+    return data[keys[0]] !== undefined && data[keys[1]] !== undefined;
+  }
 };
 
 //removes data left from empty key-value fields, e.g. {key:undefined,value:undefined}
 export const removeEmptyKeyValueFields = () => (data: ICompoundField[] | undefined) => {
   if (data !== undefined && data !== null) {
-    const cleanData = data.filter(compoundField => {
-      const keys = Object.keys(compoundField);
-      return compoundField[keys[0]] !== undefined && compoundField[keys[1]] !== undefined;
-    });
+    const cleanData = data.filter(field => findNonEmptyKeyValueField(field));
     return cleanData.length ? cleanData : undefined;
   } else {
     return undefined;
   }
+};
+
+//removes empty key-value fields, e.g. {key:undefined,value:undefined}
+export const removeEmptyKeyValueField = () => (data: ICompoundField | undefined) => {
+  return findNonEmptyKeyValueField(data) ? data : undefined;
 };
 
 export const convertPercentageToFraction = () => (data: number) =>

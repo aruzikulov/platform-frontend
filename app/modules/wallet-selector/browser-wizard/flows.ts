@@ -34,7 +34,7 @@ export const browserWizardFlows = {
           await web3Manager.plugPersonalWallet(browserWallet);
           dispatch(actions.walletSelector.connected());
         } catch (e) {
-          logger.warn("Error while trying to connect with browser wallet: ", e.message);
+          logger.warn("Error while trying to connect with browser wallet: ", e);
 
           if (e instanceof BrowserWalletAccountApprovalRejectedError) {
             dispatch(actions.walletSelector.browserWalletAccountApprovalRejectedError());

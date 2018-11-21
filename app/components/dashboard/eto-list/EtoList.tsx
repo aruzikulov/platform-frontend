@@ -10,8 +10,11 @@ import { TEtoWithCompanyAndContract } from "../../../modules/public-etos/types";
 import { appConnect } from "../../../store";
 import { onEnterAction } from "../../../utils/OnEnterAction";
 import { EtoOverviewStatus } from "../../eto/overview/EtoOverviewStatus";
+import { EtosComingSoon } from "../../eto/overview/EtoOverviewStatus/EtosComingSoon";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { SectionHeader } from "../../shared/SectionHeader";
+
+import * as styles from "./EtoList.module.scss";
 
 interface IStateProps {
   etos: TEtoWithCompanyAndContract[] | undefined;
@@ -25,12 +28,24 @@ const EtoListComponent: React.SFC<IStateProps> = ({ etos }) => (
       </SectionHeader>
     </Col>
     <Col xs={12}>
+      <p className={styles.opportunitiesDescription}>
+        <FormattedMessage id="dashboard.eto-opportunities.description" />
+      </p>
+    </Col>
+    <Col xs={12}>
       {etos ? (
-        etos.map(eto => (
-          <div className="mb-3" key={eto.previewCode}>
-            <EtoOverviewStatus eto={eto} />
-          </div>
-        ))
+        <>
+          {etos.map(eto => (
+            <div className="mb-3" key={eto.previewCode}>
+              <EtoOverviewStatus eto={eto} />
+            </div>
+          ))}
+          {etos.length < 4 && (
+            <div className="mb-3">
+              <EtosComingSoon />
+            </div>
+          )}
+        </>
       ) : (
         <LoadingIndicator type="hexagon" />
       )}

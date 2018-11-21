@@ -193,6 +193,7 @@ export const KycStatusWidgetComponent: React.SFC<IKycStatusWidgetProps> = props 
 
   return (
     <Panel
+      className="h-100"
       headerText={<FormattedMessage id="settings.kyc-widget.header" values={{ step }} />}
       rightComponent={
         !isLoading &&
@@ -204,7 +205,7 @@ export const KycStatusWidgetComponent: React.SFC<IKycStatusWidgetProps> = props 
       }
     >
       {isLoading ? (
-        <div className={styles.content}>
+        <div className={styles.panelBody}>
           <Row noGutters>
             <Col>
               <LoadingIndicator className={styles.loading} />
@@ -212,13 +213,13 @@ export const KycStatusWidgetComponent: React.SFC<IKycStatusWidgetProps> = props 
           </Row>
         </div>
       ) : error ? (
-        <div className={styles.content}>
+        <div className={styles.panelBody}>
           <WarningAlert>
             <FormattedMessage id="settings.kyc-widget.error" />
           </WarningAlert>
         </div>
       ) : (
-        <div className={cn(styles.content, "d-flex flex-wrap align-content-around")}>
+        <div className={cn(styles.panelBody, "d-flex flex-wrap align-content-around")}>
           <p className={cn(styles.text, "pt-2")}>
             {getStatus(isUserEmailVerified, requestStatus, requestOutsourcedStatus)}
           </p>

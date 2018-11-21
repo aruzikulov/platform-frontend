@@ -1,10 +1,9 @@
 import { includes } from "lodash";
-
 import * as React from "react";
 import { Input } from "reactstrap";
 
 import { Button } from "../../shared/buttons";
-import { Tag } from "../../shared/Tag";
+import { ETagSize, Tag } from "../../shared/Tag";
 
 import * as checkIcon from "../../../assets/img/inline_icons/check.svg";
 import * as plusIcon from "../../../assets/img/inline_icons/plus_bare.svg";
@@ -50,7 +49,7 @@ const TagsEditor: React.SFC<IProps> = props => {
               onClick={() => props.handleSelectedTagClick(tag)}
               text={tag}
               svgIcon={checkIcon}
-              size="small"
+              size={ETagSize.SMALL}
               theme="dark"
               key={tag}
             />
@@ -62,7 +61,7 @@ const TagsEditor: React.SFC<IProps> = props => {
           {props.availableTags.map(tag => (
             <Tag
               onClick={() => props.handleDeselectedTagClick(tag)}
-              size="small"
+              size={ETagSize.SMALL}
               svgIcon={plusIcon}
               text={tag}
               key={tag}

@@ -90,5 +90,5 @@ function* walletBalanceWatcher(): any {
 
 export function* walletSagas(): any {
   yield fork(neuTakeEvery, "WALLET_LOAD_WALLET_DATA", loadWalletDataSaga);
-  yield neuTakeUntil("LOAD_PREVIOUS_WALLET", "AUTH_LOGOUT", walletBalanceWatcher);
+  yield neuTakeUntil("AUTH_SET_USER", "AUTH_LOGOUT", walletBalanceWatcher);
 }

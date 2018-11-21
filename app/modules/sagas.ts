@@ -1,5 +1,7 @@
 import { effects } from "redux-saga";
+import { getContext } from "redux-saga/effects";
 
+import { TGlobalDependencies } from "../di/setupBindings";
 import { authSagas } from "./auth/sagas";
 import { bookBuildingFlowSagas } from "./bookbuilding-flow/sagas";
 import { etoDocumentsSagas } from "./eto-documents/sagas";
@@ -55,13 +57,18 @@ function* allSagas(): Iterator<effects.Effect> {
   ]);
 }
 
+function* handleRootError(error: Error): Iterator<effects.Effect> {
+  const { logger }: TGlobalDependencies = yield getContext("deps");
+
+  logger.error(error);
+}
+
 export function* rootSaga(): Iterator<effects.Effect> {
   while (true) {
     try {
       yield effects.call(allSagas);
     } catch (e) {
-      // tslint:disable-next-line
-      console.error("ERROR IN TOP LEVEL SAGA HANDLER", e);
+      yield effects.call(handleRootError, e);
     }
   }
 }

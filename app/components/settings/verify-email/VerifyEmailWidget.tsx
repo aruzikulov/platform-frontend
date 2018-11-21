@@ -121,7 +121,7 @@ const NoEmailUser: React.SFC<INoEMailUser> = ({
   revertCancelEmail,
   isThereUnverifiedEmail,
 }) => (
-  <div className={styles.content} data-test-id="settings.verify-email-widget.no-email-state">
+  <div className={styles.panelBody} data-test-id="settings.verify-email-widget.no-email-state">
     <p className={styles.customPaddingTop}>
       <FormattedMessage id="settings.verify-email-widget.enter-email" />
     </p>
@@ -136,7 +136,7 @@ const NoEmailUser: React.SFC<INoEMailUser> = ({
 
 const VerifiedUser: React.SFC<{ verifiedEmail?: string }> = ({ verifiedEmail }) => (
   <div
-    className={cn(styles.content, "d-flex flex-wrap align-content-around")}
+    className={cn(styles.panelBody, "d-flex flex-wrap align-content-around")}
     data-test-id="settings.verify-email-widget.verified-email-state"
   >
     <p className={cn(styles.text, "pt-2")}>
@@ -160,7 +160,7 @@ const UnVerifiedUser: React.SFC<{
   cancelEmail: () => void;
 }> = ({ resendEmail, verifiedEmail, unverifiedEmail, cancelEmail }) => (
   <div
-    className={cn(styles.content, "d-flex flex-wrap align-content-around")}
+    className={cn(styles.panelBody, "d-flex flex-wrap align-content-around")}
     data-test-id="settings.verify-email-widget.unverified-email-state"
   >
     {verifiedEmail && (
@@ -232,6 +232,7 @@ export const VerifyEmailWidgetComponent: React.SFC<
     (!isThereUnverifiedEmail && !verifiedEmail) || isEmailTemporaryCancelled;
   return (
     <Panel
+      className="h-100"
       headerText={formatIntlMessage("settings.verify-email-widget.header", { step })}
       rightComponent={
         isUserEmailVerified && !isThereUnverifiedEmail ? (

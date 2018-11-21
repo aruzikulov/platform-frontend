@@ -26,7 +26,7 @@ module.exports = merge(configCommon, {
         "font-src 'self' fonts.gstatic.com; " +
         "img-src 'self' data: documents.neufund.io documents.neufund.net www.google-analytics.com stats.g.doubleclick.net " +
         "*; " + // this should be only enabled for twitter-iframe.html
-        "connect-src 'self' wss://localhost:9090", // needed for hot reload
+        "connect-src 'self' https://*.neufund.io wss://localhost:9090", // needed for hot reload
     },
     proxy: generateProxyConfig("http://localhost", "http://localhost:8545"),
   },

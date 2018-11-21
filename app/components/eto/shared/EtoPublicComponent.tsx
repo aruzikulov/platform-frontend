@@ -500,6 +500,7 @@ export const EtoPublicComponent: React.SFC<IProps> = ({ companyData, etoData }) 
                   companyMarketingLinks={companyData.marketingLinks}
                   etoTemplates={etoData.templates}
                   etoDocuments={etoData.documents}
+                  isRetailEto={etoData.allowRetailInvestors}
                 />
               </>
             )}

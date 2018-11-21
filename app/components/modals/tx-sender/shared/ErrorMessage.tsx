@@ -37,6 +37,8 @@ const getErrorMessageByType = (type?: ETransactionErrorType) => {
       return <FormattedMessage id="modal.txsender.error-message.too-many-tx-in-queue" />;
     case ETransactionErrorType.TX_WAS_REJECTED:
       return <FormattedMessage id="modal.txsender.error-message.tx-was-rejected" />;
+    case ETransactionErrorType.LEDGER_CONTRACTS_DISABLED:
+      return <FormattedMessage id="modal.txsender.error-message.ledger-contracts-disabled" />;
   }
   return <FormattedMessage id="modal.shared.signing-message.transaction-error.hint" />;
 };

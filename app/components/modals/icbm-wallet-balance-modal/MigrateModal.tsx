@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
+import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
 import {
   IWalletMigrationData,
@@ -81,7 +81,10 @@ const MigrateFooter: React.SFC<{
 const MigrateHeader: React.SFC<{ step: number }> = ({ step }) => (
   <>
     <p className={styles.description}>
-      <FormattedMessage id="settings.modal.icbm-wallet-balance.body.migrate.description" />
+      <FormattedHTMLMessage
+        tagName="span"
+        id="settings.modal.icbm-wallet-balance.body.migrate.description"
+      />
     </p>
     {step === 1 && (
       <>
@@ -89,7 +92,10 @@ const MigrateHeader: React.SFC<{ step: number }> = ({ step }) => (
           <FormattedMessage id="settings.modal.icbm-wallet-balance.body.migrate.step.1.title" />
         </SectionHeader>
         <p className={styles.description}>
-          <FormattedMessage id="settings.modal.icbm-wallet-balance.body.migrate.step.1.description" />
+          <FormattedHTMLMessage
+            tagName="span"
+            id="settings.modal.icbm-wallet-balance.body.migrate.step.1.description"
+          />
         </p>
       </>
     )}
@@ -101,7 +107,10 @@ const MigrateHeader: React.SFC<{ step: number }> = ({ step }) => (
           </div>
         </SectionHeader>
         <p className={styles.description}>
-          <FormattedMessage id="settings.modal.icbm-wallet-balance.body.migrate.step.2description" />
+          <FormattedHTMLMessage
+            tagName="span"
+            id="settings.modal.icbm-wallet-balance.body.migrate.step.2.description"
+          />
         </p>
       </>
     )}

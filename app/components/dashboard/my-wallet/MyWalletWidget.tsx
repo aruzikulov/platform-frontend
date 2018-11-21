@@ -1,27 +1,29 @@
 import * as cn from "classnames";
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
+import { Link } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
 import { actions } from "../../../modules/actions";
 import {
+  selectIcbmWalletConnected,
+  selectLockedWalletConnected,
   selectTotalEtherBalance,
   selectTotalEtherBalanceEuroAmount,
   selectTotalEuroBalance,
   selectTotalEuroTokenBalance,
 } from "../../../modules/wallet/selectors";
 import { appConnect } from "../../../store";
+import { CommonHtmlProps } from "../../../types";
 import { onEnterAction } from "../../../utils/OnEnterAction";
+import { appRoutes } from "../../appRoutes";
 import { ButtonLink, EButtonLayout } from "../../shared/buttons";
 import { LoadingIndicator } from "../../shared/loading-indicator";
 import { ECurrencySymbol, Money } from "../../shared/Money";
 import { MoneySuiteWidget } from "../../shared/MoneySuiteWidget";
 import { Panel } from "../../shared/Panel";
 import { WarningAlert } from "../../shared/WarningAlert";
-
-import { CommonHtmlProps } from "../../../types";
-import { appRoutes } from "../../appRoutes";
 
 import * as ethIcon from "../../../assets/img/eth_icon.svg";
 import * as arrowRight from "../../../assets/img/inline_icons/arrow_right.svg";
@@ -36,6 +38,8 @@ type StateProps = {
     ethAmount: string;
     ethEuroAmount: string;
     totalAmount: string;
+    isIcbmWalletConnected: boolean;
+    isLockedWalletConnected: boolean;
   };
 };
 
@@ -45,7 +49,14 @@ export const MyWalletWidgetComponentBody: React.SFC<StateProps> = props => {
   } else if (props.error) {
     return <WarningAlert>{props.error}</WarningAlert>;
   } else {
-    const { euroTokenAmount, ethAmount, ethEuroAmount, totalAmount } = props.data!;
+    const {
+      euroTokenAmount,
+      ethAmount,
+      ethEuroAmount,
+      totalAmount,
+      isIcbmWalletConnected,
+      isLockedWalletConnected,
+    } = props.data!;
 
     return (
       <>
@@ -87,6 +98,19 @@ export const MyWalletWidgetComponentBody: React.SFC<StateProps> = props => {
             </div>
           </Col>
         </Row>
+        {process.env.NF_CHECK_LOCKED_WALLET_WIDGET_ENABLED === "1" &&
+          (!(isIcbmWalletConnected || isLockedWalletConnected) && (
+            <Row data-test-id="my-wallet-widget-icbm-help-text">
+              <Col>
+                <p className={styles.icbmWallet}>
+                  <FormattedMessage id="dashboard.my-portfolio-widget.cant-see-your-icbm-wallet" />{" "}
+                  <Link to={appRoutes.settings} className={styles.link}>
+                    <FormattedMessage id="dashboard.my-portfolio-widget.check-it-here" />
+                  </Link>
+                </p>
+              </Col>
+            </Row>
+          ))}
       </>
     );
   }
@@ -139,6 +163,8 @@ export const MyWalletWidget = compose<React.SFC<CommonHtmlProps>>(
             ethAmount: selectTotalEtherBalance(state),
             ethEuroAmount: selectTotalEtherBalanceEuroAmount(state),
             totalAmount: selectTotalEuroBalance(state),
+            isIcbmWalletConnected: selectIcbmWalletConnected(s.wallet),
+            isLockedWalletConnected: selectLockedWalletConnected(s),
           },
         };
       } else {

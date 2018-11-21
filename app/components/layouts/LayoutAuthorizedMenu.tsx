@@ -8,9 +8,10 @@ import { compose, withHandlers } from "recompose";
 
 import { EUserType } from "../../lib/api/users/interfaces";
 import { actions } from "../../modules/actions";
-import { selectIsVerifiedInvestor, selectUserType } from "../../modules/auth/selectors";
+import { selectUserType } from "../../modules/auth/selectors";
 import { selectShouldEtoDataLoad } from "../../modules/eto-flow/selectors";
 import { selectGenericModalIsOpen } from "../../modules/generic-modal/reducer";
+import { selectIsClaimsVerified } from "../../modules/kyc/selectors";
 import { selectIsActionRequiredSettings } from "../../modules/notifications/selectors";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
@@ -27,7 +28,6 @@ import * as iconEto from "../../assets/img/inline_icons/icon-menu-eto.svg";
 import * as iconFingerprint from "../../assets/img/inline_icons/icon-menu-fingerprint.svg";
 import * as iconHelp from "../../assets/img/inline_icons/icon-menu-help.svg";
 import * as iconPortfolio from "../../assets/img/inline_icons/icon-menu-portfolio.svg";
-import * as iconSettings from "../../assets/img/inline_icons/icon-menu-settings.svg";
 import * as iconWallet from "../../assets/img/inline_icons/icon-menu-wallet.svg";
 
 import * as styles from "./LayoutAuthorizedMenu.module.scss";
@@ -55,7 +55,7 @@ interface IMenuEntryDisabled {
 }
 
 interface IStateProps {
-  isVerifiedInvestor: boolean;
+  isClaimsVerified: boolean;
   userType?: EUserType;
   actionRequiredSettings: boolean;
   shouldEtoDataLoad: boolean;
@@ -153,7 +153,7 @@ const InvestorMenu: React.SFC<IStateProps & IDispatchProps & IWithProps> = ({
   openIdentityModal,
   isLinkActive,
   isIdentityModalOpened,
-  isVerifiedInvestor,
+  isClaimsVerified,
 }) => (
   <div className={styles.menu}>
     <div className={styles.menuItems}>
@@ -185,21 +185,23 @@ const InvestorMenu: React.SFC<IStateProps & IDispatchProps & IWithProps> = ({
         isActive={isLinkActive}
       />
       <MenuEntryLink
-        svgString={iconSettings}
+        svgString={iconFingerprint}
         to={appRoutes.settings}
         menuName={<FormattedMessage id="menu.settings" />}
         actionRequired={actionRequiredSettings}
         data-test-id="authorized-layout-settings-button"
         isActive={isLinkActive}
       />
-      <MenuEntryButton
-        disabled={!isVerifiedInvestor}
-        svgString={iconFingerprint}
-        onClick={openIdentityModal}
-        menuName={<FormattedMessage id="menu.identity" />}
-        data-test-id="authorized-layout-identity-button"
-        isActive={isIdentityModalOpened}
-      />
+      {process.env.NF_SHOW_INVESTOR_IDENTITY && (
+        <MenuEntryButton
+          disabled={!isClaimsVerified}
+          svgString={iconFingerprint}
+          onClick={openIdentityModal}
+          menuName={<FormattedMessage id="menu.identity" />}
+          data-test-id="authorized-layout-identity-button"
+          isActive={isIdentityModalOpened}
+        />
+      )}
     </div>
   </div>
 );
@@ -239,7 +241,7 @@ const IssuerMenu: React.SFC<{ actionRequiredSettings: boolean; shouldEtoDataLoad
         menuName={<FormattedMessage id="menu.help" />}
       />
       <MenuEntryLink
-        svgString={iconSettings}
+        svgString={iconFingerprint}
         to={appRoutes.settings}
         menuName={<FormattedMessage id="menu.settings" />}
         actionRequired={actionRequiredSettings}
@@ -269,7 +271,7 @@ export const LayoutAuthorizedMenu = compose<IStateProps & IDispatchProps & IWith
       actionRequiredSettings: selectIsActionRequiredSettings(state),
       shouldEtoDataLoad: selectShouldEtoDataLoad(state),
       isIdentityModalOpened: selectGenericModalIsOpen(state.genericModal),
-      isVerifiedInvestor: selectIsVerifiedInvestor(state),
+      isClaimsVerified: selectIsClaimsVerified(state),
     }),
     dispatchToProps: dispatch => ({
       openIdentityModal: () => dispatch(actions.genericModal.showModal(IdentityModal)),

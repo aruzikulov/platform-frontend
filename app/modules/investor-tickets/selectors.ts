@@ -2,6 +2,7 @@ import { EtoState } from "../../lib/api/eto/EtoApi.interfaces";
 import { IAppState } from "../../store";
 import { selectPublicEtos } from "../public-etos/selectors";
 import { EETOStateOnChain } from "../public-etos/types";
+import { selectLockedWalletConnected } from "../wallet/selectors";
 import { TETOWithInvestorTicket } from "./types";
 
 const selectInvestorTicketsState = (state: IAppState) => state.investorTickets;
@@ -75,6 +76,16 @@ export const selectEquityTokenCountByEtoId = (etoId: string, state: IAppState) =
   return contrib && contrib.equityTokenInt.toString();
 };
 
+export const selectEtoTicketSizesById = (etoId: string, state: IAppState) => {
+  const contrib = selectCalculatedContribution(etoId, state);
+  return (
+    contrib && {
+      minTicketEurUlps: contrib.minTicketEurUlps,
+      maxTicketEurUlps: contrib.maxTicketEurUlps,
+    }
+  );
+};
+
 export const selectNeuRewardUlpsByEtoId = (etoId: string, state: IAppState) => {
   const contrib = selectCalculatedContribution(etoId, state);
   return contrib && contrib.neuRewardUlps.toString();
@@ -83,4 +94,10 @@ export const selectNeuRewardUlpsByEtoId = (etoId: string, state: IAppState) => {
 export const selectIsWhitelisted = (etoId: string, state: IAppState) => {
   const contrib = selectCalculatedContribution(etoId, state);
   return !!contrib && contrib.isWhitelisted;
+};
+
+export const selectIsEligibleToPreEto = (etoId: string, state: IAppState) => {
+  const isLockedWalletConnected = selectLockedWalletConnected(state);
+  const isWhitelisted = selectIsWhitelisted(etoId, state);
+  return isLockedWalletConnected || isWhitelisted;
 };

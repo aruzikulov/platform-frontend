@@ -11,14 +11,6 @@ describe("Money", () => {
     expect(component.render().text()).to.be.eq("12 345.6700 ETH");
   });
 
-  it("should not add thousand separator format money", () => {
-    const component = shallow(
-      <Money value={"1234567" + "0".repeat(16)} currency="eth" doNotSeparateThousands />,
-    );
-
-    expect(component.render().text()).to.be.eq("12345.6700 ETH");
-  });
-
   it("should format money when format is set to FLOAT", () => {
     const component = shallow(
       <Money value={"2501234"} currency="eur" format={EMoneyFormat.FLOAT} />,

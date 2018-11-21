@@ -1,25 +1,25 @@
-import * as Mnemonic from "bitcore-mnemonic";
-import { range } from "lodash";
-import * as React from "react";
-import Select from "react-virtualized-select";
-import { Col, Row } from "reactstrap";
-
-import { Button, EButtonLayout } from "../../shared/buttons";
-import { WarningAlert } from "../../shared/WarningAlert";
-
-import * as arrowLeft from "../../../assets/img/inline_icons/arrow_left.svg";
-
 /* tslint:disable: no-submodule-imports */
 import "react-select/dist/react-select.css";
 import "react-virtualized-select/styles.css";
 import "react-virtualized/styles.css";
 /* tslint:enable: no-submodule-imports */
 
+import * as Mnemonic from "bitcore-mnemonic";
+import { range } from "lodash";
+import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
+import Select from "react-virtualized-select";
+import { Col, Row } from "reactstrap";
+
+import { TElementRef } from "../../../types";
+import { Button, EButtonLayout } from "../../shared/buttons";
+import { WarningAlert } from "../../shared/WarningAlert";
+
+import * as arrowLeft from "../../../assets/img/inline_icons/arrow_left.svg";
 import * as styles from "./BackupSeedVerify.module.scss";
 
-export const WORDS_TO_VERIFY = 4;
+const WORDS_TO_VERIFY = 4;
+
 const wordsOptions = Mnemonic.Words.ENGLISH.map((word: string) => ({ value: word, label: word }));
 
 interface IBackupSeedVerifyProps {
@@ -28,11 +28,14 @@ interface IBackupSeedVerifyProps {
   words: string[];
 }
 
+interface IVerificationWord {
+  number: number;
+  word: string;
+  isValid: boolean | undefined;
+}
+
 export interface IBackupSeedVerifyState {
-  verificationWords: {
-    number: number;
-    word: string;
-  }[];
+  verificationWords: IVerificationWord[];
 }
 
 // here it's good enough
@@ -46,63 +49,74 @@ const getRandomNumbers = (numbers: number, range: number): number[] => {
   return arr.sort((a, b) => a - b);
 };
 
-export const BackupSeedVerifyComponent = class extends React.Component<
-  IBackupSeedVerifyProps & IIntlProps,
-  IBackupSeedVerifyState
-> {
-  displayName = "BackupSeedVerify";
-  private formatIntlMessage = this.props.intl.formatIntlMessage;
+class BackupSeedVerify extends React.Component<IBackupSeedVerifyProps, IBackupSeedVerifyState> {
+  verificationSelectRefs: TElementRef<Select>[] = [];
 
-  constructor(props: IBackupSeedVerifyProps & IIntlProps) {
+  constructor(props: IBackupSeedVerifyProps) {
     super(props);
+
     const wordsToCheck = getRandomNumbers(WORDS_TO_VERIFY, props.words.length);
 
     this.state = {
-      verificationWords: wordsToCheck.map(number => ({ number: number, word: "" })),
+      verificationWords: wordsToCheck.map(number => ({
+        number,
+        word: "",
+        isValid: undefined,
+      })),
     };
   }
 
   updateValueFactory = (wordOnPageNumber: number) => (newValue: any): void => {
-    const verificationWords = this.state.verificationWords;
-    verificationWords[wordOnPageNumber].word = newValue;
-    this.setState({
-      verificationWords,
-    });
+    const { number } = this.state.verificationWords[wordOnPageNumber];
+
+    const verificationWord: IVerificationWord = {
+      number,
+      word: newValue,
+      isValid: newValue === this.props.words[number],
+    };
+
+    this.setState(
+      state => ({
+        verificationWords: state.verificationWords.map(
+          (word, index) => (wordOnPageNumber === index ? verificationWord : word),
+        ),
+      }),
+      () => this.focusNext(wordOnPageNumber),
+    );
   };
 
-  validateWord = (wordOnPageNumber: number): boolean | undefined => {
-    const wordNumber = this.state.verificationWords[wordOnPageNumber].number;
-    const word = this.state.verificationWords[wordOnPageNumber].word;
-    if (word) {
-      return word === this.props.words[wordNumber];
-    } else {
-      return undefined;
+  focusNext = (current: number) => {
+    if (current + 1 < WORDS_TO_VERIFY) {
+      // Typings are not up to date. Below is the link to method in case of any error.
+      // https://github.com/bvaughn/react-virtualized-select/blob/b24fb1d59777d0d50cdb77b41a72cca1b58e0c00/source/VirtualizedSelect/VirtualizedSelect.js#L44
+      const nextSelectRef = this.verificationSelectRefs[current + 1] as any;
+
+      if (nextSelectRef) {
+        nextSelectRef.focus();
+      }
     }
   };
 
   getValidationStyle = (wordOnPageNumber: number): string => {
-    const validationResult = this.validateWord(wordOnPageNumber);
-    if (validationResult !== undefined) {
-      return validationResult ? styles.valid : styles.invalid;
-    } else {
-      return "";
+    const validationWord = this.state.verificationWords[wordOnPageNumber];
+
+    if (validationWord.isValid === true) {
+      return styles.valid;
     }
+
+    if (validationWord.isValid === false) {
+      return styles.invalid;
+    }
+
+    return "";
   };
 
-  showInvalidMsg = (): boolean => {
-    let show = false;
-    for (let i = 0; i < WORDS_TO_VERIFY; i++) {
-      show = show || this.validateWord(i) === false;
-    }
-    return show;
+  isInvalid = (): boolean => {
+    return this.state.verificationWords.some(word => word.isValid === false);
   };
 
-  allWordsValid = (): boolean => {
-    let valid = true;
-    for (let i = 0; i < WORDS_TO_VERIFY; i++) {
-      valid = valid && this.validateWord(i) === true;
-    }
-    return valid;
+  isValid = (): boolean => {
+    return this.state.verificationWords.every(word => !!word.isValid);
   };
 
   generateSelect = (wordOnPageNumber: number): React.ReactNode => (
@@ -113,10 +127,11 @@ export const BackupSeedVerifyComponent = class extends React.Component<
         clearable={true}
         matchPos="start"
         matchProp="value"
+        ref={(ref: TElementRef<Select>) => (this.verificationSelectRefs[wordOnPageNumber] = ref)}
         value={this.state.verificationWords[wordOnPageNumber].word}
         onChange={this.updateValueFactory(wordOnPageNumber)}
-        placeholder={this.formatIntlMessage("settings.backup-seed-verify.enter-word")}
-        noResultsText={this.formatIntlMessage("settings.backup-seed-verify.no-matching-words")}
+        placeholder={<FormattedMessage id="settings.backup-seed-verify.enter-word" />}
+        noResultsText={<FormattedMessage id="settings.backup-seed-verify.no-matching-words" />}
         className={this.getValidationStyle(wordOnPageNumber)}
       />
     </div>
@@ -145,7 +160,16 @@ export const BackupSeedVerifyComponent = class extends React.Component<
             </Row>
           </Col>
         </Row>
-        {this.showInvalidMsg() && (
+        {this.isValid() && (
+          <Row className="my-4 text-center">
+            <Col className={styles.placeholderHeight}>
+              <Button data-test-id="seed-verify-button-next" onClick={this.props.onNext}>
+                <FormattedMessage id="form.button.continue" />
+              </Button>
+            </Col>
+          </Row>
+        )}
+        {this.isInvalid() && (
           <Row className="my-4 justify-content-center">
             <WarningAlert
               data-test-id="seed-verify-invalid-msg"
@@ -155,21 +179,6 @@ export const BackupSeedVerifyComponent = class extends React.Component<
             </WarningAlert>
           </Row>
         )}
-        {this.allWordsValid() && (
-          <Row className="my-4 text-center">
-            <Col className={styles.placeholderHeight}>
-              <Button data-test-id="seed-verify-button-next" onClick={this.props.onNext}>
-                <FormattedMessage id="form.button.continue" />
-              </Button>
-            </Col>
-          </Row>
-        )}
-        {!this.showInvalidMsg() &&
-          !this.allWordsValid() && (
-            <Row className="my-4 text-center">
-              <Col className={styles.placeholderHeight} />
-            </Row>
-          )}
         <Row>
           <Col>
             <Button
@@ -185,6 +194,6 @@ export const BackupSeedVerifyComponent = class extends React.Component<
       </>
     );
   }
-};
+}
 
-export const BackupSeedVerify = injectIntlHelpers(BackupSeedVerifyComponent);
+export { BackupSeedVerify };

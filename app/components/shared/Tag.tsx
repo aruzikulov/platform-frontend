@@ -10,13 +10,16 @@ import * as styles from "./Tag.module.scss";
 
 type TTheme = "dark" | "green" | "white" | "default" | "silver";
 type TLayout = "ghost" | "ghost-bold" | "bold";
-type TSize = "small";
+
+export enum ETagSize {
+  SMALL = styles.small,
+}
 
 export interface ITag {
   text: TTranslatedString;
   to?: string;
   layout?: TLayout;
-  size?: TSize;
+  size?: ETagSize;
   theme?: TTheme;
   className?: string;
   onClick?: (e: any) => void;

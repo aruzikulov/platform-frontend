@@ -41,7 +41,7 @@ export const SettingsComponent: React.SFC<IStateProps> = ({
   kycRequestType,
   kycRequestStatus,
 }) => {
-  const isPersonalDataProcessed = kycRequestStatus !== "Draft";
+  const isPersonalDataProcessed = kycRequestStatus === "Pending" || kycRequestStatus === "Accepted";
   const isUserInvestor = userType === EUserType.INVESTOR;
   const isIndividual = kycRequestType === "individual";
 

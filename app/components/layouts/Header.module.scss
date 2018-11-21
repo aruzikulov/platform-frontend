@@ -1,3 +1,7 @@
+.logo {
+  flex-shrink: 0;
+}
+
 .logo-image {
   @include media-breakpoint-up (lg) {
     margin-left: px-to-rem(32px);
@@ -11,6 +15,10 @@
   @include media-breakpoint-down (md) {
     height: 15px;
     left: .75rem;
+  }
+
+  @include media-breakpoint-down(sm) {
+    display: none;
   }
 
   height: 22px;
@@ -31,6 +39,12 @@
 
   > button {
     margin-left: px-to-rem(20px);
+  }
+
+  .resizable-button {
+    @include media-breakpoint-down(sm) {
+      min-width: auto;
+    }
   }
 }
 

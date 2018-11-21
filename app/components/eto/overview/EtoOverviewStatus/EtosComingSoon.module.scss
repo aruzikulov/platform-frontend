@@ -1,0 +1,11 @@
+.etos-coming-soon {
+  @include headline-large;
+
+  align-items: center;
+  background: url("../../../../assets/img/etos-comings-soon/left-placeholder.png") no-repeat left center, url("../../../../assets/img/etos-comings-soon/right-placeholder.png") no-repeat right center $neu-white-two;
+  color: $neu-greyish-brown;
+  display: flex;
+  height: 158px;
+  justify-content: center;
+  text-align: center;
+}

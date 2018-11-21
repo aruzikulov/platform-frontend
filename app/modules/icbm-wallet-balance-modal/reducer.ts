@@ -13,7 +13,7 @@ export interface IIcbmWalletBalanceModal {
   isOpen: boolean;
   loading: boolean;
   icbmWalletEthAddress?: string;
-  lockedWallet?: ILockedWallet;
+  icbmLockedEthWallet?: ILockedWallet;
   walletMigrationData?: IWalletMigrationData[];
   currentMigrationStep: TWalletMigrationSteps;
   isMigrating: boolean;
@@ -42,7 +42,7 @@ export const icbmWalletBalanceModalReducer: AppReducer<IIcbmWalletBalanceModal> 
       };
     case "ICBM_WALLET_BALANCE_MODAL_HIDE":
       return {
-        ...state,
+        ...initialState,
         isOpen: false,
       };
     case "ICBM_WALLET_BALANCE_MODAL_GET_WALLET_DATA":
@@ -54,7 +54,7 @@ export const icbmWalletBalanceModalReducer: AppReducer<IIcbmWalletBalanceModal> 
       return {
         ...state,
         loading: false,
-        lockedWallet: action.payload.data,
+        icbmLockedEthWallet: action.payload.data,
       };
     case "ICBM_WALLET_BALANCE_MODAL_LOAD_MIGRATION_DATA":
       return {

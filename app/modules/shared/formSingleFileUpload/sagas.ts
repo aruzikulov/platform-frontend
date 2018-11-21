@@ -6,7 +6,7 @@ import { TAction } from "../../actions";
 import { neuTakeEvery } from "../../sagasUtils";
 
 function* singleFileUpload(
-  { fileStorageApi, notificationCenter }: TGlobalDependencies,
+  { fileStorageApi, notificationCenter, logger }: TGlobalDependencies,
   action: TAction,
 ): any {
   if (action.type !== "FORM_SINGLE_FILE_UPLOAD_START") return;
@@ -20,7 +20,8 @@ function* singleFileUpload(
 
     onDone(undefined, fileData.body.url);
   } catch (e) {
-    notificationCenter.error("Error occured while uploading a file.");
+    logger.error("Error while uploading single file", e);
+    notificationCenter.error("Error occurred while uploading a file.");
     onDone(e, undefined);
   }
 }

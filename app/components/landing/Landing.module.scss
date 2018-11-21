@@ -1,12 +1,9 @@
 .landing-wrapper {
-  background-color: $color-white;
-  background-image: url("../../assets/img/footer-dots.png");
-  background-repeat: repeat-x;
-  background-position: bottom;
+  background: $color-white url("../../assets/img/footer-dots.png") repeat-x bottom;
   width: 100%;
   min-height: 100%;
   flex-grow: 1;
-  padding-bottom: px-to-rem(236px);
+  padding-bottom: $footer-dots-height;
 
   h2 {
     text-transform: uppercase;

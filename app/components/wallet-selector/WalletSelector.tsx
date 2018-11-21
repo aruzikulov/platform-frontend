@@ -100,14 +100,18 @@ export const WalletSelectorComponent: React.SFC<IStateProps & IIntlProps> = ({
                   <>
                     <FormattedMessage id="wallet-selector.login.help-link" />{" "}
                     <Link to={appRoutes.restore}>
-                      <FormattedMessage id="wallet-selector.help-link.label" />
+                      <strong>
+                        <FormattedMessage id="wallet-selector.help-link.label" />
+                      </strong>
                     </Link>
                   </>
                 ) : (
                   <>
                     <FormattedMessage id="wallet-selector.register.help-link" />{" "}
-                    <a href="https://support.neufund.org/support/home">
-                      <FormattedMessage id="wallet-selector.help-link.label" />
+                    <a href="https://support.neufund.org/support/home" target="_blank">
+                      <strong>
+                        <FormattedMessage id="wallet-selector.help-link.label" />
+                      </strong>
                     </a>
                   </>
                 )}
@@ -117,7 +121,7 @@ export const WalletSelectorComponent: React.SFC<IStateProps & IIntlProps> = ({
               <span className="float-sm-right">
                 {oppositeViewLabel}{" "}
                 <Link to={oppositeRoute} data-test-id="wallet-selector-opposite-route-link">
-                  {oppositeViewLinkLabel}
+                  <strong>{oppositeViewLinkLabel}</strong>
                 </Link>
               </span>
             </Col>

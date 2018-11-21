@@ -1,7 +1,6 @@
 import * as cn from "classnames";
 import { connect, FieldArray, getIn } from "formik";
 import * as React from "react";
-import { Col, Row } from "reactstrap";
 
 import { TSocialChannelsType } from "../../lib/api/eto/EtoApi.interfaces";
 import { CommonHtmlProps, TFormikConnect } from "../../types";
@@ -147,15 +146,11 @@ const SingleMediaLinkField: React.SFC<
   const { profile, name } = props;
 
   return (
-    <Row className="my-4 justify-content-center">
-      <Col>
-        <FormField
-          name={`${name}.url`}
-          placeholder={profile.placeholder || profile.name}
-          data-test-id={`social-profiles.profile-input.${profile.name}`}
-        />
-      </Col>
-    </Row>
+    <FormField
+      name={`${name}.url`}
+      placeholder={profile.placeholder || profile.name}
+      data-test-id={`social-profiles.profile-input.${profile.name}`}
+    />
   );
 };
 

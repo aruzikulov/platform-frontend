@@ -8,7 +8,7 @@ import { ImmutableFileId } from "../../lib/api/ImmutableStorage.interfaces";
 import { actions } from "../../modules/actions";
 import { appConnect } from "../../store";
 import { TTranslatedString } from "../../types";
-import { documentTitles } from "../documents/Documents";
+import { getDocumentTitles } from "../documents/Documents";
 import { DocumentTemplateButton } from "./DocumentLink";
 import { InlineIcon } from "./InlineIcon";
 import { Panel } from "./Panel";
@@ -17,6 +17,7 @@ import * as link from "../../assets/img/inline_icons/social_link.svg";
 import * as styles from "./SingleColDocumentWidget.module.scss";
 
 interface IOwnProps {
+  isRetailEto: boolean;
   documents: IEtoDocument[];
   title: TTranslatedString;
   className?: string;
@@ -32,7 +33,9 @@ const SingleColDocumentsLayout: React.SFC<IProps> = ({
   className,
   title,
   downloadImmutableFile,
+  isRetailEto,
 }) => {
+  const documentTitles = getDocumentTitles(isRetailEto);
   return (
     <Panel className={className}>
       <Col className={styles.groupName}>{title}</Col>

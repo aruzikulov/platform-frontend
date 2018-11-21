@@ -1,13 +1,14 @@
 import * as cn from "classnames";
 import * as React from "react";
-import { FormattedMessage } from "react-intl-phraseapp";
+import { FormattedHTMLMessage, FormattedMessage } from "react-intl-phraseapp";
 
 import { ILedgerAccount } from "../../../modules/wallet-selector/ledger-wizard/reducer";
 import { LoadingIndicator } from "../../shared/loading-indicator";
-import * as styles from "./WalletLedgerChooserComponent.module.scss";
 import { WalletLedgerChooserTableAdvanced } from "./WalletLedgerChooserTableAdvanced";
 import { WalletLedgerChooserTableSimple } from "./WalletLedgerChooserTableSimple";
 import { WalletLedgerDPChooser } from "./WalletLedgerDPChooser";
+
+import * as styles from "./WalletLedgerChooserComponent.module.scss";
 
 export interface IWalletLedgerChooserComponent {
   accounts: ILedgerAccount[];
@@ -43,6 +44,7 @@ export const WalletLedgerChooserComponent: React.SFC<
     <h1 className="text-center mb-4">
       <FormattedMessage id="wallet-selector.ledger.select-wallet" />
     </h1>
+
     {advanced && (
       <WalletLedgerDPChooser
         onDerivationPathPrefixChange={onDerivationPathPrefixChange}
@@ -53,6 +55,11 @@ export const WalletLedgerChooserComponent: React.SFC<
       <LoadingIndicator />
     ) : (
       <>
+        {accounts.length > 1 && (
+          <h6 className={styles.explanation}>
+            <FormattedHTMLMessage tagName="span" id="wallet-selector.ledger.select-address" />
+          </h6>
+        )}
         {accounts.length > 0 &&
           (advanced ? (
             <WalletLedgerChooserTableAdvanced

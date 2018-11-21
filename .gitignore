@@ -17,3 +17,4 @@ e2e/platform-backend
 # IDE's ignores
 .vscode
 .idea
+platform-frontend.iml

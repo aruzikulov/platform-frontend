@@ -89,3 +89,11 @@ export const restrictedCountry = countryCode.test(
   <FormattedMessage id="form.field.error.restricted-country" /> as any,
   response => !includes(RESTRICTED_COUNTRIES, response),
 );
+
+export const percentage = Yup.number()
+  .max(100, ((values: any) => (
+    <FormattedMessage id="form.field.error.percentage.max" values={values} />
+  )) as any)
+  .min(0, ((values: any) => (
+    <FormattedMessage id="form.field.error.percentage.min" values={values} />
+  )) as any);

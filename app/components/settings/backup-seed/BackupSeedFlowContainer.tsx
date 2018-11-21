@@ -1,14 +1,21 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
+import { RouteComponentProps, withRouter } from "react-router";
 import { Col, Row } from "reactstrap";
-import { appRoutes } from "../../appRoutes";
+
 import { LayoutAuthorized } from "../../layouts/LayoutAuthorized";
-import { BreadCrumb } from "../../shared/BreadCrumb";
 import { HeaderProgressStepper } from "../../shared/HeaderProgressStepper";
 import { Panel } from "../../shared/Panel";
 import { BackupSeedDisplay } from "./BackupSeedDisplay";
 import { BackupSeedIntro } from "./BackupSeedIntro";
 import { BackupSeedVerify } from "./BackupSeedVerify";
+
+enum EBackupStep {
+  INTRO = 1,
+  FIRST_HALF = 2,
+  SECOND_HALF = 3,
+  VERIFY = 4,
+}
 
 interface IProps {
   seed: string[];
@@ -18,32 +25,40 @@ interface IProps {
 }
 
 interface IState {
-  backupStep: number;
+  backupStep: EBackupStep;
 }
 
-export class BackupSeedFlowContainer extends React.Component<IProps, IState> {
-  public state = {
-    backupStep: 1,
+class BackupSeedFlowContainerLayout extends React.Component<
+  IProps & RouteComponentProps<any>,
+  IState
+> {
+  state = {
+    backupStep: EBackupStep.INTRO,
   };
 
-  private onBack = () => {
-    this.setState(s => ({
-      backupStep: s.backupStep - 1,
-    }));
+  onBack = () => {
+    if (this.state.backupStep === EBackupStep.INTRO) {
+      this.props.history.goBack();
+    } else {
+      this.setState(s => ({
+        backupStep: s.backupStep - 1,
+      }));
+    }
   };
 
-  private onNext = () => {
+  onNext = () => {
     this.setState(s => ({
       backupStep: s.backupStep + 1,
     }));
   };
 
-  renderBackupPage(): React.ReactNode {
+  renderBackupPage(backupStep: EBackupStep): React.ReactNode {
     const { backupCodesVerified } = this.props;
-    switch (this.state.backupStep) {
-      case 1:
-        return <BackupSeedIntro onBack={appRoutes.settings} onNext={this.onNext} />;
-      case 2:
+
+    switch (backupStep) {
+      case EBackupStep.INTRO:
+        return <BackupSeedIntro onBack={this.onBack} onNext={this.onNext} />;
+      case EBackupStep.FIRST_HALF:
         return (
           <BackupSeedDisplay
             onBack={this.onBack}
@@ -52,7 +67,7 @@ export class BackupSeedFlowContainer extends React.Component<IProps, IState> {
             pageNo={0}
           />
         );
-      case 3:
+      case EBackupStep.SECOND_HALF:
         return (
           <BackupSeedDisplay
             onBack={this.onBack}
@@ -61,7 +76,7 @@ export class BackupSeedFlowContainer extends React.Component<IProps, IState> {
             pageNo={1}
           />
         );
-      case 4:
+      case EBackupStep.VERIFY:
         return (
           <BackupSeedVerify
             onBack={this.onBack}
@@ -69,6 +84,8 @@ export class BackupSeedFlowContainer extends React.Component<IProps, IState> {
             words={this.props.seed}
           />
         );
+      default:
+        throw new Error("Backup step is unknown");
     }
   }
 
@@ -76,16 +93,6 @@ export class BackupSeedFlowContainer extends React.Component<IProps, IState> {
     const steps = this.props.backupCodesVerified ? 3 : 4;
     return (
       <LayoutAuthorized>
-        <BreadCrumb
-          className="mb-4"
-          path={[
-            <FormattedMessage id="settings.backup-seed-flow-container.bread-crumb-settings" />,
-            <FormattedMessage id="settings.backup-seed-flow-container.bread-crumb-security-settings" />,
-          ]}
-          view={
-            <FormattedMessage id="settings.backup-seed-flow-container.bread-crumb-backup-recovery" />
-          }
-        />
         <Row>
           <Col md={12} lg={{ size: 10, offset: 1 }} xl={{ size: 8, offset: 2 }}>
             <Panel>
@@ -100,7 +107,7 @@ export class BackupSeedFlowContainer extends React.Component<IProps, IState> {
                 }
                 warning
               />
-              {this.renderBackupPage()}
+              {this.renderBackupPage(this.state.backupStep)}
             </Panel>
           </Col>
         </Row>
@@ -108,3 +115,7 @@ export class BackupSeedFlowContainer extends React.Component<IProps, IState> {
     );
   }
 }
+
+const BackupSeedFlowContainer = withRouter(BackupSeedFlowContainerLayout);
+
+export { BackupSeedFlowContainer };

@@ -10,12 +10,13 @@ import {
   TPartialEtoSpecData,
 } from "../../../../lib/api/eto/EtoApi.interfaces";
 import { etoFormIsReadonly } from "../../../../lib/api/eto/EtoApiUtils";
-import { getInvestmentAmount, getSharePrice } from "../../../../lib/api/eto/EtoUtils";
+import { getInvestmentAmount, getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { actions } from "../../../../modules/actions";
 import { selectIssuerEto, selectIssuerEtoState } from "../../../../modules/eto-flow/selectors";
 import { EEtoFormTypes } from "../../../../modules/eto-flow/types";
 import { etoInvestmentTermsProgressOptions } from "../../../../modules/eto-flow/utils";
 import { appConnect } from "../../../../store";
+import { TTranslatedString } from "../../../../types";
 import { formatMoney } from "../../../../utils/Money.utils";
 import { Button, EButtonLayout } from "../../../shared/buttons";
 import { FormField } from "../../../shared/forms";
@@ -62,22 +63,9 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
   const computedMaxCapPercent = (newSharesToIssue / existingCompanyShares) * 100;
   const computedMinCapPercent = (minimumNewSharesToIssue / existingCompanyShares) * 100;
 
-  const { minInvestmentAmount, maxInvestmentAmount } = getInvestmentAmount({
-    minimumNewSharesToIssue: stateValues.minimumNewSharesToIssue,
-    newSharesToIssue: stateValues.newSharesToIssue,
-    newSharesToIssueInFixedSlots: stateValues.newSharesToIssueInFixedSlots,
-    newSharesToIssueInWhitelist: stateValues.newSharesToIssueInWhitelist,
-    preMoneyValuationEur: stateValues.preMoneyValuationEur,
-    fixedSlotsMaximumDiscountFraction: stateValues.fixedSlotsMaximumDiscountFraction,
-    whitelistDiscountFraction: stateValues.whitelistDiscountFraction,
-    existingCompanyShares: stateValues.existingCompanyShares,
-  });
-  const sharePrice = getSharePrice({
-    preMoneyValuationEur: stateValues.preMoneyValuationEur,
-    existingCompanyShares: stateValues.existingCompanyShares,
-  });
+  const { minInvestmentAmount, maxInvestmentAmount } = getInvestmentAmount(stateValues);
+  const { sharePrice, tokenPrice } = getShareAndTokenPrice(stateValues);
 
-  const computedTokenPrice = sharePrice / equityTokensPerShare;
   return (
     <EtoFormBase
       title={<FormattedMessage id="eto.form.investment-terms.title" />}
@@ -100,7 +88,6 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
           prefix="€"
           name="shareNominalValueEur"
           type="number"
-          min="1"
           disabled={readonly}
         />
         <FormField
@@ -111,7 +98,6 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
           prefix="€"
           name="preMoneyValuationEur"
           type="number"
-          min="1"
           disabled={readonly}
         />
         <FormField
@@ -119,7 +105,6 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
           placeholder="Number of existing shares"
           name="existingCompanyShares"
           type="number"
-          min="1"
           disabled={readonly}
         />
         <FormField
@@ -136,7 +121,6 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
           placeholder="Number of shares"
           name="minimumNewSharesToIssue"
           type="number"
-          min="1"
           disabled={readonly}
         />
         <FormField
@@ -146,7 +130,6 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
           placeholder="Number of shares"
           name="newSharesToIssue"
           type="number"
-          min="1"
           disabled={readonly}
         />
         <NumberTransformingField
@@ -165,7 +148,6 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
           placeholder="Number of shares"
           name="newSharesToIssueInWhitelist"
           type="number"
-          min="1"
           disabled={readonly}
         />
         <NumberTransformingField
@@ -184,7 +166,6 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
           placeholder="Number of shares"
           name="newSharesToIssueInFixedSlots"
           type="number"
-          min="1"
           disabled={readonly}
         />
         <NumberTransformingField
@@ -212,7 +193,7 @@ const EtoInvestmentTermsComponent: React.SFC<IProps> = ({ stateValues, savingDat
             name="equityTokenPrice"
             prefix="€"
             placeholder="read only"
-            value={formatMoney(`${computedTokenPrice}`, 1, 8)}
+            value={formatMoney(`${tokenPrice}`, 1, 8)}
             readOnly={true}
           />
           <Row>
@@ -325,23 +306,41 @@ const EtoInvestmentTerms = compose<React.SFC<IExternalProps>>(
     validationSchema: EtoInvestmentTermsType.toYup(),
     mapPropsToValues: props => convert(props.stateValues, toFormState),
     handleSubmit: (values, props) => props.props.saveData(values),
+    validate: values => {
+      const errors: { [key in keyof (typeof values)]: TTranslatedString } = {};
+
+      if ((values.publicDiscountFraction || 0) > (values.whitelistDiscountFraction || 0)) {
+        errors.whitelistDiscountFraction = (
+          <FormattedMessage id="eto.form.investment-terms.errors.whitelist-discount-must-at-least-as-big-as-public-discount" />
+        );
+      }
+
+      if ((values.fixedSlotsMaximumDiscountFraction || 0) < (values.publicDiscountFraction || 0)) {
+        errors.fixedSlotsMaximumDiscountFraction = (
+          <FormattedMessage id="eto.form.investment-terms.errors.fixed-slots-must-be-at-least-as-big-as-public-discount" />
+        );
+      }
+
+      return errors;
+    },
   }),
 )(EtoInvestmentTermsComponent);
 
-export { EtoInvestmentTerms };
-
 const toFormState = {
   whitelistDiscountFraction: convertFractionToPercentage(),
+  publicDiscountFraction: convertFractionToPercentage(),
   fixedSlotsMaximumDiscountFraction: convertFractionToPercentage(),
 };
 
 const fromFormState = {
   whitelistDiscountFraction: convertPercentageToFraction(),
+  publicDiscountFraction: convertPercentageToFraction(),
   fixedSlotsMaximumDiscountFraction: convertPercentageToFraction(),
   equityTokensPerShare: parseStringToInteger(),
   existingCompanyShares: parseStringToInteger(),
   newSharesToIssueInFixedSlots: parseStringToInteger(),
   newSharesToIssueInWhitelist: parseStringToInteger(),
   shareNominalValueEur: parseStringToFloat(),
-  publicDiscountFraction: convertPercentageToFraction(),
 };
+
+export { EtoInvestmentTerms, EtoInvestmentTermsComponent };

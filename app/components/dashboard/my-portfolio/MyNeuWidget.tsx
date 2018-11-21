@@ -22,7 +22,7 @@ export const MyNeuWidget: React.SFC<IProps> = props => {
       <h5 className={cn(styles.title)}>
         <FormattedMessage id="dashboard.my-neu-widget.my-neumark" />
       </h5>
-      <Row noGutters>
+      <Row noGutters className={cn(styles.content)}>
         <Col md={12}>
           <div className={cn(styles.neu)}>
             <MoneySuiteWidget
@@ -36,7 +36,7 @@ export const MyNeuWidget: React.SFC<IProps> = props => {
             />
           </div>
         </Col>
-        <Col md={12} className="text-center" data-test-id="arrow-neu">
+        <Col md={12} className="text-center align-self-end" data-test-id="arrow-neu">
           <ButtonLink
             to={`${externalRoutes.neufundSupport}/solutions/articles/36000060355-what-is-neumark-`}
             target="_blank"

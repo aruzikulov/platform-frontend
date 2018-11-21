@@ -3,6 +3,7 @@ import {
   countryCode,
   isUsCitizen,
   makeAllRequired,
+  percentage,
   personBirthDate,
   restrictedCountry,
 } from "./util/schemaHelpers";
@@ -87,9 +88,10 @@ export interface IKycBeneficialOwner extends IKycPerson {
   ownership?: number;
   id?: string;
 }
+
 export const KycBeneficialOwnerSchema = KycPersonSchema.concat(
   Yup.object().shape({
-    ownership: Yup.number(),
+    ownership: percentage,
     id: Yup.string(),
   }),
 );

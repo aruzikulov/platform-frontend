@@ -4,6 +4,7 @@
   }
 
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
 }
 
@@ -23,8 +24,4 @@
   justify-content: center;
   text-align: center;
   width: 100%;
-}
-
-.link {
-  text-decoration: underline;
 }

@@ -49,6 +49,20 @@ const documents: IEtoDocument[] = [
   },
 ];
 
-storiesOf("Document/SingleColDocumentWidget", module).add("default", () => (
-  <SingleColDocumentsLayout title="fufu" documents={documents} downloadImmutableFile={() => {}} />
-));
+storiesOf("Document/SingleColDocumentWidget", module)
+  .add("default", () => (
+    <SingleColDocumentsLayout
+      title="fufu"
+      documents={documents}
+      isRetailEto={false}
+      downloadImmutableFile={() => {}}
+    />
+  ))
+  .add("Retail ETO", () => (
+    <SingleColDocumentsLayout
+      title="fufu"
+      documents={documents}
+      isRetailEto={true}
+      downloadImmutableFile={() => {}}
+    />
+  ));

@@ -39,7 +39,7 @@ $lg-width: px-to-rem(140px);
     @include media-breakpoint-up(sm) {
       padding-right: px-to-rem(5px);
       height: px-to-rem(65px);
-      border-left: 3px solid transparent;
+      border-left: 6px solid transparent;
     }
 
     @include media-breakpoint-down(xs) {
@@ -71,22 +71,21 @@ $lg-width: px-to-rem(140px);
     }
 
     &:hover,
+    &:focus,
     &--active {
-      background-color: $neu-charcoal-grey;
       border-color: $neu-piss-yellow;
-      text-decoration: none;
     }
 
-    &:focus {
+    &--active {
       background-color: lighten($neu-charcoal-grey, 8%);
-      color: $color-white;
+
     }
   }
 }
 
 .icon {
   @include media-breakpoint-up(sm) {
-    margin-left: 20px;
+    margin-left: 15px;
     margin-right: 10px;
   }
 

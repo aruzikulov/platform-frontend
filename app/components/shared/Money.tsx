@@ -29,7 +29,6 @@ interface IOwnProps extends React.HTMLAttributes<HTMLSpanElement> {
   currency: TCurrency;
   value?: React.ReactElement<any> | string | BigNumber | number | null;
   format?: EMoneyFormat;
-  doNotSeparateThousands?: boolean;
   currencySymbol?: ECurrencySymbol;
   currencyClassName?: string;
   transfer?: TMoneyTransfer;
@@ -97,7 +96,6 @@ const Money: React.SFC<IProps> = ({
   format = EMoneyFormat.WEI,
   currency,
   currencyClassName,
-  doNotSeparateThousands,
   transfer,
   currencySymbol = ECurrencySymbol.CODE,
   theme,
@@ -112,9 +110,11 @@ const Money: React.SFC<IProps> = ({
       ? getFormattedMoney(value as BigNumber, currency, EMoneyFormat.WEI)
       : value;
 
-  const doFormat = !doNotSeparateThousands && !React.isValidElement(money);
-
-  const formattedMoney = doFormat ? <NumberFormat value={money as string} /> : money;
+  const formattedMoney = !React.isValidElement(money) ? (
+    <NumberFormat value={money as string} />
+  ) : (
+    money
+  );
   return (
     <span {...props} className={cn(styles.money, transfer, props.className, theme)}>
       {currencySymbol === ECurrencySymbol.SYMBOL && (

@@ -8,8 +8,8 @@ import {
   TWalletMigrationSteps,
 } from "../../../modules/icbm-wallet-balance-modal/reducer";
 import {
-  selectAllNeumakrsDueIcbmModal,
   selectEtherBalanceIcbmModal,
+  selectEtherNeumarksDueIcbmModal,
   selectIcbmModalIsFirstTransactionDone,
   selectIcbmModalIsMigrating,
   selectIcbmModalIsSecondTransactionDone,
@@ -51,6 +51,7 @@ interface IDispatchProps {
   onGotoWallet: () => void;
   startWalletMigration: () => void;
   goToNextStep: () => void;
+  downloadICBMAgreement: () => void;
 }
 type IProps = IStateProps &
   IDispatchProps & {
@@ -75,6 +76,7 @@ const IcbmWalletBalanceComponent: React.SFC<IProps> = ({
   isSecondTxDone,
   currentMigrationStep,
   goToNextStep,
+  downloadICBMAgreement,
 }) => {
   return (
     <Modal isOpen={isOpen} toggle={onCancel}>
@@ -101,6 +103,7 @@ const IcbmWalletBalanceComponent: React.SFC<IProps> = ({
               ethAddress={ethAddress}
               neumarksDue={neumarksDue}
               etherBalance={etherBalance}
+              downloadICBMAgreement={downloadICBMAgreement}
             />
           )}
         </div>
@@ -114,9 +117,9 @@ const IcbmWalletBalanceModal = compose<any, any>(
     stateToProps: state => ({
       isOpen: state.icbmWalletBalanceModal.isOpen,
       isLoading: state.icbmWalletBalanceModal.loading,
-      ethAddress: selectIcbmWalletEthAddress(state.icbmWalletBalanceModal),
-      neumarksDue: selectAllNeumakrsDueIcbmModal(state.icbmWalletBalanceModal),
-      etherBalance: selectEtherBalanceIcbmModal(state.icbmWalletBalanceModal),
+      ethAddress: selectIcbmWalletEthAddress(state),
+      neumarksDue: selectEtherNeumarksDueIcbmModal(state),
+      etherBalance: selectEtherBalanceIcbmModal(state),
       isVerificationFullyDone: SelectIsVerificationFullyDone(state),
       walletMigrationData: selectWalletMigrationData(state.icbmWalletBalanceModal),
       lockedWalletConnected: selectLockedWalletConnected(state),
@@ -134,6 +137,8 @@ const IcbmWalletBalanceModal = compose<any, any>(
       },
       startWalletMigration: () => dispatch(actions.icbmWalletBalanceModal.startMigrationFlow()),
       goToNextStep: () => dispatch(actions.icbmWalletBalanceModal.setMigrationStepToNextStep()),
+      downloadICBMAgreement: () =>
+        dispatch(actions.icbmWalletBalanceModal.downloadICBMWalletAgreement()),
     }),
   }),
 )(IcbmWalletBalanceComponent);

@@ -14,7 +14,7 @@ export const authReducer: AppReducer<IAuthState> = (
   action,
 ): DeepReadonly<IAuthState> => {
   switch (action.type) {
-    case "AUTH_LOAD_USER":
+    case "AUTH_SET_USER":
       return {
         ...state,
         user: action.payload.user,

@@ -5,13 +5,21 @@ import { makeEthereumAddressChecksummed } from "../../modules/web3/utils";
 import { EthereumAddress } from "../../types";
 import { DEFAULT_PASSWORD } from "./userHelpers";
 
-const etoFixtures: any = require("../../../git_modules/platform-contracts-artifacts/localhost/eto_fixtures.json");
+export const LONG_WAIT_TIME = 60000;
 
 export function tid(id: string, rest?: string): string {
   return `[data-test-id="${id}"]` + (rest ? ` ${rest}` : "");
 }
 
+export const ETO_FIXTURES: any = require("../../../git_modules/platform-contracts-artifacts/localhost/eto_fixtures.json");
+
+export const FIXTURE_ACCOUNTS: any = require("../../../git_modules/platform-contracts-artifacts/localhost/fixtures.json");
+
 export const numberRegExPattern = /\d+/g;
+
+export const letterRegExPattern = /[^0-9]/gi;
+
+export const letterKeepDotRegExPattern = /[^0-9.]/gi;
 
 export const charRegExPattern = /[^a-z0-9]/gi;
 
@@ -36,7 +44,7 @@ export const assertRegister = () => {
 };
 
 export const goToDashboard = () => {
-  cy.visit("/");
+  cy.visit("/dashboard");
 };
 
 export const goToSettings = () => {
@@ -204,13 +212,13 @@ export const acceptWallet = () => {
 };
 
 export const etoFixtureByName = (name: string) => {
-  const etoAddress = Object.keys(etoFixtures).find(a => etoFixtures[a].name === name);
-  return etoAddress ? etoFixtures[etoAddress] : undefined;
+  const etoAddress = Object.keys(ETO_FIXTURES).find(a => ETO_FIXTURES[a].name === name);
+  return etoAddress ? ETO_FIXTURES[etoAddress] : undefined;
 };
 
 export const etoFixtureAddressByName = (name: string) => {
-  const address = Object.keys(etoFixtures).find(
-    a => etoFixtures[a].name === name,
+  const address = Object.keys(ETO_FIXTURES).find(
+    a => ETO_FIXTURES[a].name === name,
   )! as EthereumAddress;
   return makeEthereumAddressChecksummed(address);
 };

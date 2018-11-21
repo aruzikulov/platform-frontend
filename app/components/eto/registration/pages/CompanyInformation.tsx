@@ -35,7 +35,7 @@ const tagList = ["Science", "Technology", "Blockchain", "Medical", "Research"];
 
 type IProps = IStateProps & IDispatchProps;
 
-const EtoRegistrationTeamAndInvestorsComponent = (
+const EtoRegistrationCompanyInformationComponent = (
   props: FormikProps<TPartialCompanyEtoData> & IProps,
 ) => (
   <EtoFormBase
@@ -119,7 +119,7 @@ const EtoRegistrationTeamAndInvestorsComponent = (
   </EtoFormBase>
 );
 
-export const EtoRegistrationCompanyInformation = compose<React.SFC>(
+const EtoRegistrationCompanyInformation = compose<React.SFC>(
   setDisplayName(EEtoFormTypes.CompanyInformation),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
@@ -138,4 +138,6 @@ export const EtoRegistrationCompanyInformation = compose<React.SFC>(
     mapPropsToValues: props => props.stateValues,
     handleSubmit: (values, props) => props.props.saveData(values),
   }),
-)(EtoRegistrationTeamAndInvestorsComponent);
+)(EtoRegistrationCompanyInformationComponent);
+
+export { EtoRegistrationCompanyInformation, EtoRegistrationCompanyInformationComponent };

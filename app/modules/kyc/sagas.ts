@@ -150,7 +150,7 @@ function* submitIndividualData(
       action.payload.data,
     );
     yield put(actions.kyc.kycUpdateIndividualData(false, result.body));
-    yield put(actions.routing.goToKYCIndividualInstantId());
+    yield put(actions.routing.goToKYCIndividualDocumentVerification());
   } catch {
     notificationCenter.error(formatIntlMessage("module.kyc.sagas.problem-sending-data"));
   }

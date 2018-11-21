@@ -15,6 +15,7 @@ export enum ETransactionErrorType {
   OUT_OF_GAS = "out_of_gas",
   REVERTED_TX = "reverted_tx",
   NONCE_TOO_LOW = "nonce_too_low",
+  LEDGER_CONTRACTS_DISABLED = "ledger_contracts_disabled",
   UNKNOWN_ERROR = "unknown_error",
 }
 
@@ -67,6 +68,7 @@ export const txSenderReducer: AppReducer<ITxSenderState> = (
       return {
         ...initialState,
         state: ETxSenderState.WATCHING_PENDING_TXS,
+        txHash: action.payload.txHash,
       };
 
     case "TX_SENDER_WATCH_PENDING_TXS_DONE":

@@ -4,8 +4,8 @@ import { toChecksumAddress } from "ethereumjs-util";
 import { fork, put, select } from "redux-saga/effects";
 
 import { TGlobalDependencies } from "../../di/setupBindings";
-import { IAppState } from "../../store";
 import { actions, TAction } from "../actions";
+import { downloadLink } from "../immutable-file/sagas";
 import { neuCall, neuTakeEvery, neuTakeUntil } from "../sagasUtils";
 import { ILockedWallet, IWalletStateData } from "../wallet/reducer";
 import { loadWalletDataAsync } from "../wallet/sagas";
@@ -41,9 +41,7 @@ function* loadIcbmWalletMigrationTransactionSaga({
 }: TGlobalDependencies): any {
   try {
     const currentEthAddress: string = yield select(selectEthereumAddressWithChecksum);
-    const icbmEthAddress: string = yield select((s: IAppState) =>
-      selectIcbmWalletEthAddress(s.icbmWalletBalanceModal),
-    );
+    const icbmEthAddress: string = yield select(selectIcbmWalletEthAddress);
     const isFirstTxDone: boolean = yield select(selectIcbmModalIsFirstTransactionDone);
 
     const investorMigrationWallet: [
@@ -88,9 +86,8 @@ function* loadIcbmWalletMigrationSaga(
   { logger, notificationCenter }: TGlobalDependencies,
   action: TAction,
 ): any {
-  const ethAddress = yield select((s: IAppState) =>
-    selectIcbmWalletEthAddress(s.icbmWalletBalanceModal),
-  );
+  const ethAddress = yield select(selectIcbmWalletEthAddress);
+
   if (action.type !== "ICBM_WALLET_BALANCE_MODAL_GET_WALLET_DATA") return;
   try {
     const userAddress = yield select(selectEthereumAddressWithChecksum);
@@ -105,23 +102,25 @@ function* loadIcbmWalletMigrationSaga(
         migrationWalletData.etherTokenICBMLockedWallet,
       ),
     );
+    yield put(actions.icbmWalletBalanceModal.showIcbmWalletBalanceModal());
     yield neuCall(loadIcbmWalletMigrationTransactionSaga);
   } catch (e) {
-    logger.error("Error: ", e);
+    yield put(actions.icbmWalletBalanceModal.hideIcbmWalletBalanceModal());
+    logger.error("Load ICBM migration wallet", e);
     // todo: all texts to text resources
     if (e instanceof NoIcbmWalletError)
-      return notificationCenter.error("ICBM Wallet not found for given Ethereum address");
+      return notificationCenter.error(
+        "We were unable to find an ICBM wallet for the entered address.",
+      );
     if (e instanceof SameUserError) return notificationCenter.error("This is your current address");
     // Default Error
-    return notificationCenter.error("Error while loading wallet data");
+    return notificationCenter.error("Error while loading ICBM Wallet data");
   }
 }
 
 function* icbmWalletMigrationTransactionWatcher({ contractsService }: TGlobalDependencies): any {
   const currentEthAddress = yield select(selectEthereumAddressWithChecksum);
-  const icbmEthAddress = yield select((s: IAppState) =>
-    selectIcbmWalletEthAddress(s.icbmWalletBalanceModal),
-  );
+  const icbmEthAddress = yield select(selectIcbmWalletEthAddress);
   if (currentEthAddress === icbmEthAddress) return;
   let isFirstRun = true;
 
@@ -154,15 +153,57 @@ function* icbmWalletMigrationTransactionWatcher({ contractsService }: TGlobalDep
   }
 }
 
+function* downloadICBMWalletAgreement(
+  {
+    contractsService,
+    apiImmutableStorage,
+    logger,
+    notificationCenter,
+    intlWrapper: {
+      intl: { formatIntlMessage },
+    },
+  }: TGlobalDependencies,
+  action: TAction,
+): any {
+  if (action.type !== "ICBM_WALLET_BALANCE_MODAL_DOWNLOAD_AGREEMENT") return;
+
+  const [, , agreementUrl] = yield contractsService.euroLock.currentAgreement();
+  const fileUri = agreementUrl.replace("ipfs:", "");
+
+  try {
+    const generatedDocument = yield apiImmutableStorage.getFile({
+      ipfsHash: fileUri,
+      mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      asPdf: true,
+    });
+
+    yield neuCall(
+      downloadLink,
+      generatedDocument,
+      formatIntlMessage("wallet.icbm.reservation-agreement"),
+      ".pdf",
+    );
+  } catch (e) {
+    logger.error("Failed to download ICBM wallet agreement", e);
+    notificationCenter.error("Failed to download ICBM Wallet Agreement");
+  }
+}
+
 export function* icbmWalletGetDataSagas(): any {
   yield fork(
     neuTakeEvery,
     "ICBM_WALLET_BALANCE_MODAL_GET_WALLET_DATA",
     loadIcbmWalletMigrationSaga,
   );
-  yield neuTakeUntil(
+  yield fork(
+    neuTakeUntil,
     "ICBM_WALLET_BALANCE_MODAL_SHOW",
     "ICBM_WALLET_BALANCE_MODAL_HIDE",
     icbmWalletMigrationTransactionWatcher,
+  );
+  yield fork(
+    neuTakeEvery,
+    "ICBM_WALLET_BALANCE_MODAL_DOWNLOAD_AGREEMENT",
+    downloadICBMWalletAgreement,
   );
 }

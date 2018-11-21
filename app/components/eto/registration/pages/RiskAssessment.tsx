@@ -109,7 +109,7 @@ const EtoRegistrationRiskAssessmentComponent = (props: IProps) => {
   );
 };
 
-export const EtoRegistrationRiskAssessment = compose<React.SFC>(
+const EtoRegistrationRiskAssessment = compose<React.SFC>(
   setDisplayName(EEtoFormTypes.EtoRiskAssessment),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: s => ({
@@ -134,3 +134,5 @@ export const EtoRegistrationRiskAssessment = compose<React.SFC>(
     handleSubmit: (values, props) => props.props.saveData(values),
   }),
 )(EtoRegistrationRiskAssessmentComponent);
+
+export { EtoRegistrationRiskAssessmentComponent, EtoRegistrationRiskAssessment };

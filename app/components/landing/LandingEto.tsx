@@ -15,7 +15,7 @@ import * as styles from "./LandingEto.module.scss";
 export const LandingEto = injectIntlHelpers(({ intl: { formatIntlMessage } }) => {
   return (
     <LayoutUnauthorized>
-      <div className={styles.landingEto}>
+      <div className={styles.landingEto} data-test-id="landing-eto-page">
         <RegisterCta
           text={formatIntlMessage("eto-landing.register.cta")}
           ctaText={formatIntlMessage("eto-landing.register.buttonText")}

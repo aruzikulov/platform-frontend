@@ -1,3 +1,12 @@
+.step-card-wrapper {
+  display: grid;
+  grid-template: auto / 1fr 1fr;
+  grid-gap: 1.5rem;
+  align-items:  start;
+  max-width: calc(100% / 1.5);
+  margin: 0 auto 1.5rem;
+}
+
 .wallet-logos {
   img {
     height: px-to-rem(48px);

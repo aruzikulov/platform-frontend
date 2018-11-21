@@ -7,8 +7,10 @@ import { compose } from "recompose";
 
 import { CounterWidget, TagsWidget } from ".";
 import { EEtoDocumentType } from "../../../../lib/api/eto/EtoFileApi.interfaces";
+import { getShareAndTokenPrice } from "../../../../lib/api/eto/EtoUtils";
 import { selectIsAuthorized } from "../../../../modules/auth/selectors";
-import { selectIsActionRequiredSettings } from "../../../../modules/notifications/selectors";
+import { selectIsEligibleToPreEto } from "../../../../modules/investor-tickets/selectors";
+import { selectEtoOnChainStateById } from "../../../../modules/public-etos/selectors";
 import {
   EETOStateOnChain,
   TEtoWithCompanyAndContract,
@@ -19,16 +21,17 @@ import { withParams } from "../../../../utils/withParams";
 import { appRoutes } from "../../../appRoutes";
 import { ETOState } from "../../../shared/ETOState";
 import { ECurrencySymbol, EMoneyFormat, Money } from "../../../shared/Money";
+import { NumberFormat } from "../../../shared/NumberFormat";
+import { Percentage } from "../../../shared/Percentage";
 import { EtoWidgetContext } from "../../EtoWidgetView";
 import { InvestmentAmount } from "../../shared/InvestmentAmount";
 import { CampaigningActivatedWidget } from "./CampaigningWidget";
 import { ClaimWidget, RefundWidget } from "./ClaimRefundWidget";
 import { InvestmentWidget } from "./InvestmentWidget";
-import { IWithIsEligibleToPreEto, withIsEligibleToPreEto } from "./withIsEligibleToPreEto";
-
-import * as styles from "./EtoOverviewStatus.module.scss";
 import { RegisterNowWidget } from "./RegisterNowWidget";
 import { TokenSymbolWidget } from "./TokenSymbolWidget";
+
+import * as styles from "./EtoOverviewStatus.module.scss";
 
 interface IExternalProps {
   eto: TEtoWithCompanyAndContract;
@@ -40,7 +43,8 @@ interface IStatusOfEto {
 
 interface IStateProps {
   isAuthorized: boolean;
-  settingsUpdateRequired: boolean;
+  isEligibleToPreEto: boolean;
+  isPreEto?: boolean;
 }
 
 const StatusOfEto: React.SFC<IStatusOfEto> = ({ previewCode }) => {
@@ -69,8 +73,7 @@ const EtoStatusManager = ({
   eto,
   isAuthorized,
   isEligibleToPreEto,
-  settingsUpdateRequired,
-}: IExternalProps & IStateProps & IWithIsEligibleToPreEto) => {
+}: IExternalProps & IStateProps) => {
   // It's possible for contract to be undefined if eto is not on chain yet
   const timedState = eto.contract ? eto.contract.timedState : EETOStateOnChain.Setup;
 
@@ -110,13 +113,7 @@ const EtoStatusManager = ({
     }
 
     case EETOStateOnChain.Public: {
-      return (
-        <InvestmentWidget
-          eto={eto}
-          settingsUpdateRequired={settingsUpdateRequired}
-          isAuthorized={isAuthorized}
-        />
-      );
+      return <InvestmentWidget eto={eto} />;
     }
 
     case EETOStateOnChain.Claim:
@@ -142,12 +139,32 @@ const EtoStatusManager = ({
   }
 };
 
-const EtoOverviewStatusLayout: React.SFC<
-  IExternalProps & CommonHtmlProps & IWithIsEligibleToPreEto & IStateProps
-> = ({ eto, className, isAuthorized, isEligibleToPreEto, settingsUpdateRequired }) => {
+function applyDiscountToPrice(price: number, discountFraction: number): number {
+  return price * (1 - discountFraction);
+}
+
+const EtoOverviewStatusLayout: React.SFC<IExternalProps & CommonHtmlProps & IStateProps> = ({
+  eto,
+  className,
+  isAuthorized,
+  isEligibleToPreEto,
+  isPreEto,
+}) => {
   const smartContractOnChain = !!eto.contract;
 
   const documentsByType = keyBy(eto.documents, document => document.documentType);
+
+  let { tokenPrice } = getShareAndTokenPrice(eto);
+
+  const showWhitelistDiscount = Boolean(
+    eto.whitelistDiscountFraction && isEligibleToPreEto && isPreEto,
+  );
+  const showPublicDiscount = Boolean(!showWhitelistDiscount && eto.publicDiscountFraction);
+  if (showWhitelistDiscount) {
+    tokenPrice = applyDiscountToPrice(tokenPrice, eto.whitelistDiscountFraction!);
+  } else if (showPublicDiscount) {
+    tokenPrice = applyDiscountToPrice(tokenPrice, eto.publicDiscountFraction!);
+  }
 
   return (
     <EtoWidgetContext.Consumer>
@@ -179,6 +196,7 @@ const EtoOverviewStatusLayout: React.SFC<
             <div className={styles.tagsWrapper}>
               <TagsWidget
                 etoId={eto.etoId}
+                allowRetailEto={eto.allowRetailInvestors}
                 termSheet={documentsByType[EEtoDocumentType.SIGNED_TERMSHEET]}
                 prospectusApproved={
                   documentsByType[EEtoDocumentType.APPROVED_INVESTOR_OFFERING_DOCUMENT]
@@ -216,24 +234,16 @@ const EtoOverviewStatusLayout: React.SFC<
                   <FormattedMessage id="shared-component.eto-overview-status.investment-amount" />
                 </span>
                 <span className={styles.value}>
-                  <InvestmentAmount
-                    newSharesToIssue={eto.newSharesToIssue}
-                    newSharesToIssueInFixedSlots={eto.newSharesToIssueInFixedSlots}
-                    newSharesToIssueInWhitelist={eto.newSharesToIssueInWhitelist}
-                    fixedSlotsMaximumDiscountFraction={eto.fixedSlotsMaximumDiscountFraction}
-                    whitelistDiscountFraction={eto.whitelistDiscountFraction}
-                    publicDiscountFraction={eto.publicDiscountFraction}
-                    existingCompanyShares={eto.existingCompanyShares}
-                    preMoneyValuationEur={eto.preMoneyValuationEur}
-                    minimumNewSharesToIssue={eto.minimumNewSharesToIssue}
-                  />
+                  <InvestmentAmount etoData={eto} />
                 </span>
               </div>
               <div className={styles.group}>
                 <span className={styles.label}>
                   <FormattedMessage id="shared-component.eto-overview-status.new-shares-generated" />
                 </span>
-                <span className={styles.value}>{eto.newSharesToIssue}</span>
+                <span className={styles.value}>
+                  <NumberFormat value={eto.newSharesToIssue} />
+                </span>
               </div>
               <div className={styles.group}>
                 <span className={styles.label}>
@@ -241,15 +251,28 @@ const EtoOverviewStatusLayout: React.SFC<
                 </span>
                 <span className={styles.value}>
                   <Money
-                    value={
-                      (eto.preMoneyValuationEur || 0) /
-                      (eto.existingCompanyShares || 1) /
-                      (eto.equityTokensPerShare || 1)
-                    }
+                    value={tokenPrice.toLocaleString(undefined, {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 8,
+                    })}
                     currency="eur"
                     format={EMoneyFormat.FLOAT}
                     currencySymbol={ECurrencySymbol.SYMBOL}
                   />
+                  {showWhitelistDiscount && (
+                    <>
+                      {" (-"}
+                      <Percentage>{eto.whitelistDiscountFraction!}</Percentage>
+                      {")"}
+                    </>
+                  )}
+                  {showPublicDiscount && (
+                    <>
+                      {" (-"}
+                      <Percentage>{eto.publicDiscountFraction!}</Percentage>
+                      {")"}
+                    </>
+                  )}
                 </span>
               </div>
             </div>
@@ -261,7 +284,6 @@ const EtoOverviewStatusLayout: React.SFC<
                 eto={eto}
                 isAuthorized={isAuthorized}
                 isEligibleToPreEto={isEligibleToPreEto}
-                settingsUpdateRequired={settingsUpdateRequired}
               />
             </div>
           </div>
@@ -272,15 +294,17 @@ const EtoOverviewStatusLayout: React.SFC<
   );
 };
 
-export const EtoOverviewStatus = compose<
-  IExternalProps & CommonHtmlProps & IWithIsEligibleToPreEto & IStateProps,
+const EtoOverviewStatus = compose<
+  IExternalProps & CommonHtmlProps & IStateProps,
   IExternalProps & CommonHtmlProps
 >(
   appConnect<IStateProps, {}, IExternalProps>({
-    stateToProps: state => ({
+    stateToProps: (state, props) => ({
       isAuthorized: selectIsAuthorized(state.auth),
-      settingsUpdateRequired: selectIsActionRequiredSettings(state),
+      isEligibleToPreEto: selectIsEligibleToPreEto(props.eto.etoId, state),
+      isPreEto: selectEtoOnChainStateById(state, props.eto.etoId) === EETOStateOnChain.Whitelist,
     }),
   }),
-  withIsEligibleToPreEto,
 )(EtoOverviewStatusLayout);
+
+export { EtoOverviewStatusLayout, EtoOverviewStatus };

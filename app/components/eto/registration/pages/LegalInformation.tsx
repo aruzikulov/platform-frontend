@@ -134,7 +134,6 @@ const EtoRegistrationLegalInformationComponent = ({ savingData }: IProps) => {
         <FormField
           label={<FormattedMessage id="eto.form.legal-information.number-of-existing-shares" />}
           type="number"
-          min="0"
           name="companyShares"
         />
         <FormHighlightGroup
@@ -162,7 +161,7 @@ const EtoRegistrationLegalInformationComponent = ({ savingData }: IProps) => {
   );
 };
 
-export const EtoRegistrationLegalInformation = compose<React.SFC<IExternalProps>>(
+const EtoRegistrationLegalInformation = compose<React.SFC<IExternalProps>>(
   setDisplayName(EEtoFormTypes.LegalInformation),
   appConnect<IStateProps, IDispatchProps>({
     stateToProps: state => ({
@@ -190,3 +189,5 @@ const fromFormState = {
   lastFundingSizeEur: parseStringToFloat(),
   numberOfFounders: parseStringToInteger(),
 };
+
+export { EtoRegistrationLegalInformation, EtoRegistrationLegalInformationComponent };

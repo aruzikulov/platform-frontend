@@ -52,7 +52,7 @@
   }
 
   @include media-breakpoint-down(xl) {
-    transform: translateX(-20%);
+    transform: translateX(-20%) scale(.9);
   }
 
   position: relative;
@@ -110,14 +110,22 @@
     }
 
     &:nth-of-type(6) {
-      transform: translate(130%, 200%);
+      transform: translate(10%, 200%);
 
       &:hover {
-        transform: scale(1.1) translate(120%, 180%);
+        transform: scale(1.1) translate(10%, 185%);
       }
     }
 
     &:nth-of-type(7) {
+      transform: translate(130%, 200%);
+
+      &:hover {
+        transform: scale(1.1) translate(120%, 185%);
+      }
+    }
+
+    &:nth-of-type(8) {
       transform: translate(250%, 200%);
 
       &:hover {

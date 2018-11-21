@@ -1,7 +1,10 @@
-import { delay } from "redux-saga";
+import { delay, END, eventChannel } from "redux-saga";
 import { put } from "redux-saga/effects";
+import * as Web3 from "web3";
+
 import { TGlobalDependencies } from "../../../di/setupBindings";
 import { TPendingTxs } from "../../../lib/api/users/interfaces";
+import { OutOfGasError, RevertedTransactionError } from "../../../lib/web3/Web3Adapter";
 import { actions } from "../../actions";
 import { neuCall, neuTakeUntil } from "../../sagasUtils";
 
@@ -36,7 +39,7 @@ async function cleanPendingTransactionsPromise(
 export function* updateTxs(): any {
   let apiPendingTx = yield neuCall(getPendingTransactionsPromise);
   apiPendingTx = yield neuCall(cleanPendingTransactionsPromise, apiPendingTx);
-  yield put(actions.txMonitor.loadTxs(apiPendingTx));
+  yield put(actions.txMonitor.setPendingTxs(apiPendingTx));
 }
 
 function* txMonitor({ logger, notificationCenter }: TGlobalDependencies): any {
@@ -53,6 +56,61 @@ function* txMonitor({ logger, notificationCenter }: TGlobalDependencies): any {
   }
 }
 
+export enum EEventEmitterChannelEvents {
+  NEW_BLOCK = "NEW_BLOCK",
+  TX_MINED = "TX_MINED",
+  ERROR = "ERROR",
+  REVERTED_TRANSACTION = "REVERTED_TRANSACTION",
+  OUT_OF_GAS = "OUT_OF_GAS",
+}
+
+export type TEventEmitterChannelEvents =
+  | {
+      type: EEventEmitterChannelEvents.NEW_BLOCK;
+      blockId: number;
+    }
+  | {
+      type: EEventEmitterChannelEvents.TX_MINED;
+      tx: Web3.Transaction;
+    }
+  | {
+      type: EEventEmitterChannelEvents.ERROR;
+      error: any;
+    }
+  | {
+      type: EEventEmitterChannelEvents.REVERTED_TRANSACTION;
+      error: any;
+    }
+  | {
+      type: EEventEmitterChannelEvents.OUT_OF_GAS;
+      error: any;
+    };
+
+export const createWatchTxChannel = ({ web3Manager }: TGlobalDependencies, txHash: string) =>
+  eventChannel<TEventEmitterChannelEvents>(emitter => {
+    web3Manager.internalWeb3Adapter
+      .waitForTx({
+        txHash,
+        onNewBlock: async blockId => {
+          emitter({ type: EEventEmitterChannelEvents.NEW_BLOCK, blockId });
+        },
+      })
+      .then(tx => emitter({ type: EEventEmitterChannelEvents.TX_MINED, tx }))
+      .catch(error => {
+        if (error instanceof RevertedTransactionError) {
+          emitter({ type: EEventEmitterChannelEvents.REVERTED_TRANSACTION, error });
+        } else if (error instanceof OutOfGasError) {
+          emitter({ type: EEventEmitterChannelEvents.OUT_OF_GAS, error });
+        } else {
+          emitter({ type: EEventEmitterChannelEvents.ERROR, error });
+        }
+      })
+      .then(() => emitter(END));
+    return () => {
+      // @todo missing unsubscribe
+    };
+  });
+
 export function* txMonitorSagas(): any {
-  yield neuTakeUntil("AUTH_LOAD_USER", "AUTH_LOGOUT", txMonitor);
+  yield neuTakeUntil("AUTH_SET_USER", "AUTH_LOGOUT", txMonitor);
 }

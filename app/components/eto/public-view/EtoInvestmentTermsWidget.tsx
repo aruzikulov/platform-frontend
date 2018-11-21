@@ -116,28 +116,9 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
               }
               data-test-id="eto-public-view-new-share-price"
             />
-            {etoData.whitelistDiscountFraction && (
-              <Entry
-                label={<FormattedMessage id="eto.public-view.token-terms.whitelist-discount" />}
-                value={<Percentage>{etoData.whitelistDiscountFraction}</Percentage>}
-                data-test-id="eto-public-view-whitelist-discount"
-              />
-            )}
             <Entry
               label={<FormattedMessage id="eto.public-view.token-terms.investment-amount" />}
-              value={
-                <InvestmentAmount
-                  newSharesToIssue={etoData.newSharesToIssue}
-                  newSharesToIssueInFixedSlots={etoData.newSharesToIssueInFixedSlots}
-                  newSharesToIssueInWhitelist={etoData.newSharesToIssueInWhitelist}
-                  fixedSlotsMaximumDiscountFraction={etoData.fixedSlotsMaximumDiscountFraction}
-                  whitelistDiscountFraction={etoData.whitelistDiscountFraction}
-                  publicDiscountFraction={etoData.publicDiscountFraction}
-                  existingCompanyShares={etoData.existingCompanyShares}
-                  preMoneyValuationEur={etoData.preMoneyValuationEur}
-                  minimumNewSharesToIssue={etoData.minimumNewSharesToIssue}
-                />
-              }
+              value={<InvestmentAmount etoData={etoData} />}
               data-test-id="eto-public-view-investment-amount"
             />
             {etoData.templates.investmentAndShareholderAgreementTemplate && (
@@ -177,6 +158,20 @@ const EtoInvestmentTermsWidgetLayout: React.SFC<TExternalProps & TDispatchProps>
                   />
                 }
                 data-test-id="eto-public-view-token-price"
+              />
+            )}
+            {!!etoData.whitelistDiscountFraction && (
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.whitelist-discount" />}
+                value={<Percentage>{etoData.whitelistDiscountFraction}</Percentage>}
+                data-test-id="eto-public-view-whitelist-discount"
+              />
+            )}
+            {!!etoData.publicDiscountFraction && (
+              <Entry
+                label={<FormattedMessage id="eto.public-view.token-terms.public-discount" />}
+                value={<Percentage>{etoData.publicDiscountFraction}</Percentage>}
+                data-test-id="eto-public-view-public-discount"
               />
             )}
             {!!etoData.minTicketEur && (

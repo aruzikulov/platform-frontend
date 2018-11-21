@@ -1,9 +1,9 @@
 import * as cn from "classnames";
 import * as React from "react";
+import { FormattedMessage } from "react-intl";
 import { branch } from "recompose";
 
-import { NotificationType } from "../../../modules/notifications/reducer";
-import { TTranslatedString } from "../../../types";
+import { NotificationText, NotificationType } from "../../../modules/notifications/reducer";
 import { withContainer } from "../../../utils/withContainer";
 import { Button, ButtonClose, ButtonTextPosition, ButtonWidth, EButtonLayout } from "../buttons";
 
@@ -13,7 +13,7 @@ import * as styles from "./Notification.module.scss";
 
 export interface INotificationProps {
   type: NotificationType;
-  text: TTranslatedString;
+  text: NotificationText;
   actionLinkText?: string;
   onClick: () => void;
   clickable?: boolean;
@@ -21,9 +21,21 @@ export interface INotificationProps {
 
 const { INFO, WARNING } = NotificationType;
 
+const {
+  COMPLETE_REQUEST_NOTIFICATION,
+  COMPLETE_UPDATE_ACCOUNT,
+  TEST_NOTIFICATION,
+} = NotificationText;
+
 const icons = {
   [INFO]: infoIcon,
   [WARNING]: warningIcon,
+};
+
+const notificationTexts = {
+  [COMPLETE_REQUEST_NOTIFICATION]: <FormattedMessage id="notifications.complete-request" />,
+  [COMPLETE_UPDATE_ACCOUNT]: <FormattedMessage id="notifications.update-account" />,
+  [TEST_NOTIFICATION]: "bla",
 };
 
 const NotificationClickableContainer: React.SFC<INotificationProps> = ({ children, onClick }) => (
@@ -48,7 +60,7 @@ const NotificationComponent: React.SFC<INotificationProps> = ({
       <img src={icons[type]} />
     </i>
     <span data-test-id="notification-text" className={styles.text}>
-      {text}
+      {notificationTexts[text]}
     </span>
     {actionLinkText ? (
       <Button

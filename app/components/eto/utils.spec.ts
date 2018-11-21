@@ -8,8 +8,18 @@ import {
   convertPercentageToFraction,
   convertToPrecision,
   parseStringToFloat,
+  removeEmptyKeyValueField,
   removeEmptyKeyValueFields,
 } from "./utils";
+
+describe("removeEmptyKeyValueField", () => {
+  it("removes empty key-value fields", () => {
+    const badInput = { a: undefined };
+    const goodInput = { a: 1, b: 2 };
+    expect(removeEmptyKeyValueField()(badInput)).to.be.undefined;
+    expect(removeEmptyKeyValueField()(goodInput)).to.deep.equal(goodInput);
+  });
+});
 
 describe("removeEmptyKeyValueFields", () => {
   it("iterates over an array of key-value objects and filters out all empty ones", () => {

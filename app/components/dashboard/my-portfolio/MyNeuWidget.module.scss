@@ -1,4 +1,6 @@
 .background {
+  display: flex;
+  flex-direction: column;
   background: $neu-pale-blue;
   padding: px-to-rem(15px);
 }
@@ -28,6 +30,10 @@
   font-weight: $font-weight-bold;
   font-family: $font-family-base;
   margin-bottom: px-to-rem(20px);
+}
+
+.content {
+  flex-grow: 1;
 }
 
 .neu {

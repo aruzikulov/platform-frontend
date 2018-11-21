@@ -1,3 +1,12 @@
+.kyc-panel {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  max-width: px-to-rem(1000px);
+  margin: 0 auto;
+
+}
+
 .header {
   margin: px-to-rem(46px) 0;
 }
@@ -8,9 +17,6 @@
 }
 
 .description {
-  @include media-breakpoint-up (lg) {
-    max-width: 70%;
-  }
   font-size: px-to-rem(16px);
   max-width: 90%;
   text-align: center;
@@ -20,18 +26,18 @@
 }
 
 .content {
-  @include make-col-ready;
-  @include make-col(1, 1);
-  @include media-breakpoint-up (md) {
-    @include make-col(10);
-    @include make-col-offset(1);
-  }
-  @include media-breakpoint-up (xl) {
-    @include make-col(2, 3);
-    @include make-col-offset(1, 6);
-  }
+  padding-top: px-to-rem(72px);
+}
 
-  margin-top: px-to-rem(72px);
+.content-narrow {
+  align-self: center;
+  width: 100%;
+  max-width: px-to-rem(630px);
+  padding-top: px-to-rem(72px);
+}
+
+.no-top-padding {
+  padding-top: 0;
 }
 
 .footer {
@@ -40,11 +46,3 @@
   padding-left: px-to-rem(14px);
 }
 
-.kyc-panel-max {
-  .content {
-    @include media-breakpoint-up (md) {
-      @include make-col(1, 1);
-      @include make-col-offset(0);
-    }
-  }
-}

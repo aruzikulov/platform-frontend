@@ -1,10 +1,13 @@
 import * as cn from "classnames";
 import * as React from "react";
+import { FormattedMessage } from "react-intl-phraseapp";
 import { Col, Row } from "reactstrap";
 import { compose } from "redux";
 
 import { walletFlows } from "../../../modules/wallet-selector/flows";
+import { selectIsLoginRoute } from "../../../modules/wallet-selector/selectors";
 import { appConnect } from "../../../store";
+import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import { withActionWatcher } from "../../../utils/withActionWatcher";
 import { Button } from "../../shared/buttons";
 import { HiResImage } from "../../shared/HiResImage";
@@ -15,11 +18,6 @@ import { WarningAlert } from "../../shared/WarningAlert";
 
 import * as browserIcon from "../../../assets/img/wallet_selector/browser_icon.svg";
 import * as lockIcon from "../../../assets/img/wallet_selector/lock_icon.svg";
-import * as walletIcon from "../../../assets/img/wallet_selector/wallet_icon.svg";
-
-import { FormattedMessage } from "react-intl-phraseapp";
-import { selectIsLoginRoute } from "../../../modules/wallet-selector/selectors";
-import { IIntlProps, injectIntlHelpers } from "../../../utils/injectIntlHelpers";
 import * as styles from "./WalletBrowser.module.scss";
 
 export const BROWSER_WALLET_RECONNECT_INTERVAL = 1000;
@@ -77,11 +75,10 @@ export const WalletBrowserComponent: React.SFC<
             </Row>
           </>
         )}
-        <Row className="mb-4 text-center">
-          <StepCard img={walletIcon} text={formatIntlMessage("wallet-selector.browser.steps.1")} />
+        <div className={styles.stepCardWrapper}>
           <StepCard img={browserIcon} text={formatIntlMessage("wallet-selector.browser.steps.2")} />
           <StepCard img={lockIcon} text={formatIntlMessage("wallet-selector.browser.steps.3")} />
-        </Row>
+        </div>
 
         <HorizontalLine className="mb-4" />
 
@@ -95,13 +92,6 @@ export const WalletBrowserComponent: React.SFC<
         <Row className={cn("justify-content-center text-center", styles.walletLogos)}>
           <Col sm="auto">
             <HiResImage partialPath="wallet_selector/logo_parity" alt="Parity" title="Parity" />
-          </Col>
-          <Col sm="auto">
-            <HiResImage
-              partialPath="wallet_selector/logo_metamask"
-              alt="Metamask"
-              title="Metamask"
-            />
           </Col>
           <Col sm="auto">
             <HiResImage partialPath="wallet_selector/logo_mist" alt="Mist" title="Mist" />

@@ -25,7 +25,7 @@ export const gasReducer: AppReducer<IGasState> = (
     case "GAS_API_LOADED":
       return {
         ...state,
-        gasPrice: action.payload.data,
+        gasPrice: action.payload.data || state.gasPrice,
         error: action.payload.error,
       };
   }

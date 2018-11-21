@@ -4,8 +4,6 @@ import { FormattedMessage } from "react-intl-phraseapp";
 import * as Web3Utils from "web3-utils";
 
 import { actions } from "../../../modules/actions";
-import { selectIcbmMigrationWallet } from "../../../modules/icbm-wallet-balance-modal/selectors";
-import { ILockedWallet } from "../../../modules/wallet/reducer";
 import { appConnect } from "../../../store";
 import { Button, EButtonLayout } from "../../shared/buttons";
 import { FormFieldColorful } from "../../shared/forms/form-field/FormFieldColorful";
@@ -16,10 +14,6 @@ import * as styles from "./CheckYourICBMWalletWidget.module.scss";
 
 interface IDispatchProps {
   loadICBMWallet: (address: string) => void;
-}
-
-interface IStateProps {
-  lockedWalletData?: ILockedWallet;
 }
 
 class FormContent extends React.Component {
@@ -50,9 +44,7 @@ class FormContent extends React.Component {
   }
 }
 
-const CheckYourICBMWalletWidgetComponent: React.SFC<IStateProps & IDispatchProps> = ({
-  loadICBMWallet,
-}) => {
+const CheckYourICBMWalletWidgetComponent: React.SFC<IDispatchProps> = ({ loadICBMWallet }) => {
   return (
     <Panel
       headerText={<FormattedMessage id="check-your-icbm-wallet-widget.header" />}
@@ -70,14 +62,10 @@ const CheckYourICBMWalletWidgetComponent: React.SFC<IStateProps & IDispatchProps
   );
 };
 
-export const CheckYourICBMWalletWidget = appConnect<IStateProps, IDispatchProps>({
-  stateToProps: state => ({
-    lockedWalletData: selectIcbmMigrationWallet(state.icbmWalletBalanceModal),
-  }),
+export const CheckYourICBMWalletWidget = appConnect<{}, IDispatchProps>({
   dispatchToProps: dispatch => ({
     loadICBMWallet: (address: string) => {
       dispatch(actions.icbmWalletBalanceModal.getWalletData(address));
-      dispatch(actions.icbmWalletBalanceModal.showIcbmWalletBalanceModal());
     },
   }),
 })(CheckYourICBMWalletWidgetComponent);

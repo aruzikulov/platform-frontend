@@ -133,7 +133,7 @@ const KYCEnhancedForm = withFormik<IProps, IKycBeneficialOwner>({
   },
 })(KYCForm);
 
-class KYCBeneficialOwnerComponent extends React.Component<IProps> {
+export class KYCBeneficialOwnerComponent extends React.Component<IProps> {
   componentDidMount(): void {
     this.props.loadDocumentList();
   }

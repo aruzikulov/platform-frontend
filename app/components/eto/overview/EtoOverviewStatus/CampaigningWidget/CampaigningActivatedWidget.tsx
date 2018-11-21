@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl-phraseapp";
-import { withProps } from "recompose";
+import { setDisplayName, withProps } from "recompose";
 import { compose } from "redux";
 
 import { IPledge } from "../../../../../lib/api/eto/EtoPledgeApi.interfaces";
@@ -171,6 +171,7 @@ const CampaigningActivatedWidget = compose<React.SFC<IExternalProps>>(
       };
     },
   ),
+  setDisplayName("CampaigningActivatedWidget"),
 )(CampaigningActivatedWidgetComponent);
 
 export { CampaigningActivatedWidget };

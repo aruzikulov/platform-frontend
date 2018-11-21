@@ -1,12 +1,7 @@
 .section-header {
-  @include font-headline-small;
-
-  align-items: center;
-  display: flex;
-  text-transform: uppercase;
   position: relative;
 
-  &:global(.has-decorator) {
+  &.has-decorator {
     margin-left: 0;
     padding-left: px-to-rem(10px);
 
@@ -31,5 +26,25 @@
     &:hover {
       color: darken($neu-cloudy-blue, 20%);
     }
+  }
+
+  &.small {
+    .header {
+      @include font-label;
+    }
+
+    .description {
+      @include font-button-small;
+    }
+  }
+
+  .header {
+    @include font-headline-small;
+
+    text-transform: uppercase;
+  }
+
+  .description {
+    @include font-button-default;
   }
 }

@@ -72,7 +72,16 @@ export class BrowserWallet implements IPersonalWallet {
   }
 
   public async sendTransaction(data: Web3.TxData): Promise<string> {
-    return this.web3Adapter.sendTransaction(data);
+    try {
+      return await this.web3Adapter.sendTransaction(data);
+    } catch (e) {
+      const error = parseBrowserWalletError(e);
+      if (error instanceof BrowserWalletConfirmationRejectedError) {
+        throw new SignerRejectConfirmationError();
+      } else {
+        throw error;
+      }
+    }
   }
 
   public getMetadata(): IBrowserWalletMetadata {

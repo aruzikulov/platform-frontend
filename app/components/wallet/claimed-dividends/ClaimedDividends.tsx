@@ -14,7 +14,6 @@ import * as styles from "./ClaimedDividends.module.scss";
 
 import { FormattedMessage } from "react-intl-phraseapp";
 import * as LinkOutIcon from "../../../assets/img/inline_icons/link_out.svg";
-import * as neuIcon from "../../../assets/img/neu_icon.svg";
 import { CommonHtmlProps } from "../../../types";
 
 export interface IDividendPayout {
@@ -26,7 +25,6 @@ export interface IDividendPayout {
 interface IClaimedDividendsProps {
   totalEurValue: string;
   recentPayouts: IDividendPayout[];
-  headerText?: string | React.ReactElement<any>;
 }
 
 const NoPayoutsInfo = () => (
@@ -38,12 +36,9 @@ export const ClaimedDividends: React.SFC<IClaimedDividendsProps & CommonHtmlProp
   totalEurValue,
   recentPayouts,
   className,
-  headerText,
   ...htmlProps
 }) => (
   <Panel
-    icon={neuIcon}
-    headerText={headerText || "MY PROCEEDS"}
     rightComponent={<TotalEuro totalEurValue={totalEurValue} />}
     className={cn(styles.claimedDividends, className)}
     {...htmlProps}

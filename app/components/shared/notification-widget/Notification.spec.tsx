@@ -3,14 +3,14 @@ import { shallow } from "enzyme";
 import * as React from "react";
 import { spy } from "sinon";
 
-import { NotificationType } from "../../../modules/notifications/reducer";
+import { NotificationText, NotificationType } from "../../../modules/notifications/reducer";
 import { INotificationProps, Notification } from "./Notification";
 
 import { tid } from "../../../../test/testUtils";
 
 const defaultProps = (): INotificationProps => ({
   type: NotificationType.INFO,
-  text: "test notification",
+  text: NotificationText.TEST_NOTIFICATION,
   onClick: spy(),
   actionLinkText: "link text",
 });

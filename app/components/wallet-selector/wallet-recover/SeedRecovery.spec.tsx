@@ -63,7 +63,9 @@ describe("<WalletLightSeedRecoveryComponent />", () => {
     const state = initialState();
     state.page = 1;
 
-    const component = shallow(<WalletLightSeedRecoveryComponent {...defaultProps()} />);
+    const component = shallow<WalletLightSeedRecoveryComponent>(
+      <WalletLightSeedRecoveryComponent {...defaultProps()} />,
+    );
     component.setState(state);
 
     component.find(tid("btn-previous")).simulate("click");
@@ -71,7 +73,9 @@ describe("<WalletLightSeedRecoveryComponent />", () => {
   });
 
   it("previous button should call method to increase page number", () => {
-    const component = shallow(<WalletLightSeedRecoveryComponent {...defaultProps()} />);
+    const component = shallow<WalletLightSeedRecoveryComponent>(
+      <WalletLightSeedRecoveryComponent {...defaultProps()} />,
+    );
 
     component.find(tid("btn-next")).simulate("click");
 
@@ -81,7 +85,9 @@ describe("<WalletLightSeedRecoveryComponent />", () => {
   it("send button should call correct method", () => {
     const props = defaultProps();
 
-    const component = shallow(<WalletLightSeedRecoveryComponent {...props} />);
+    const component = shallow<WalletLightSeedRecoveryComponent>(
+      <WalletLightSeedRecoveryComponent {...props} />,
+    );
     component.find(tid("btn-send")).simulate("click");
 
     expect(props.sendWords).to.be.calledWith(component.state().words.join(" "));

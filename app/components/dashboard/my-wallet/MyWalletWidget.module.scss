@@ -63,3 +63,10 @@
     }
   }
 }
+
+.icbm-wallet {
+  @include font-tab;
+
+  margin-bottom: 0;
+  text-align: right;
+}

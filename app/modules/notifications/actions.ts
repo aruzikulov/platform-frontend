@@ -1,11 +1,11 @@
 import { AppActionTypes } from "../../store";
 import { createAction } from "../actionsUtils";
-import { NotificationType } from "./reducer";
+import { NotificationText, NotificationType } from "./reducer";
 
 export interface INewNotification {
   id?: number;
   type: NotificationType;
-  text: string;
+  text: NotificationText;
   actionLinkText?: string;
   onClickAction?: AppActionTypes;
 }

@@ -12,7 +12,7 @@ import { IEtoDocument } from "../../lib/api/eto/EtoFileApi.interfaces";
 import { TETOWithInvestorTicket } from "../../modules/investor-tickets/types";
 import { EETOStateOnChain } from "../../modules/public-etos/types";
 import { withParams } from "../../utils/withParams";
-import { documentTitles } from "../documents/Documents";
+import { getDocumentTitles } from "../documents/Documents";
 import { externalRoutes } from "../externalRoutes";
 import { AssetPortfolio } from "../shared/AssetPortfolio";
 import { Document } from "../shared/Document";
@@ -33,6 +33,7 @@ export type TPortfolioLayoutProps = {
   myNeuBalanceEuroAmount: string;
   neuPrice: string;
   walletAddress: string;
+  isRetailEto: boolean;
 };
 
 const getNeuReward = (equityTokenInt: BigNumber, equivEurUlps: BigNumber): string => {
@@ -54,13 +55,15 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({
   myNeuBalanceEuroAmount,
   neuPrice,
   walletAddress,
+  isRetailEto,
 }) => (
   <>
     {process.env.NF_ASSETS_PORTFOLIO_COMPONENT_VISIBLE === "1" && (
       <>
-        <SectionHeader layoutHasDecorator={false} className="mb-4">
+        <SectionHeader layoutHasDecorator={false} className="mt-4 mb-4">
           <FormattedMessage id="portfolio.section.asset-portfolio.title" />
         </SectionHeader>
+
         <Row>
           <Col className="mb-4">
             <AssetPortfolio
@@ -81,18 +84,21 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({
       </>
     )}
 
+    <SectionHeader layoutHasDecorator={false} className="mb-4">
+      <FormattedMessage id="portfolio.section.my-proceeds.title" />
+    </SectionHeader>
+
     <Row>
-      <Col className="mb-4 mt-4">
-        <ClaimedDividends
-          headerText={<FormattedMessage id="portfolio.section.dividends-from-neu.title" />}
-          className="h-100"
-          totalEurValue="0"
-          recentPayouts={transactions}
-        />
+      <Col className="mb-4">
+        <ClaimedDividends className="h-100" totalEurValue="0" recentPayouts={transactions} />
       </Col>
     </Row>
 
-    <SectionHeader layoutHasDecorator={false} className="mb-4">
+    <SectionHeader
+      layoutHasDecorator={false}
+      className="mb-4"
+      description={<FormattedMessage id="portfolio.section.reserved-assets.description" />}
+    >
       <FormattedMessage id="portfolio.section.reserved-assets.title" />
     </SectionHeader>
 
@@ -100,6 +106,9 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({
       <Col className="mb-4">
         <NewTable
           keepRhythm={true}
+          placeholder={
+            <FormattedMessage id="portfolio.section.reserved-assets.table.header.placeholder" />
+          }
           titles={[
             <FormattedMessage id="portfolio.section.reserved-assets.table.header.token" />,
             <FormattedMessage id="portfolio.section.reserved-assets.table.header.balance" />,
@@ -164,7 +173,11 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({
       </Col>
     </Row>
 
-    <SectionHeader layoutHasDecorator={false} className="mb-4">
+    <SectionHeader
+      layoutHasDecorator={false}
+      className="mb-4"
+      description={<FormattedMessage id="portfolio.section.your-assets.description" />}
+    >
       <FormattedMessage id="portfolio.section.your-assets.title" />
     </SectionHeader>
 
@@ -239,7 +252,7 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({
                         <span key={document.ipfsHash} className={styles.documentLink}>
                           <Document extension="pdf" />
                           <a href={document.name} download>
-                            {documentTitles[document.documentType]}
+                            {getDocumentTitles(isRetailEto)[document.documentType]}
                           </a>
                         </span>
                       ),

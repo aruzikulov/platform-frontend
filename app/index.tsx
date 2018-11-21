@@ -2,6 +2,12 @@ import "reflect-metadata";
 
 import "./config/yupLocales";
 
+import "font-awesome/scss/font-awesome.scss";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import "./styles/bootstrap.scss";
+import "./styles/overrides.scss";
+
 import createHistory from "history/createBrowserHistory";
 import { Container } from "inversify";
 import { compact } from "lodash";
@@ -23,18 +29,15 @@ import {
   setupBindings,
   TGlobalDependencies,
 } from "./di/setupBindings";
+import { symbols } from "./di/symbols";
+import { ILogger } from "./lib/dependencies/Logger";
 import { createInjectMiddleware } from "./middlewares/redux-injectify";
+import { reduxLogger } from "./middlewares/redux-logger";
 import { rootSaga } from "./modules/sagas";
 import { IAppState, reducers } from "./store";
 import * as ga from "./utils/googleAnalitycs.js";
 import { IntlProviderAndInjector } from "./utils/IntlProviderAndInjector";
 import { InversifyProvider } from "./utils/InversifyProvider";
-
-import "font-awesome/scss/font-awesome.scss";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
-import "./styles/bootstrap.scss";
-import "./styles/overrides.scss";
 
 // @note: this is done to make HMR work with react router. In production build its gone.
 function forceRerenderInDevMode(): number {
@@ -43,16 +46,6 @@ function forceRerenderInDevMode(): number {
   } else {
     return 1;
   }
-}
-
-if (process.env.NF_ENABLE_TRANSLATE_OVERLAY) {
-  const config = {
-    projectId: process.env.NF_TRANSLATION_ID!,
-    phraseEnabled: true,
-    prefix: "[[__",
-    suffix: "__]]",
-  };
-  initializePhraseAppEditor(config);
 }
 
 function renderApp(
@@ -84,6 +77,9 @@ function startupApp(history: any): { store: Store<IAppState>; container: Contain
   const context: { container: Container; deps?: TGlobalDependencies } = {
     container,
   };
+
+  const logger = container.get<ILogger>(symbols.logger);
+
   const sagaMiddleware = createSagaMiddleware({ context });
 
   const middleware = applyMiddleware(
@@ -91,6 +87,7 @@ function startupApp(history: any): { store: Store<IAppState>; container: Contain
       routerMiddleware(history),
       createInjectMiddleware(container, customizerContainerWithMiddlewareApi),
       sagaMiddleware,
+      process.env.NODE_ENV === "production" && reduxLogger(logger),
     ]),
   );
 
@@ -105,6 +102,16 @@ function startupApp(history: any): { store: Store<IAppState>; container: Contain
   sagaMiddleware.run(rootSaga);
 
   return { store, container };
+}
+
+if (process.env.NF_ENABLE_TRANSLATE_OVERLAY) {
+  const config = {
+    projectId: process.env.NF_TRANSLATION_ID!,
+    phraseEnabled: true,
+    prefix: "[[__",
+    suffix: "__]]",
+  };
+  initializePhraseAppEditor(config);
 }
 
 ga.installGA();

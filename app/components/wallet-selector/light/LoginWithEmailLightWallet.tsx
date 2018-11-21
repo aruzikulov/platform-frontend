@@ -15,8 +15,11 @@ import { WarningAlert } from "../../shared/WarningAlert";
 
 const PASSWORD = "password";
 
-export const PasswordValidator = Yup.object().shape({
+const emailValidator = Yup.string().email();
+
+export const LoginValidator = Yup.object().shape({
   password: Yup.string().required(),
+  email: emailValidator,
 });
 
 export interface IFormValues {
@@ -49,7 +52,7 @@ const LoginLightWalletForm: React.SFC<TProps & FormikProps<IFormValues>> = props
     <div className="text-center">
       <Button
         type="submit"
-        disabled={!props.values.password || props.isLoading}
+        disabled={!props.isValid || props.isLoading}
         data-test-id="wallet-selector-nuewallet.login-button"
       >
         Login
@@ -60,7 +63,7 @@ const LoginLightWalletForm: React.SFC<TProps & FormikProps<IFormValues>> = props
 
 const LoginEnhancedLightWalletForm = withFormik<TProps, IFormValues>({
   handleSubmit: (values, props) => props.props.submitForm(values),
-  validationSchema: PasswordValidator,
+  validationSchema: LoginValidator,
 })(LoginLightWalletForm);
 
 export const LoginWithEmailLightWalletComponent: React.SFC<
@@ -79,6 +82,8 @@ export const LoginWithEmailLightWalletComponent: React.SFC<
             value={props.email}
             className="mb-2"
             data-test-id="light-wallet-login-with-email-email-field"
+            valid={emailValidator.isValidSync(props.email)}
+            errorMessage={<FormattedMessage id="wallet-selector.neuwallet.email-error" />}
           />
           <LoginEnhancedLightWalletForm {...props} />
           {props.errorMsg && <WarningAlert>{props.errorMsg}</WarningAlert>}

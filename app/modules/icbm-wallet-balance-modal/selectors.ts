@@ -1,30 +1,21 @@
-import { addBigNumbers } from "../../utils/BigNumberUtils";
-import { ILockedWallet } from "../wallet/reducer";
 import { IAppState } from "./../../store";
 import { IIcbmWalletBalanceModal, IWalletMigrationData, TWalletMigrationSteps } from "./reducer";
 
-export const selectIcbmWalletEthAddress = (state: IIcbmWalletBalanceModal): string | undefined =>
-  state.icbmWalletEthAddress;
+// ICBM Wallet Selectors
+export const selectIcbmWalletEthAddress = (state: IAppState): string | undefined =>
+  state.icbmWalletBalanceModal.icbmWalletEthAddress;
 
-export const selectIcbmMigrationWallet = (
-  state: IIcbmWalletBalanceModal,
-): ILockedWallet | undefined => state.lockedWallet;
+export const selectEtherNeumarksDueIcbmModal = (state: IAppState): string =>
+  (state.icbmWalletBalanceModal.icbmLockedEthWallet &&
+    state.icbmWalletBalanceModal.icbmLockedEthWallet.neumarksDue) ||
+  "0";
 
-export const selectEtherNeumarksDueIcbmModal = (state: IIcbmWalletBalanceModal): string =>
-  (state.lockedWallet && state.lockedWallet.neumarksDue) || "0";
+export const selectEtherBalanceIcbmModal = (state: IAppState): string =>
+  (state.icbmWalletBalanceModal.icbmLockedEthWallet &&
+    state.icbmWalletBalanceModal.icbmLockedEthWallet.LockedBalance) ||
+  "0";
 
-export const selectEurNeumarksDueIcbmModal = (state: IIcbmWalletBalanceModal): string =>
-  (state.lockedWallet && state.lockedWallet.neumarksDue) || "0";
-
-export const selectAllNeumakrsDueIcbmModal = (state: IIcbmWalletBalanceModal): string =>
-  addBigNumbers([selectEtherNeumarksDueIcbmModal(state), selectEurNeumarksDueIcbmModal(state)]);
-
-export const selectEtherBalanceIcbmModal = (state: IIcbmWalletBalanceModal): string =>
-  (state.lockedWallet && state.lockedWallet.LockedBalance) || "0";
-
-export const selectIcbmWalletConnectedIcbmModal = (state: IIcbmWalletBalanceModal): boolean =>
-  !!(state.lockedWallet && state.lockedWallet.unlockDate !== "0");
-
+// Migration Tool Selectors
 export const selectWalletMigrationData = (
   state: IIcbmWalletBalanceModal,
 ): IWalletMigrationData[] | undefined => state.walletMigrationData;

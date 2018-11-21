@@ -15,6 +15,14 @@ export function isLessThanNDays(d1: Date, d2: Date, n: number): boolean {
   return d2.getTime() - d1.getTime() < 1000 * 60 * 60 * 24 * n;
 }
 
+export function isLessThanNHours(d1: Date, d2: Date, n: number): boolean {
+  return d2.getTime() - d1.getTime() < 1000 * 60 * 60 * n;
+}
+
+export function isLessThanNMinutes(d1: Date, d2: Date, n: number): boolean {
+  return d2.getTime() - d1.getTime() < 1000 * 60 * n;
+}
+
 export function minutesToMs(minutes: number): number {
   return minutes * 6 * 10 * 1000;
 }
