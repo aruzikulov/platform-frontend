@@ -56,10 +56,10 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({
   walletAddress,
   isRetailEto,
 }) => (
-  <>
+  <section className={styles.portfolio}>
     {process.env.NF_ASSETS_PORTFOLIO_COMPONENT_VISIBLE === "1" && (
       <>
-        <SectionHeader layoutHasDecorator={false} className="mt-4 mb-4">
+        <SectionHeader layoutHasDecorator={false} className="mb-4">
           <FormattedMessage id="portfolio.section.asset-portfolio.title" />
         </SectionHeader>
 
@@ -265,7 +265,7 @@ const PortfolioLayout: React.SFC<TPortfolioLayoutProps> = ({
         </NewTable>
       </Col>
     </Row>
-  </>
+  </section>
 );
 
 export { PortfolioLayout };

@@ -1,3 +1,7 @@
+.portfolio {
+  @include responsive-size(margin-top, $authorized-layout-vertical-padding-sm, $authorized-layout-vertical-padding-lg);
+}
+
 .token {
   @include rect(18px);
 }

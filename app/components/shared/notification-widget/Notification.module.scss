@@ -1,12 +1,5 @@
 .widget {
-  @include make-row;
-  @include media-breakpoint-up (md) {
-    padding-top: $authorized-layout-vertical-padding-lg;
-    padding-bottom: $authorized-layout-vertical-padding-lg;
-  }
-
-  padding-top: $authorized-layout-vertical-padding-sm;
-  padding-bottom: $authorized-layout-vertical-padding-sm;
+  @include responsive-size(margin-top, $authorized-layout-vertical-padding-sm, $authorized-layout-vertical-padding-lg);
 }
 
 .notification {
