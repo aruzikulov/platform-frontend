@@ -70,4 +70,12 @@ storiesOf("KYC/StatusWidget", module)
       requestStatus="Outsourced"
       requestOutsourcedStatus="review_pending"
     />
+  ))
+  .add("error", () => (
+    <KycStatusWidgetComponent
+      {...{ ...commonProps, error: "bla", loading: true }}
+      userType={EUserType.INVESTOR}
+      requestStatus="Outsourced"
+      requestOutsourcedStatus="review_pending"
+    />
   ));

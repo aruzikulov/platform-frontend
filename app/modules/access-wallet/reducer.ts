@@ -1,9 +1,9 @@
 import { AppReducer } from "../../store";
-import { DeepReadonly } from "../../types";
+import { DeepReadonly, TTranslatedString } from "../../types";
 
 export interface ISignMessageModalState {
   isModalOpen: boolean;
-  modalErrorMsg?: string;
+  modalErrorMsg?: string | TTranslatedString;
   modalTitle?: string;
   modalMessage?: string;
 }

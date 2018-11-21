@@ -1,12 +1,7 @@
 import "reflect-metadata";
 
 import "./config/yupLocales";
-
-import "font-awesome/scss/font-awesome.scss";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
 import "./styles/bootstrap.scss";
-import "./styles/overrides.scss";
 
 import createHistory from "history/createBrowserHistory";
 import { Container } from "inversify";
@@ -38,6 +33,11 @@ import { IAppState, reducers } from "./store";
 import * as ga from "./utils/googleAnalitycs.js";
 import { IntlProviderAndInjector } from "./utils/IntlProviderAndInjector";
 import { InversifyProvider } from "./utils/InversifyProvider";
+
+import "font-awesome/scss/font-awesome.scss";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import "./styles/overrides.scss";
 
 // @note: this is done to make HMR work with react router. In production build its gone.
 function forceRerenderInDevMode(): number {

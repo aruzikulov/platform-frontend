@@ -3,7 +3,7 @@ import { mapSignerErrorToErrorMessage } from "../../lib/web3/errors";
 import { LedgerError } from "../../lib/web3/LedgerWallet";
 import { LightWalletError } from "../../lib/web3/LightWallet";
 import { SignerError } from "../../lib/web3/Web3Manager";
-import { EthereumAddress } from "../../types";
+import { EthereumAddress, TTranslatedString } from "../../types";
 import { mapBrowserWalletErrorToErrorMessage } from "../wallet-selector/browser-wizard/errors";
 import { mapLedgerErrorToErrorMessage } from "../wallet-selector/ledger-wizard/errors";
 import { mapLightWalletErrorToErrorMessage } from "../wallet-selector/light-wizard/errors";
@@ -19,7 +19,7 @@ export class MismatchedWalletAddressError extends Error {
   }
 }
 
-export function mapSignMessageErrorToErrorMessage(error: Error): string {
+export function mapSignMessageErrorToErrorMessage(error: Error): string | TTranslatedString {
   if (error instanceof BrowserWalletError) {
     return mapBrowserWalletErrorToErrorMessage(error);
   }

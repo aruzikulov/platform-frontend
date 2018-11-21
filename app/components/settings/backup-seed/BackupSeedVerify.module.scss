@@ -14,3 +14,13 @@
 .placeholder-height {
   min-height: px-to-rem(38px) !important;
 }
+
+.row {
+  display: flex;
+  flex-flow: row;
+  max-width: 83%;
+}
+
+.center {
+  justify-content: center;
+}

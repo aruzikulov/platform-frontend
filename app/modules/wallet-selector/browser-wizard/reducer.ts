@@ -1,7 +1,7 @@
 import { AppReducer } from "../../../store";
 
 export interface IBrowserWalletWizardState {
-  errorMsg?: string;
+  errorMsg?: any;
   isLoading: boolean;
   approvalRejected: boolean;
 }
