@@ -19,6 +19,7 @@ export const investmentFlowActions = {
   validateInputs: () => createSimpleAction("INVESTMENT_FLOW_VALIDATE_INPUTS"),
   showBankTransferDetails: () => createSimpleAction("INVESTMENT_FLOW_SHOW_BANK_TRANSFER_DETAILS"),
   showBankTransferSummary: () => createSimpleAction("INVESTMENT_FLOW_SHOW_BANK_TRANSFER_SUMMARY"),
+  generateBankTransferReference: () => createSimpleAction("GENERATE_BANK_TRANSFER_REFERENCE"),
   changeBankTransfer: (type: ETxSenderType) =>
     createAction("INVESTMENT_FLOW_BANK_TRANSFER_CHANGE", { type }),
   toggleBankTransferGasStipend: () =>

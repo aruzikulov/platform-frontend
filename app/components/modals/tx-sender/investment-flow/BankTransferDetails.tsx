@@ -22,6 +22,7 @@ import { InfoList } from "../shared/InfoList";
 import { InfoRow } from "../shared/InfoRow";
 import { formatEurTsd } from "./utils";
 
+import { onEnterAction } from "../../../../utils/OnEnterAction";
 import * as styles from "./Summary.module.scss";
 
 interface IStateProps {
@@ -187,6 +188,11 @@ const BankTransferDetails = compose<IProps, {}>(
     dispatchToProps: d => ({
       onGasStipendChange: () => d(actions.investmentFlow.toggleBankTransferGasStipend()),
     }),
+  }),
+  onEnterAction({
+    actionCreator: d => {
+      d(actions.investmentFlow.generateBankTransferReference());
+    },
   }),
   withHandlers<IProps, IHandlerProps>({
     handleCheckbox: ({ onGasStipendChange }) => (e: any) => {

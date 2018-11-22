@@ -77,7 +77,9 @@ export const selectBankTransferReferenceCode = (state: IAppState) => {
   const byteString = bytes.map(n => String.fromCharCode(n)).join("");
   const base64 = btoa(byteString).replace("=", "");
 
-  let code = "NF " + base64;
+  const reference = state.investmentFlow.bankTransferReference;
+
+  let code = `NF ${base64} REF ${reference}`;
   if (selectIsBankTransferGasStipend(state)) {
     code += " G";
   }

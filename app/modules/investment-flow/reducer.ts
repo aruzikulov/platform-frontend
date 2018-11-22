@@ -1,3 +1,4 @@
+import { cryptoRandomString } from "../../lib/dependencies/cryptoRandomString";
 import { AppReducer } from "../../store";
 import { DeepReadonly } from "../../types";
 
@@ -35,6 +36,7 @@ export interface IInvestmentFlowState {
   isValidatedInput: boolean;
   bankTransferFlowState?: EBankTransferFlowState;
   bankTransferGasStipend?: boolean;
+  bankTransferReference: string;
 }
 
 export const investmentFlowInitialState: IInvestmentFlowState = {
@@ -45,6 +47,7 @@ export const investmentFlowInitialState: IInvestmentFlowState = {
   activeInvestmentTypes: [],
   isValidatedInput: false,
   bankTransferGasStipend: true,
+  bankTransferReference: "",
 };
 
 export const investmentFlowReducer: AppReducer<IInvestmentFlowState> = (
@@ -55,6 +58,7 @@ export const investmentFlowReducer: AppReducer<IInvestmentFlowState> = (
     case "INVESTMENT_FLOW_RESET":
       return {
         ...investmentFlowInitialState,
+        bankTransferReference: state.bankTransferReference,
       };
     case "INVESTMENT_FLOW_SELECT_INVESTMENT_TYPE":
       return {
@@ -62,6 +66,7 @@ export const investmentFlowReducer: AppReducer<IInvestmentFlowState> = (
         etoId: state.etoId,
         activeInvestmentTypes: state.activeInvestmentTypes,
         investmentType: action.payload.type,
+        bankTransferReference: state.bankTransferReference,
       };
     case "INVESTMENT_FLOW_SET_ETO_ID":
       return {
@@ -107,6 +112,12 @@ export const investmentFlowReducer: AppReducer<IInvestmentFlowState> = (
       return {
         ...state,
         bankTransferFlowState: undefined,
+      };
+    case "GENERATE_BANK_TRANSFER_REFERENCE":
+      const bankTransferReference = btoa(cryptoRandomString(9)).replace("=", "");
+      return {
+        ...state,
+        bankTransferReference,
       };
   }
 

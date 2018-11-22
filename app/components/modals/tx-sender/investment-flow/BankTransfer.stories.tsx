@@ -2,6 +2,7 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { TEtoSpecsData } from "../../../../lib/api/eto/EtoApi.interfaces";
+import { ModalComponentBody } from "../../ModalComponentBody";
 import { BankTransferDetailsComponent } from "./BankTransferDetails";
 import { BankTransferSummaryComponent } from "./BankTransferSummary";
 
@@ -14,12 +15,12 @@ const eto = {
 } as TEtoSpecsData;
 
 const detailsData = {
-  accountName: "fufu name",
-  country: "lala land",
-  recipient: "kuku company",
-  iban: "foo iban asdf",
-  bic: "bar bic",
-  referenceCode: "asdfölk",
+  accountName: "Fifth Force GmbH",
+  country: "DE",
+  recipient: "Fifth Force GmbH",
+  iban: "DE1250094039446384529400565",
+  bic: "TLXXXXXXXXX",
+  referenceCode: "NF AGHGCmR3u2SuxdyNPIksxTyAhKM REF 123456789011 G WL",
   amount: "123456781234567812345678",
   onGasStipendChange: () => {},
   handleCheckbox: () => {},
@@ -36,5 +37,10 @@ const summaryData = {
 };
 
 storiesOf("Investment/Bank Transfer", module)
+  .addDecorator(story => (
+    <div style={{ maxWidth: "37.5rem" }}>
+      <ModalComponentBody onClose={() => {}}>{story()}</ModalComponentBody>
+    </div>
+  ))
   .add("Details", () => <BankTransferDetailsComponent {...detailsData} />)
   .add("Summary", () => <BankTransferSummaryComponent {...summaryData} />);

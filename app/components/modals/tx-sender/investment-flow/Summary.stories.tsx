@@ -2,6 +2,7 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import { TEtoSpecsData } from "../../../../lib/api/eto/EtoApi.interfaces";
+import { ModalComponentBody } from "../../ModalComponentBody";
 import { InvestmentSummaryComponent } from "./Summary";
 
 // tslint:disable-next-line:no-object-literal-type-assertion
@@ -35,6 +36,11 @@ const dataWithPriceDiscount = {
 };
 
 storiesOf("Investment/InvestmentSummary", module)
+  .addDecorator(story => (
+    <div style={{ maxWidth: "37.5rem" }}>
+      <ModalComponentBody onClose={() => {}}>{story()}</ModalComponentBody>
+    </div>
+  ))
   .add("default", () => <InvestmentSummaryComponent {...data} />)
   .add("with token price discount", () => <InvestmentSummaryComponent {...dataWithPriceDiscount} />)
   .add("isIcbm", () => <InvestmentSummaryComponent {...data} isIcbm={true} estimatedReward="0" />);
