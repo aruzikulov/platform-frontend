@@ -21,7 +21,7 @@ module.exports = merge(configCommon, {
       "Content-Security-Policy":
         "default-src 'self'; script-src 'self' 'unsafe-eval' www.google-analytics.com/analytics.js " +
         "'unsafe-inline' *; frame-src *; " + // this should be only enabled for twitter-iframe.html
-        "style-src fonts.googleapis.com 'self' 'unsafe-inline' " +
+        "style-src blob: fonts.googleapis.com 'self' 'unsafe-inline' " +
         "*; " + // this should be only enabled for twitter-iframe.html
         "font-src 'self' fonts.gstatic.com; " +
         "img-src 'self' data: documents.neufund.io documents.neufund.net www.google-analytics.com stats.g.doubleclick.net " +
@@ -50,6 +50,7 @@ module.exports = merge(configCommon, {
               {
                 loader: "css-loader",
                 options: {
+                  sourceMap: true,
                   importLoaders: 1,
                   modules: true,
                   localIdentName: "[name]__[local]___[hash:base64:5]",
